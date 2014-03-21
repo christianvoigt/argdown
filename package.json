@@ -1,6 +1,6 @@
 {
   "name": "argdown",
-  "version": "0.0.1",
+  "version": "0.1",
   "author": "Christian Voigt <christian.voigt@argunet.org>",
   "description": "argdown parser and jison grammar",
   "dependencies": {},
