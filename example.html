@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+    <head>
+        <meta charset="utf-8">
+        <meta content='IE=8' http-equiv='X-UA-Compatible'>
+        <title>Argdown Test</title>
+        <meta name="viewport" content="width=device-width">
+    </head>
+    <body>
+        <script src="dist/ArgdownParser.js"></script>
+        <script>
+            var str = "Argdown is great! +because It's so easy!";
+            var ast = ArgdownParser.parse(str); //ArgdownParser is a global object
+            var thesis = ast[1].children[0].children[0].text;
+            var reason = ast[1].children[1];
+            var relationText = reason.children[1].text;
+            var reasonText = reason.children[2].children[0].text;
+            alert("the thesis: "+thesis+" the relation: "+relationText+" the reason: "+reasonText);
+        </script>
+                
+    </body>
+    </html>
