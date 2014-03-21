@@ -1,0 +1,19 @@
+{
+  "name": "argdown",
+  "version": "0.0.1",
+  "author": "Christian Voigt <christian.voigt@argunet.org>",
+  "description": "argdown parser and jison grammar",
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-uglify": "~0.2.0",
+    "grunt-contrib-watch": "~0.5.2",        
+    "time-grunt": "~0.1.1",    
+    "load-grunt-tasks": "~0.1.0",    
+    "jison": "~0.4.13"
+  },
+   "license": "MIT",
+  "engines": {
+    "node": ">=0.8.0"
+  }
+}
