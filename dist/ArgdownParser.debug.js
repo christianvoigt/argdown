@@ -72,7 +72,9 @@
   }
 */
 var ArgdownParser = (function(){
-var parser = {trace: function trace() { },
+var parser = {trace: function trace() {
+        Jison.print.apply(null, arguments);
+    },
 yy: {},
 symbols_: {"error":2,"start":3,"optionallinebreaks":4,"graphs":5,"EOF":6,"ids":7,"id":8,"EMPTYLINE":9,"graph":10,"statement":11,"reasons":12,"tabs":13,"relation":14,"reason":15,"NEWLINE":16,"optionaltabs":17,"optionalspace":18,"text":19,"PRO":20,"CONTRA":21,"PRO-OUT":22,"CONTRA-OUT":23,"TITLE":24,"words":25,"TAB":26,"optionalnewline":27,"SPACE":28,"USER":29,"DIGIT":30,"word":31,"TEXT":32,"$accept":0,"$end":1},
 terminals_: {2:"error",6:"EOF",9:"EMPTYLINE",16:"NEWLINE",20:"PRO",21:"CONTRA",22:"PRO-OUT",23:"CONTRA-OUT",24:"TITLE",26:"TAB",28:"SPACE",29:"USER",30:"DIGIT",32:"TEXT"},

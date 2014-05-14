@@ -46,8 +46,8 @@ module.exports = function (grunt) {
         }
         try{
             var grammar = data;
-            var parser = new Parser(grammar);
-            var parserSource = parser.generate({type: "lalr", moduleName: "ArgdownParser"});
+            var parser = new Parser(grammar,{moduleName: "ArgdownParser"});
+            var parserSource = parser.generate();
             grunt.verbose.ok("generated parser");
         }catch(error){
           grunt.log.errorlns(error.msg);
@@ -55,6 +55,7 @@ module.exports = function (grunt) {
         }
         try{
             fs.writeFileSync("./dist/ArgdownParser.js", parserSource);
+
             grunt.verbose.ok("created parser file");
         }catch(error){
           grunt.verbose.errorlns(error.msg);

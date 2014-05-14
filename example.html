@@ -6,15 +6,75 @@
         <meta name="viewport" content="width=device-width">
     </head>
     <body>
-        <script src="dist/ArgdownParser.js"></script>
+    <div class="left" style="position:absolute; height:100%; width:50%; padding:1em; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; ">
+   <h3>Parser Input:</h3>
+
+    <form name="argdownForm" style="height:80%;" onsubmit="return climbAst()" >
+    <textarea style="width: 100%; height: 90%; font-size:18px;" id="argdownTextarea">Argdown is great!
+   +because It's so easy!</textarea><br/>
+<input type="submit" name="Submit" value="Parse Argdown"/>
+   </form>
+   </div>
+   <div style="position:absolute; height:100%; width:50%; left:50%; padding:1em; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;" class="right">
+   <h3>Parser Output (AST):</h3>
+   <div id="output" style="background-color:#eee; border:1px solid #ccc; padding:1em;"></div>
+   <p id="valid"></p>
+   <h3>Lexer Output (Terminals):</h3>
+   <ul id="terminals"></ul>
+   </div>
+        <script src="dist/ArgdownParser.debug.js"></script>
         <script>
-            var str = "Argdown is great! +because It's so easy!";
-            var ast = ArgdownParser.parse(str); //ArgdownParser is a global object
-            var thesis = ast[1].children[0].children[0].text;
-            var reason = ast[1].children[1];
-            var relationText = reason.children[1].text;
-            var reasonText = reason.children[2].children[0].text;
-            alert("the thesis: "+thesis+" the relation: "+relationText+" the reason: "+reasonText);
+
+            var oldLex = ArgdownParser.lexer.lex;
+            var terminals = "";
+            ArgdownParser.lexer.lex = function(){
+                var ret = oldLex.call(this);
+                terminals +="<li>"+ArgdownParser.terminals_[ret]+"</li>";
+                return ret;
+            };
+            ArgdownParser.trace = function(str){
+                console.log(str);
+            }
+
+            var oldPerformAction = ArgdownParser.performAction;
+            ArgdownParser.performAction = function anonymous(yytext,yyleng,yylineno,yy,yystate,$$,_$) {
+                var ret = oldPerformAction.call(this, yytext, yyleng, yylineno, yy, yystate, $$, _$);
+                console.log($$);
+                return ret;
+            }            
+
+
+            var climb = function(node, indent){
+                var output = "";
+                var txt = (node.text)? "'"+node.text+"'" : "";
+                output = indent+"> "+node.name+" "+txt+"\n";
+                if(node.children){
+                    for(var i = 0; i < node.children.length; i++){
+                        output += climb(node.children[i], indent+"-");
+                    }
+                }
+                return output;
+            };
+            var climbAst = function(){
+                var indent = "";
+                terminals = "";
+                var str = document.getElementById("argdownTextarea").value;
+                var output = "";
+                if(str){
+                    var ast = ArgdownParser.parse(str); //ArgdownParser is a global object
+                    for(var i = 0; i < ast.length; i++){
+                        output += climb(ast[i],indent);
+                    };                    
+                    document.getElementById("output").innerHTML = "<pre>"+output+"</pre>";
+                    var valid= "<span style='color:green;'>Valid Argdown</span>";
+                    if(ArgdownParser.yy.errors){
+                        valid = "<span style='color:red;'>Invalid Argdown</span>";
+                    }
+                    document.getElementById("valid").innerHTML = valid;
+                    document.getElementById("terminals").innerHTML = terminals;
+                }
+                return false;
+            };
         </script>
                 
     </body>
