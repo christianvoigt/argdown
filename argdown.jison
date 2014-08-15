@@ -6,7 +6,12 @@
 		return str.substring(str.indexOf("@")+1).replace(" ","");
 	};
 	var extractUser = function(str){
-		return str.substring(str.indexOf("@")+1,str.indexOf(":")).replace(" ","");
+		if(str.length <= 1) return "";
+		var result = str.substring(str.indexOf("@")+1,str.length);
+		if(result.indexOf(":") != -1){
+			result = result.substring(0,result.indexOf(":"));
+		}
+		return result.replace(" ","");
 	};
 	var extractTitle = function(str){
 		return str.substring(str.indexOf("[")+1, str.indexOf("]"));
@@ -82,6 +87,7 @@
 
 (' '*'['(.)+']'' '*) 				%{ return 'TITLE'; %}
 ' '*'@'\w+':' 						%{ this.begin('user'); return 'USER'; %}
+' '*'@'\S* 						%{ return 'INCOMPLETEUSER'; %}
 <user>\d+' '*						%{ this.popState(); return 'DIGIT'%}
 
 'thus+'				%{ this.begin('INITIAL'); return 'PRO-OUT'; %}
@@ -123,10 +129,6 @@
 start
 	: optionallinebreaks graphs EOF  %prec PRO {$2.splice(0,0,{name:"start", text:$1}); $2.push({name:"eof", text:$3}); return $2;}
 	| EOF {return [{name:"eof", text:$1}];}
-	;
-ids
-	: ids id {$1.ids.push($2); $1.text += $2; $$ = $1;}
-	| id {$$ = {name:"ids", text:$1, ids:[$1]};}
 	;
 graphs
 	: graphs EMPTYLINE graph %prec PRO { $1.push({name:"emptyline", text:$2}); $1.push($3); $$ = $1;}
@@ -197,11 +199,12 @@ reason
 		$$ = {name:"reason", indent:$2.indent};
 		addChildren($$,[$2,$3, {name:"space",text:$4}]);
 	}
-	| NEWLINE optionaltabs optionalspace text error %prec SPACE{
+	| NEWLINE optionaltabs statement error %prec SPACE{
+		console.log("rule: NEWLINE optionaltabs statement error %prec SPACE{");
 		yy.errors = true;
-		$2.text = $1+$2.text+$3;
+		$2.text = $1+$2.text;
 		$$ = {name:"reason", indent:$2.indent};
-		addChildren($$,[$2,$4]);	
+		addChildren($$,[$2,$3]);	
 	}
 	| NEWLINE optionaltabs optionalspace error %prec TEXT{
 		yy.errors = true;
@@ -229,19 +232,19 @@ statement
 		$$ = createNode("statement"); 
 		addChildren($$,[createTitleNode($1)]);
 		}
-	| id TITLE text {
+	| id TITLE text %prec TEXT {
 		$$ = createNode("statement"); 
 		addChildren($$,[$1,createTitleNode($2),$3]);
 		}
-	| id TITLE {
+	| id TITLE %prec TEXT{
 		$$ = createNode("statement"); 
 		addChildren($$,[$1,createTitleNode($2)]);
 		}
-	| id text {
+	| id text %prec TEXT{
 		$$ = createNode("statement"); 
 		addChildren($$,[$1,$2]);
 	}
-	| id {
+	| id %prec TEXT{
 		$$ = createNode("statement"); 
 		addChildren($$,[$1]);
 		}
@@ -273,6 +276,11 @@ optionalspace
 id
 	: USER DIGIT {$$ = {name:"id", text:$1+$2, id:extractID($1+$2), author:extractUser($1), authorIndex:$2};}
 	| USER error {yy.errors = true; $$ = {name:"user", text:$1, user:extractUser($1)};}
+	| INCOMPLETEUSER error {
+	console.log("rule: | INCOMPLETEUSER error {");
+
+	yy.errors = true; $$ = {name:"user", text:$1, user:extractUser($1)};
+	}
 	;
 words
 	: words SPACE word {$$ = $1 + $2 +$3}

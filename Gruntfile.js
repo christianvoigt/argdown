@@ -17,7 +17,7 @@ module.exports = function (grunt) {
         // configurable paths
         watch: {
             jison: {
-                files: ['argdown.jison'],
+                files: ['argdown-2.jison'],
                 tasks: ['jison']
             }
         },
@@ -38,7 +38,7 @@ module.exports = function (grunt) {
         var fs = require('fs');
 
         try{
-            var data = fs.readFileSync("./argdown.jison", 'utf8');
+            var data = fs.readFileSync("./argdown-2.jison", 'utf8');
             grunt.verbose.ok("jison file loaded");
         }catch(error){
           grunt.verbose.errorlns(error.msg);
