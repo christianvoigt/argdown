@@ -74,187 +74,129 @@
 var ArgdownParser = (function(){
 var parser = {trace: function trace() { },
 yy: {},
-symbols_: {"error":2,"start":3,"optionallinebreaks":4,"graphs":5,"EOF":6,"ids":7,"id":8,"EMPTYLINE":9,"graph":10,"statement":11,"reasons":12,"tabs":13,"relation":14,"reason":15,"NEWLINE":16,"optionaltabs":17,"optionalspace":18,"text":19,"PRO":20,"CONTRA":21,"PRO-OUT":22,"CONTRA-OUT":23,"TITLE":24,"words":25,"TAB":26,"optionalnewline":27,"SPACE":28,"USER":29,"DIGIT":30,"word":31,"TEXT":32,"$accept":0,"$end":1},
-terminals_: {2:"error",6:"EOF",9:"EMPTYLINE",16:"NEWLINE",20:"PRO",21:"CONTRA",22:"PRO-OUT",23:"CONTRA-OUT",24:"TITLE",26:"TAB",28:"SPACE",29:"USER",30:"DIGIT",32:"TEXT"},
-productions_: [0,[3,3],[3,1],[7,2],[7,1],[5,3],[5,1],[10,2],[10,1],[10,5],[10,4],[10,4],[10,3],[10,4],[10,3],[12,2],[12,1],[15,4],[15,5],[15,5],[15,4],[14,1],[14,1],[14,1],[14,1],[11,1],[11,2],[11,1],[11,3],[11,2],[11,2],[11,1],[19,3],[17,0],[17,2],[13,3],[13,1],[4,0],[4,1],[4,1],[27,0],[27,1],[18,0],[18,1],[8,2],[8,2],[25,3],[25,1],[31,2],[31,1]],
+symbols_: {"error":2,"start":3,"optionalNewline":4,"message":5,"EOF":6,"NEWLINE":7,"statementOrReason":8,"statement":9,"reason":10,"optionalTabs":11,"relation":12,"tabs":13,"PRO":14,"CONTRA":15,"PRO-OUT":16,"CONTRA-OUT":17,"statementElements":18,"DEFINITION":19,"statementElement":20,"TITLE":21,"ID":22,"LINK":23,"TAG":24,"USER":25,"text":26,"EM":27,"STRONG":28,"charOrSpace":29,"CHAR":30,"SPACE":31,"TAB":32,"optionalSpace":33,"$accept":0,"$end":1},
+terminals_: {2:"error",6:"EOF",7:"NEWLINE",14:"PRO",15:"CONTRA",16:"PRO-OUT",17:"CONTRA-OUT",19:"DEFINITION",21:"TITLE",22:"ID",23:"LINK",24:"TAG",25:"USER",27:"EM",28:"STRONG",30:"CHAR",31:"SPACE",32:"TAB"},
+productions_: [0,[3,4],[3,2],[4,0],[4,1],[5,2],[5,1],[8,2],[8,2],[10,3],[10,3],[10,3],[10,2],[12,1],[12,1],[12,1],[12,1],[9,1],[9,2],[9,2],[18,2],[18,1],[20,1],[20,1],[20,1],[20,1],[20,1],[20,1],[20,1],[20,1],[26,2],[26,1],[29,1],[29,1],[11,0],[11,1],[13,2],[13,2],[33,0],[33,1]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
 var $0 = $$.length - 1;
 switch (yystate) {
-case 1:$$[$0-1].splice(0,0,{name:"start", text:$$[$0-2]}); $$[$0-1].push({name:"eof", text:$$[$0]}); return $$[$0-1];
+case 1:
+		var result = [];
+		if($$[$0-3].text !== "")result.push($$[$0-3]);
+		Array.prototype.push.apply(result,$$[$0-2]);
+		if($$[$0-1].text !== "")result.push($$[$0-1]);
+		return result;
 break;
-case 2:return [{name:"eof", text:$$[$0]}];
+case 2: var result = []; if($$[$0-1].text !== "")result.push($$[$0-1]); return result;
 break;
-case 3:$$[$0-1].ids.push($$[$0]); $$[$0-1].text += $$[$0]; this.$ = $$[$0-1];
+case 3:this.$={name:"newline", text:""};
 break;
-case 4:this.$ = {name:"ids", text:$$[$0], ids:[$$[$0]]};
+case 4:this.$ = $$[$0];
 break;
-case 5: $$[$0-2].push({name:"emptyline", text:$$[$0-1]}); $$[$0-2].push($$[$0]); this.$ = $$[$0-2];
-break;
-case 6: this.$ = [$$[$0]];
-break;
-case 7: this.$ = root; this.$.children[0] = $$[$0-1]; 
-break;
-case 8: this.$ = {name:"thesis", children:[$$[$0]]};
-break;
-case 9: 
-	/*
-	if we use optionaltabs, we get into trouble, because of conflicts with optionalspace. Didn't know how to fix that, so we just use tabs here and insert a second case if there are no tabs.
-	*/
-		console.log("rule: | tabs relation statement reasons error %prec TAB{ ");
-		yy.errors = true;
-		var reason =  {name:"reason", indent:$$[$0-4].indent};
-		addChildren(reason,[$$[$0-4],$$[$0-3],$$[$0-2]]);
-		this.$ = addChildToGraph(reason,false,true);//use unshift to insert reason at the beginning
+case 5:
+		var newline = $$[$0][0];
+		var whatAmI = $$[$0][1];
+
+		if(whatAmI.name === "reason"){
+			this.$ = $$[$0-1];
+			newline.indent = whatAmI.indent;
+			addChildToGraph(newline);
+			addChildToGraph(whatAmI);
+		}else if(whatAmI.name === "statement"){
+			this.$ = $$[$0-1];
+			this.$.push(newline);			
+			this.$.push(createNewRoot(whatAmI));
+		} 
 	
 break;
-case 10: 
-		console.log("rule: | tabs relation statement error %prec TAB{ ");
-		yy.errors = true;
-		var reason =  {name:"reason", indent:$$[$0-3].indent};
-		addChildren(reason,[$$[$0-3],$$[$0-2],$$[$0-1]]);
-		this.$ = addChildToGraph(reason,true,false,true);
+case 6:
+		this.$ = [createNewRoot($$[$0])];
 	
 break;
-case 11:
-		console.log("rule: | relation statement reasons error %prec TAB { ");
-		yy.errors = true;
-		var reason =  {name:"reason", indent:0};
-		addChildren(reason,[$$[$0-3],$$[$0-2]]);
-		this.$ = addChildToGraph(reason,false,true);//use unshift to insert reason at the beginning	
+case 7:	
+	this.$ = [$$[$0-1],$$[$0]];
 	
 break;
-case 12:
-		console.log("rule: | relation statement error %prec TEXT {");
-		yy.errors = true;
-		var reason =  {name:"reason", indent:0};
-		addChildren(reason,[$$[$0-2],$$[$0-1]]);
-		this.$ = addChildToGraph(reason,true,false,true);
-	
+case 8: this.$ = [$$[$0-1],$$[$0]];
 break;
-case 13: 
-		console.log("rule: | tabs relation statement reasons error %prec TAB{ ");
-		yy.errors = true;
-		var reason =  {name:"reason", indent:$$[$0-3].indent};
-		addChildren(reason,[$$[$0-3],$$[$0-2]]);
-		this.$ = addChildToGraph(reason,false,true);//use unshift to insert reason at the beginning
-	
-break;
-case 14: 
-		console.log("rule: | tabs relation statement reasons error %prec TAB{ ");
-		yy.errors = true;
-		var reason =  {name:"reason", indent:$$[$0-2].indent};
-		addChildren(reason,[$$[$0-2],$$[$0-1]]);
-		this.$ = addChildToGraph(reason,true,false,true);
-	
-break;
-case 15:this.$ = addChildToGraph($$[$0]);
-break;
-case 16:this.$ = addChildToGraph($$[$0], true);
-break;
-case 17:
-		$$[$0-2].text = $$[$0-3] + $$[$0-2].text;
+case 9:
 		this.$ = {name:"reason", indent:$$[$0-2].indent};
 		addChildren(this.$,[$$[$0-2],$$[$0-1],$$[$0]]);
 	
 break;
-case 18:
+case 10:
 		yy.errors = true;
-		$$[$0-3].text = $$[$0-4] + $$[$0-3].text;
-		this.$ = {name:"reason", indent:$$[$0-3].indent};
-		addChildren(this.$,[$$[$0-3],$$[$0-2], {name:"space",text:$$[$0-1]}]);
+		this.$ = {name:"reason", indent:$$[$0-2].indent};
+		addChildren(this.$,[$$[$0-2],$$[$0-1]]);
+	
+break;
+case 11:
+		yy.errors = true;
+		this.$ = {name:"reason", indent:$$[$0-2].indent};
+		addChildren(this.$,[$$[$0-2],$$[$0-1]]);	
+	
+break;
+case 12:
+		yy.errors = true;
+		this.$ = {name:"reason", indent:$$[$0-1].indent};
+		addChildren(this.$,[$$[$0-1]]);
+	
+break;
+case 13:this.$ = {name:"relation", text:$$[$0], type:"pro", direction:"to"};
+break;
+case 14:this.$ = {name:"relation", text:$$[$0], type:"contra", direction:"to"};
+break;
+case 15:this.$ = {name:"relation", text:$$[$0], type:"pro", direction:"from"};
+break;
+case 16:this.$ = {name:"relation", text:$$[$0], type:"contra", direction:"from"};
+break;
+case 17:
+			this.$ = createNode("statement");
+			addChildren(this.$,$$[$0]);
+		
+break;
+case 18:
+			this.$ = createNode("statement");
+			addChildren(this.$,[{name:"title-definition", text:$$[$0-1], title:extractTitle($$[$0-1])}]);	
+			addChildren(this.$,$$[$0]);
 	
 break;
 case 19:
-		yy.errors = true;
-		$$[$0-3].text = $$[$0-4]+$$[$0-3].text+$$[$0-2];
-		this.$ = {name:"reason", indent:$$[$0-3].indent};
-		addChildren(this.$,[$$[$0-3],$$[$0-1]]);	
+			this.$ = createNode("statement");
+			addChildren(this.$,[{name:"title-definition", text:$$[$0-1], title:extractTitle($$[$0-1])}]);	
+			yy.errors = true;
 	
 break;
-case 20:
-		yy.errors = true;
-		$$[$0-2].text = $$[$0-3]+$$[$0-2].text;
-		this.$ = {name:"reason", indent:$$[$0-2].indent};
-		addChildren(this.$,[$$[$0-2],{name:"space",text:$$[$0-1]}]);
-	
+case 20:this.$ = $$[$0-1]; this.$.push($$[$0]); 
 break;
-case 21:this.$ = {name:"relation", text:$$[$0], type:"pro", direction:"to"};
+case 21: this.$ = [$$[$0]];
 break;
-case 22:this.$ = {name:"relation", text:$$[$0], type:"contra", direction:"to"};
+case 28: this.$ = {name:"em", text:$$[$0]};
 break;
-case 23:this.$ = {name:"relation", text:$$[$0], type:"pro", direction:"from"};
+case 29: this.$ = {name:"strong", text:$$[$0]};
 break;
-case 24:this.$ = {name:"relation", text:$$[$0], type:"contra", direction:"from"};
+case 30:$$[$0-1].text += $$[$0]; this.$ = $$[$0-1];
 break;
-case 25:
-		this.$ = createNode("statement"); 
-		addChildren(this.$,[$$[$0]]);
-		
+case 31:this.$= {name:"text", text:$$[$0]};
 break;
-case 26:
-		this.$ = createNode("statement"); 
-		addChildren(this.$,[createTitleNode($$[$0-1]),$$[$0]]);
-		
+case 34:this.$ = {name:"tabs", text:"", indent:0};
 break;
-case 27:
-		this.$ = createNode("statement"); 
-		addChildren(this.$,[createTitleNode($$[$0])]);
-		
+case 35:this.$ = $$[$0];
 break;
-case 28:
-		this.$ = createNode("statement"); 
-		addChildren(this.$,[$$[$0-2],createTitleNode($$[$0-1]),$$[$0]]);
-		
+case 36:this.$=$$[$0-1]; this.$.indent++; this.$.text = this.$.text +$$[$0];
 break;
-case 29:
-		this.$ = createNode("statement"); 
-		addChildren(this.$,[$$[$0-1],createTitleNode($$[$0])]);
-		
+case 37:this.$ = {name:"tabs", text:$$[$0-1]+$$[$0], indent:1};
 break;
-case 30:
-		this.$ = createNode("statement"); 
-		addChildren(this.$,[$$[$0-1],$$[$0]]);
-	
+case 38:this.$ = "";
 break;
-case 31:
-		this.$ = createNode("statement"); 
-		addChildren(this.$,[$$[$0]]);
-		
-break;
-case 32:this.$ = {name:"text", text:$$[$0-2] + $$[$0-1] + $$[$0]};
-break;
-case 33:this.$ = {name:"tabs", text:"", indent:0};
-break;
-case 34:this.$ = $$[$0-1]; this.$.text = this.$.text + $$[$0];
-break;
-case 35:this.$=$$[$0-2]; this.$.indent++; this.$.text = this.$.text + $$[$0-1] + $$[$0];
-break;
-case 36:this.$ = {name:"tabs", text:$$[$0], indent:1};
-break;
-case 40:this.$ = "";
-break;
-case 41:this.$ = $$[$0];
-break;
-case 42:this.$ = "";
-break;
-case 43:this.$ = $$[$0];
-break;
-case 44:this.$ = {name:"id", text:$$[$0-1]+$$[$0], id:extractID($$[$0-1]+$$[$0]), author:extractUser($$[$0-1]), authorIndex:$$[$0]};
-break;
-case 45:yy.errors = true; this.$ = {name:"user", text:$$[$0-1], user:extractUser($$[$0-1])};
-break;
-case 46:this.$ = $$[$0-2] + $$[$0-1] +$$[$0]
-break;
-case 47:this.$ = $$[$0];
-break;
-case 48:this.$ = $$[$0-1] + $$[$0];
+case 39:this.$ = $$[$0];
 break;
 }
 },
-table: [{3:1,4:2,6:[1,3],9:[1,5],16:[1,4],20:[2,37],21:[2,37],22:[2,37],23:[2,37],24:[2,37],26:[2,37],28:[2,37],29:[2,37],32:[2,37]},{1:[3]},{5:6,8:13,10:7,11:8,13:9,14:10,18:19,19:11,20:[1,15],21:[1,16],22:[1,17],23:[1,18],24:[1,12],26:[1,14],28:[1,21],29:[1,20],32:[2,42]},{1:[2,2]},{20:[2,38],21:[2,38],22:[2,38],23:[2,38],24:[2,38],26:[2,38],28:[2,38],29:[2,38],32:[2,38]},{20:[2,39],21:[2,39],22:[2,39],23:[2,39],24:[2,39],26:[2,39],28:[2,39],29:[2,39],32:[2,39]},{6:[1,22],9:[1,23]},{6:[2,6],9:[2,6]},{6:[2,8],9:[2,8],12:24,15:25,16:[1,26]},{8:13,11:28,14:27,18:29,19:11,20:[1,15],21:[1,16],22:[1,17],23:[1,18],24:[1,12],26:[2,42],28:[1,21],29:[1,20],32:[2,42]},{8:13,11:30,18:19,19:11,24:[1,12],28:[1,21],29:[1,20],32:[2,42]},{2:[2,25],6:[2,25],9:[2,25],16:[2,25]},{2:[2,27],6:[2,27],9:[2,27],16:[2,27],18:19,19:31,28:[1,21],32:[2,42]},{2:[2,31],6:[2,31],9:[2,31],16:[2,31],18:19,19:33,24:[1,32],28:[1,21],32:[2,42]},{2:[2,36],20:[2,36],21:[2,36],22:[2,36],23:[2,36],24:[2,36],26:[2,36],28:[2,36],29:[2,36],32:[2,36]},{2:[2,21],24:[2,21],28:[2,21],29:[2,21],32:[2,21]},{2:[2,22],24:[2,22],28:[2,22],29:[2,22],32:[2,22]},{2:[2,23],24:[2,23],28:[2,23],29:[2,23],32:[2,23]},{2:[2,24],24:[2,24],28:[2,24],29:[2,24],32:[2,24]},{25:34,31:35,32:[1,36]},{2:[1,38],30:[1,37]},{2:[2,43],20:[2,43],21:[2,43],22:[2,43],23:[2,43],26:[2,43],28:[2,43],32:[2,43]},{1:[2,1]},{8:13,10:39,11:8,13:9,14:10,18:19,19:11,20:[1,15],21:[1,16],22:[1,17],23:[1,18],24:[1,12],26:[1,14],28:[1,21],29:[1,20],32:[2,42]},{6:[2,7],9:[2,7],15:40,16:[1,26]},{2:[2,16],6:[2,16],9:[2,16],16:[2,16]},{2:[2,33],13:42,17:41,20:[2,33],21:[2,33],22:[2,33],23:[2,33],26:[1,14],28:[2,33],32:[2,33]},{8:13,11:43,18:19,19:11,24:[1,12],28:[1,21],29:[1,20],32:[2,42]},{2:[1,45],12:44,15:25,16:[1,26]},{25:34,26:[1,46],31:35,32:[1,36]},{2:[1,48],12:47,15:25,16:[1,26]},{2:[2,26],6:[2,26],9:[2,26],16:[2,26]},{2:[2,29],6:[2,29],9:[2,29],16:[2,29],18:19,19:49,28:[1,21],32:[2,42]},{2:[2,30],6:[2,30],9:[2,30],16:[2,30]},{2:[2,42],6:[2,42],9:[2,42],16:[2,42],18:50,28:[1,51]},{2:[2,47],6:[2,47],9:[2,47],16:[2,47],28:[2,47],32:[1,52]},{2:[2,49],6:[2,49],9:[2,49],16:[2,49],28:[2,49],32:[2,49]},{2:[2,44],6:[2,44],9:[2,44],16:[2,44],24:[2,44],28:[2,44],32:[2,44]},{2:[2,45],6:[2,45],9:[2,45],16:[2,45],24:[2,45],28:[2,45],32:[2,45]},{6:[2,5],9:[2,5]},{2:[2,15],6:[2,15],9:[2,15],16:[2,15]},{2:[2,42],14:53,18:54,20:[1,15],21:[1,16],22:[1,17],23:[1,18],28:[1,21],32:[2,42]},{2:[2,42],18:55,20:[2,42],21:[2,42],22:[2,42],23:[2,42],26:[2,42],28:[1,21],32:[2,42]},{2:[1,57],12:56,15:25,16:[1,26]},{2:[1,58],15:40,16:[1,26]},{6:[2,14],9:[2,14]},{2:[2,35],20:[2,35],21:[2,35],22:[2,35],23:[2,35],24:[2,35],26:[2,35],28:[2,35],29:[2,35],32:[2,35]},{2:[1,59],15:40,16:[1,26]},{6:[2,12],9:[2,12]},{2:[2,28],6:[2,28],9:[2,28],16:[2,28]},{2:[2,32],6:[2,32],9:[2,32],16:[2,32]},{2:[2,43],6:[2,43],9:[2,43],16:[2,43],31:60,32:[1,36]},{2:[2,48],6:[2,48],9:[2,48],16:[2,48],28:[2,48],32:[2,48]},{2:[2,42],8:13,11:61,18:62,19:11,24:[1,12],28:[1,21],29:[1,20],32:[2,42]},{2:[1,64],18:19,19:63,28:[1,21],32:[2,42]},{2:[2,34],20:[2,34],21:[2,34],22:[2,34],23:[2,34],26:[1,46],28:[2,34],32:[2,34]},{2:[1,65],15:40,16:[1,26]},{6:[2,10],9:[2,10]},{6:[2,13],9:[2,13]},{6:[2,11],9:[2,11]},{2:[2,46],6:[2,46],9:[2,46],16:[2,46],28:[2,46],32:[1,52]},{2:[2,17],6:[2,17],9:[2,17],16:[2,17]},{2:[1,66],25:34,31:35,32:[1,36]},{2:[1,67]},{2:[2,20],6:[2,20],9:[2,20],16:[2,20]},{6:[2,9],9:[2,9]},{2:[2,18],6:[2,18],9:[2,18],16:[2,18]},{2:[2,19],6:[2,19],9:[2,19],16:[2,19]}],
-defaultActions: {3:[2,2],22:[2,1]},
+table: [{3:1,4:2,6:[2,3],7:[1,3],19:[2,3],21:[2,3],22:[2,3],23:[2,3],24:[2,3],25:[2,3],27:[2,3],28:[2,3],30:[2,3],31:[2,3]},{1:[3]},{5:4,6:[1,5],9:6,18:7,19:[1,8],20:9,21:[1,10],22:[1,11],23:[1,12],24:[1,13],25:[1,14],26:15,27:[1,16],28:[1,17],29:18,30:[1,19],31:[1,20]},{6:[2,4],19:[2,4],21:[2,4],22:[2,4],23:[2,4],24:[2,4],25:[2,4],27:[2,4],28:[2,4],30:[2,4],31:[2,4]},{4:21,6:[2,3],7:[1,23],8:22},{1:[2,2]},{6:[2,6],7:[2,6]},{2:[2,17],6:[2,17],7:[2,17],20:24,21:[1,10],22:[1,11],23:[1,12],24:[1,13],25:[1,14],26:15,27:[1,16],28:[1,17],29:18,30:[1,19],31:[1,20]},{2:[1,26],18:25,20:9,21:[1,10],22:[1,11],23:[1,12],24:[1,13],25:[1,14],26:15,27:[1,16],28:[1,17],29:18,30:[1,19],31:[1,20]},{2:[2,21],6:[2,21],7:[2,21],21:[2,21],22:[2,21],23:[2,21],24:[2,21],25:[2,21],27:[2,21],28:[2,21],30:[2,21],31:[2,21]},{2:[2,22],6:[2,22],7:[2,22],21:[2,22],22:[2,22],23:[2,22],24:[2,22],25:[2,22],27:[2,22],28:[2,22],30:[2,22],31:[2,22]},{2:[2,23],6:[2,23],7:[2,23],21:[2,23],22:[2,23],23:[2,23],24:[2,23],25:[2,23],27:[2,23],28:[2,23],30:[2,23],31:[2,23]},{2:[2,24],6:[2,24],7:[2,24],21:[2,24],22:[2,24],23:[2,24],24:[2,24],25:[2,24],27:[2,24],28:[2,24],30:[2,24],31:[2,24]},{2:[2,25],6:[2,25],7:[2,25],21:[2,25],22:[2,25],23:[2,25],24:[2,25],25:[2,25],27:[2,25],28:[2,25],30:[2,25],31:[2,25]},{2:[2,26],6:[2,26],7:[2,26],21:[2,26],22:[2,26],23:[2,26],24:[2,26],25:[2,26],27:[2,26],28:[2,26],30:[2,26],31:[2,26]},{2:[2,27],6:[2,27],7:[2,27],21:[2,27],22:[2,27],23:[2,27],24:[2,27],25:[2,27],27:[2,27],28:[2,27],29:27,30:[1,19],31:[1,20]},{2:[2,28],6:[2,28],7:[2,28],21:[2,28],22:[2,28],23:[2,28],24:[2,28],25:[2,28],27:[2,28],28:[2,28],30:[2,28],31:[2,28]},{2:[2,29],6:[2,29],7:[2,29],21:[2,29],22:[2,29],23:[2,29],24:[2,29],25:[2,29],27:[2,29],28:[2,29],30:[2,29],31:[2,29]},{2:[2,31],6:[2,31],7:[2,31],21:[2,31],22:[2,31],23:[2,31],24:[2,31],25:[2,31],27:[2,31],28:[2,31],30:[2,31],31:[2,31]},{2:[2,32],6:[2,32],7:[2,32],21:[2,32],22:[2,32],23:[2,32],24:[2,32],25:[2,32],27:[2,32],28:[2,32],30:[2,32],31:[2,32]},{2:[2,33],6:[2,33],7:[2,33],21:[2,33],22:[2,33],23:[2,33],24:[2,33],25:[2,33],27:[2,33],28:[2,33],30:[2,33],31:[2,33]},{6:[1,28]},{6:[2,5],7:[2,5]},{6:[2,4],9:29,10:30,11:31,13:32,14:[2,34],15:[2,34],16:[2,34],17:[2,34],18:7,19:[1,8],20:9,21:[1,10],22:[1,11],23:[1,12],24:[1,13],25:[1,14],26:15,27:[1,16],28:[1,17],29:18,30:[1,19],31:[1,20],32:[1,33]},{2:[2,20],6:[2,20],7:[2,20],21:[2,20],22:[2,20],23:[2,20],24:[2,20],25:[2,20],27:[2,20],28:[2,20],30:[2,20],31:[2,20]},{2:[2,18],6:[2,18],7:[2,18],20:24,21:[1,10],22:[1,11],23:[1,12],24:[1,13],25:[1,14],26:15,27:[1,16],28:[1,17],29:18,30:[1,19],31:[1,20]},{2:[2,19],6:[2,19],7:[2,19]},{2:[2,30],6:[2,30],7:[2,30],21:[2,30],22:[2,30],23:[2,30],24:[2,30],25:[2,30],27:[2,30],28:[2,30],30:[2,30],31:[2,30]},{1:[2,1]},{6:[2,7],7:[2,7]},{6:[2,8],7:[2,8]},{12:34,14:[1,35],15:[1,36],16:[1,37],17:[1,38]},{2:[1,40],9:39,14:[2,35],15:[2,35],16:[2,35],17:[2,35],18:7,19:[1,8],20:9,21:[1,10],22:[1,11],23:[1,12],24:[1,13],25:[1,14],26:15,27:[1,16],28:[1,17],29:18,30:[1,19],31:[1,20],32:[1,41]},{2:[2,38],14:[2,38],15:[2,38],16:[2,38],17:[2,38],19:[2,38],21:[2,38],22:[2,38],23:[2,38],24:[2,38],25:[2,38],27:[2,38],28:[2,38],30:[2,38],31:[2,38],32:[2,38],33:42},{2:[1,45],9:44,18:7,19:[1,8],20:9,21:[1,10],22:[1,11],23:[1,12],24:[1,13],25:[1,14],26:15,27:[1,16],28:[1,17],29:18,30:[1,19],31:[1,20]},{2:[2,13],19:[2,13],21:[2,13],22:[2,13],23:[2,13],24:[2,13],25:[2,13],27:[2,13],28:[2,13],30:[2,13],31:[2,13]},{2:[2,14],19:[2,14],21:[2,14],22:[2,14],23:[2,14],24:[2,14],25:[2,14],27:[2,14],28:[2,14],30:[2,14],31:[2,14]},{2:[2,15],19:[2,15],21:[2,15],22:[2,15],23:[2,15],24:[2,15],25:[2,15],27:[2,15],28:[2,15],30:[2,15],31:[2,15]},{2:[2,16],19:[2,16],21:[2,16],22:[2,16],23:[2,16],24:[2,16],25:[2,16],27:[2,16],28:[2,16],30:[2,16],31:[2,16]},{2:[1,46]},{6:[2,12],7:[2,12]},{2:[2,36],14:[2,36],15:[2,36],16:[2,36],17:[2,36],19:[2,36],21:[2,36],22:[2,36],23:[2,36],24:[2,36],25:[2,36],27:[2,36],28:[2,36],30:[2,36],31:[2,36],32:[2,36]},{2:[2,37],14:[2,37],15:[2,37],16:[2,37],17:[2,37],19:[2,37],21:[2,37],22:[2,37],23:[2,37],24:[2,37],25:[2,37],27:[2,37],28:[2,37],30:[2,37],31:[2,37],32:[2,37]},{2:[2,39],14:[2,39],15:[2,39],16:[2,39],17:[2,39],19:[2,39],21:[2,39],22:[2,39],23:[2,39],24:[2,39],25:[2,39],27:[2,39],28:[2,39],30:[2,39],31:[2,39],32:[2,39]},{6:[2,9],7:[2,9]},{6:[2,10],7:[2,10]},{6:[2,11],7:[2,11]}],
+defaultActions: {5:[2,2],28:[2,1]},
 parseError: function parseError(str, hash) {
     if (hash.recoverable) {
         this.trace(str);
@@ -491,15 +433,6 @@ _handle_error:
     return true;
 }};
 
-	var extractID = function(str){
-		return str.substring(str.indexOf("@")+1).replace(" ","");
-	};
-	var extractUser = function(str){
-		return str.substring(str.indexOf("@")+1,str.indexOf(":")).replace(" ","");
-	};
-	var extractTitle = function(str){
-		return str.substring(str.indexOf("[")+1, str.indexOf("]"));
-	};
 	var createNode = function(name){
 		return {name:name, children:[]};
 	};
@@ -507,7 +440,8 @@ _handle_error:
 		return {name:"title", text:str, title:extractTitle(str)};
 	};
 	var addChildren = function(parent,children){
-		parent.children = children;
+		if(!parent.children) parent.children = [];
+		Array.prototype.push.apply(parent.children, children);
 		for(var i = 0; i<children.length; i++){
 			children[i].parent = parent;
 		}
@@ -516,19 +450,19 @@ _handle_error:
 	var prevNode;
 
 	var root = {children:[], name:"thesis"};
-	var addChildToGraph = function(node, reset, unshift,noPlaceholderForStatement){
-		if(reset){
-			root = {children:[], name:"thesis"};
-			if(!noPlaceholderForStatement)root.children.push({});
-		 	prevLevel = 0;
-		 	prevNode = null;
-		}
+	var createNewRoot = function(statement){
+		root = {children:[], name:"thesis"};
+		root.children.push(statement);
+	 	prevLevel = 0;
+	 	prevNode = null;
+	 	return root;
+	}
+	var addChildToGraph = function(node){
 		var level = node.indent;
 
 		if(prevNode == null) {
 			node.parent = root;
-			if(!unshift)root.children.push(node);
-			else root.children.unshift(node);
+			root.children.push(node);
 		}else if(level > prevLevel){
 			node.parent = prevNode;
 			prevNode.children = prevNode.children || [];
@@ -540,12 +474,10 @@ _handle_error:
 				prevLevel--;
 			}
 			node.parent = parent;
-			if(!unshift)parent.children.push(node);
-			else parent.children.unshift(node);
+			parent.children.push(node);
 		}else if(level == prevLevel){
 			node.parent = prevNode.parent;
-			if(!unshift) prevNode.parent.children.push(node); 
-			else prevNode.parent.children.unshift(node);
+			prevNode.parent.children.push(node); 
 		}
 
 		prevLevel = level;
@@ -883,62 +815,139 @@ var YYSTATE=YY_START;
 switch($avoiding_name_collisions) {
 case 0: this.begin('INITIAL'); return 6; 
 break;
-case 1: this.begin('indented'); return 9; 
+case 1: 
+	var text = yy_.yytext;
+	yy_.yytext = {
+		text:text,
+		name:"newline"
+	};
+	this.begin('indented'); 
+	return 7; 
+
 break;
-case 2: this.begin('indented'); return 16; 
+case 2: return 32; 
 break;
-case 3: this.begin('indented'); return 26; 
+case 3: return 32; 
 break;
-case 4: this.begin('indented'); return 26; 
+case 4: return 28; 
 break;
-case 5: return 24; 
+case 5:return 27; 
 break;
-case 6: this.begin('user'); return 29; 
+case 6: 
+		var text = yy_.yytext;
+		yy_.yytext = {
+			name:"link",
+			text:text,
+			label:yy.lexer.matches[1],
+			url:yy.lexer.matches[2],
+			title:(yy.lexer.matches[4])? yy.lexer.matches[4]:yy.lexer.matches[2]
+		}
+		return 23; 
+		
 break;
-case 7: this.popState(); return 30
+case 7: 
+	var text = yy_.yytext;
+	yy_.yytext = {
+		name:"link",
+		text:text,
+		url:yy.lexer.matches[1]
+	}
+	return 23; 
+
 break;
-case 8: this.begin('INITIAL'); return 22; 
+case 8: 
+		var text = yy_.yytext;
+		yy_.yytext = {
+			name:"title-definition",
+			title:yy.lexer.matches[1],
+			text: text
+		}; 
+		return 19; 
+	
 break;
-case 9: this.begin('INITIAL'); return 22; 
+case 9: 
+		var text = yy_.yytext;
+		yy_.yytext = {
+			name:"title",
+			title:yy.lexer.matches[1],
+			text: text
+		};
+		return 21; 
+	
 break;
-case 10: this.begin('INITIAL'); return 22; 
+case 10: 
+		var text = yy_.yytext;
+		yy_.yytext = {
+			name:"id",
+			username:yy.lexer.matches[1],
+			statementNr: yy.lexer.matches[2],
+			text: text
+		};
+		return 22; 
+	
 break;
-case 11: this.begin('INITIAL'); return 23; 
+case 11: 
+	var text = yy_.yytext;
+	yy_.yytext = {
+		name:"user",
+		username:yy.lexer.matches[1],
+		text:text
+	};
+	return 25; 
+	
 break;
-case 12: this.begin('INITIAL'); return 23; 
+case 12: 
+	var text = yy_.yytext;
+	yy_.yytext = {
+		name:"tag",
+		text:text,
+		tag:yy.lexer.matches[1]
+	}
+	return 24; 
+	
 break;
-case 13: this.begin('INITIAL'); return 23; 
+case 13: this.begin('INITIAL'); return 16; 
 break;
-case 14: this.begin('INITIAL'); return 20; 
+case 14: this.begin('INITIAL'); return 16; 
 break;
-case 15: this.begin('INITIAL'); return 20; 
+case 15: this.begin('INITIAL'); return 16; 
 break;
-case 16: this.begin('INITIAL'); return 20; 
+case 16: this.begin('INITIAL'); return 17; 
 break;
-case 17: this.begin('INITIAL'); return 21; 
+case 17: this.begin('INITIAL'); return 17; 
 break;
-case 18: this.begin('INITIAL'); return 21; 
+case 18: this.begin('INITIAL'); return 17; 
 break;
-case 19: this.begin('INITIAL'); return 21; 
+case 19: this.begin('INITIAL'); return 14; 
 break;
-case 20: this.begin('INITIAL'); return 20; 
+case 20: this.begin('INITIAL'); return 14; 
 break;
-case 21: this.begin('INITIAL'); return 21; 
+case 21: this.begin('INITIAL'); return 14; 
 break;
-case 22: this.begin('INITIAL'); return 21; 
+case 22: this.begin('INITIAL'); return 15; 
 break;
-case 23: this.popState(); return 21; 
+case 23: this.begin('INITIAL'); return 15; 
 break;
-case 24: this.popState(); return 20; 
+case 24: this.begin('INITIAL'); return 15; 
 break;
-case 25: return 28; 
+case 25: this.begin('INITIAL'); return 14; 
 break;
-case 26: this.begin('INITIAL'); return 32; 
+case 26: this.begin('INITIAL'); return 15; 
+break;
+case 27: this.begin('INITIAL'); return 15; 
+break;
+case 28: this.popState(); return 15; 
+break;
+case 29: this.popState(); return 14; 
+break;
+case 30: return 31; 
+break;
+case 31: return 30; 
 break;
 }
 },
-rules: [/^(?:$)/,/^(?:(((\r\r)+|(\n\n)+)|((\r\n)(\r\n))+)[\n\r]*)/,/^(?:[\n\r]+)/,/^(?:(   ))/,/^(?:(\t))/,/^(?:( *\[(.)+\] *))/,/^(?: *@\w+:)/,/^(?:\d+ *)/,/^(?:thus\+)/,/^(?:>\+)/,/^(?:->\+)/,/^(?:thus-)/,/^(?:>-)/,/^(?:->-)/,/^(?:\+because\b)/,/^(?:\+<-)/,/^(?:\+<)/,/^(?:-because\b)/,/^(?:-<-)/,/^(?:-<)/,/^(?:pro:)/,/^(?:contra:)/,/^(?:though:)/,/^(?:-)/,/^(?:\+)/,/^(?:[' '\t]+)/,/^(?:.)/],
-conditions: {"user":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,25,26],"inclusive":true},"indented":{"rules":[0,1,2,3,4,5,6,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26],"inclusive":true},"INITIAL":{"rules":[0,1,2,3,4,5,6,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,25,26],"inclusive":true}}
+rules: [/^(?:$)/,/^(?:[\n\r]+)/,/^(?:(   ))/,/^(?:(\t))/,/^(?:(\*\*|__))/,/^(?:(\*|_))/,/^(?:\[(.+)\] ?\(((http|https|mailto|ftp):\/\/.+)\s+('(.+)'|"(.+)")?\))/,/^(?:(http|https|mailto|ftp):\/\/\S*)/,/^(?: *\[(.+)\]:)/,/^(?:\[(.+)\])/,/^(?:@(\w+):(\d+) *)/,/^(?:@(\S+))/,/^(?:#(\S+))/,/^(?:thus\+)/,/^(?:>\+)/,/^(?:->\+)/,/^(?:thus-)/,/^(?:>-)/,/^(?:->-)/,/^(?:\+because\b)/,/^(?:\+<-)/,/^(?:\+<)/,/^(?:-because\b)/,/^(?:-<-)/,/^(?:-<)/,/^(?:pro:)/,/^(?:contra:)/,/^(?:though:)/,/^(?:-)/,/^(?:\+)/,/^(?: +)/,/^(?:.)/],
+conditions: {"title":{"rules":[0,1,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,30,31],"inclusive":true},"user":{"rules":[0,1,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,30,31],"inclusive":true},"indented":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31],"inclusive":true},"INITIAL":{"rules":[0,1,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,30,31],"inclusive":true}}
 };
 return lexer;
 })();
