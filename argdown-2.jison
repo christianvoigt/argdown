@@ -2,6 +2,20 @@
 /* author: Christian Voigt */
 
 %{
+	var tagStack = [];
+	var resetTagStack = function(){
+		tagStack = [];
+	};
+	var checkTagStack = function(current){
+		var last = tagStack[tagStack.length-1];
+		if(last && last.tagName === current.tagName && last.tagType !== current.tagType){
+			current.isComplete = true;
+			last.isComplete = true;
+			tagStack.pop();
+		}else{
+			tagStack.push(current);
+		}
+	}
 	var createNode = function(name){
 		return {name:name, children:[]};
 	};
@@ -62,6 +76,10 @@
 %s indented
 %s user
 %s title
+%s strong1
+%s strong2
+%s em1
+%s em2
 
 %%
 <<EOF>>						%{ this.begin('INITIAL'); return 'EOF'; %}
@@ -78,8 +96,29 @@
 <indented>("   ")								%{ return 'TAB'; %}
 <indented>(\t)								%{ return 'TAB'; %}
 
-('**'|'__')					%{ return 'STRONG'; %}
-('*'|'_')					%{return 'EM'; %}
+'thus+'				%{ this.begin('INITIAL'); return 'PRO-OUT'; %}
+'>+'				%{ this.begin('INITIAL'); return 'PRO-OUT'; %}
+'->+'				%{ this.begin('INITIAL'); return 'PRO-OUT'; %}
+'thus-'				%{ this.begin('INITIAL'); return 'CONTRA-OUT'; %}
+'>-'				%{ this.begin('INITIAL'); return 'CONTRA-OUT'; %}
+'->-'				%{ this.begin('INITIAL'); return 'CONTRA-OUT'; %}
+
+
+'+because' 			%{ this.begin('INITIAL'); return 'PRO'; %}
+'+<-'				%{ this.begin('INITIAL'); return 'PRO'; %}
+'+<'				%{ this.begin('INITIAL'); return 'PRO'; %}
+'-because'			%{ this.begin('INITIAL'); return 'CONTRA'; %}
+'-<-'				%{ this.begin('INITIAL'); return 'CONTRA'; %}
+'-<'				%{ this.begin('INITIAL'); return 'CONTRA'; %}
+'pro:'				%{ this.begin('INITIAL'); return 'PRO'; %}
+'contra:'			%{ this.begin('INITIAL'); return 'CONTRA'; %}
+
+'comment:'			%{ this.begin('INITIAL'); return 'COMMENT'; %}
+
+
+<indented>'-'		%{ this.popState(); return 'CONTRA'; %}
+<indented>'+'		%{ this.popState(); return 'PRO'; %}
+<indented>'*'		%{ this.popState(); return 'COMMENT'; %}
 
 '['(.+)']'' '?'('(('http'|'https'|'mailto'|'ftp')'://'.+)\s+('\''(.+)'\''|'"'(.+)'"')?')'			%{ 
 		var text = yytext;
@@ -105,7 +144,7 @@
 ' '*'['(.+)']:'				%{ 
 		var text = yytext;
 		yytext = {
-			name:"title-definition",
+			name:"definition",
 			title:yy.lexer.matches[1],
 			text: text
 		}; 
@@ -120,25 +159,47 @@
 		};
 		return 'TITLE'; 
 	%}
-'@'(\w+)':'(\d+)' '* 						%{ 
+'@'(\w+)('/s/'|'/r/')(\d+) 						%{ 
 		var text = yytext;
 		yytext = {
-			name:"id",
+			name:"reference",
 			username:yy.lexer.matches[1],
-			statementNr: yy.lexer.matches[2],
+			itemType: (yy.lexer.matches[2] === "/s/")? "statement": "relation",
+			itemNr: yy.lexer.matches[3],
+			reference:"@"+yy.lexer.matches[1]+yy.lexer.matches[2]+yy.lexer.matches[3],
 			text: text
 		};
-		return 'ID'; 
+		return 'REFERENCE'; 
 	%}
-'@'(\S+) 						%{ 
+'@'(\w+)('/s/'|'/r/')			%{ 
+		var text = yytext;
+		yytext = {
+			name:"reference",
+			username:yy.lexer.matches[1],
+			itemType: (yy.lexer.matches[2] === "/s/")? "statement": "relation",
+			reference:"@"+yy.lexer.matches[1]+yy.lexer.matches[2],
+			text: text
+		};
+		return 'REFERENCE'; 
+	%}
+'@'(\w+) 						%{ 
 	var text = yytext;
 	yytext = {
-		name:"user",
+		name:"reference",
 		username:yy.lexer.matches[1],
 		text:text
 	};
-	return 'USER'; 
+	return 'REFERENCE'; 
 	%}
+('@')						%{
+	var text = yytext;
+	yytext = {
+		name:"reference",
+		text:text,
+		username:""
+	}
+	return 'REFERENCE';
+%}	
 '#'(\S+)					%{ 
 	var text = yytext;
 	yytext = {
@@ -148,27 +209,24 @@
 	}
 	return 'TAG'; 
 	%}
+('#')						%{
+	var text = yytext;
+	yytext = {
+		name:"tag",
+		text:text,
+		tag:""
+	}
+	return 'TAG';
+%}
 
-'thus+'				%{ this.begin('INITIAL'); return 'PRO-OUT'; %}
-'>+'				%{ this.begin('INITIAL'); return 'PRO-OUT'; %}
-'->+'				%{ this.begin('INITIAL'); return 'PRO-OUT'; %}
-'thus-'				%{ this.begin('INITIAL'); return 'CONTRA-OUT'; %}
-'>-'				%{ this.begin('INITIAL'); return 'CONTRA-OUT'; %}
-'->-'				%{ this.begin('INITIAL'); return 'CONTRA-OUT'; %}
-
-
-'+because' 			%{ this.begin('INITIAL'); return 'PRO'; %}
-'+<-'				%{ this.begin('INITIAL'); return 'PRO'; %}
-'+<'				%{ this.begin('INITIAL'); return 'PRO'; %}
-'-because'			%{ this.begin('INITIAL'); return 'CONTRA'; %}
-'-<-'				%{ this.begin('INITIAL'); return 'CONTRA'; %}
-'-<'				%{ this.begin('INITIAL'); return 'CONTRA'; %}
-'pro:'				%{ this.begin('INITIAL'); return 'PRO'; %}
-'contra:'			%{ this.begin('INITIAL'); return 'CONTRA'; %}
-'though:'			%{ this.begin('INITIAL'); return 'CONTRA'; %}
-
-<indented>'-'		%{ this.popState(); return 'CONTRA'; %}
-<indented>'+'		%{ this.popState(); return 'PRO'; %}
+<strong1>(\*\*)				%{ this.popState(); return 'STRONG1_END'; %}
+(\*\*)						%{ this.begin('strong1'); return 'STRONG1_START'; %}
+<strong2>(__)					%{ this.popState(); return 'STRONG2_END'; %}
+(__)							%{ this.begin('strong2'); return 'STRONG2_START'; %}
+<em1>(\*)						%{ this.popState(); return 'EM1_END'; %}
+(\*)							%{ this.begin('em1'); return 'EM1_START'; %}
+<em2>(_)						%{ this.popState(); return 'EM2_END'; %}
+(_)							%{ this.begin('em2'); return 'EM2_START'; %}
 
 
 ' '+				%{ return 'SPACE'; %}
@@ -202,7 +260,7 @@ message
 		var newline = $2[0];
 		var whatAmI = $2[1];
 
-		if(whatAmI.name === "reason"){
+		if(whatAmI.name === "reason" || whatAmI.name === "comment"){
 			$$ = $1;
 			newline.indent = whatAmI.indent;
 			addChildToGraph(newline);
@@ -221,26 +279,30 @@ statementOrReason
 	: NEWLINE statement %prec PRO {	
 	$$ = [$1,$2];
 	}
-	| NEWLINE reason %prec TAB { $$ = [$1,$2];}
+	| NEWLINE reasonOrComment %prec TAB { $$ = [$1,$2];}
 	;
-reason
+reasonOrComment
 	: optionalTabs relation statement %prec PRO {
-		$$ = {name:"reason", indent:$1.indent};
+		$$ = {indent:$1.indent};
+		if($2.type === "comment")$$.name = "comment";
+		else $$.name = "reason";
 		addChildren($$,[$1,$2,$3]);
 	}	
 	| optionalTabs relation error %prec TAB{
 		yy.errors = true;
-		$$ = {name:"reason", indent:$1.indent};
+		$$ = {indent:$1.indent};
+		if($2.type === "comment")$$.name = "comment";
+		else $$.name = "reason";
 		addChildren($$,[$1,$2]);
 	}
 	| tabs statement error %prec SPACE{
 		yy.errors = true;
-		$$ = {name:"reason", indent:$1.indent};
+		$$ = {name:"comment", indent:$1.indent};
 		addChildren($$,[$1,$2]);	
 	}
 	| tabs error %prec CHAR{
 		yy.errors = true;
-		$$ = {name:"reason", indent:$1.indent};
+		$$ = {name:"comment", indent:$1.indent};
 		addChildren($$,[$1]);
 	}
 	;
@@ -249,21 +311,40 @@ relation
 	| CONTRA {$$ = {name:"relation", text:$1, type:"contra", direction:"to"};}
 	| PRO-OUT {$$ = {name:"relation", text:$1, type:"pro", direction:"from"};}
 	| CONTRA-OUT  {$$ = {name:"relation", text:$1, type:"contra", direction:"from"};}
+	| COMMENT  {$$ = {name:"relation", text:$1, type:"comment", direction:"to"};}
 	;	
 statement
 	: statementElements %prec CHAR {
 			$$ = createNode("statement");
 			addChildren($$,$1);
+			resetTagStack();
 		}
 	| DEFINITION statementElements %prec PRO {
 			$$ = createNode("statement");
-			addChildren($$,[{name:"title-definition", text:$1, title:extractTitle($1)}]);	
+			addChildren($$,[$1]);	
 			addChildren($$,$2);
+			resetTagStack();
 	}
 	| DEFINITION error %prec SPACE {
 			$$ = createNode("statement");
-			addChildren($$,[{name:"title-definition", text:$1, title:extractTitle($1)}]);	
+			addChildren($$,[$1]);	
 			yy.errors = true;
+			resetTagStack();
+	}
+	| statementElements DEFINITION statementElements error %prec SPACE{
+			$$ = createNode("statement");
+			addChildren($$,[$1]);	
+			addChildren($$,[$2]);	
+			addChildren($$,[$3]);	
+			yy.errors = true;
+			resetTagStack();	
+	}
+	| statementElements DEFINITION error %prec SPACE{
+			$$ = createNode("statement");
+			addChildren($$,[$1]);	
+			addChildren($$,[$2]);	
+			yy.errors = true;
+			resetTagStack();	
 	}
 	;	
 statementElements
@@ -272,13 +353,18 @@ statementElements
 	;
 statementElement
 	: TITLE %prec PRO 
-	| ID %prec PRO
+	| REFERENCE %prec PRO
 	| LINK %prec PRO
 	| TAG %prec PRO 
-	| USER %prec PRO 
 	| text
-	| EM { $$ = {name:"em", text:$1};}
-	| STRONG { $$ = {name:"strong", text:$1};}
+	| EM1_START { $$ = {name:"em1-start", tagName:"em1", tagType:"start", text:$1}; checkTagStack($$);}
+	| EM1_END { $$ = {name:"em1-end", tagName:"em1", tagType:"end", text:$1}; checkTagStack($$);}
+	| EM2_START { $$ = {name:"em2-start", tagName:"em2", tagType:"start", text:$1}; checkTagStack($$);}
+	| EM2_END { $$ = {name:"em2-end", tagName:"em2", tagType:"end", text:$1}; checkTagStack($$);}
+	| STRONG1_START { $$ = {name:"strong1-start", tagName:"strong1", tagType:"start", text:$1}; checkTagStack($$);}
+	| STRONG1_END { $$ = {name:"strong1-end", tagName:"strong1", tagType:"end", text:$1}; checkTagStack($$);}
+	| STRONG2_START { $$ = {name:"strong2-start", tagName:"strong2", tagType:"start", text:$1}; checkTagStack($$);}
+	| STRONG2_END { $$ = {name:"strong2-end", tagName:"strong2", tagType:"end", text:$1}; checkTagStack($$);}
 	;
 text
 	: text charOrSpace {$1.text += $2; $$ = $1;}
