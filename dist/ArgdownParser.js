@@ -148,15 +148,15 @@ case 12:
 		addChildren(this.$,[$$[$0-1]]);
 	
 break;
-case 13:this.$ = {name:"relation", text:$$[$0], type:"pro", direction:"to"};
+case 13:this.$ = {name:"relation", text:$$[$0], type:"pro", direction:"to-left"};
 break;
-case 14:this.$ = {name:"relation", text:$$[$0], type:"contra", direction:"to"};
+case 14:this.$ = {name:"relation", text:$$[$0], type:"contra", direction:"to-left"};
 break;
-case 15:this.$ = {name:"relation", text:$$[$0], type:"pro", direction:"from"};
+case 15:this.$ = {name:"relation", text:$$[$0], type:"pro", direction:"to-right"};
 break;
-case 16:this.$ = {name:"relation", text:$$[$0], type:"contra", direction:"from"};
+case 16:this.$ = {name:"relation", text:$$[$0], type:"contra", direction:"to-right"};
 break;
-case 17:this.$ = {name:"relation", text:$$[$0], type:"comment", direction:"to"};
+case 17:this.$ = {name:"relation", text:$$[$0], type:"comment", direction:"to-left"};
 break;
 case 18:
 			this.$ = createNode("statement");

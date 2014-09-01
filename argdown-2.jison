@@ -307,11 +307,11 @@ reasonOrComment
 	}
 	;
 relation
-	: PRO {$$ = {name:"relation", text:$1, type:"pro", direction:"to"};}
-	| CONTRA {$$ = {name:"relation", text:$1, type:"contra", direction:"to"};}
-	| PRO-OUT {$$ = {name:"relation", text:$1, type:"pro", direction:"from"};}
-	| CONTRA-OUT  {$$ = {name:"relation", text:$1, type:"contra", direction:"from"};}
-	| COMMENT  {$$ = {name:"relation", text:$1, type:"comment", direction:"to"};}
+	: PRO {$$ = {name:"relation", text:$1, type:"pro", direction:"to-left"};}
+	| CONTRA {$$ = {name:"relation", text:$1, type:"contra", direction:"to-left"};}
+	| PRO-OUT {$$ = {name:"relation", text:$1, type:"pro", direction:"to-right"};}
+	| CONTRA-OUT  {$$ = {name:"relation", text:$1, type:"contra", direction:"to-right"};}
+	| COMMENT  {$$ = {name:"relation", text:$1, type:"comment", direction:"to-left"};}
 	;	
 statement
 	: statementElements %prec CHAR {
