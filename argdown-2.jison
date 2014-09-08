@@ -171,7 +171,7 @@
 		};
 		return 'REFERENCE'; 
 	%}
-'@'(\w+)('/')(\d*)			%{ 
+'@'(\w+)('/')(\S*)			%{ 
 		var text = yytext;
 		var itemType;
 		if(yy.lexer.matches[3] === "s/")
