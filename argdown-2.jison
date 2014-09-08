@@ -171,12 +171,18 @@
 		};
 		return 'REFERENCE'; 
 	%}
-'@'(\w+)('/s/'|'/r/')			%{ 
+'@'(\w+)('/')(\d*)			%{ 
 		var text = yytext;
+		var itemType;
+		if(yy.lexer.matches[3] === "s/")
+			itemType = "statement";
+		else if(yy.lexer.matches[3] === "r/")
+			itemType = "relation";
+
 		yytext = {
 			name:"reference",
 			username:yy.lexer.matches[1],
-			itemType: (yy.lexer.matches[2] === "/s/")? "statement": "relation",
+			itemType: itemType,
 			reference:"@"+yy.lexer.matches[1]+yy.lexer.matches[2],
 			text: text
 		};
