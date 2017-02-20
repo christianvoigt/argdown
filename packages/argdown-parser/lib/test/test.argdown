@@ -1,0 +1,6 @@
+Dies ist ein Test.
+  + (Tests sind immer gut.)
+    + Denn dadurch findet man Fehler.
+    - Dauert allerdings länger.
+      - Fehlersuche dauert ohne Tests noch länger.
++ Better safe than sorry.
