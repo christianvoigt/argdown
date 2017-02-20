@@ -1,0 +1,22 @@
+First line
+  + Second line
+  - Third line
+
+Fourth line
+  <- Fifth line
+    <+ Sixth line
+
+A
+  + B
+  - C
+
+      <+ D
+        <- E
+          +> F
+    -> G
+
+H
+  - I
+
+  - J
+K
