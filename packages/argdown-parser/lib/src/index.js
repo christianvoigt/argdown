@@ -57,12 +57,14 @@ function printAstRecursively(value, pre, str) {
   return str;
 }
 
+var parser = new _ArgdownParser.ArgdownParser([]);
+
 module.exports = {
   printAst: printAst,
   parse: function parse(inputText) {
     var lexResult = lexer.tokenize(inputText);
     //parser.input = lexResult.tokens;
-    var parser = new _ArgdownParser.ArgdownParser(lexResult.tokens);
+    parser.input = lexResult.tokens;
     var value = parser.statements();
 
     if (parser.errors.length > 0) {

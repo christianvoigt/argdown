@@ -29,13 +29,19 @@ function printAstRecursively(value, pre, str){
   return str;
 }
 
+const parser = new ArgdownParser([]);
+
 module.exports = {
   printAst : printAst,
+  printTokens : lexer.logTokens,
+  lex: function(inputText){
+    return lexer.tokenize(inputText);
+  },
   parse: function(inputText){
     let lexResult = lexer.tokenize(inputText);
     //parser.input = lexResult.tokens;
-    let parser = new ArgdownParser(lexResult.tokens);
-    let value = parser.statements()
+    parser.input = lexResult.tokens;
+    let value = parser.argdown()
 
     if (parser.errors.length > 0) {
       console.log(parser.errors);
@@ -45,6 +51,7 @@ module.exports = {
     //printAst(value);
 
     return{
+      lexResult:lexResult,
       value:       value, // this is a pure grammar, the value will always be <undefined>
       lexErrors:   lexResult.errors,
       parseErrors: parser.errors

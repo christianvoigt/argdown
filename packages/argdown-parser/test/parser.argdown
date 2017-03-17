@@ -1,15 +1,37 @@
+# First heading
+
 First line
   + Second line
   - Third line
 
-Fourth line
+  * First item
+  * Second item
+
+  1. First item
+  2. Second item
+    + Some crazy stuff
+
+  (1) First Statement
+  (2) Second Statement
+  -- Modus Ponens --
+  (3) Third statement
+
+Fourth line <!-- an inline comment -->
   <- Fifth line
     <+ Sixth line
+
+## Second heading
+
+This is a paragraph with __rich__ *text* __*formatting*__ and [a link](www.argunet.org).
+
+<!--
+A multiline
+comment
+-->
 
 A
   + B
   - C
-
       <+ D
         <- E
           +> F
@@ -17,6 +39,5 @@ A
 
 H
   - I
-
   - J
 K

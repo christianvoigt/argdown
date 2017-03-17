@@ -22,7 +22,7 @@ function getCurrentLine(matchedTokens) {
 
   var last = _.last(matchedTokens);
   var currentLine = chevrotain.getEndLine(last);
-  if (last instanceof Emptyline) currentLine++;
+  if (chevrotain.tokenMatcher(last, Emptyline)) currentLine++;
   return currentLine;
 }
 function emitRemainingDedentTokens(matchedTokens) {

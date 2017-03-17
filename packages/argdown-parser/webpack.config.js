@@ -18,7 +18,7 @@ if (env === 'build') {
 
 const config = {
   entry: __dirname + '/src/index.js',
-  devtool: 'source-map',
+  devtool: 'source-map', 
   output: {
     path: __dirname + '/lib',
     filename: outputFile,
@@ -55,7 +55,7 @@ const config = {
         commonjs: "lodash",
         commonjs2: "lodash",
         amd: "lodash",
-        root: "_"        
+        root: "_"
       }
   },
   plugins: plugins

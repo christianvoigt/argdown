@@ -8,6 +8,7 @@ describe("Parser", function() {
   it("can parse", function(){
     let source = fs.readFileSync("./test/parser.argdown", 'utf8');
     const result = argdownParser.parse(source);
+    argdownParser.printAst(result.value);
     expect(result.lexErrors).to.be.empty;
     expect(result.parseErrors).to.be.empty;
   });
