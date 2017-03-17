@@ -12,13 +12,16 @@ class ArgdownParser extends chevrotain.Parser {
     let $ = this;
 
     $.argdown = $.RULE("argdown", ()=>{
-      let atLeastOne = $.AT_LEAST_ONE_SEP(lexer.Emptyline,()=>$.OR([
+      let atLeastOne = $.AT_LEAST_ONE_SEP({
+        SEP: lexer.Emptyline,
+        DEF: ()=>$.OR([
         {ALT: () => $.SUBRULE($.heading)},
         {ALT: () => $.SUBRULE($.statement)},
         {ALT: () => $.SUBRULE($.complexArgument)},
         {ALT: () => $.SUBRULE($.orderedList)},
         {ALT: () => $.SUBRULE($.unorderedList)}
-      ]));
+      ])
+      });
       return {name: 'argdown',
           children: atLeastOne.values
       };
@@ -63,13 +66,19 @@ class ArgdownParser extends chevrotain.Parser {
     });
     $.inferenceRules = $.RULE("inferenceRules",()=>{
       let children = [];
-      $.AT_LEAST_ONE_SEP1(lexer.ListDelimiter,()=>children.push($.CONSUME(lexer.Freestyle)));
+      $.AT_LEAST_ONE_SEP1({
+        SEP: lexer.ListDelimiter,
+        DEF: ()=>children.push($.CONSUME(lexer.Freestyle))
+      });
       return {name:"inferenceRules",children:children};
     });
     $.metadata = $.RULE("metadata", ()=>{
       let children = [];
       children.push($.CONSUME(lexer.MetadataStart));
-      $.AT_LEAST_ONE_SEP(lexer.MetadataStatementEnd,()=>children.push($.SUBRULE($.metadataStatement)));
+      $.AT_LEAST_ONE_SEP({
+        SEP: lexer.MetadataStatementEnd,
+        DEF: ()=>children.push($.SUBRULE($.metadataStatement))
+      });
       children.push($.CONSUME(lexer.MetadataEnd));
       return {name:"metadata", children:children};
     });
@@ -77,8 +86,10 @@ class ArgdownParser extends chevrotain.Parser {
       let children = [];
       children.push($.CONSUME1(lexer.Freestyle));
       children.push($.CONSUME(lexer.Colon));
-      let atLeastOne = $.AT_LEAST_ONE_SEP(lexer.ListDelimiter,()=>$.CONSUME2(lexer.Freestyle));
-      children.concat(atLeastOne.values);
+      $.AT_LEAST_ONE_SEP({
+        SEP: lexer.ListDelimiter,
+        DEF: ()=>children.push($.CONSUME2(lexer.Freestyle))
+      });
       return {name: "metadataStatement", children: children};
     });
 
