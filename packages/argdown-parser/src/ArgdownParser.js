@@ -1,227 +1,416 @@
 'use strict';
 
-import chevrotain,{Parser} from 'chevrotain';
-import * as lexer from './ArgdownLexer.js';
+import chevrotain, {
+    Parser,
+    Token
+} from 'chevrotain';
+import {ArgdownLexer} from './ArgdownLexer.js';
 
 class ArgdownParser extends chevrotain.Parser {
 
-    constructor(input) {
+    constructor(input, lexer) {
         super(input, lexer.tokens);
+        let $ = this;
 
+        $.argdown = $.RULE("argdown", () => {
+            let atLeastOne = $.AT_LEAST_ONE_SEP({
+                SEP: lexer.Emptyline,
+                DEF: () => $.OR([{
+                    ALT: () => $.SUBRULE($.heading)
+                }, {
+                    ALT: () => $.SUBRULE($.statement)
+                },  {
+                    ALT: () => $.SUBRULE($.argument)
+                },  {
+                    ALT: () => $.SUBRULE($.argumentDefinition)
+                },  {
+                    ALT: () => $.SUBRULE($.argumentReference)
+                }, {
+                    ALT: () => $.SUBRULE($.orderedList)
+                }, {
+                    ALT: () => $.SUBRULE($.unorderedList)
+                }])
+            });
+            return {
+                name: 'argdown',
+                children: atLeastOne.values
+            };
+        });
 
-    let $ = this;
+        $.heading = $.RULE("heading", () => {
+            let children = [];
+            children.push($.CONSUME(lexer.HeadingStart));
+            children.push($.SUBRULE($.freestyleText));
+            return {
+                name: "heading",
+                children: children
+            };
+        });
+        /*
+         * An argument consists of at least one inferential step.
+         * Note that the inferential steps are not atomic self-contained elements within the argument.
+         * An inferential step can use and depend on statements from other inferential steps.
+         * Inferential steps are only used to ascertain that the basic syntax of arguments is maintained:
+         * There can not be inferences without premises or conclusions.
+         * Isolated inferential steps are thus of no further use when working with Argdown data and should be ignored.
+         * Instead, always work with the complete argument.
+         */
+        $.argument = $.RULE("argument", () => {
+            let children = [];
+            let atLeastOne = ($.AT_LEAST_ONE(() => children.push($.SUBRULE($.inferentialStep))));
+            children.concat(atLeastOne.values);
+            return {
+                name: "argument",
+                children: children
+            };
+        });
 
-    $.argdown = $.RULE("argdown", ()=>{
-      let atLeastOne = $.AT_LEAST_ONE_SEP({
-        SEP: lexer.Emptyline,
-        DEF: ()=>$.OR([
-        {ALT: () => $.SUBRULE($.heading)},
-        {ALT: () => $.SUBRULE($.statement)},
-        {ALT: () => $.SUBRULE($.complexArgument)},
-        {ALT: () => $.SUBRULE($.orderedList)},
-        {ALT: () => $.SUBRULE($.unorderedList)}
-      ])
-      });
-      return {name: 'argdown',
-          children: atLeastOne.values
-      };
-    });
+        /*
+         * One inferential step in an argument consisting of at least one premise, an inference and a conclusion.
+         * Do not use this when traversing the AST. Instead, always work with the whole argument.
+         * For further information, see $.argument.
+         */
+        $.inferentialStep = $.RULE("inferentialStep", () => {
+            let children = [];
+            $.AT_LEAST_ONE(() => children.push($.SUBRULE1($.argumentStatement)));
+            children.push($.SUBRULE($.inference));
+            children.push($.SUBRULE2($.argumentStatement));
+            return {
+                name: "inferentialStep",
+                children: children
+            };
+        });
+        $.argumentStatement = $.RULE("argumentStatement", () => {
+            let children = [];
+            children.push($.CONSUME(lexer.ArgumentStatementStart));
+            children.push($.SUBRULE($.statement));
+            return {
+                name: "argumentStatement",
+                children: children
+            };
+        });
+        $.inference = $.RULE("inference", () => {
+            let children = [];
+            children.push($.CONSUME(lexer.InferenceStart));
+            $.OPTION1(() => {
+                children.push($.SUBRULE($.inferenceRules));
+            });
+            $.OPTION2(() => {
+                children.push($.SUBRULE($.metadata));
+            });
+            children.push($.CONSUME(lexer.InferenceEnd));
+            return {
+                name: "inference",
+                children: children
+            };
+        });
+        $.inferenceRules = $.RULE("inferenceRules", () => {
+            let children = [];
+            $.AT_LEAST_ONE_SEP1({
+                SEP: lexer.ListDelimiter,
+                DEF: () => children.push($.SUBRULE($.freestyleText))
+            });
+            return {
+                name: "inferenceRules",
+                children: children
+            };
+        });
+        $.metadata = $.RULE("metadata", () => {
+            let children = [];
+            children.push($.CONSUME(lexer.MetadataStart));
+            $.AT_LEAST_ONE_SEP({
+                SEP: lexer.MetadataStatementEnd,
+                DEF: () => children.push($.SUBRULE($.metadataStatement))
+            });
+            children.push($.CONSUME(lexer.MetadataEnd));
+            return {
+                name: "metadata",
+                children: children
+            };
+        });
+        $.metadataStatement = $.RULE("metadataStatement", () => {
+            let children = [];
+            children.push($.SUBRULE1($.freestyleText));
+            $.CONSUME(lexer.Colon);
+            $.AT_LEAST_ONE_SEP({
+                SEP: lexer.ListDelimiter,
+                DEF: () => children.push($.SUBRULE2($.freestyleText))
+            });
+            return {
+                name: "metadataStatement",
+                children: children
+            };
+        });
 
-    $.heading = $.RULE("heading", ()=>{
-      let children = [];
-      children.push($.CONSUME(lexer.HeadingStart));
-      children.push($.CONSUME(lexer.Freestyle));
-      return {name:"heading",children:children};
-    });
-    $.complexArgument = $.RULE("complexArgument",()=>{
-      let children = [];
-      let atLeastOne = ($.AT_LEAST_ONE(()=>children.push($.SUBRULE($.simpleArgument))));
-      children.concat(atLeastOne.values);
-      return {name: "complexArgument", children: children};
-    });
-    $.simpleArgument = $.RULE("simpleArgument",()=>{
-      let children = [];
-      $.AT_LEAST_ONE(()=>children.push($.SUBRULE1($.argumentStatement)));
-      children.push($.SUBRULE($.inference));
-      children.push($.SUBRULE2($.argumentStatement));
-      return {name: "simpleArgument", children: children};
-    });
-    $.argumentStatement = $.RULE("argumentStatement", ()=>{
-      let children = [];
-      children.push($.CONSUME(lexer.ArgumentStatementStart));
-      children.push($.SUBRULE($.statement));
-      return {name: "argumentStatement", children: children};
-    });
-    $.inference = $.RULE("inference", ()=>{
-      let children = [];
-      children.push($.CONSUME(lexer.InferenceStart));
-      $.OPTION1(()=>{
-        children.push($.SUBRULE($.inferenceRules));
-      });
-      $.OPTION2(()=>{
-        children.push($.SUBRULE($.metadata));
-      });
-      children.push($.CONSUME(lexer.InferenceEnd));
-      return {name: "inference", children: children};
-    });
-    $.inferenceRules = $.RULE("inferenceRules",()=>{
-      let children = [];
-      $.AT_LEAST_ONE_SEP1({
-        SEP: lexer.ListDelimiter,
-        DEF: ()=>children.push($.CONSUME(lexer.Freestyle))
-      });
-      return {name:"inferenceRules",children:children};
-    });
-    $.metadata = $.RULE("metadata", ()=>{
-      let children = [];
-      children.push($.CONSUME(lexer.MetadataStart));
-      $.AT_LEAST_ONE_SEP({
-        SEP: lexer.MetadataStatementEnd,
-        DEF: ()=>children.push($.SUBRULE($.metadataStatement))
-      });
-      children.push($.CONSUME(lexer.MetadataEnd));
-      return {name:"metadata", children:children};
-    });
-    $.metadataStatement = $.RULE("metadataStatement", ()=>{
-      let children = [];
-      children.push($.CONSUME1(lexer.Freestyle));
-      children.push($.CONSUME(lexer.Colon));
-      $.AT_LEAST_ONE_SEP({
-        SEP: lexer.ListDelimiter,
-        DEF: ()=>children.push($.CONSUME2(lexer.Freestyle))
-      });
-      return {name: "metadataStatement", children: children};
-    });
+        $.list = $.RULE("orderedList", () => {
+            let children = [];
+            children.push($.CONSUME(lexer.Indent));
+            $.AT_LEAST_ONE(() => children.push($.SUBRULE($.orderedListItem)));
+            children.push($.CONSUME(lexer.Dedent));
+            return {
+                name: 'orderedList',
+                children: children
+            };
+        });
+        $.list = $.RULE("unorderedList", () => {
+            let children = [];
+            children.push($.CONSUME(lexer.Indent));
+            $.AT_LEAST_ONE(() => children.push($.SUBRULE($.unorderedListItem)));
+            children.push($.CONSUME(lexer.Dedent));
+            return {
+                name: 'unorderedList',
+                children: children
+            };
+        });
 
-    $.list = $.RULE("orderedList", ()=>{
-      let children = [];
-      children.push($.CONSUME(lexer.Indent));
-      $.AT_LEAST_ONE(() =>children.push($.SUBRULE($.orderedListItem)));
-      children.push($.CONSUME(lexer.Dedent));
-      return {name:'orderedList', children: children};
-    });
-    $.list = $.RULE("unorderedList", ()=>{
-      let children = [];
-      children.push($.CONSUME(lexer.Indent));
-      $.AT_LEAST_ONE(() =>children.push($.SUBRULE($.unorderedListItem)));
-      children.push($.CONSUME(lexer.Dedent));
-      return {name:'unorderedList', children: children};
-    });
+        $.unorderedListItem = $.RULE("unorderedListItem", () => {
+            let children = [];
+            children.push($.CONSUME(lexer.UnorderedListItem));
+            children.push($.SUBRULE($.statement));
+            return {
+                name: "unorderedListItem",
+                children: children
+            };
+        });
+        $.orderedListItem = $.RULE("orderedListItem", () => {
+            let children = [];
+            children.push($.CONSUME(lexer.OrderedListItem));
+            children.push($.SUBRULE($.statement));
+            return {
+                name: "orderedListItem",
+                children: children
+            };
+        });
 
-    $.unorderedListItem = $.RULE("unorderedListItem",()=>{
-      let children = [];
-      children.push($.CONSUME(lexer.UnorderedListItem));
-      children.push($.SUBRULE($.statement));
-      return {name:"unorderedListItem", children:children};
-    });
-    $.orderedListItem = $.RULE("orderedListItem",()=>{
-      let children = [];
-      children.push($.CONSUME(lexer.OrderedListItem));
-      children.push($.SUBRULE($.statement));
-      return {name:"orderedListItem", children:children};
-    });
-
-    $.statement = $.RULE("statement", ()=>{
-      let children = [];
-      children[0] = $.OR([
-        {ALT: () => $.SUBRULE1($.statementContent)},
-        {ALT: () => $.CONSUME(lexer.StatementReference)},
-        {ALT: () => {
+        $.argumentReference = $.RULE("argumentReference", ()=>{
           let children = [];
-          children.push($.CONSUME(lexer.StatementDefinition));
+          children.push($.CONSUME(lexer.ArgumentReference));
+          $.OPTION(() => {
+              children.push($.SUBRULE($.relations))
+          });
+          return {
+              name: 'argumentReference',
+              children: children
+          };
+        });
+
+        $.argumentDescription = $.RULE("argumentDefinition", () =>{
+          let children = [];
+          children.push($.CONSUME(lexer.ArgumentDefinition));
           children.push($.SUBRULE2($.statementContent));
-          return {name:"statementDefinition",children:children};
-        }}
-      ]);
-      $.OPTION(()=>{children.push($.SUBRULE($.relations))});
-      return {name:'statement', children: children};
-    });
+          $.OPTION1(() => {
+              children.push($.SUBRULE($.relations))
+          });
+          return {
+              name: 'argumentDefinition',
+              children: children
+          };
+        });
 
-    $.relations = $.RULE("relations", ()=>{
-      let children = [];
-      children.push($.CONSUME(lexer.Indent));
-      let atLeastOne = $.AT_LEAST_ONE(() =>$.OR([
-            {ALT: () => $.SUBRULE($.incomingSupport)},
-            {ALT: () => $.SUBRULE($.incomingAttack)},
-            {ALT: () => $.SUBRULE($.outgoingSupport)},
-            {ALT: () => $.SUBRULE($.outgoingAttack)}
-        ]));
-      children = children.concat(atLeastOne);
-      children.push($.CONSUME(lexer.Dedent));
-      return {name:'relations', children: children};
-    });
+        $.statement = $.RULE("statement", () => {
+            let children = [];
+            children[0] = $.OR([{
+                ALT: () => $.SUBRULE1($.statementContent)
+            }, {
+                ALT: () => $.CONSUME(lexer.StatementReference)
+            }, {
+                ALT: () => {
+                    let children = [];
+                    children.push($.CONSUME(lexer.StatementDefinition));
+                    children.push($.SUBRULE2($.statementContent));
+                    return {
+                        name: "statementDefinition",
+                        children: children
+                    };
+                }
+              }]);
+            $.OPTION(() => {
+                children.push($.SUBRULE($.relations))
+            });
+            return {
+                name: 'statement',
+                children: children
+            };
+        });
 
-    $.incomingSupport = $.RULE("incomingSupport", ()=>{
-      let children = [];
-      children.push($.CONSUME(lexer.IncomingSupport));
-      children.push($.SUBRULE($.statement));
-      return {name:'incomingSupport', children: children};
-    });
-    $.incomingAttack = $.RULE("incomingAttack", ()=>{
-      let children = [];
-      children.push($.CONSUME(lexer.IncomingAttack));
-      children.push($.SUBRULE($.statement));
-      return {name:'incomingAttack', children: children};
-    });
-    $.outgoingSupport = $.RULE("outgoingSupport", ()=>{
-      let children = [];
-      children.push($.CONSUME(lexer.OutgoingSupport));
-      children.push($.SUBRULE($.statement));
-      return {name:'outgoingSupport', children: children};
-    });
-    $.outgoingAttack = $.RULE("outgoingAttack", ()=>{
-      let children = [];
-      children.push($.CONSUME(lexer.OutgoingAttack));
-      children.push($.SUBRULE($.statement));
-      return {name:'outgoingAttack', children: children};
-    });
-    $.statementContent = $.RULE("statementContent", ()=>{
-      let children = [];
-      $.AT_LEAST_ONE(()=>$.OR([
-            {ALT: () => children.push($.SUBRULE($.freestyleText))},
-            {ALT: () => children.push($.CONSUME(lexer.Link))},
-            {ALT: () => {
-              children.push($.CONSUME(lexer.UnderscoreBoldStart));
-              children.push($.SUBRULE1($.statementContent));
-              children.push($.CONSUME(lexer.UnderscoreBoldEnd));
-            }},
-            {ALT: () => {
-              children.push($.CONSUME(lexer.StarBoldStart));
-              children.push($.SUBRULE2($.statementContent));
-              children.push($.CONSUME(lexer.StarBoldEnd));
-            }},
-            {ALT: () => {
-              children.push($.CONSUME(lexer.UnderscoreItalicStart));
-              children.push($.SUBRULE3($.statementContent));
-              children.push($.CONSUME(lexer.UnderscoreItalicEnd));
-            }},
-            {ALT: () => {
-              children.push($.CONSUME(lexer.StarItalicStart));
-              children.push($.SUBRULE4($.statementContent));
-              children.push($.CONSUME(lexer.StarItalicEnd));
-            }},
-        ]));
-        return {name:'statementContent', children: children};
-      });
+        $.relations = $.RULE("relations", () => {
+            let children = [];
+            children.push($.CONSUME(lexer.Indent));
+            let atLeastOne = $.AT_LEAST_ONE(() => $.OR([{
+                ALT: () => $.SUBRULE($.incomingSupport)
+            }, {
+                ALT: () => $.SUBRULE($.incomingAttack)
+            }, {
+                ALT: () => $.SUBRULE($.outgoingSupport)
+            }, {
+                ALT: () => $.SUBRULE($.outgoingAttack)
+            }]));
+            children = children.concat(atLeastOne);
+            children.push($.CONSUME(lexer.Dedent));
+            return {
+                name: 'relations',
+                children: children
+            };
+        });
 
-      $.freestyleText = $.RULE("freestyleText",()=>{
-        let children = [];
-        $.AT_LEAST_ONE(() =>$.OR([
-              {ALT: () => children.push($.CONSUME(lexer.Freestyle))},
-              {ALT: () => children.push($.CONSUME(lexer.UnusedControlChar))}
-          ]));
-        return {name:"freestyleText", children:children};
-      });
-    // very important to call this after all the rules have been defined.
-    // otherwise the parser may not work correctly as it will lack information
-    // derived during the self analysis phase.
-    Parser.performSelfAnalysis(this);
-  }
+        $.incomingSupport = $.RULE("incomingSupport", () => {
+            let children = [];
+            children.push($.CONSUME(lexer.IncomingSupport));
+            $.OR({
+              DEF : [
+                {ALT: ()=> children.push($.SUBRULE($.statement))},
+                {ALT: ()=> children.push($.SUBRULE($.argumentDefinition))},
+                {ALT: ()=> children.push($.SUBRULE($.argumentReference))}
+              ]
+            });
 
+            return {
+                name: 'incomingSupport',
+                children: children
+            };
+        });
+        $.incomingAttack = $.RULE("incomingAttack", () => {
+            let children = [];
+            children.push($.CONSUME(lexer.IncomingAttack));
+            $.OR({
+              DEF : [
+                {ALT: ()=> children.push($.SUBRULE($.statement))},
+                {ALT: ()=> children.push($.SUBRULE($.argumentDefinition))},
+                {ALT: ()=> children.push($.SUBRULE($.argumentReference))}
+              ]
+            });
+            return {
+                name: 'incomingAttack',
+                children: children
+            };
+        });
+        $.outgoingSupport = $.RULE("outgoingSupport", () => {
+            let children = [];
+            children.push($.CONSUME(lexer.OutgoingSupport));
+            $.OR({
+              DEF : [
+                {ALT: ()=> children.push($.SUBRULE($.statement))},
+                {ALT: ()=> children.push($.SUBRULE($.argumentDefinition))},
+                {ALT: ()=> children.push($.SUBRULE($.argumentReference))}
+              ]
+            });
+            return {
+                name: 'outgoingSupport',
+                children: children
+            };
+        });
+        $.outgoingAttack = $.RULE("outgoingAttack", () => {
+            let children = [];
+            children.push($.CONSUME(lexer.OutgoingAttack));
+            $.OR({
+              DEF : [
+                {ALT: ()=> children.push($.SUBRULE($.statement))},
+                {ALT: ()=> children.push($.SUBRULE($.argumentDefinition))},
+                {ALT: ()=> children.push($.SUBRULE($.argumentReference))}
+              ]
+            });
+            return {
+                name: 'outgoingAttack',
+                children: children
+            };
+        });
+        $.bold = $.RULE("bold",()=>{
+          let children = [];
+          $.OR([{
+              ALT: () => {
+                  children.push($.CONSUME(lexer.UnderscoreBoldStart));
+                  children.push($.SUBRULE1($.statementContent));
+                  children.push($.CONSUME(lexer.UnderscoreBoldEnd));
+              }
+          }, {
+              ALT: () => {
+                  children.push($.CONSUME(lexer.AsteriskBoldStart));
+                  children.push($.SUBRULE2($.statementContent));
+                  children.push($.CONSUME(lexer.AsteriskBoldEnd));
+              }
+          }]);
+          return {name:'bold', children:children};
+        });
+        $.italic = $.RULE("italic",()=>{
+          let children = [];
+          $.OR([{
+              ALT: () => {
+                  children.push($.CONSUME(lexer.UnderscoreItalicStart));
+                  children.push($.SUBRULE3($.statementContent));
+                  children.push($.CONSUME(lexer.UnderscoreItalicEnd));
+              }
+          }, {
+              ALT: () => {
+                  children.push($.CONSUME(lexer.AsteriskItalicStart));
+                  children.push($.SUBRULE4($.statementContent));
+                  children.push($.CONSUME(lexer.AsteriskItalicEnd));
+              }
+          }]);
+          return {name:'italic', children:children};
+        });
+        $.statementContent = $.RULE("statementContent", () => {
+            let children = [];
+            $.AT_LEAST_ONE(() => $.OR([{
+                ALT: () => children.push($.SUBRULE($.freestyleText))
+            }, {
+                ALT: () => children.push($.CONSUME(lexer.Link))
+            }, {
+                ALT: () => children.push($.SUBRULE($.bold))
+            }, {
+                ALT: () => children.push($.SUBRULE($.italic))
+            }]));
+            return {
+                name: 'statementContent',
+                children: children
+            };
+        });
 
+        $.freestyleText = $.RULE("freestyleText", () => {
+            let children = [];
+            $.AT_LEAST_ONE(() => $.OR([{
+                ALT: () => children.push($.CONSUME(lexer.Freestyle))
+            }, {
+                ALT: () => children.push($.CONSUME(lexer.UnusedControlChar))
+            }]));
+            return {
+                name: "freestyleText",
+                children: children
+            };
+        });
+        // very important to call this after all the rules have been defined.
+        // otherwise the parser may not work correctly as it will lack information
+        // derived during the self analysis phase.
+        Parser.performSelfAnalysis(this);
+    }
+
+    logAst(value) {
+        console.log(this.logAstRecursively(value, "", ""));
+    }
+    logAstAsJson(value) {
+        console.log(JSON.stringify(value, null, 2));
+    }
+    logAstRecursively(value, pre, str) {
+        if (value === undefined) {
+            str += "undefined";
+            return str;
+        } else if (value instanceof Token) {
+            str += value.constructor.name;
+            return str;
+        }
+        str += value.name;
+        if (value.children && value.children.length > 0) {
+            let nextPre = pre + " |";
+            for (let child of value.children) {
+                str += "\n" + nextPre + "__";
+                str = this.logAstRecursively(child, nextPre, str);
+            }
+            str += "\n" + pre;
+        }
+        return str;
+    }
 
 }
 
 module.exports = {
-  ArgdownParser: ArgdownParser
+    ArgdownParser: new ArgdownParser(null, ArgdownLexer)
 }

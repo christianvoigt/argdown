@@ -1,0 +1,23 @@
+<Argument 1>: Test
+
+(1) A
+  + <Argument 2>: description
+    - <Argument 3>
+(2) B
+----
+(3) C
+
+[Statement 1]: text
+  + <Argument 3>
+
+(1) D
+(2) E
+----
+(3) F
+
+[Statement 2]: text
+
+(1) D
+(2) E
+----
+(3) F

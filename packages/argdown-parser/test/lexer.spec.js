@@ -1,7 +1,7 @@
 //import { before, after, describe, it } from 'mocha';
 import { expect } from 'chai';
 import fs from 'fs';
-import lexer from '../src/ArgdownLexer.js';
+import {ArgdownLexer} from '../src/ArgdownLexer.js';
 
 let i = 0;
 let currentTokens = null;
@@ -13,6 +13,7 @@ function startTest(tokens){
   currentTokens = tokens;
   i = 0;
 }
+const lexer = ArgdownLexer;
 
 
 describe("Lexer", function() {
@@ -55,7 +56,6 @@ describe("Lexer", function() {
   it("can lex ordered and unordered lists", function(){
     let source = fs.readFileSync("./test/lexer-lists.argdown", 'utf8');
     const result = lexer.tokenize(source);
-    lexer.logTokens(result);
     startTest(result.tokens);
     expectToken(lexer.Indent);
     expectToken(lexer.UnorderedListItem);
@@ -158,17 +158,17 @@ describe("Lexer", function() {
     expectToken(lexer.UnderscoreItalicStart);
     expectToken(lexer.Freestyle);
     expectToken(lexer.UnderscoreItalicEnd);
-    expectToken(lexer.StarBoldStart);
+    expectToken(lexer.AsteriskBoldStart);
     expectToken(lexer.Freestyle);
-    expectToken(lexer.StarBoldEnd);
-    expectToken(lexer.StarItalicStart);
+    expectToken(lexer.AsteriskBoldEnd);
+    expectToken(lexer.AsteriskItalicStart);
     expectToken(lexer.Freestyle);
-    expectToken(lexer.StarItalicEnd);
-    expectToken(lexer.StarBoldStart);
-    expectToken(lexer.StarItalicStart);
+    expectToken(lexer.AsteriskItalicEnd);
+    expectToken(lexer.AsteriskBoldStart);
+    expectToken(lexer.AsteriskItalicStart);
     expectToken(lexer.Freestyle);
-    expectToken(lexer.StarItalicEnd);
-    expectToken(lexer.StarBoldEnd);
+    expectToken(lexer.AsteriskItalicEnd);
+    expectToken(lexer.AsteriskBoldEnd);
     expectToken(lexer.UnderscoreBoldStart);
     expectToken(lexer.UnderscoreItalicStart);
     expectToken(lexer.Freestyle);
@@ -176,21 +176,21 @@ describe("Lexer", function() {
     expectToken(lexer.UnderscoreBoldEnd);
     expectToken(lexer.UnderscoreBoldStart);
     expectToken(lexer.Freestyle);
-    expectToken(lexer.StarItalicStart);
+    expectToken(lexer.AsteriskItalicStart);
     expectToken(lexer.Freestyle);
-    expectToken(lexer.StarItalicEnd);
+    expectToken(lexer.AsteriskItalicEnd);
     expectToken(lexer.UnderscoreBoldEnd);
-    expectToken(lexer.StarItalicStart);
+    expectToken(lexer.AsteriskItalicStart);
     expectToken(lexer.Freestyle);
     expectToken(lexer.UnderscoreBoldStart);
     expectToken(lexer.Freestyle);
     expectToken(lexer.UnderscoreBoldEnd);
-    expectToken(lexer.StarItalicEnd);
-    expectToken(lexer.StarBoldStart);
-    expectToken(lexer.StarBoldStart);
+    expectToken(lexer.AsteriskItalicEnd);
+    expectToken(lexer.AsteriskBoldStart);
+    expectToken(lexer.AsteriskBoldStart);
     expectToken(lexer.Freestyle);
-    expectToken(lexer.StarBoldEnd);
-    expectToken(lexer.StarBoldEnd);
+    expectToken(lexer.AsteriskBoldEnd);
+    expectToken(lexer.AsteriskBoldEnd);
   });
      it("can lex complex indentation", function() {
      let source = fs.readFileSync("./test/lexer-indentation.argdown", 'utf8');

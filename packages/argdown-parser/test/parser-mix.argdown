@@ -11,10 +11,10 @@ First line
   2. Second item
     + Some crazy stuff
 
-  (1) First Statement
-  (2) Second Statement
-  -- Modus Ponens --
-  (3) Third statement
+(1) First Statement
+(2) Second Statement
+-- Modus Ponens --
+(3) Third statement
 
 Fourth line <!-- an inline comment -->
   <- Fifth line
@@ -40,4 +40,4 @@ A
 H
   - I
   - J
-K
+K -->

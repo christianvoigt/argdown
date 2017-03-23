@@ -1,15 +1,40 @@
 //import { before, after, describe, it } from 'mocha';
 import { expect } from 'chai';
 import fs from 'fs';
-import argdownParser from '../src/index.js';
+import {ArgdownLexer, ArgdownParser, ArgdownTreeWalker} from '../src/index.js';
 
+const lexer = ArgdownLexer;
+const parser = ArgdownParser;
+const walker = new ArgdownTreeWalker();
 
 describe("Parser", function() {
-  it("can parse", function(){
-    let source = fs.readFileSync("./test/parser.argdown", 'utf8');
-    const result = argdownParser.parse(source);
-    argdownParser.printAst(result.value);
-    expect(result.lexErrors).to.be.empty;
-    expect(result.parseErrors).to.be.empty;
+  it("can parse complex argdown file", function(){
+    let source = fs.readFileSync("./test/parser-mix.argdown", 'utf8');
+    let lexResult = lexer.tokenize(source);
+    parser.input = lexResult.tokens;
+    let parseResult = parser.argdown();
+    expect(lexResult.errors).to.be.empty;
+    expect(parser.errors).to.be.empty;
+  });
+  it("can parse argument definitions and references", function(){
+    let source = fs.readFileSync("./test/parser-arguments.argdown", 'utf8');
+    let lexResult = lexer.tokenize(source);
+    parser.input = lexResult.tokens;
+    let parseResult = parser.argdown();
+    expect(lexResult.errors).to.be.empty;
+    expect(parser.errors).to.be.empty;
+  });
+});
+
+describe("ArgdownTreeWalker", function() {
+  it("can walk", function(){
+    let source = "Hallo Welt!";
+    let lexResult = lexer.tokenize(source);
+    parser.input = lexResult.tokens;
+    let parseResult = parser.argdown();
+    let statements = 0;
+    walker.on('statementEntry',(node)=>{statements++; expect(node.name).to.equal('statement');});
+    walker.walk(parseResult);
+    expect(statements).to.equal(1);
   });
 });
