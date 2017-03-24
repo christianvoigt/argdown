@@ -63,7 +63,7 @@ class ArgdownLexer {
     constructor() {
         let $ = this;
         function matchRelation(text, matchedTokens, groups, pattern) {
-            let startsWithNewline = /^[\n\r|\n|\r]/.exec(text) != null;
+            let startsWithNewline = /^(?:\n\r|\n|\r)/.exec(text) != null;
             if (_.isEmpty(matchedTokens) || startsWithNewline) {
                 let match = pattern.exec(text);
                 if (match !== null && match.length == 3) {
@@ -75,10 +75,10 @@ class ArgdownLexer {
             return null;
         }
         //relations start at BOF or after a newline, optionally followed by indentation (spaces or tabs)
-        let matchIncomingSupport = _.partialRight(matchRelation, /^[\n\r|\n|\r]?([' '\t]*)(\+>)/);
-        let matchIncomingAttack = _.partialRight(matchRelation, /^[\n\r|\n|\r]?([' '\t]*)(->)/);
-        let matchOutgoingSupport = _.partialRight(matchRelation, /^[\n\r|\n|\r]?([' '\t]*)(<?\+)/);
-        let matchOutgoingAttack = _.partialRight(matchRelation, /^[\n\r|\n|\r]?([' '\t]*)(<?-)/);
+        let matchIncomingSupport = _.partialRight(matchRelation, /^(?:\n\r|\n|\r)?([' '\t]*)(\+>)/);
+        let matchIncomingAttack = _.partialRight(matchRelation, /^(?:\n\r|\n|\r)?([' '\t]*)(->)/);
+        let matchOutgoingSupport = _.partialRight(matchRelation, /^(?:\n\r|\n|\r)?([' '\t]*)(<?\+)/);
+        let matchOutgoingAttack = _.partialRight(matchRelation, /^(?:\n\r|\n|\r)?([' '\t]*)(<?-)/);
 
         $.IncomingSupport = createToken({
             name: "IncomingSupport",
@@ -156,7 +156,7 @@ class ArgdownLexer {
             return null;
         }
 
-        const orderedListItemPattern = /^[\n\r|\n|\r]?([' '\t]+)\d+\.(?=\s)/;
+        const orderedListItemPattern = /^(?:\n\r|\n|\r)?([' '\t]+)\d+\.(?=\s)/;
         let matchOrderedListItem = _.partialRight(matchListItem, orderedListItemPattern);
 
         $.OrderedListItem = createToken({
@@ -164,7 +164,7 @@ class ArgdownLexer {
             pattern: matchOrderedListItem
         });
         //whitespace + * + whitespace (to distinguish list items from bold and italic ranges)
-        const unorderedListItemPattern = /^[\n\r|\n|\r]?([' '\t]+)\*(?=\s)/; //Newline +
+        const unorderedListItemPattern = /^(?:\n\r|\n|\r)?([' '\t]+)\*(?=\s)/; //Newline +
         let matchUnorderedListItem = _.partialRight(matchListItem, unorderedListItemPattern);
 
         $.UnorderedListItem = createToken({
@@ -172,10 +172,10 @@ class ArgdownLexer {
             pattern: matchUnorderedListItem
         });
 
-        const argumentStatementStartPattern = /^[\n\r|\n|\r]?[' '\t]*\(\d+\)/;
+        const argumentStatementStartPattern = /^(?:\n\r|\n|\r)?[' '\t]*\(\d+\)/;
 
         function matchArgumentStatementStart(text, matchedTokens) {
-            let startsWithNewline = /^[\n\r|\n|\r]/.exec(text) != null;
+            let startsWithNewline = /^(?:\n\r|\n|\r)/.exec(text) != null;
             let afterEmptyline = _.last(matchedTokens) instanceof $.Emptyline;
             if (_.isEmpty(matchedTokens) || afterEmptyline || startsWithNewline) {
                 let match = argumentStatementStartPattern.exec(text);
@@ -193,8 +193,8 @@ class ArgdownLexer {
         });
 
 
-        const emptylinePattern = /^([\n\r|\n|\r]{2,})/; //two or more linebreaks
-        function emptylineMatching(text, matchedTokens) {
+        const emptylinePattern = /^((?:\n\r|\n|\r){2,})/; //two or more linebreaks
+        function matchEmptyline(text, matchedTokens) {
             let last = _.last(matchedTokens);
             //ignore Emptylines after first one (relevant for Emptylines after ignored comments)
             if (last instanceof $.Emptyline)
@@ -209,7 +209,7 @@ class ArgdownLexer {
         }
         $.Emptyline = createToken({
             name: "Emptyline",
-            pattern: emptylineMatching
+            pattern: matchEmptyline
         });
 
         //Indent and Dedent are never matched with their own patterns, instead they get matched in the relations custom patterns
@@ -224,22 +224,31 @@ class ArgdownLexer {
 
         $.StatementDefinition = createToken({
             name: "StatementDefinition",
-            pattern: /\[.+\]\:/
+            pattern: /\[.+?\]\:/
         });
 
         $.StatementReference = createToken({
             name: "StatementReference",
-            pattern: /\[.+\]/
+            pattern: /\[.+?\]/
+        });
+        $.StatementMention = createToken({
+          name: "StatementMention",
+          pattern: /\@\[.+?\][ \t]?/
         });
 
         $.ArgumentDefinition = createToken({
             name: "ArgumentDefinition",
-            pattern: /\<.+\>\:/
+            pattern: /\<.+?\>\:/
         });
 
         $.ArgumentReference = createToken({
             name: "ArgumentReference",
-            pattern: /\<.+\>/
+            pattern: /\<.+?\>/
+        });
+
+        $.ArgumentMention = createToken({
+          name: "ArgumentMention",
+          pattern: /\@\<.+?\>[ \t]?/
         });
 
         const headingPattern = /^(#+)/;
@@ -281,6 +290,7 @@ class ArgdownLexer {
                 return null;
             }
             let match = pattern.exec(text);
+
             if (match != null) {
                 $.rangesStack.pop();
             }
@@ -288,16 +298,16 @@ class ArgdownLexer {
             return match;
         }
         let matchAsteriskBoldStart = _.partialRight(matchBoldOrItalicStart, /^\*\*(?!\s)/, "AsteriskBold");
-        let matchAsteriskBoldEnd = _.partialRight(matchBoldOrItalicEnd, /^\*\*(?=\s|_|\.|,|!|\?|;|\*|$)/, "AsteriskBold");
+        let matchAsteriskBoldEnd = _.partialRight(matchBoldOrItalicEnd, /^\*\*(?:[ \t]|(?=\n|\r|\_|\.|,|!|\?|;|\*|$))/, "AsteriskBold");
 
         let matchUnderscoreBoldStart = _.partialRight(matchBoldOrItalicStart, /^__(?!\s)/, "UnderscoreBold");
-        let matchUnderscoreBoldEnd = _.partialRight(matchBoldOrItalicEnd, /^__(?=\s|_|\.|,|!|\?|;|\*|$)/, "UnderscoreBold");
+        let matchUnderscoreBoldEnd = _.partialRight(matchBoldOrItalicEnd, /^__(?:[ \t]|(?=\n|\r|\_|\.|,|!|\?|;|\*|$))/, "UnderscoreBold");
 
         let matchAsteriskItalicStart = _.partialRight(matchBoldOrItalicStart, /^\*(?!\s)/, "AsteriskItalic");
-        let matchAsteriskItalicEnd = _.partialRight(matchBoldOrItalicEnd, /^\*(?=\s|_|\.|,|!|\?|;|\*|$)/, "AsteriskItalic");
+        let matchAsteriskItalicEnd = _.partialRight(matchBoldOrItalicEnd, /^\*(?:[ \t]|(?=\n|\r|\_|\.|,|!|\?|;|\*|$))/, "AsteriskItalic");
 
         let matchUnderscoreItalicStart = _.partialRight(matchBoldOrItalicStart, /^\_(?!\s)/, "UnderscoreItalic");
-        let matchUnderscoreItalicEnd = _.partialRight(matchBoldOrItalicEnd, /^\_(?=\s|_|\.|,|!|\?|;|\*|$)/, "UnderscoreItalic");
+        let matchUnderscoreItalicEnd = _.partialRight(matchBoldOrItalicEnd, /^\_(?:[ \t]|(?=\n|\r|\_|\.|,|!|\?|;|\*|$))/, "UnderscoreItalic");
 
 
         $.AsteriskBoldStart = createToken({
@@ -347,12 +357,12 @@ class ArgdownLexer {
 
         $.Link = createToken({
             name: "Link",
-            pattern: /\[[^\]]+\]\([^\)]+\)/
+            pattern: /\[[^\]]+?\]\([^\)]+?\)[ \t]?/
         });
 
         $.Newline = createToken({
             name: "Newline",
-            pattern: /(\n|\r)/,
+            pattern: /(?:\n\r|\n|\r)/,
             group: chevrotain.Lexer.SKIPPED
         });
 
@@ -365,7 +375,7 @@ class ArgdownLexer {
         //The rest of the text that is free of any Argdown syntax
         $.Freestyle = createToken({
             name: "Freestyle",
-            pattern: /[^\*\_\[\]\,\:\;\<\/\>\-\n\r\(\)]+/
+            pattern: /[^\@\*\_\[\]\,\:\;\<\/\>\-\n\r\(\)]+/
         });
 
         //Freestyle text needs to be "cut up" by these control characters so that the other rules get a chance to succeed.
@@ -374,7 +384,7 @@ class ArgdownLexer {
         //Note that some "meaningful" characters (like +) are not listed here, as they are only meaningful after a linebreak and freestyle text already gets "cut up" by each line break.
         $.UnusedControlChar = createToken({
             name: "UnusedControlChar",
-            pattern: /[\*\_\[\]\,\:\;\<\/\>\-\(\)]/
+            pattern: /[\@\*\_\[\]\,\:\;\<\/\>\-\(\)][ \t]?/
         });
 
         $.tokens = [
@@ -408,8 +418,10 @@ class ArgdownLexer {
             $.AsteriskItalicStart,
             $.UnderscoreItalicStart,
             $.Link, //needs to be lexed before StatementReference
+            $.StatementMention,
             $.StatementDefinition,
             $.StatementReference,
+            $.ArgumentMention,
             $.ArgumentDefinition,
             $.ArgumentReference,
             $.Newline,
@@ -450,8 +462,10 @@ class ArgdownLexer {
                     $.Link, //needs to be lexed before StatementReference
                     $.StatementDefinition,
                     $.StatementReference,
+                    $.StatementMention,
                     $.ArgumentDefinition,
                     $.ArgumentReference,
+                    $.ArgumentMention,
                     $.Newline,
                     $.Spaces,
                     $.Freestyle,

@@ -1,0 +1,15 @@
+Some statement
+
+<!--
+#A Multi-Line Comment
+
+with some Argdown-Syntax
++ A support relation
+
+(1) A
+(2) B
+---
+(3) C
+-->
+
+Another <!-- **Comment** --> Statement <!-- [Comment] -->

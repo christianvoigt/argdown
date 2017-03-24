@@ -18,16 +18,18 @@ class ArgdownApplication{
     if(!processor){
       processor = {
         plugins:[],
-        walker: new ArgdownTreeWalker()
+        walker: null
       };
       this.processors[processorId] = processor;
     }
 
+    processor.plugins.push(plugin);
     if(plugin.argdownListeners){
+      if(!processor.walker)
+        processor.walker = new ArgdownTreeWalker();
       for(let key of Object.keys(plugin.argdownListeners)){
         processor.walker.addListener(key, plugin.argdownListeners[key]);
       }
-      processor.plugins.push(plugin);
     }
   }
 
@@ -90,20 +92,45 @@ class ArgdownApplication{
       this.ast = this.parser.argdown();
   }
   run(processorsToRun){
+    let result = {
+      ast : this.ast,
+      parserErrors : this.parserErrors,
+      lexerErrors : this.lexerErrors,
+      tokens : this.tokens
+    };
     if(!this.ast){
-      return;
+      return result;
     }
 
     if(!processorsToRun){
-        processorsToRun = ['default'];
+      processorsToRun = ['default'];
     }else if(_.isString(processorsToRun)){
       processorsToRun = [processorsToRun];
     }
 
     for(let processorId of processorsToRun){
       let processor = this.processors[processorId];
-      processor.walker.walk(this.ast);
+      if(!processor){
+        console.log("Processor not found: "+processorId);
+        continue;
+      }
+      console.log("Running processor: "+processorId);
+
+      if(processor.walker){
+        processor.walker.walk(this.ast);
+      }
+
+      for(let plugin of processor.plugins){
+        console.log("Running plugin: "+plugin.name);
+        if(_.isFunction(plugin.run)){
+          let newResult = plugin.run(result);
+          if(_.isObject(newResult)){
+            result = newResult;
+          }
+        }
+      }
     }
+    return result;
   }
 }
 

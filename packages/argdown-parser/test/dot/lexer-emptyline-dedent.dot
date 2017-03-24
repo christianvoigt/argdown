@@ -1,0 +1,15 @@
+digraph "Argument Map" {
+
+  n0 [label="Untitled 7", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
+  n1 [label="Untitled 8", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
+  n2 [label="Untitled 9", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
+  n3 [label="Untitled 10", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
+  n4 [label="Untitled 11", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
+  n5 [label="Untitled 12", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
+
+
+  n1 -> n0 [color="green", type="support"];
+  n3 -> n2 [color="red", type="attack"];
+  n5 -> n4 [color="green", type="support"];
+
+}

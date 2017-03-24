@@ -6,16 +6,22 @@ import {tokenMatcher} from 'chevrotain';
 import {ArgdownLexer} from './../ArgdownLexer.js';
 
 class ArgdownPreprocessor{
-
+  run(result){
+    result.statements = this.statements;
+    result.arguments = this.arguments;
+    return result;
+  }
   constructor(){
     this.name = "ArgdownPreprocessor";
     let $ = this;
 
-    const statementReferencePattern = /\[(.+)\]\:/;
-    const statementDefinitionPattern = /\[(.+)\]/;
+    const statementReferencePattern = /\[(.+)\]/;
+    const statementDefinitionPattern = /\[(.+)\]\:/;
+    const statementMentionPattern = /\@\[(.+)\](\s?)/;
     const argumentReferencePattern = /\<(.+)\>/;
     const argumentDefinitionPattern = /\<(.+)\>\:/;
-    const linkPattern = /\((.+)\)\[(.+)\]/;
+    const argumentMentionPattern = /\@\<(.+)\>(\s?)/;
+    const linkPattern = /\[(.+)\]\((.+)\)/;
 
     let uniqueTitleCounter = 0;
     function getUniqueTitle(){
@@ -29,6 +35,7 @@ class ArgdownPreprocessor{
       let ec = $.statements[title];
       if(!ec){
         ec = new EquivalenceClass();
+        ec.title = title;
         $.statements[title] = ec;
       }
       return ec;
@@ -56,8 +63,11 @@ class ArgdownPreprocessor{
       parentsStack = [];
       currentRelation = null;
     }
-    function onStatementEntry(node){
+    function onStatementEntry(node, parentNode){
       currentStatement = new Statement();
+      if(parentNode.name == 'argdown'){
+          currentStatement.role = "thesis";
+      }
       currentStatementOrArgument = currentStatement;
       node.statement = currentStatement;
     }
@@ -68,6 +78,9 @@ class ArgdownPreprocessor{
       }
       let equivalenceClass = getEquivalenceClass(statement.title);
       equivalenceClass.members.push(statement);
+      if(statement.role == "thesis"){
+        equivalenceClass.isUsedAsThesis = true; //members are used outside of argument reconstructions (not as premise or conclusion)
+      }
       currentStatement = null;
     }
     function onStatementDefinitionEntry(node){
@@ -79,9 +92,27 @@ class ArgdownPreprocessor{
     }
     function onStatementReferenceEntry(node){
       let match = statementReferencePattern.exec(node.image);
-      if(match != null)
+      if(match != null){
         currentStatement.title = match[1];
         node.statement = currentStatement;
+      }
+    }
+    function onStatementMentionExit(node){
+      let match = statementMentionPattern.exec(node.image);
+      if(match){
+        node.title = match[1];
+        if(node.image[node.image.length - 1] == " "){
+          node.trailingWhitespace = ' ';
+        }else {
+          node.trailingWhitespace = '';
+        }
+        if(currentStatement){
+          let range = {type:'statement-mention',title:node.title, start:currentStatement.text.length};
+          currentStatement.text += node.image;
+          range.stop = currentStatement.text.length -1;
+          currentStatement.ranges.push(range);
+        }
+      }
     }
     function updateArgument(title){
       currentArgument = $.arguments[title];
@@ -115,6 +146,23 @@ class ArgdownPreprocessor{
         parentNode.argument = currentArgument;
       }
     }
+    function onArgumentMentionExit(node){
+      let match = argumentMentionPattern.exec(node.image);
+      if(match){
+        node.title = match[1];
+        if(node.image[node.image.length - 1] == " "){
+          node.trailingWhitespace = ' ';
+        }else {
+          node.trailingWhitespace = '';
+        }
+        if(currentStatement){
+          let range = {type:'argument-mention',title:node.title, start:currentStatement.text.length};
+          currentStatement.text += node.image;
+          range.stop = currentStatement.text.length -1;
+          currentStatement.ranges.push(range);
+        }
+      }
+    }
     function onFreestyleTextEntry(node){
       node.text = "";
       for(let child of node.children){
@@ -132,6 +180,12 @@ class ArgdownPreprocessor{
       linkRange.stop = currentStatement.text.length - 1;
       linkRange.url = node.url;
       currentStatement.ranges.push(linkRange);
+      if(node.image[node.image.length - 1] == ' '){
+        currentStatement.text += ' ';
+        node.trailingWhitespace = ' ';
+      }else{
+        node.trailingWhitespace = '';
+      }
     }
 
     function onBoldEntry(){
@@ -139,7 +193,14 @@ class ArgdownPreprocessor{
       rangesStack.push(boldRange);
       currentStatement.ranges.push(boldRange);
     }
-    function onBoldExit(){
+    function onBoldExit(node){
+      let boldEnd = _.last(node.children);
+      if(boldEnd.image[boldEnd.image.length - 1] == ' '){
+        currentStatement.text += ' ';
+        node.trailingWhitespace = ' ';
+      }else{
+        node.trailingWhitespace = '';
+      }
       let range = _.last(rangesStack);
       range.stop = currentStatement.text.length - 1;
       rangesStack.pop();
@@ -149,7 +210,14 @@ class ArgdownPreprocessor{
       rangesStack.push(italicRange);
       currentStatement.ranges.push(italicRange);
     }
-    function onItalicExit(){
+    function onItalicExit(node){
+      let italicEnd = _.last(node.children);
+      if(italicEnd.image[italicEnd.image.length - 1] == ' '){
+        currentStatement.text += ' ';
+        node.trailingWhitespace = ' ';
+      }else{
+        node.trailingWhitespace = '';
+      }
       let range = _.last(rangesStack);
       range.stop = currentStatement.text.length - 1;
       rangesStack.pop();
@@ -157,7 +225,9 @@ class ArgdownPreprocessor{
 
     function onRelationExit(node){
       let relation = node.relation;
-      let target = getRelationTarget(currentStatementOrArgument);
+      let contentNode = node.children[1];
+      let content = contentNode.argument ||contentNode.statement;
+      let target = getRelationTarget(content);
       if(relation){
         if(relation.from)
           relation.to = target;
@@ -192,13 +262,13 @@ class ArgdownPreprocessor{
       parentsStack.push(getRelationTarget(currentStatementOrArgument));
     }
     function getRelationTarget(statementOrArgument){
-      let parent = statementOrArgument;
+      let target = statementOrArgument;
       if(statementOrArgument instanceof Statement){
         if(!statementOrArgument.title)
           statementOrArgument.title = getUniqueTitle();
-        parent = getEquivalenceClass(statementOrArgument.title);
+        target = getEquivalenceClass(statementOrArgument.title);
       }
-      return parent;
+      return target;
     }
     function onRelationsExit(){
       currentRelation = null;
@@ -206,9 +276,9 @@ class ArgdownPreprocessor{
     }
 
     function onArgumentEntry(node, parentNode, childIndex){
+      let argument = null;
       if(childIndex > 0){
           let precedingSibling = parentNode.children[childIndex - 1];
-          let argument = null;
           if(precedingSibling.name == 'argumentReference' || precedingSibling.name == 'argumentDefinition'){
             argument = precedingSibling.argument;
           }else if(tokenMatcher(precedingSibling, ArgdownLexer.Emptyline)){
@@ -217,30 +287,32 @@ class ArgdownPreprocessor{
               argument = precedingSibling.argument;
             }
           }
-          if(!argument){
-            argument = new Argument();
-            argument.title = getUniqueTitle();
-            $.arguments[argument.title] = argument;
-          }
-          node.argument = argument;
-          currentArgumentReconstruction = argument;
-      }
+        }
+        if(!argument){
+          argument = new Argument();
+          argument.title = getUniqueTitle();
+          $.arguments[argument.title] = argument;
+        }
+        node.argument = argument;
+        currentArgumentReconstruction = argument;
     }
     function onArgumentStatementExit(node, parentNode, childIndex){
       if(node.children.length > 1){
         //first node is ArgdownLexer.ArgumentStatementStart
         let statementNode = node.children[1];
         let statement = statementNode.statement;
-        let argumentStatement = {role:"premise", statement:statement};
+        statement.role = "premise";
         if(childIndex > 0){
           let precedingSibling = parentNode.children[childIndex - 1];
           if(precedingSibling.name == 'inference'){
-            argumentStatement.role = "conclusion";
-            argumentStatement.inference = precedingSibling.inference;
+            statement.role = "conclusion";
+            statement.inference = precedingSibling.inference;
           }
         }
-        currentArgumentReconstruction.pcs.push(argumentStatement);
-        node.argumentStatement = argumentStatement;
+        let ec = getEquivalenceClass(statement.title);
+        ec.isUsedInArgument = true;
+        currentArgumentReconstruction.pcs.push(statement);
+        node.statement = statement;
         node.statementNr = currentArgumentReconstruction.pcs.length;
       }
     }
@@ -268,14 +340,15 @@ class ArgdownPreprocessor{
       }
       currentInference.metaData[key] = value;
     }
-    function onHeadingEntry(node){
+    function onHeadingExit(node){
       let headingStart = node.children[0];
       node.heading = headingStart.image.length;
+      node.text = node.children[1].text;
     }
 
     this.argdownListeners = {
       argdownEntry : onArgdownEntry,
-      headingEntry : onHeadingEntry,
+      headingExit : onHeadingExit,
       statementEntry : onStatementEntry,
       statementExit : onStatementExit,
       argumentEntry : onArgumentEntry,
@@ -285,8 +358,10 @@ class ArgdownPreprocessor{
       metadataStatementExit : onMetadataStatementExit,
       StatementDefinitionEntry : onStatementDefinitionEntry,
       StatementReferenceEntry : onStatementReferenceEntry,
+      StatementMentionExit : onStatementMentionExit,
       ArgumentDefinitionEntry : onArgumentDefinitionEntry,
       ArgumentReferenceEntry : onArgumentReferenceEntry,
+      ArgumentMentionExit : onArgumentMentionExit,
       argumentDefinitionExit : onArgumentDefinitionOrReferenceExit,
       argumentReferenceExit : onArgumentDefinitionOrReferenceExit,
       incomingSupportEntry : onIncomingSupportEntry,
@@ -305,6 +380,24 @@ class ArgdownPreprocessor{
       boldEntry : onBoldEntry,
       boldExit : onBoldExit,
       LinkEntry : onLinkEntry
+    }
+  }
+  logRelations(data){
+    for(let statementKey of Object.keys(data.statements)){
+      let statement = data.statements[statementKey];
+      for(let relation of statement.relations){
+        if(relation.from == statement){
+          console.log("Relation from: "+relation.from.title+" to: "+relation.to.title+" type: "+relation.type);
+        }
+      }
+    }
+    for(let argumentKey of Object.keys(data.arguments)){
+      let argument = data.arguments[argumentKey];
+      for(let relation of argument.relations){
+        if(relation.from == argument){
+          console.log("Relation from: "+relation.from.title+" to: "+relation.to.title+" type: "+relation.type);
+        }
+      }
     }
   }
 }

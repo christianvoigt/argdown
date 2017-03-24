@@ -40,7 +40,20 @@ class ArgdownParser extends chevrotain.Parser {
         $.heading = $.RULE("heading", () => {
             let children = [];
             children.push($.CONSUME(lexer.HeadingStart));
-            children.push($.SUBRULE($.freestyleText));
+            $.AT_LEAST_ONE({
+              DEF:()=>$.OR({
+                DEF:[
+                  {
+                      ALT: () => children.push($.CONSUME(lexer.ArgumentMention))
+                  }, {
+                      ALT: () => children.push($.CONSUME(lexer.StatementMention))
+                  }, {
+                      ALT: () => children.push($.SUBRULE($.freestyleText))
+                  }
+                ]
+              })
+            });
+
             return {
                 name: "heading",
                 children: children
@@ -358,6 +371,10 @@ class ArgdownParser extends chevrotain.Parser {
                 ALT: () => children.push($.SUBRULE($.bold))
             }, {
                 ALT: () => children.push($.SUBRULE($.italic))
+            }, {
+                ALT: () => children.push($.CONSUME(lexer.ArgumentMention))
+            }, {
+                ALT: () => children.push($.CONSUME(lexer.StatementMention))
             }]));
             return {
                 name: 'statementContent',

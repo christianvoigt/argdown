@@ -5,8 +5,13 @@
   "main": "lib/src/index.js",
   "dependencies": {
     "chevrotain": "0.24.0",
+    "chokidar": "^1.6.1",
+    "commander": "^2.9.0",
+    "commander-file": "0.0.5",
     "eventemitter3": "^2.0.2",
-    "lodash": "^4.17.4"
+    "glob": "^7.1.1",
+    "lodash": "^4.17.4",
+    "mkdirp": "^0.5.1"
   },
   "bin": {
     "argdown": "./lib/src/cli/cli.js"
@@ -20,11 +25,15 @@
     "email": "1pxsolidblack@gmail.com"
   },
   "scripts": {
-    "build": "npm run build:src && npm run build:tests && npm run build:copy-argdown-files",
+    "build": "npm run build:src && npm run build:tests && npm run build:copy-argdown-files && npm run build:copy-css-files",
     "build:src": "babel src/ -d lib/src --source-maps",
+    "build:cli": "babel src/cli -d lib/src/cli --source-maps",
     "build:tests": "babel test/ -d lib/test --source-maps",
-    "build:copy-argdown-files": "cpx 'test/**/*.{ad,argdown}' lib/test",
+    "build:copy-argdown-files": "cpx \"test/**/*.{ad,argdown}\" lib/test --verbose",
+    "build:copy-css-files": "cpx \"src/**/*.{css}\" lib/src --verbose",
     "test": "mocha --compilers js:babel-core/register --colors ./test/*.spec.js",
+    "test:lexer": "mocha --compilers js:babel-core/register --colors ./test/lexer.spec.js",
+    "test:map-maker": "mocha --compilers js:babel-core/register --colors ./test/map-maker.spec.js",
     "test:parser": "mocha --compilers js:babel-core/register --colors ./test/parser.spec.js",
     "test:app": "mocha --compilers js:babel-core/register --colors ./test/application.spec.js",
     "test:lib": "mocha --require source-map-support/register --colors ./lib/test/*.spec.js",

@@ -1,0 +1,43 @@
+digraph "Argument Map" {
+
+  n0 [label="Statement Title", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
+  n1 [label="Untitled 48", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
+  n2 [label="Untitled 49", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
+  n3 [label="Untitled 53", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
+  n4 [label="Untitled 54", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
+  n5 [label="Untitled 58", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
+  n6 [label="Untitled 59", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
+  n7 [label="Untitled 60", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
+  n8 [label="Untitled 66", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
+  n9 [label="Untitled 67", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
+  n10 [label="Untitled 68", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
+  n11 [label="Untitled 69", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
+  n12 [label="Untitled 70", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
+  n13 [label="Untitled 71", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
+  n14 [label="Untitled 72", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
+  n15 [label="Untitled 73", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
+  n16 [label="Untitled 74", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
+  n17 [label="Untitled 75", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
+
+
+  n18 [label="Argument 1", shape="box", style="filled,rounded", fillcolor="blue", fontcolor="white", type="argument"];
+  n19 [label="Untitled 62", shape="box", style="filled,rounded", fillcolor="blue", fontcolor="white", type="argument"];
+
+
+  n0 -> n19 [color="red", type="attack"];
+  n1 -> n0 [color="green", type="support"];
+  n2 -> n0 [color="red", type="attack"];
+  n4 -> n3 [color="green", type="support"];
+  n6 -> n5 [color="red", type="attack"];
+  n7 -> n6 [color="green", type="support"];
+  n9 -> n8 [color="green", type="support"];
+  n10 -> n8 [color="red", type="attack"];
+  n11 -> n10 [color="green", type="support"];
+  n12 -> n13 [color="green", type="support"];
+  n12 -> n11 [color="red", type="attack"];
+  n12 -> n14 [color="red", type="attack"];
+  n16 -> n15 [color="red", type="attack"];
+  n17 -> n15 [color="red", type="attack"];
+  n18 -> n19 [color="green", type="support"];
+
+}

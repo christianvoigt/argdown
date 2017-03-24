@@ -39,7 +39,21 @@ describe("Lexer", function() {
     expectToken(lexer.Emptyline);
     expectToken(lexer.Freestyle);
   });
-  it("can lex headings", function(){
+  it("can lex mentions", function(){
+    let source = fs.readFileSync("./test/lexer-mentions.argdown", 'utf8');
+    const result = lexer.tokenize(source);
+    startTest(result.tokens);
+    expectToken(lexer.HeadingStart);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.ArgumentMention);
+    expectToken(lexer.StatementMention);
+    expectToken(lexer.Emptyline);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.UnusedControlChar);
+    expectToken(lexer.ArgumentMention);
+    expectToken(lexer.StatementMention);
+  });
+    it("can lex headings", function(){
     let source = fs.readFileSync("./test/lexer-heading.argdown", 'utf8');
     const result = lexer.tokenize(source);
     startTest(result.tokens);

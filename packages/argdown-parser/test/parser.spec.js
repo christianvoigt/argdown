@@ -8,11 +8,14 @@ const parser = ArgdownParser;
 const walker = new ArgdownTreeWalker();
 
 describe("Parser", function() {
-  it("can parse complex argdown file", function(){
-    let source = fs.readFileSync("./test/parser-mix.argdown", 'utf8');
+    it("can parse complex argdown file", function(){
+    let source = fs.readFileSync("./test/veggie_debate.argdown", 'utf8');
     let lexResult = lexer.tokenize(source);
     parser.input = lexResult.tokens;
     let parseResult = parser.argdown();
+    //parser.logAst(parseResult);
+    //console.log(parser.errors);
+    //lexer.logTokens(lexResult.tokens);
     expect(lexResult.errors).to.be.empty;
     expect(parser.errors).to.be.empty;
   });

@@ -1,0 +1,10 @@
+This is normal text.
+__This text is bold.__
+_This text is italic._
+**This text is bold.**
+*This text is italic.*
+***This text is bold and italic.***
+___This text is also bold and italic.___
+__This text is bold and *this one is also italic.*__
+*This text is italic and __this one is also bold.__*
+****This text is sourrounded by eight stars.****

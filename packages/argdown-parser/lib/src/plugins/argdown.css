@@ -1,0 +1,82 @@
+.argdown {
+    font-family: sans-serif;
+    max-width:35em;
+    margin:0 auto;
+}
+.argdown > .statement,.argdown > .argument-definition, .argdown > .argument-reference {
+    margin-bottom: 2em;
+    margin-top: 2em;
+}
+.statement-reference, .statement-definition, .statement-mention {
+    color: cornflowerblue;
+}
+
+.relations {
+    margin-left: 2em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+.relation {
+    margin-bottom: 0.2em;
+    padding-left: 1.5em;
+}
+.relation-symbol {
+    margin-left: -1.5em;
+    float: left;
+    min-width: 0.5em;
+    text-align: center;
+    padding-right: 0.25em;
+    padding-left: 0.25em;
+    border-radius: 0.5em;
+    font-weight: bold;
+    margin-right: 0.25em;
+}
+.support.relation-symbol {
+    color: green;
+    background-color: lightgreen;
+}
+.attack.relation-symbol {
+    color: red;
+    background-color: lightpink;
+}
+.argument {
+    margin-top: 1em;
+    margin-bottom: 2em;
+}
+.argument-reference, .argument-definiendum, .argument-mention {
+    color: blue;
+}
+.title{
+  font-weight:bold;
+}
+.argument-statement {
+    padding-left: 3em;
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+}
+.statement-nr {
+    margin-left: -2em;
+    float: left;
+    color:blue;
+}
+.inference{
+  border-top:1px solid black;
+  font-size: 0.8em;
+  margin-top:1em;
+  margin-bottom:1em;
+}
+.inference.with-data {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    padding: 0.5em;
+    padding-left:1.5em;
+}
+.inference-rules {
+    font-style: italic;
+}
+.metadata{
+  font-style: italic;
+}
+.conclusion.argument-statement {
+    font-weight: bold;
+}
