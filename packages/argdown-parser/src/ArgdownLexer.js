@@ -6,6 +6,7 @@ import * as _ from 'lodash';
 const createToken = chevrotain.createToken;
 const createTokenInstance = chevrotain.createTokenInstance;
 const tokenMatcher = chevrotain.tokenMatcher;
+const getTokenConstructor = chevrotain.getTokenConstructor;
 
 class ArgdownLexer {
     init() {
@@ -70,6 +71,8 @@ class ArgdownLexer {
 
     constructor() {
         let $ = this;
+        $.tokens = []; //token list for the parser
+
         function matchRelation(text, offset, matchedTokens, groups, pattern) {
             let remainingText = text.substr(offset);
             let startsWithNewline = /^(?:\n\r|\n|\r)/.exec(remainingText) != null;
@@ -93,21 +96,25 @@ class ArgdownLexer {
             name: "IncomingSupport",
             pattern: matchIncomingSupport
         });
+        $.tokens.push($.IncomingSupport);
 
         $.IncomingAttack = createToken({
             name: "IncomingAttack",
             pattern: matchIncomingAttack
         });
+        $.tokens.push($.IncomingAttack);
 
         $.OutgoingSupport = createToken({
             name: "OutgoingSupport",
             pattern: matchOutgoingSupport
         });
+        $.tokens.push($.OutgoingSupport);
 
         $.OutgoingAttack = createToken({
             name: "OutgoingAttack",
             pattern: matchOutgoingAttack
         });
+        $.tokens.push($.OutgoingAttack);
 
         const inferenceStartPattern = /^[\n\r|\n|\r]?[' '\t]*-{2}/;
 
@@ -124,33 +131,40 @@ class ArgdownLexer {
             pattern: matchInferenceStart,
             push_mode: "inference_mode"
         });
+        $.tokens.push($.InferenceStart);
 
         $.Colon = createToken({
             name: "Colon",
             pattern: /:/
         });
+        $.tokens.push($.Colon);
         $.ListDelimiter = createToken({
             name: "ListDelimiter",
             pattern: /,/
         });
+        $.tokens.push($.ListDelimiter);
         $.MetadataStatementEnd = createToken({
             name: "MetadataStatementEnd",
             pattern: /;/
         });
+        $.tokens.push($.MetadataStatementEnd);
         $.MetadataStart = createToken({
             name: "MetadataStart",
             pattern: /\(/
         });
+        $.tokens.push($.MetadataStart);
         $.MetadataEnd = createToken({
             name: "MetadataEnd",
             pattern: /\)/
         });
+        $.tokens.push($.MetadataEnd);
 
         $.InferenceEnd = createToken({
             name: "InferenceEnd",
             pattern: /-{2,}/,
             pop_mode: true
         });
+        $.tokens.push($.InferenceEnd);
 
         function matchListItem(text, offset, matchedTokens, groups, pattern) {
             let remainingText = text.substr(offset);
@@ -175,6 +189,7 @@ class ArgdownLexer {
             name: "OrderedListItem",
             pattern: matchOrderedListItem
         });
+        $.tokens.push($.OrderedListItem);
         //whitespace + * + whitespace (to distinguish list items from bold and italic ranges)
         const unorderedListItemPattern = /^(?:\n\r|\n|\r)?([' '\t]+)\*(?=\s)/; //Newline +
         let matchUnorderedListItem = _.partialRight(matchListItem, unorderedListItemPattern);
@@ -183,6 +198,7 @@ class ArgdownLexer {
             name: "UnorderedListItem",
             pattern: matchUnorderedListItem
         });
+        $.tokens.push($.UnorderedListItem);
 
         const argumentStatementStartPattern = /^(?:\n\r|\n|\r)?[' '\t]*\(\d+\)/;
 
@@ -205,6 +221,7 @@ class ArgdownLexer {
             name: "ArgumentStatementStart",
             pattern: matchArgumentStatementStart
         });
+        $.tokens.push($.ArgumentStatementStart);
 
 
         const emptylinePattern = /^((?:\n\r|\n|\r){2,})/; //two or more linebreaks
@@ -226,45 +243,56 @@ class ArgdownLexer {
             name: "Emptyline",
             pattern: matchEmptyline
         });
+        $.tokens.push($.Emptyline);
 
         //Indent and Dedent are never matched with their own patterns, instead they get matched in the relations custom patterns
         $.Indent = createToken({
             name: "Indent",
             pattern: chevrotain.Lexer.NA
         });
+        $.tokens.push($.Indent);
+
         $.Dedent = createToken({
             name: "Dedent",
             pattern: chevrotain.Lexer.NA
         });
+        $.tokens.push($.Dedent);
 
         $.StatementDefinition = createToken({
             name: "StatementDefinition",
             pattern: /\[.+?\]\:/
         });
+        $.tokens.push($.StatementDefinition);
 
         $.StatementReference = createToken({
             name: "StatementReference",
             pattern: /\[.+?\]/
         });
+        $.tokens.push($.StatementReference);
+
         $.StatementMention = createToken({
           name: "StatementMention",
           pattern: /\@\[.+?\][ \t]?/
         });
+        $.tokens.push($.StatementMention);
 
         $.ArgumentDefinition = createToken({
             name: "ArgumentDefinition",
             pattern: /\<.+?\>\:/
         });
+        $.tokens.push($.ArgumentDefinition);
 
         $.ArgumentReference = createToken({
             name: "ArgumentReference",
             pattern: /\<.+?\>/
         });
+        $.tokens.push($.ArgumentReference);
 
         $.ArgumentMention = createToken({
           name: "ArgumentMention",
           pattern: /\@\<.+?\>[ \t]?/
         });
+        $.tokens.push($.ArgumentMention);
 
         const headingPattern = /^(#+)/;
 
@@ -284,6 +312,7 @@ class ArgdownLexer {
             name: "HeadingStart",
             pattern: matchHeadingStart
         });
+        $.tokens.push($.HeadingStart);
 
         //BOLD and ITALIC ranges
         function matchBoldOrItalicStart(text, offset, matchedTokens, groups, pattern, rangeType) {
@@ -333,69 +362,83 @@ class ArgdownLexer {
             name: "AsteriskBoldStart",
             pattern: matchAsteriskBoldStart
         });
+        $.tokens.push($.AsteriskBoldStart);
 
         $.AsteriskBoldEnd = createToken({
             name: "AsteriskBoldEnd",
             pattern: matchAsteriskBoldEnd
         });
+        $.tokens.push($.AsteriskBoldEnd);
+
         $.UnderscoreBoldStart = createToken({
             name: "UnderscoreBoldStart",
             pattern: matchUnderscoreBoldStart
         });
+        $.tokens.push($.UnderscoreBoldStart);
 
         $.UnderscoreBoldEnd = createToken({
             name: "UnderscoreBoldEnd",
             pattern: matchUnderscoreBoldEnd
         });
+        $.tokens.push($.UnderscoreBoldEnd);
 
         $.AsteriskItalicStart = createToken({
             name: "AsteriskItalicStart",
             pattern: matchAsteriskItalicStart
         });
+        $.tokens.push($.AsteriskItalicStart);
 
         $.AsteriskItalicEnd = createToken({
             name: "AsteriskItalicEnd",
             pattern: matchAsteriskItalicEnd
         });
+        $.tokens.push($.AsteriskItalicEnd);
 
         $.UnderscoreItalicStart = createToken({
             name: "UnderscoreItalicStart",
             pattern: matchUnderscoreItalicStart
         });
+        $.tokens.push($.UnderscoreItalicStart);
 
         $.UnderscoreItalicEnd = createToken({
             name: "UnderscoreItalicEnd",
             pattern: matchUnderscoreItalicEnd
         });
+        $.tokens.push($.UnderscoreItalicEnd);
 
         $.Comment = createToken({
             name: "Comment",
             pattern: /<!--(?:.|\n|\r)*?-->/,
             group: chevrotain.Lexer.SKIPPED
         });
+        $.tokens.push($.Comment);
 
         $.Link = createToken({
             name: "Link",
             pattern: /\[[^\]]+?\]\([^\)]+?\)[ \t]?/
         });
+        $.tokens.push($.Link);
 
         $.Newline = createToken({
             name: "Newline",
             pattern: /(?:\n\r|\n|\r)/,
             group: chevrotain.Lexer.SKIPPED
         });
+        $.tokens.push($.Newline);
 
         $.Spaces = createToken({
             name: "Spaces",
             pattern: /( |\t)+/,
             group: chevrotain.Lexer.SKIPPED
         });
+        $.tokens.push($.Spaces);
 
         //The rest of the text that is free of any Argdown syntax
         $.Freestyle = createToken({
             name: "Freestyle",
             pattern: /[^\@\*\_\[\]\,\:\;\<\/\>\-\n\r\(\)]+/
         });
+        $.tokens.push($.Freestyle);
 
         //Freestyle text needs to be "cut up" by these control characters so that the other rules get a chance to succeed.
         //Otherwise, every line would simply be lexed as a single Freestyle token.
@@ -405,49 +448,7 @@ class ArgdownLexer {
             name: "UnusedControlChar",
             pattern: /[\@\*\_\[\]\,\:\;\<\/\>\-\(\)][ \t]?/
         });
-
-        $.tokens = [
-            $.Comment,
-            $.Emptyline,
-            $.Dedent,
-            $.Indent,
-            $.InferenceStart, //needs to be lexed before OutgoingAttack (- vs --)
-            $.InferenceEnd,
-            $.MetadataStatementEnd,
-            $.MetadataStart,
-            $.MetadataEnd,
-            $.ListDelimiter,
-            $.Colon,
-            $.IncomingSupport,
-            $.IncomingAttack,
-            $.OutgoingSupport,
-            $.OutgoingAttack,
-            $.HeadingStart,
-            $.ArgumentStatementStart,
-            $.OrderedListItem,
-            $.UnorderedListItem,
-            //The ends of Bold and italic ranges need to be lexed before the starts
-            $.AsteriskBoldEnd, //BoldEnd needs to be lexed before ItalicEnd (** vs *)
-            $.UnderscoreBoldEnd, //BoldEnd needs to be lexed before ItalicEnd (__ vs _)
-            $.AsteriskItalicEnd,
-            $.UnderscoreItalicEnd,
-            //The starts of Bold and italic ranges need to be lexed after the ends
-            $.AsteriskBoldStart, //BoldStart needs to be lexed before ItalicStart (** vs *)
-            $.UnderscoreBoldStart, //BoldStart needs to be lexed before ItalicStart (__ vs _)
-            $.AsteriskItalicStart,
-            $.UnderscoreItalicStart,
-            $.Link, //needs to be lexed before StatementReference
-            $.StatementMention,
-            $.StatementDefinition,
-            $.StatementReference,
-            $.ArgumentMention,
-            $.ArgumentDefinition,
-            $.ArgumentReference,
-            $.Newline,
-            $.Spaces,
-            $.Freestyle,
-            $.UnusedControlChar
-        ];
+        $.tokens.push($.UnusedControlChar);
 
         let lexerConfig = {
 
@@ -514,7 +515,7 @@ class ArgdownLexer {
 
     logTokens(tokens) {
         for (let token of tokens) {
-            console.log(token.constructor.name + " " + token.image);
+            console.log(getTokenConstructor(token).tokenName + " " + token.image);
         }
     }
     tokenize(text) {

@@ -80,9 +80,9 @@ describe("ArgdownPreprocessor", function() {
   expect(argument.pcs[0].role).to.equal('premise');
   expect(argument.pcs[1].role).to.equal('premise');
   expect(argument.pcs[2].role).to.equal('conclusion');
-  expect(plugin.statements[argument.pcs[0].statement.title]).to.exist;
-  expect(plugin.statements[argument.pcs[1].statement.title]).to.exist;
-  expect(plugin.statements[argument.pcs[2].statement.title]).to.exist;
+  expect(plugin.statements[argument.pcs[0].title]).to.exist;
+  expect(plugin.statements[argument.pcs[1].title]).to.exist;
+  expect(plugin.statements[argument.pcs[2].title]).to.exist;
   let inference = argument.pcs[2].inference;
   expect(inference).to.exist;
   expect(inference.inferenceRules.length).to.equal(1);

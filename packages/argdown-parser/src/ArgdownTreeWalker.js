@@ -1,4 +1,5 @@
 import {EventEmitter} from "eventemitter3";
+import {getTokenConstructor} from "chevrotain";
 
 
 class ArgdownTreeWalker extends EventEmitter{
@@ -6,11 +7,16 @@ class ArgdownTreeWalker extends EventEmitter{
     this.visitNode(tree);
   }
 
+  getTokenName(tokenInstance){
+    let constr = getTokenConstructor(tokenInstance);
+    return constr.tokenName;
+  }
+
   visitNode(node, parentNode, childIndex){
     if(node.name){
       this.emit(node.name+'Entry', node, parentNode, childIndex);
     }else {
-      this.emit(node.constructor.name + 'Entry', node, parentNode, childIndex);
+      this.emit(this.getTokenName(node) + 'Entry', node, parentNode, childIndex);
     }
 
     if(node.children && node.children.length > 0){
@@ -23,7 +29,7 @@ class ArgdownTreeWalker extends EventEmitter{
     if(node.name){
       this.emit(node.name+'Exit', node, parentNode, childIndex);
     }else{
-      this.emit(node.constructor.name + 'Exit', node, parentNode, childIndex);
+      this.emit(this.getTokenName(node) + 'Exit', node, parentNode, childIndex);
     }
   }
 

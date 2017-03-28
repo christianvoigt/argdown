@@ -2,7 +2,8 @@
 
 import chevrotain, {
     Parser,
-    Token
+    Token,
+    getTokenConstructor
 } from 'chevrotain';
 import {ArgdownLexer} from './ArgdownLexer.js';
 
@@ -11,6 +12,7 @@ class ArgdownParser extends chevrotain.Parser {
     constructor(input, lexer) {
         super(input, lexer.tokens);
         let $ = this;
+        $.lexer = lexer;
 
         $.argdown = $.RULE("argdown", () => {
             let atLeastOne = $.AT_LEAST_ONE_SEP({
@@ -410,8 +412,8 @@ class ArgdownParser extends chevrotain.Parser {
         if (value === undefined) {
             str += "undefined";
             return str;
-        } else if (value instanceof Token) {
-            str += value.constructor.name;
+        } else if (value.tokenType) {
+            str += getTokenConstructor(value).tokenName;
             return str;
         }
         str += value.name;
