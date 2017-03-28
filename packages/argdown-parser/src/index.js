@@ -8,6 +8,7 @@ import {ArgdownPreprocessor} from "./plugins/ArgdownPreprocessor.js";
 import {HtmlExport} from "./plugins/HtmlExport.js";
 import {MapMaker} from "./plugins/MapMaker.js";
 import {DotExport} from "./plugins/DotExport.js";
+import {ArgMLExport} from "./plugins/ArgMLExport.js";
 
 module.exports = {
   ArgdownTreeWalker : ArgdownTreeWalker,
@@ -17,5 +18,6 @@ module.exports = {
   ArgdownPreprocessor: ArgdownPreprocessor,
   HtmlExport : HtmlExport,
   DotExport : DotExport,
-  MapMaker : MapMaker
+  MapMaker : MapMaker,
+  ArgMLExport : ArgMLExport
 }

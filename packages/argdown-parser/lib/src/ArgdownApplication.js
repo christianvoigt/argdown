@@ -202,14 +202,14 @@ var ArgdownApplication = function () {
   }, {
     key: "run",
     value: function run(processorsToRun) {
-      var result = {
+      var data = {
         ast: this.ast,
         parserErrors: this.parserErrors,
         lexerErrors: this.lexerErrors,
         tokens: this.tokens
       };
       if (!this.ast) {
-        return result;
+        return data;
       }
 
       if (!processorsToRun) {
@@ -247,9 +247,9 @@ var ArgdownApplication = function () {
 
               console.log("Running plugin: " + plugin.name);
               if (_.isFunction(plugin.run)) {
-                var newResult = plugin.run(result);
-                if (_.isObject(newResult)) {
-                  result = newResult;
+                var newData = plugin.run(data);
+                if (_.isObject(newData)) {
+                  data = newData;
                 }
               }
             }
@@ -283,7 +283,7 @@ var ArgdownApplication = function () {
         }
       }
 
-      return result;
+      return data;
     }
   }]);
 

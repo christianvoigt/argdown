@@ -92,14 +92,14 @@ class ArgdownApplication{
       this.ast = this.parser.argdown();
   }
   run(processorsToRun){
-    let result = {
+    let data = {
       ast : this.ast,
       parserErrors : this.parserErrors,
       lexerErrors : this.lexerErrors,
       tokens : this.tokens
     };
     if(!this.ast){
-      return result;
+      return data;
     }
 
     if(!processorsToRun){
@@ -123,14 +123,14 @@ class ArgdownApplication{
       for(let plugin of processor.plugins){
         console.log("Running plugin: "+plugin.name);
         if(_.isFunction(plugin.run)){
-          let newResult = plugin.run(result);
-          if(_.isObject(newResult)){
-            result = newResult;
+          let newData = plugin.run(data);
+          if(_.isObject(newData)){
+            data = newData;
           }
         }
       }
     }
-    return result;
+    return data;
   }
 }
 

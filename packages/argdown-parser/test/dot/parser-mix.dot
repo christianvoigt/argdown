@@ -18,8 +18,6 @@ digraph "Argument Map" {
   n15 [label="Untitled 73", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
   n16 [label="Untitled 74", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
   n17 [label="Untitled 75", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
-
-
   n18 [label="Argument 1", shape="box", style="filled,rounded", fillcolor="blue", fontcolor="white", type="argument"];
   n19 [label="Untitled 62", shape="box", style="filled,rounded", fillcolor="blue", fontcolor="white", type="argument"];
 

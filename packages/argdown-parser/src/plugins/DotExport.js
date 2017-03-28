@@ -14,14 +14,23 @@ class DotExport{
   run(data){
     let dot = "digraph \""+this.settings.graphname+"\" {\n\n";
 
-    for(let statementKey of Object.keys(data.map.statementNodes)){
-      let statement = data.statements[statementKey];
-      let statementNode = data.map.statementNodes[statementKey];
+    for(let node of data.map.nodes){
+      let element;
+      if(node.type == "statement"){
+        element = data.statements[node.title];
+      }else{
+        element = data.arguments[node.title];
+      }
       let label = "";
       if(this.settings.useHtmlLabels){
-        label = "\"<h3 class='title'>"+this.escapeQuotesForDot(statementNode.title)+"</h3>";
+        label = "\"<h3 class='title'>"+this.escapeQuotesForDot(node.title)+"</h3>";
         if(!this.settings.onlyTitlesInHtmlLabels){
-          let lastMember = _.last(statement.members);
+          let lastMember;
+          if(node.type == "statement"){
+            lastMember = _.last(element.members);
+          }else{
+            lastMember = _.last(element.descriptions);
+          }
           if(lastMember){
             let text = lastMember.text;
             if(text)
@@ -30,44 +39,23 @@ class DotExport{
         }
         label += "\"";
       }else{
-        label = "\""+this.escapeQuotesForDot(statementNode.title)+"\"";
+        label = "\""+this.escapeQuotesForDot(node.title)+"\"";
       }
-      dot += "  "+statementNode.id + " [label="+label+", shape=\"box\", style=\"filled,rounded\", color=\"cornflowerblue\", fillcolor=\"white\", labelfontcolor=\"white\", type=\""+statementNode.type+"\"];\n";
-    }
-
-    let argumentsKeys = Object.keys(data.map.argumentNodes);
-    if(argumentsKeys.length > 0)
-      dot += "\n\n";
-
-    for(let key of argumentsKeys){
-      let argument = data.arguments[key];
-      let argumentNode = data.map.argumentNodes[key];
-      let label = "";
-      if(this.settings.useHtmlLabels){
-        label = "\"<h3 class='title'>"+this.escapeQuotesForDot(argumentNode.title)+"</h3>";
-        if(!this.settings.onlyTitlesInHtmlLabels){
-          let lastDescription = _.last(argument.descriptions);
-          if(lastDescription){
-            let text = lastDescription.text;
-            if(text)
-              label += "<p>"+this.escapeQuotesForDot(text)+"</p>";
-          }
-        }
-        label += "\"";
+      if(node.type == "statement"){
+        dot += "  "+node.id + " [label="+label+", shape=\"box\", style=\"filled,rounded\", color=\"cornflowerblue\", fillcolor=\"white\", labelfontcolor=\"white\", type=\""+node.type+"\"];\n";
       }else{
-        label = "\""+this.escapeQuotesForDot(argumentNode.title)+"\"";
+        dot += "  "+node.id + " [label="+label+", shape=\"box\", style=\"filled,rounded\", fillcolor=\"blue\", fontcolor=\"white\", type=\""+node.type+"\"];\n";
       }
-      dot += "  "+argumentNode.id + " [label="+label+", shape=\"box\", style=\"filled,rounded\", fillcolor=\"blue\", fontcolor=\"white\", type=\""+argumentNode.type+"\"];\n";
     }
 
     dot +="\n\n";
 
-    for(let nodeRelation of data.map.relations){
+    for(let edge of data.map.edges){
       let color = "green";
-      if(nodeRelation.type == "attack"){
+      if(edge.type == "attack"){
         color = "red";
       }
-      dot += "  "+nodeRelation.from.id + " -> " + nodeRelation.to.id + " [color=\""+color+"\", type=\""+nodeRelation.type+"\"];\n";
+      dot += "  "+edge.from.id + " -> " + edge.to.id + " [color=\""+color+"\", type=\""+edge.type+"\"];\n";
     }
 
     dot += "\n}";

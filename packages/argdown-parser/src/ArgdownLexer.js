@@ -4,6 +4,8 @@ import * as chevrotain from 'chevrotain';
 import * as _ from 'lodash';
 
 const createToken = chevrotain.createToken;
+const createTokenInstance = chevrotain.createTokenInstance;
+const tokenMatcher = chevrotain.tokenMatcher;
 
 class ArgdownLexer {
     init() {
@@ -18,8 +20,8 @@ class ArgdownLexer {
             return 0;
 
         let last = _.last(matchedTokens);
-        let currentLine = chevrotain.getEndLine(last);
-        if (chevrotain.tokenMatcher(last, this.Emptyline))
+        let currentLine = (last)? last.endLine : 0;
+        if (last && chevrotain.tokenMatcher(last, this.Emptyline))
             currentLine++;
         return currentLine;
     }
@@ -28,13 +30,16 @@ class ArgdownLexer {
         if (this.indentStack.length <= 1)
             return;
         const lastToken = _.last(matchedTokens.tokens);
-        const lastOffset = (lastToken) ? chevrotain.getEndOffset(lastToken) : 0;
-        const lastLine = (lastToken) ? chevrotain.getEndLine(lastToken) : 0;
-        const lastColumn = (lastToken) ? chevrotain.getEndColumn(lastToken) : 0;
+        const startOffset = (lastToken) ? lastToken.endOffset : 0;
+        const endOffset = startOffset;
+        const startLine = (lastToken) ? lastToken.endLine : 0;
+        const endLine = startLine;
+        const startColumn = (lastToken) ? lastToken.endColumn : 0;
+        const endColumn = startColumn;
 
         //add remaining Dedents
         while (this.indentStack.length > 1) {
-            matchedTokens.push(new this.Dedent("", lastOffset, lastLine, lastColumn));
+            matchedTokens.push(createTokenInstance(this.Dedent, "", startOffset, endOffset, startLine, endLine, startColumn, endColumn));
             this.indentStack.pop();
         }
     }
@@ -44,17 +49,20 @@ class ArgdownLexer {
         const lastIndentLevel = _.last(this.indentStack);
         const image = "";
         const last = _.last(matchedTokens);
-        const offset = (last) ? chevrotain.getEndOffset(last) + 1 : 0;
-        const line = this.getCurrentLine(matchedTokens, groups.nl);
-        const column = (last) ? chevrotain.getEndColumn(last) + 1 : 0;
+        const startOffset = (last) ? last.endOffset + 1 : 0;
+        const endOffset = startOffset;
+        const startLine = this.getCurrentLine(matchedTokens, groups.nl);
+        const endLine = startLine;
+        const startColumn = (last) ? last.endColumn + 1 : 0;
+        const endColumn = startColumn;
         if (currIndentLevel > lastIndentLevel) {
             this.indentStack.push(currIndentLevel);
-            let indentToken = new this.Indent(image, offset, line, column);
+            let indentToken = createTokenInstance(this.Indent, image, startOffset, endOffset, startLine, endLine, startColumn, endColumn);
             matchedTokens.push(indentToken);
         } else if (currIndentLevel < lastIndentLevel) {
             while (this.indentStack.length > 1 && currIndentLevel < _.last(this.indentStack)) {
                 this.indentStack.pop();
-                let dedentToken = new this.Dedent(image, offset, line, column);
+                let dedentToken = createTokenInstance(this.Dedent, image, startOffset, endOffset, startLine, endLine, startColumn, endColumn);
                 matchedTokens.push(dedentToken);
             }
         }
@@ -62,10 +70,11 @@ class ArgdownLexer {
 
     constructor() {
         let $ = this;
-        function matchRelation(text, matchedTokens, groups, pattern) {
-            let startsWithNewline = /^(?:\n\r|\n|\r)/.exec(text) != null;
+        function matchRelation(text, offset, matchedTokens, groups, pattern) {
+            let remainingText = text.substr(offset);
+            let startsWithNewline = /^(?:\n\r|\n|\r)/.exec(remainingText) != null;
             if (_.isEmpty(matchedTokens) || startsWithNewline) {
-                let match = pattern.exec(text);
+                let match = pattern.exec(remainingText);
                 if (match !== null && match.length == 3) {
                     let indentStr = match[1];
                     $.emitIndentOrDedent(matchedTokens, groups, indentStr);
@@ -102,10 +111,11 @@ class ArgdownLexer {
 
         const inferenceStartPattern = /^[\n\r|\n|\r]?[' '\t]*-{2}/;
 
-        function matchInferenceStart(text, matchedTokens) {
-            let startsWithNewline = /^[\n\r|\n|\r]/.exec(text) != null;
+        function matchInferenceStart(text, offset, matchedTokens) {
+            let remainingText = text.substr(offset);
+            let startsWithNewline = /^[\n\r|\n|\r]/.exec(remainingText) != null;
             if (_.isEmpty(matchedTokens) || startsWithNewline) {
-                return inferenceStartPattern.exec(text);
+                return inferenceStartPattern.exec(remainingText);
             }
             return null;
         }
@@ -142,11 +152,13 @@ class ArgdownLexer {
             pop_mode: true
         });
 
-        function matchListItem(text, matchedTokens, groups, pattern) {
-            let startsWithNewline = /^[\n\r|\n|\r]/.exec(text) != null;
-            let afterEmptyline = _.last(matchedTokens) instanceof $.Emptyline;
+        function matchListItem(text, offset, matchedTokens, groups, pattern) {
+            let remainingText = text.substr(offset);
+            let startsWithNewline = /^[\n\r|\n|\r]/.exec(remainingText) != null;
+            let last = _.last(matchedTokens);
+            let afterEmptyline = last && tokenMatcher(last, $.Emptyline);
             if (_.isEmpty(matchedTokens) || afterEmptyline || startsWithNewline) {
-                let match = pattern.exec(text);
+                let match = pattern.exec(remainingText);
                 if (match !== null) {
                     let indentStr = match[1];
                     $.emitIndentOrDedent(matchedTokens, groups, indentStr);
@@ -174,11 +186,13 @@ class ArgdownLexer {
 
         const argumentStatementStartPattern = /^(?:\n\r|\n|\r)?[' '\t]*\(\d+\)/;
 
-        function matchArgumentStatementStart(text, matchedTokens) {
-            let startsWithNewline = /^(?:\n\r|\n|\r)/.exec(text) != null;
-            let afterEmptyline = _.last(matchedTokens) instanceof $.Emptyline;
+        function matchArgumentStatementStart(text, offset, matchedTokens) {
+            let remainingText = text.substr(offset);
+            let startsWithNewline = /^(?:\n\r|\n|\r)/.exec(remainingText) != null;
+            let last = _.last(matchedTokens);
+            let afterEmptyline = last && tokenMatcher(last, $.Emptyline);
             if (_.isEmpty(matchedTokens) || afterEmptyline || startsWithNewline) {
-                let match = argumentStatementStartPattern.exec(text);
+                let match = argumentStatementStartPattern.exec(remainingText);
                 if(match){
                   $.emitRemainingDedentTokens(matchedTokens);
                   return match;
@@ -194,12 +208,13 @@ class ArgdownLexer {
 
 
         const emptylinePattern = /^((?:\n\r|\n|\r){2,})/; //two or more linebreaks
-        function matchEmptyline(text, matchedTokens) {
+        function matchEmptyline(text, offset, matchedTokens) {
+            let remainingText = text.substr(offset);
             let last = _.last(matchedTokens);
             //ignore Emptylines after first one (relevant for Emptylines after ignored comments)
-            if (last instanceof $.Emptyline)
+            if (last && tokenMatcher(last, $.Emptyline))
                 return null;
-            let match = emptylinePattern.exec(text);
+            let match = emptylinePattern.exec(remainingText);
             if (match !== null) {
                 $.emitRemainingDedentTokens(matchedTokens);
                 //TODO: emitRemainingRanges (to be more resistant against unclosed bold and italic ranges)
@@ -253,11 +268,13 @@ class ArgdownLexer {
 
         const headingPattern = /^(#+)/;
 
-        function matchHeadingStart(text, matchedTokens) {
-            let afterEmptyline = _.last(matchedTokens) instanceof $.Emptyline;
+        function matchHeadingStart(text, offset, matchedTokens) {
+            let remainingText = text.substr(offset);
+            let last = _.last(matchedTokens);
+            let afterEmptyline = last && tokenMatcher(last, $.Emptyline);
 
-            if (_.isEmpty(matchedTokens) || afterEmptyline) {
-                return headingPattern.exec(text);
+            if (!last || afterEmptyline) {
+                return headingPattern.exec(remainingText);
             }
             return null;
 
@@ -269,15 +286,16 @@ class ArgdownLexer {
         });
 
         //BOLD and ITALIC ranges
-        function matchBoldOrItalicStart(text, matchedTokens, groups, pattern, rangeType) {
-            let match = pattern.exec(text);
+        function matchBoldOrItalicStart(text, offset, matchedTokens, groups, pattern, rangeType) {
+            let remainingText = text.substr(offset);
+            let match = pattern.exec(remainingText);
             if (match != null) {
                 $.rangesStack.push(rangeType);
             }
             return match;
         }
 
-        function matchBoldOrItalicEnd(text, matchedTokens, groups, pattern, rangeType) {
+        function matchBoldOrItalicEnd(text, offset, matchedTokens, groups, pattern, rangeType) {
             let lastRange = _.last($.rangesStack);
             if (lastRange != rangeType)
                 return null;
@@ -289,7 +307,8 @@ class ArgdownLexer {
                 (lastSkipped && chevrotain.getEndOffset(lastSkipped) > chevrotain.getEndOffset(lastMatched))) {
                 return null;
             }
-            let match = pattern.exec(text);
+            let remainingText = text.substr(offset);
+            let match = pattern.exec(remainingText);
 
             if (match != null) {
                 $.rangesStack.pop();

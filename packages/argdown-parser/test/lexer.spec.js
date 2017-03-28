@@ -2,11 +2,13 @@
 import { expect } from 'chai';
 import fs from 'fs';
 import {ArgdownLexer} from '../src/ArgdownLexer.js';
+import {tokenMatcher} from 'chevrotain';
 
 let i = 0;
 let currentTokens = null;
 function expectToken(tokenType){
-  expect(currentTokens[i]).to.be.an.instanceof(tokenType);
+  //expect(currentTokens[i]).to.be.an.instanceof(tokenType);
+  expect(tokenMatcher(currentTokens[i],tokenType)).to.be.true;
   i++;
 }
 function startTest(tokens){

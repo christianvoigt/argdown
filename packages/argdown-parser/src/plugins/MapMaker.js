@@ -9,9 +9,12 @@ class MapMaker{
     return data;
   }
   makeMap(data){
-    let map = {argumentNodes: {}, statementNodes: {}, relations: []};
+    let map = {nodes: [], edges: []};
     let nodeCount = 0;
+    let edgeCount = 0;
     let relations = [];
+    let statementNodes = {};
+    let argumentNodes = {};
 
     //find all statement classes that should be inserted as nodes
     let statementKeys = Object.keys(data.statements);
@@ -20,7 +23,9 @@ class MapMaker{
       if(equivalenceClass.relations.length > 0 && (equivalenceClass.isUsedAsThesis || !equivalenceClass.isUsedInArgument)){
         let id = "n"+nodeCount;
         nodeCount++;
-        map.statementNodes[statementKey] = {type:"statement", title:statementKey, id:id};
+        let node = {type:"statement", title:statementKey, id:id};
+        statementNodes[statementKey] = node;
+        map.nodes.push(node)
 
         if(!equivalenceClass.isUsedInArgument){ //if the statement is used in an argument, the relations get added in the next round
           //add all relations outgoing from this statement class, if it is not added by an argument
@@ -40,7 +45,9 @@ class MapMaker{
       let argument = data.arguments[argumentKey];
       let id = "n"+nodeCount;
       nodeCount++;
-      map.argumentNodes[argumentKey] = {type:"argument", title:argument.title, id:id};
+      let node = {type:"argument", title:argument.title, id:id};
+      argumentNodes[argumentKey] = node;
+      map.nodes.push(node);
       for(let relation of argument.relations){
         if(relation.from == argument){
           relations.push(relation);
@@ -53,14 +60,14 @@ class MapMaker{
           statementRoles[statement.title] = roles;
         }
         if(statement.role == "premise"){
-          roles.premiseIn.push(map.argumentNodes[argumentKey]);
-        }else if(statement.role == "conclusion"){
-          roles.conclusionIn.push(map.argumentNodes[argumentKey]);
-        }
-        let equivalenceClass = data.statements[statement.title];
-        for(let relation of equivalenceClass.relations){
-          if(statement.role == "conclusion" && relation.from == equivalenceClass){
-            relations.push(relation);
+          roles.premiseIn.push(argumentNodes[argumentKey]);
+        }else if(statement.role == "conclusion" && statement == argument.pcs[argument.pcs.length - 1]){
+          let equivalenceClass = data.statements[statement.title];
+          roles.conclusionIn.push(argumentNodes[argumentKey]);
+          for(let relation of equivalenceClass.relations){
+            if(relation.from == equivalenceClass){
+              relations.push(relation);
+            }
           }
         }
       }
@@ -70,27 +77,35 @@ class MapMaker{
       let froms = [];
       let tos = [];
 
+      //sketched: relations from thesis to thesis and relations from argument to argument
+      //reconstructed: relation from conclusion to premises or conclusion to thesis
+
       let fromNode;
+      let fromStatement;
       if(relation.from instanceof Argument){
-        fromNode = map.argumentNodes[relation.from.title];
+        fromNode = argumentNodes[relation.from.title];
       }else{
-        fromNode = map.statementNodes[relation.from.title];
+        fromNode = statementNodes[relation.from.title];
+        fromStatement = data.statements[relation.from.title];
       }
       if(!fromNode){ //fromNode has to be a statement
         let roles = statementRoles[relation.from.title];
+        fromStatement = data.statements[relation.from.title];
         froms = roles.conclusionIn;
       }else{
         froms.push(fromNode);
       }
 
       let toNode;
+      let toStatement;
       if(relation.to instanceof Argument){
-        toNode = map.argumentNodes[relation.to.title];
+        toNode = argumentNodes[relation.to.title];
       }else{
-        toNode = map.statementNodes[relation.to.title];
+        toNode = statementNodes[relation.to.title];
       }
       if(!toNode){ //fromNode has to be a statement
         let roles = statementRoles[relation.to.title];
+        toStatement = data.statements[relation.to.title];
         tos = roles.premiseIn;
       }else{
         tos.push(toNode);
@@ -98,7 +113,16 @@ class MapMaker{
 
       for(let from of froms){
         for(let to of tos){
-          map.relations.push({from:from, to:to, type:relation.type});
+          let edgeId = 'e'+edgeCount;
+          edgeCount++;
+          map.edges.push({
+            id:edgeId,
+            from:from, //node
+            to:to, //node
+            fromStatement: fromStatement, //statement
+            toStatement: toStatement, //statement
+            type:relation.type
+          });
         }
       }
     }

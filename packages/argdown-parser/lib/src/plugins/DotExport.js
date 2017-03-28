@@ -38,16 +38,25 @@ var DotExport = function () {
       var _iteratorError = undefined;
 
       try {
-        for (var _iterator = Object.keys(data.map.statementNodes)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var statementKey = _step.value;
+        for (var _iterator = data.map.nodes[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var node = _step.value;
 
-          var statement = data.statements[statementKey];
-          var statementNode = data.map.statementNodes[statementKey];
+          var element = void 0;
+          if (node.type == "statement") {
+            element = data.statements[node.title];
+          } else {
+            element = data.arguments[node.title];
+          }
           var label = "";
           if (this.settings.useHtmlLabels) {
-            label = "\"<h3 class='title'>" + this.escapeQuotesForDot(statementNode.title) + "</h3>";
+            label = "\"<h3 class='title'>" + this.escapeQuotesForDot(node.title) + "</h3>";
             if (!this.settings.onlyTitlesInHtmlLabels) {
-              var lastMember = _.last(statement.members);
+              var lastMember = void 0;
+              if (node.type == "statement") {
+                lastMember = _.last(element.members);
+              } else {
+                lastMember = _.last(element.descriptions);
+              }
               if (lastMember) {
                 var text = lastMember.text;
                 if (text) label += "<p>" + this.escapeQuotesForDot(text) + "</p>";
@@ -55,9 +64,13 @@ var DotExport = function () {
             }
             label += "\"";
           } else {
-            label = "\"" + this.escapeQuotesForDot(statementNode.title) + "\"";
+            label = "\"" + this.escapeQuotesForDot(node.title) + "\"";
           }
-          dot += "  " + statementNode.id + " [label=" + label + ", shape=\"box\", style=\"filled,rounded\", color=\"cornflowerblue\", fillcolor=\"white\", labelfontcolor=\"white\", type=\"" + statementNode.type + "\"];\n";
+          if (node.type == "statement") {
+            dot += "  " + node.id + " [label=" + label + ", shape=\"box\", style=\"filled,rounded\", color=\"cornflowerblue\", fillcolor=\"white\", labelfontcolor=\"white\", type=\"" + node.type + "\"];\n";
+          } else {
+            dot += "  " + node.id + " [label=" + label + ", shape=\"box\", style=\"filled,rounded\", fillcolor=\"blue\", fontcolor=\"white\", type=\"" + node.type + "\"];\n";
+          }
         }
       } catch (err) {
         _didIteratorError = true;
@@ -74,34 +87,21 @@ var DotExport = function () {
         }
       }
 
-      var argumentsKeys = Object.keys(data.map.argumentNodes);
-      if (argumentsKeys.length > 0) dot += "\n\n";
+      dot += "\n\n";
 
       var _iteratorNormalCompletion2 = true;
       var _didIteratorError2 = false;
       var _iteratorError2 = undefined;
 
       try {
-        for (var _iterator2 = argumentsKeys[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-          var key = _step2.value;
+        for (var _iterator2 = data.map.relations[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var nodeRelation = _step2.value;
 
-          var argument = data.arguments[key];
-          var argumentNode = data.map.argumentNodes[key];
-          var _label = "";
-          if (this.settings.useHtmlLabels) {
-            _label = "\"<h3 class='title'>" + this.escapeQuotesForDot(argumentNode.title) + "</h3>";
-            if (!this.settings.onlyTitlesInHtmlLabels) {
-              var lastDescription = _.last(argument.descriptions);
-              if (lastDescription) {
-                var _text = lastDescription.text;
-                if (_text) _label += "<p>" + this.escapeQuotesForDot(_text) + "</p>";
-              }
-            }
-            _label += "\"";
-          } else {
-            _label = "\"" + this.escapeQuotesForDot(argumentNode.title) + "\"";
+          var color = "green";
+          if (nodeRelation.type == "attack") {
+            color = "red";
           }
-          dot += "  " + argumentNode.id + " [label=" + _label + ", shape=\"box\", style=\"filled,rounded\", fillcolor=\"blue\", fontcolor=\"white\", type=\"" + argumentNode.type + "\"];\n";
+          dot += "  " + nodeRelation.from.id + " -> " + nodeRelation.to.id + " [color=\"" + color + "\", type=\"" + nodeRelation.type + "\"];\n";
         }
       } catch (err) {
         _didIteratorError2 = true;
@@ -114,37 +114,6 @@ var DotExport = function () {
         } finally {
           if (_didIteratorError2) {
             throw _iteratorError2;
-          }
-        }
-      }
-
-      dot += "\n\n";
-
-      var _iteratorNormalCompletion3 = true;
-      var _didIteratorError3 = false;
-      var _iteratorError3 = undefined;
-
-      try {
-        for (var _iterator3 = data.map.relations[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-          var nodeRelation = _step3.value;
-
-          var color = "green";
-          if (nodeRelation.type == "attack") {
-            color = "red";
-          }
-          dot += "  " + nodeRelation.from.id + " -> " + nodeRelation.to.id + " [color=\"" + color + "\", type=\"" + nodeRelation.type + "\"];\n";
-        }
-      } catch (err) {
-        _didIteratorError3 = true;
-        _iteratorError3 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion3 && _iterator3.return) {
-            _iterator3.return();
-          }
-        } finally {
-          if (_didIteratorError3) {
-            throw _iteratorError3;
           }
         }
       }

@@ -21,8 +21,6 @@ digraph "Argument Map" {
   n18 [label="Untitled 90", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
   n19 [label="Untitled 91", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
   n20 [label="Untitled 92", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
-
-
   n21 [label="Fleischküche ist Kulturerbe", shape="box", style="filled,rounded", fillcolor="blue", fontcolor="white", type="argument"];
   n22 [label="Genusserlebnis-Argument", shape="box", style="filled,rounded", fillcolor="blue", fontcolor="white", type="argument"];
   n23 [label="Argument aus der Vielfalt", shape="box", style="filled,rounded", fillcolor="blue", fontcolor="white", type="argument"];

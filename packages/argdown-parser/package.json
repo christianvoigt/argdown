@@ -4,14 +4,22 @@
   "license": "MIT",
   "main": "lib/src/index.js",
   "dependencies": {
-    "chevrotain": "0.24.0",
+    "babel-eslint": "^7.2.1",
+    "chance": "^1.0.6",
+    "chevrotain": "^0.27.0",
     "chokidar": "^1.6.1",
     "commander": "^2.9.0",
     "commander-file": "0.0.5",
+    "eslint": "^3.18.0",
+    "eslint-loader": "^1.7.0",
     "eventemitter3": "^2.0.2",
     "glob": "^7.1.1",
+    "karma-mocha-reporter": "^2.2.3",
     "lodash": "^4.17.4",
-    "mkdirp": "^0.5.1"
+    "mkdirp": "^0.5.1",
+    "source-map-support": "^0.4.14",
+    "webpack": "^2.3.2",
+    "xmlbuilder": "^8.2.2"
   },
   "bin": {
     "argdown": "./lib/src/cli/cli.js"
@@ -34,6 +42,7 @@
     "test": "mocha --compilers js:babel-core/register --colors ./test/*.spec.js",
     "test:lexer": "mocha --compilers js:babel-core/register --colors ./test/lexer.spec.js",
     "test:map-maker": "mocha --compilers js:babel-core/register --colors ./test/map-maker.spec.js",
+    "test:argml-export": "mocha --compilers js:babel-core/register --colors ./test/argml-export.spec.js",
     "test:parser": "mocha --compilers js:babel-core/register --colors ./test/parser.spec.js",
     "test:app": "mocha --compilers js:babel-core/register --colors ./test/application.spec.js",
     "test:lib": "mocha --require source-map-support/register --colors ./lib/test/*.spec.js",

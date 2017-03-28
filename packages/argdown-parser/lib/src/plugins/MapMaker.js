@@ -22,9 +22,11 @@ var MapMaker = function () {
   }, {
     key: "makeMap",
     value: function makeMap(data) {
-      var map = { argumentNodes: {}, statementNodes: {}, relations: [] };
+      var map = { nodes: [], relations: [] };
       var nodeCount = 0;
       var relations = [];
+      var statementNodes = {};
+      var argumentNodes = {};
 
       //find all statement classes that should be inserted as nodes
       var statementKeys = Object.keys(data.statements);
@@ -40,7 +42,9 @@ var MapMaker = function () {
           if (equivalenceClass.relations.length > 0 && (equivalenceClass.isUsedAsThesis || !equivalenceClass.isUsedInArgument)) {
             var id = "n" + nodeCount;
             nodeCount++;
-            map.statementNodes[statementKey] = { type: "statement", title: statementKey, id: id };
+            var node = { type: "statement", title: statementKey, id: id };
+            statementNodes[statementKey] = node;
+            map.nodes.push(node);
 
             if (!equivalenceClass.isUsedInArgument) {
               //if the statement is used in an argument, the relations get added in the next round
@@ -103,7 +107,9 @@ var MapMaker = function () {
           var argument = data.arguments[argumentKey];
           var _id = "n" + nodeCount;
           nodeCount++;
-          map.argumentNodes[argumentKey] = { type: "argument", title: argument.title, id: _id };
+          var _node = { type: "argument", title: argument.title, id: _id };
+          argumentNodes[argumentKey] = _node;
+          map.nodes.push(_node);
           var _iteratorNormalCompletion5 = true;
           var _didIteratorError5 = false;
           var _iteratorError5 = undefined;
@@ -145,9 +151,9 @@ var MapMaker = function () {
                 statementRoles[statement.title] = roles;
               }
               if (statement.role == "premise") {
-                roles.premiseIn.push(map.argumentNodes[argumentKey]);
+                roles.premiseIn.push(argumentNodes[argumentKey]);
               } else if (statement.role == "conclusion") {
-                roles.conclusionIn.push(map.argumentNodes[argumentKey]);
+                roles.conclusionIn.push(argumentNodes[argumentKey]);
               }
               var _equivalenceClass = data.statements[statement.title];
               var _iteratorNormalCompletion7 = true;
@@ -220,9 +226,9 @@ var MapMaker = function () {
 
           var fromNode = void 0;
           if (_relation3.from instanceof _Argument.Argument) {
-            fromNode = map.argumentNodes[_relation3.from.title];
+            fromNode = argumentNodes[_relation3.from.title];
           } else {
-            fromNode = map.statementNodes[_relation3.from.title];
+            fromNode = statementNodes[_relation3.from.title];
           }
           if (!fromNode) {
             //fromNode has to be a statement
@@ -234,9 +240,9 @@ var MapMaker = function () {
 
           var toNode = void 0;
           if (_relation3.to instanceof _Argument.Argument) {
-            toNode = map.argumentNodes[_relation3.to.title];
+            toNode = argumentNodes[_relation3.to.title];
           } else {
-            toNode = map.statementNodes[_relation3.to.title];
+            toNode = statementNodes[_relation3.to.title];
           }
           if (!toNode) {
             //fromNode has to be a statement

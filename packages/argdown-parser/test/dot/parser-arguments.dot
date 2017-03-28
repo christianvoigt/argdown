@@ -1,8 +1,6 @@
 digraph "Argument Map" {
 
   n0 [label="Statement 1", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
-
-
   n1 [label="Argument 1", shape="box", style="filled,rounded", fillcolor="blue", fontcolor="white", type="argument"];
   n2 [label="Argument 2", shape="box", style="filled,rounded", fillcolor="blue", fontcolor="white", type="argument"];
   n3 [label="Argument 3", shape="box", style="filled,rounded", fillcolor="blue", fontcolor="white", type="argument"];
