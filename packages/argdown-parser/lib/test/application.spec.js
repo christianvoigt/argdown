@@ -85,9 +85,9 @@ describe("ArgdownPreprocessor", function () {
     (0, _chai.expect)(argument.pcs[0].role).to.equal('premise');
     (0, _chai.expect)(argument.pcs[1].role).to.equal('premise');
     (0, _chai.expect)(argument.pcs[2].role).to.equal('conclusion');
-    (0, _chai.expect)(plugin.statements[argument.pcs[0].statement.title]).to.exist;
-    (0, _chai.expect)(plugin.statements[argument.pcs[1].statement.title]).to.exist;
-    (0, _chai.expect)(plugin.statements[argument.pcs[2].statement.title]).to.exist;
+    (0, _chai.expect)(plugin.statements[argument.pcs[0].title]).to.exist;
+    (0, _chai.expect)(plugin.statements[argument.pcs[1].title]).to.exist;
+    (0, _chai.expect)(plugin.statements[argument.pcs[2].title]).to.exist;
     var inference = argument.pcs[2].inference;
     (0, _chai.expect)(inference).to.exist;
     (0, _chai.expect)(inference.inferenceRules.length).to.equal(1);
@@ -96,16 +96,6 @@ describe("ArgdownPreprocessor", function () {
     (0, _chai.expect)(inference.metaData['uses'][0]).to.equal('1');
     (0, _chai.expect)(inference.metaData['uses'][1]).to.equal('2');
     (0, _chai.expect)(inference.metaData['depends on']).to.equal('1');
-  });
-});
-describe("HtmlExport", function () {
-  var htmlExport = new _index.HtmlExport();
-  app.addPlugin(htmlExport, "export-html");
-  it("can export Argdown", function () {
-    var source = "#Title\n\n[Statement]: Hello World!\n +<Argument>\n\n<Argument>: Description";
-    app.parse(source);
-    app.run(['preprocessor', 'export-html']);
-    (0, _chai.expect)(htmlExport.html).to.equal("<h1>Title</h1><div class='statement'><span class='statement definition definiendum'>[<span class='statement title'>Statement</span>]:</span>Hello World!<div class='outgoing support relation'><div class='outgoing support relation-symbol'><span>+</span></div><div class='argument-reference'>&lt;<span class='title'>Argument</span>&gt;:</div></div></div><div class='argument-definition'><span class='argument definiendum'>&lt;<span class='title'>Argument</span>&gt;</span><span class='argument definiens description'>Description</span></div>");
   });
 });
 //# sourceMappingURL=application.spec.js.map

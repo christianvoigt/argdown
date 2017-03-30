@@ -1,9 +1,0 @@
-digraph "Argument Map" {
-
-  n0 [label="Untitled 16", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
-  n1 [label="Untitled 17", shape="box", style="filled,rounded", color="cornflowerblue", fillcolor="white", labelfontcolor="white", type="statement"];
-
-
-  n1 -> n0 [color="green", type="support"];
-
-}

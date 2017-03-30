@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import {ArgdownApplication, ArgdownPreprocessor,HtmlExport} from '../src/index.js';
+import {ArgdownApplication, ArgdownPreprocessor} from '../src/index.js';
 
 let app = new ArgdownApplication();
 
@@ -92,14 +92,4 @@ describe("ArgdownPreprocessor", function() {
   expect(inference.metaData['uses'][1]).to.equal('2');
   expect(inference.metaData['depends on']).to.equal('1');
 });
-});
-describe("HtmlExport", function() {
-  let htmlExport = new HtmlExport();
-  app.addPlugin(htmlExport, "export-html");
-  it("can export Argdown", function(){
-    let source = "#Title\n\n[Statement]: Hello World!\n +<Argument>\n\n<Argument>: Description";
-    app.parse(source);
-    app.run(['preprocessor','export-html']);
-    expect(htmlExport.html).to.equal("<h1>Title</h1><div class='statement'><span class='statement definition definiendum'>[<span class='statement title'>Statement</span>]:</span>Hello World!<div class='outgoing support relation'><div class='outgoing support relation-symbol'><span>+</span></div><div class='argument-reference'>&lt;<span class='title'>Argument</span>&gt;:</div></div></div><div class='argument-definition'><span class='argument definiendum'>&lt;<span class='title'>Argument</span>&gt;</span><span class='argument definiens description'>Description</span></div>");
-  });
 });

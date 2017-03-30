@@ -85,6 +85,12 @@ class HtmlExport{
       outgoingAttackExit : ()=>{
         $.html += "</div>"
       },
+      contradictionEntry : ()=>{
+        $.html += "<div class='contradiction relation'><div class='contradiction relation-symbol'><span>-</span></div>"
+      },
+      contradictionExit : ()=>{
+        $.html += "</div>"
+      },
       relationsEntry : ()=>{
         $.html += "<div class='relations'>";
       },

@@ -15,6 +15,9 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var createToken = chevrotain.createToken;
+var createTokenInstance = chevrotain.createTokenInstance;
+var tokenMatcher = chevrotain.tokenMatcher;
+var getTokenConstructor = chevrotain.getTokenConstructor;
 
 var ArgdownLexer = function () {
     _createClass(ArgdownLexer, [{
@@ -32,8 +35,8 @@ var ArgdownLexer = function () {
             if (matchedTokensIsEmpty) return 0;
 
             var last = _.last(matchedTokens);
-            var currentLine = chevrotain.getEndLine(last);
-            if (chevrotain.tokenMatcher(last, this.Emptyline)) currentLine++;
+            var currentLine = last ? last.endLine : 0;
+            if (last && chevrotain.tokenMatcher(last, this.Emptyline)) currentLine++;
             return currentLine;
         }
     }, {
@@ -41,13 +44,16 @@ var ArgdownLexer = function () {
         value: function emitRemainingDedentTokens(matchedTokens) {
             if (this.indentStack.length <= 1) return;
             var lastToken = _.last(matchedTokens.tokens);
-            var lastOffset = lastToken ? chevrotain.getEndOffset(lastToken) : 0;
-            var lastLine = lastToken ? chevrotain.getEndLine(lastToken) : 0;
-            var lastColumn = lastToken ? chevrotain.getEndColumn(lastToken) : 0;
+            var startOffset = lastToken ? lastToken.endOffset : 0;
+            var endOffset = startOffset;
+            var startLine = lastToken ? lastToken.endLine : 0;
+            var endLine = startLine;
+            var startColumn = lastToken ? lastToken.endColumn : 0;
+            var endColumn = startColumn;
 
             //add remaining Dedents
             while (this.indentStack.length > 1) {
-                matchedTokens.push(new this.Dedent("", lastOffset, lastLine, lastColumn));
+                matchedTokens.push(createTokenInstance(this.Dedent, "", startOffset, endOffset, startLine, endLine, startColumn, endColumn));
                 this.indentStack.pop();
             }
         }
@@ -58,17 +64,20 @@ var ArgdownLexer = function () {
             var lastIndentLevel = _.last(this.indentStack);
             var image = "";
             var last = _.last(matchedTokens);
-            var offset = last ? chevrotain.getEndOffset(last) + 1 : 0;
-            var line = this.getCurrentLine(matchedTokens, groups.nl);
-            var column = last ? chevrotain.getEndColumn(last) + 1 : 0;
+            var startOffset = last ? last.endOffset + 1 : 0;
+            var endOffset = startOffset;
+            var startLine = this.getCurrentLine(matchedTokens, groups.nl);
+            var endLine = startLine;
+            var startColumn = last ? last.endColumn + 1 : 0;
+            var endColumn = startColumn;
             if (currIndentLevel > lastIndentLevel) {
                 this.indentStack.push(currIndentLevel);
-                var indentToken = new this.Indent(image, offset, line, column);
+                var indentToken = createTokenInstance(this.Indent, image, startOffset, endOffset, startLine, endLine, startColumn, endColumn);
                 matchedTokens.push(indentToken);
             } else if (currIndentLevel < lastIndentLevel) {
                 while (this.indentStack.length > 1 && currIndentLevel < _.last(this.indentStack)) {
                     this.indentStack.pop();
-                    var dedentToken = new this.Dedent(image, offset, line, column);
+                    var dedentToken = createTokenInstance(this.Dedent, image, startOffset, endOffset, startLine, endLine, startColumn, endColumn);
                     matchedTokens.push(dedentToken);
                 }
             }
@@ -79,10 +88,13 @@ var ArgdownLexer = function () {
         _classCallCheck(this, ArgdownLexer);
 
         var $ = this;
-        function matchRelation(text, matchedTokens, groups, pattern) {
-            var startsWithNewline = /^(?:\n\r|\n|\r)/.exec(text) != null;
+        $.tokens = []; //token list for the parser
+
+        function matchRelation(text, offset, matchedTokens, groups, pattern) {
+            var remainingText = text.substr(offset);
+            var startsWithNewline = /^(?:\n\r|\n|\r)/.exec(remainingText) != null;
             if (_.isEmpty(matchedTokens) || startsWithNewline) {
-                var match = pattern.exec(text);
+                var match = pattern.exec(remainingText);
                 if (match !== null && match.length == 3) {
                     var indentStr = match[1];
                     $.emitIndentOrDedent(matchedTokens, groups, indentStr);
@@ -96,33 +108,45 @@ var ArgdownLexer = function () {
         var matchIncomingAttack = _.partialRight(matchRelation, /^(?:\n\r|\n|\r)?([' '\t]*)(->)/);
         var matchOutgoingSupport = _.partialRight(matchRelation, /^(?:\n\r|\n|\r)?([' '\t]*)(<?\+)/);
         var matchOutgoingAttack = _.partialRight(matchRelation, /^(?:\n\r|\n|\r)?([' '\t]*)(<?-)/);
+        var matchContradiction = _.partialRight(matchRelation, /^(?:\n\r|\n|\r)?([' '\t]*)(><)/);
 
         $.IncomingSupport = createToken({
             name: "IncomingSupport",
             pattern: matchIncomingSupport
         });
+        $.tokens.push($.IncomingSupport);
 
         $.IncomingAttack = createToken({
             name: "IncomingAttack",
             pattern: matchIncomingAttack
         });
+        $.tokens.push($.IncomingAttack);
 
         $.OutgoingSupport = createToken({
             name: "OutgoingSupport",
             pattern: matchOutgoingSupport
         });
+        $.tokens.push($.OutgoingSupport);
 
         $.OutgoingAttack = createToken({
             name: "OutgoingAttack",
             pattern: matchOutgoingAttack
         });
+        $.tokens.push($.OutgoingAttack);
+
+        $.Contradiction = createToken({
+            name: "Contradiction",
+            pattern: matchContradiction
+        });
+        $.tokens.push($.Contradiction);
 
         var inferenceStartPattern = /^[\n\r|\n|\r]?[' '\t]*-{2}/;
 
-        function matchInferenceStart(text, matchedTokens) {
-            var startsWithNewline = /^[\n\r|\n|\r]/.exec(text) != null;
+        function matchInferenceStart(text, offset, matchedTokens) {
+            var remainingText = text.substr(offset);
+            var startsWithNewline = /^[\n\r|\n|\r]/.exec(remainingText) != null;
             if (_.isEmpty(matchedTokens) || startsWithNewline) {
-                return inferenceStartPattern.exec(text);
+                return inferenceStartPattern.exec(remainingText);
             }
             return null;
         }
@@ -131,39 +155,48 @@ var ArgdownLexer = function () {
             pattern: matchInferenceStart,
             push_mode: "inference_mode"
         });
+        $.tokens.push($.InferenceStart);
 
         $.Colon = createToken({
             name: "Colon",
             pattern: /:/
         });
+        $.tokens.push($.Colon);
         $.ListDelimiter = createToken({
             name: "ListDelimiter",
             pattern: /,/
         });
+        $.tokens.push($.ListDelimiter);
         $.MetadataStatementEnd = createToken({
             name: "MetadataStatementEnd",
             pattern: /;/
         });
+        $.tokens.push($.MetadataStatementEnd);
         $.MetadataStart = createToken({
             name: "MetadataStart",
             pattern: /\(/
         });
+        $.tokens.push($.MetadataStart);
         $.MetadataEnd = createToken({
             name: "MetadataEnd",
             pattern: /\)/
         });
+        $.tokens.push($.MetadataEnd);
 
         $.InferenceEnd = createToken({
             name: "InferenceEnd",
             pattern: /-{2,}/,
             pop_mode: true
         });
+        $.tokens.push($.InferenceEnd);
 
-        function matchListItem(text, matchedTokens, groups, pattern) {
-            var startsWithNewline = /^[\n\r|\n|\r]/.exec(text) != null;
-            var afterEmptyline = _.last(matchedTokens) instanceof $.Emptyline;
+        function matchListItem(text, offset, matchedTokens, groups, pattern) {
+            var remainingText = text.substr(offset);
+            var startsWithNewline = /^[\n\r|\n|\r]/.exec(remainingText) != null;
+            var last = _.last(matchedTokens);
+            var afterEmptyline = last && tokenMatcher(last, $.Emptyline);
             if (_.isEmpty(matchedTokens) || afterEmptyline || startsWithNewline) {
-                var match = pattern.exec(text);
+                var match = pattern.exec(remainingText);
                 if (match !== null) {
                     var indentStr = match[1];
                     $.emitIndentOrDedent(matchedTokens, groups, indentStr);
@@ -180,6 +213,7 @@ var ArgdownLexer = function () {
             name: "OrderedListItem",
             pattern: matchOrderedListItem
         });
+        $.tokens.push($.OrderedListItem);
         //whitespace + * + whitespace (to distinguish list items from bold and italic ranges)
         var unorderedListItemPattern = /^(?:\n\r|\n|\r)?([' '\t]+)\*(?=\s)/; //Newline +
         var matchUnorderedListItem = _.partialRight(matchListItem, unorderedListItemPattern);
@@ -188,14 +222,17 @@ var ArgdownLexer = function () {
             name: "UnorderedListItem",
             pattern: matchUnorderedListItem
         });
+        $.tokens.push($.UnorderedListItem);
 
         var argumentStatementStartPattern = /^(?:\n\r|\n|\r)?[' '\t]*\(\d+\)/;
 
-        function matchArgumentStatementStart(text, matchedTokens) {
-            var startsWithNewline = /^(?:\n\r|\n|\r)/.exec(text) != null;
-            var afterEmptyline = _.last(matchedTokens) instanceof $.Emptyline;
+        function matchArgumentStatementStart(text, offset, matchedTokens) {
+            var remainingText = text.substr(offset);
+            var startsWithNewline = /^(?:\n\r|\n|\r)/.exec(remainingText) != null;
+            var last = _.last(matchedTokens);
+            var afterEmptyline = last && tokenMatcher(last, $.Emptyline);
             if (_.isEmpty(matchedTokens) || afterEmptyline || startsWithNewline) {
-                var match = argumentStatementStartPattern.exec(text);
+                var match = argumentStatementStartPattern.exec(remainingText);
                 if (match) {
                     $.emitRemainingDedentTokens(matchedTokens);
                     return match;
@@ -208,13 +245,15 @@ var ArgdownLexer = function () {
             name: "ArgumentStatementStart",
             pattern: matchArgumentStatementStart
         });
+        $.tokens.push($.ArgumentStatementStart);
 
         var emptylinePattern = /^((?:\n\r|\n|\r){2,})/; //two or more linebreaks
-        function matchEmptyline(text, matchedTokens) {
+        function matchEmptyline(text, offset, matchedTokens) {
+            var remainingText = text.substr(offset);
             var last = _.last(matchedTokens);
             //ignore Emptylines after first one (relevant for Emptylines after ignored comments)
-            if (last instanceof $.Emptyline) return null;
-            var match = emptylinePattern.exec(text);
+            if (last && tokenMatcher(last, $.Emptyline)) return null;
+            var match = emptylinePattern.exec(remainingText);
             if (match !== null) {
                 $.emitRemainingDedentTokens(matchedTokens);
                 //TODO: emitRemainingRanges (to be more resistant against unclosed bold and italic ranges)
@@ -226,72 +265,85 @@ var ArgdownLexer = function () {
             name: "Emptyline",
             pattern: matchEmptyline
         });
+        $.tokens.push($.Emptyline);
 
         //Indent and Dedent are never matched with their own patterns, instead they get matched in the relations custom patterns
         $.Indent = createToken({
             name: "Indent",
             pattern: chevrotain.Lexer.NA
         });
+        $.tokens.push($.Indent);
+
         $.Dedent = createToken({
             name: "Dedent",
             pattern: chevrotain.Lexer.NA
         });
+        $.tokens.push($.Dedent);
 
         $.StatementDefinition = createToken({
             name: "StatementDefinition",
             pattern: /\[.+?\]\:/
         });
+        $.tokens.push($.StatementDefinition);
 
         $.StatementReference = createToken({
             name: "StatementReference",
             pattern: /\[.+?\]/
         });
+        $.tokens.push($.StatementReference);
+
         $.StatementMention = createToken({
             name: "StatementMention",
             pattern: /\@\[.+?\][ \t]?/
         });
+        $.tokens.push($.StatementMention);
 
         $.ArgumentDefinition = createToken({
             name: "ArgumentDefinition",
             pattern: /\<.+?\>\:/
         });
+        $.tokens.push($.ArgumentDefinition);
 
         $.ArgumentReference = createToken({
             name: "ArgumentReference",
             pattern: /\<.+?\>/
         });
+        $.tokens.push($.ArgumentReference);
 
         $.ArgumentMention = createToken({
             name: "ArgumentMention",
             pattern: /\@\<.+?\>[ \t]?/
         });
+        $.tokens.push($.ArgumentMention);
 
         var headingPattern = /^(#+)/;
+        function matchHeadingStart(text, offset, matchedTokens) {
+            var remainingText = text.substr(offset);
+            var last = _.last(matchedTokens);
+            var afterEmptyline = last && tokenMatcher(last, $.Emptyline);
 
-        function matchHeadingStart(text, matchedTokens) {
-            var afterEmptyline = _.last(matchedTokens) instanceof $.Emptyline;
-
-            if (_.isEmpty(matchedTokens) || afterEmptyline) {
-                return headingPattern.exec(text);
+            if (!last || afterEmptyline) {
+                return headingPattern.exec(remainingText);
             }
             return null;
         }
-
         $.HeadingStart = createToken({
             name: "HeadingStart",
             pattern: matchHeadingStart
         });
+        $.tokens.push($.HeadingStart);
 
         //BOLD and ITALIC ranges
-        function matchBoldOrItalicStart(text, matchedTokens, groups, pattern, rangeType) {
-            var match = pattern.exec(text);
+        function matchBoldOrItalicStart(text, offset, matchedTokens, groups, pattern, rangeType) {
+            var remainingText = text.substr(offset);
+            var match = pattern.exec(remainingText);
             if (match != null) {
                 $.rangesStack.push(rangeType);
             }
             return match;
         }
 
-        function matchBoldOrItalicEnd(text, matchedTokens, groups, pattern, rangeType) {
+        function matchBoldOrItalicEnd(text, offset, matchedTokens, groups, pattern, rangeType) {
             var lastRange = _.last($.rangesStack);
             if (lastRange != rangeType) return null;
             //first check if the last match was skipped Whitespace
@@ -301,7 +353,8 @@ var ArgdownLexer = function () {
             if (!lastMatched || lastSkipped && chevrotain.getEndOffset(lastSkipped) > chevrotain.getEndOffset(lastMatched)) {
                 return null;
             }
-            var match = pattern.exec(text);
+            var remainingText = text.substr(offset);
+            var match = pattern.exec(remainingText);
 
             if (match != null) {
                 $.rangesStack.pop();
@@ -325,69 +378,83 @@ var ArgdownLexer = function () {
             name: "AsteriskBoldStart",
             pattern: matchAsteriskBoldStart
         });
+        $.tokens.push($.AsteriskBoldStart);
 
         $.AsteriskBoldEnd = createToken({
             name: "AsteriskBoldEnd",
             pattern: matchAsteriskBoldEnd
         });
+        $.tokens.push($.AsteriskBoldEnd);
+
         $.UnderscoreBoldStart = createToken({
             name: "UnderscoreBoldStart",
             pattern: matchUnderscoreBoldStart
         });
+        $.tokens.push($.UnderscoreBoldStart);
 
         $.UnderscoreBoldEnd = createToken({
             name: "UnderscoreBoldEnd",
             pattern: matchUnderscoreBoldEnd
         });
+        $.tokens.push($.UnderscoreBoldEnd);
 
         $.AsteriskItalicStart = createToken({
             name: "AsteriskItalicStart",
             pattern: matchAsteriskItalicStart
         });
+        $.tokens.push($.AsteriskItalicStart);
 
         $.AsteriskItalicEnd = createToken({
             name: "AsteriskItalicEnd",
             pattern: matchAsteriskItalicEnd
         });
+        $.tokens.push($.AsteriskItalicEnd);
 
         $.UnderscoreItalicStart = createToken({
             name: "UnderscoreItalicStart",
             pattern: matchUnderscoreItalicStart
         });
+        $.tokens.push($.UnderscoreItalicStart);
 
         $.UnderscoreItalicEnd = createToken({
             name: "UnderscoreItalicEnd",
             pattern: matchUnderscoreItalicEnd
         });
+        $.tokens.push($.UnderscoreItalicEnd);
 
         $.Comment = createToken({
             name: "Comment",
             pattern: /<!--(?:.|\n|\r)*?-->/,
             group: chevrotain.Lexer.SKIPPED
         });
+        $.tokens.push($.Comment);
 
         $.Link = createToken({
             name: "Link",
             pattern: /\[[^\]]+?\]\([^\)]+?\)[ \t]?/
         });
+        $.tokens.push($.Link);
 
         $.Newline = createToken({
             name: "Newline",
             pattern: /(?:\n\r|\n|\r)/,
             group: chevrotain.Lexer.SKIPPED
         });
+        $.tokens.push($.Newline);
 
         $.Spaces = createToken({
             name: "Spaces",
             pattern: /( |\t)+/,
             group: chevrotain.Lexer.SKIPPED
         });
+        $.tokens.push($.Spaces);
 
         //The rest of the text that is free of any Argdown syntax
         $.Freestyle = createToken({
             name: "Freestyle",
             pattern: /[^\@\*\_\[\]\,\:\;\<\/\>\-\n\r\(\)]+/
         });
+        $.tokens.push($.Freestyle);
 
         //Freestyle text needs to be "cut up" by these control characters so that the other rules get a chance to succeed.
         //Otherwise, every line would simply be lexed as a single Freestyle token.
@@ -397,27 +464,15 @@ var ArgdownLexer = function () {
             name: "UnusedControlChar",
             pattern: /[\@\*\_\[\]\,\:\;\<\/\>\-\(\)][ \t]?/
         });
-
-        $.tokens = [$.Comment, $.Emptyline, $.Dedent, $.Indent, $.InferenceStart, //needs to be lexed before OutgoingAttack (- vs --)
-        $.InferenceEnd, $.MetadataStatementEnd, $.MetadataStart, $.MetadataEnd, $.ListDelimiter, $.Colon, $.IncomingSupport, $.IncomingAttack, $.OutgoingSupport, $.OutgoingAttack, $.HeadingStart, $.ArgumentStatementStart, $.OrderedListItem, $.UnorderedListItem,
-        //The ends of Bold and italic ranges need to be lexed before the starts
-        $.AsteriskBoldEnd, //BoldEnd needs to be lexed before ItalicEnd (** vs *)
-        $.UnderscoreBoldEnd, //BoldEnd needs to be lexed before ItalicEnd (__ vs _)
-        $.AsteriskItalicEnd, $.UnderscoreItalicEnd,
-        //The starts of Bold and italic ranges need to be lexed after the ends
-        $.AsteriskBoldStart, //BoldStart needs to be lexed before ItalicStart (** vs *)
-        $.UnderscoreBoldStart, //BoldStart needs to be lexed before ItalicStart (__ vs _)
-        $.AsteriskItalicStart, $.UnderscoreItalicStart, $.Link, //needs to be lexed before StatementReference
-        $.StatementMention, $.StatementDefinition, $.StatementReference, $.ArgumentMention, $.ArgumentDefinition, $.ArgumentReference, $.Newline, $.Spaces, $.Freestyle, $.UnusedControlChar];
+        $.tokens.push($.UnusedControlChar);
 
         var lexerConfig = {
-
             modes: {
                 "default_mode": [$.Comment, $.Emptyline,
                 // Relation tokens must appear before Spaces, otherwise all indentation will always be consumed as spaces.
                 // Dedent must appear before Indent for handling zero spaces dedents.
                 $.Dedent, $.Indent, $.InferenceStart, //needs to be lexed before OutgoingAttack (- vs --)
-                $.IncomingSupport, $.IncomingAttack, $.OutgoingSupport, $.OutgoingAttack, $.HeadingStart, $.ArgumentStatementStart, $.OrderedListItem, $.UnorderedListItem,
+                $.IncomingSupport, $.IncomingAttack, $.OutgoingSupport, $.OutgoingAttack, $.Contradiction, $.HeadingStart, $.ArgumentStatementStart, $.OrderedListItem, $.UnorderedListItem,
                 //The ends of Bold and italic ranges need to be lexed before the starts
                 $.AsteriskBoldEnd, //BoldEnd needs to be lexed before ItalicEnd (** vs *)
                 $.UnderscoreBoldEnd, //BoldEnd needs to be lexed before ItalicEnd (__ vs _)
@@ -447,7 +502,7 @@ var ArgdownLexer = function () {
                 for (var _iterator = tokens[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                     var token = _step.value;
 
-                    console.log(token.constructor.name + " " + token.image);
+                    console.log(getTokenConstructor(token).tokenName + " " + token.image);
                 }
             } catch (err) {
                 _didIteratorError = true;

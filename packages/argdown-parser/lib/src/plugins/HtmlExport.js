@@ -109,6 +109,12 @@ var HtmlExport = function () {
       outgoingAttackExit: function outgoingAttackExit() {
         $.html += "</div>";
       },
+      contradictionEntry: function contradictionEntry() {
+        $.html += "<div class='contradiction relation'><div class='contradiction relation-symbol'><span>-</span></div>";
+      },
+      contradictionExit: function contradictionExit() {
+        $.html += "</div>";
+      },
       relationsEntry: function relationsEntry() {
         $.html += "<div class='relations'>";
       },

@@ -91,6 +91,7 @@ class ArgdownLexer {
         let matchIncomingAttack = _.partialRight(matchRelation, /^(?:\n\r|\n|\r)?([' '\t]*)(->)/);
         let matchOutgoingSupport = _.partialRight(matchRelation, /^(?:\n\r|\n|\r)?([' '\t]*)(<?\+)/);
         let matchOutgoingAttack = _.partialRight(matchRelation, /^(?:\n\r|\n|\r)?([' '\t]*)(<?-)/);
+        let matchContradiction = _.partialRight(matchRelation, /^(?:\n\r|\n|\r)?([' '\t]*)(><)/);
 
         $.IncomingSupport = createToken({
             name: "IncomingSupport",
@@ -115,6 +116,12 @@ class ArgdownLexer {
             pattern: matchOutgoingAttack
         });
         $.tokens.push($.OutgoingAttack);
+
+        $.Contradiction = createToken({
+            name: "Contradiction",
+            pattern: matchContradiction
+        });
+        $.tokens.push($.Contradiction);
 
         const inferenceStartPattern = /^[\n\r|\n|\r]?[' '\t]*-{2}/;
 
@@ -295,7 +302,6 @@ class ArgdownLexer {
         $.tokens.push($.ArgumentMention);
 
         const headingPattern = /^(#+)/;
-
         function matchHeadingStart(text, offset, matchedTokens) {
             let remainingText = text.substr(offset);
             let last = _.last(matchedTokens);
@@ -307,7 +313,6 @@ class ArgdownLexer {
             return null;
 
         }
-
         $.HeadingStart = createToken({
             name: "HeadingStart",
             pattern: matchHeadingStart
@@ -451,7 +456,6 @@ class ArgdownLexer {
         $.tokens.push($.UnusedControlChar);
 
         let lexerConfig = {
-
             modes: {
                 "default_mode": [
                     $.Comment,
@@ -465,6 +469,7 @@ class ArgdownLexer {
                     $.IncomingAttack,
                     $.OutgoingSupport,
                     $.OutgoingAttack,
+                    $.Contradiction,
                     $.HeadingStart,
                     $.ArgumentStatementStart,
                     $.OrderedListItem,
@@ -512,7 +517,6 @@ class ArgdownLexer {
         this._lexer = new chevrotain.Lexer(lexerConfig);
 
     }
-
     logTokens(tokens) {
         for (let token of tokens) {
             console.log(getTokenConstructor(token).tokenName + " " + token.image);
@@ -530,7 +534,6 @@ class ArgdownLexer {
         }
         return lexResult;
     }
-
 }
 
 module.exports = {

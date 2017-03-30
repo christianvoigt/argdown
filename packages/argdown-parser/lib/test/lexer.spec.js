@@ -8,13 +8,16 @@ var _fs2 = _interopRequireDefault(_fs);
 
 var _ArgdownLexer = require('../src/ArgdownLexer.js');
 
+var _chevrotain = require('chevrotain');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var i = 0; //import { before, after, describe, it } from 'mocha';
-
+//import { before, after, describe, it } from 'mocha';
+var i = 0;
 var currentTokens = null;
 function expectToken(tokenType) {
-  (0, _chai.expect)(currentTokens[i]).to.be.an.instanceof(tokenType);
+  //expect(currentTokens[i]).to.be.an.instanceof(tokenType);
+  (0, _chai.expect)((0, _chevrotain.tokenMatcher)(currentTokens[i], tokenType)).to.be.true;
   i++;
 }
 function startTest(tokens) {

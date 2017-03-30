@@ -259,6 +259,8 @@ class ArgdownParser extends chevrotain.Parser {
                 ALT: () => $.SUBRULE($.outgoingSupport)
             }, {
                 ALT: () => $.SUBRULE($.outgoingAttack)
+            },{
+                ALT: () => $.SUBRULE($.contradiction)
             }]));
             children = children.concat(atLeastOne);
             children.push($.CONSUME(lexer.Dedent));
@@ -329,6 +331,16 @@ class ArgdownParser extends chevrotain.Parser {
                 children: children
             };
         });
+        $.contradiction = $.RULE("contradiction", () => {
+            let children = [];
+            children.push($.CONSUME(lexer.Contradiction));
+            children.push($.SUBRULE($.statement));
+            return {
+                name: 'contradiction',
+                children: children
+            };
+        });
+
         $.bold = $.RULE("bold",()=>{
           let children = [];
           $.OR([{

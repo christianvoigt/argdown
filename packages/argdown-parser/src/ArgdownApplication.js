@@ -91,7 +91,7 @@ class ArgdownApplication{
       this.parserErrors = this.parser.errors;
       this.ast = this.parser.argdown();
   }
-  run(processorsToRun){
+  run(processorsToRun, verbose){
     let data = {
       ast : this.ast,
       parserErrors : this.parserErrors,
@@ -111,17 +111,23 @@ class ArgdownApplication{
     for(let processorId of processorsToRun){
       let processor = this.processors[processorId];
       if(!processor){
-        console.log("Processor not found: "+processorId);
+        if(verbose){
+          console.log("Processor not found: "+processorId);
+        }
         continue;
       }
-      console.log("Running processor: "+processorId);
+      if(verbose){
+        console.log("Running processor: "+processorId);
+      }
 
       if(processor.walker){
         processor.walker.walk(this.ast);
       }
 
       for(let plugin of processor.plugins){
-        console.log("Running plugin: "+plugin.name);
+        if(verbose){
+          console.log("Running plugin: "+plugin.name);          
+        }
         if(_.isFunction(plugin.run)){
           let newData = plugin.run(data);
           if(_.isObject(newData)){

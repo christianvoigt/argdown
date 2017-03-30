@@ -5,11 +5,41 @@ import {EquivalenceClass} from '../model/EquivalenceClass.js';
 import {tokenMatcher} from 'chevrotain';
 import {ArgdownLexer} from './../ArgdownLexer.js';
 
+const RelationObjectTypes = Object.freeze({CONCLUSION: Symbol("CONCLUSION"), STATEMENT: Symbol("STATEMENT"), RECONSTRUCTED_ARGUMENT: Symbol("RECONSTRUCTED ARGUMENT"), SKETCHED_ARGUMENT: Symbol("SKETCHED ARGUMENT")});
+
 class ArgdownPreprocessor{
   run(result){
+    for(let relation of this.relations){
+      let fromType = this.getElementType(relation.from);
+      let toType = this.getElementType(relation.to);
+      if(fromType == RelationObjectTypes.SKETCHED_ARGUMENT ||toType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT ||toType == RelationObjectTypes.SKETCHED_ARGUMENT){
+        relation.status = "sketched";
+      }else if(fromType == RelationObjectTypes.STATEMENT ||fromType == RelationObjectTypes.CONCLUSION ||fromType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT){
+        relation.status = "reconstructed";
+      }
+    }
+
+
+    result.relations = this.relations;
     result.statements = this.statements;
     result.arguments = this.arguments;
     return result;
+  }
+  getElementType(obj){
+    if(obj instanceof Argument){
+      if(obj.pcs && obj.pcs.length > 0){
+        return RelationObjectTypes.SKETCHED_ARGUMENT;
+      }else{
+        return RelationObjectTypes.RECONSTRUCTED_ARGUMENT;
+      }
+    }else if(obj instanceof Statement){
+      if(obj.isUsedConclusion){
+        return RelationObjectTypes.CONCLUSION;
+      }else{
+        return RelationObjectTypes.STATEMENT;
+      }
+    }
+    return null;
   }
   constructor(){
     this.name = "ArgdownPreprocessor";
@@ -50,10 +80,12 @@ class ArgdownPreprocessor{
     let rangesStack = [];
     let parentsStack = [];
     let currentRelation = null;
+    let inStatementTree = false;
 
     function onArgdownEntry(){
       $.statements = {};
       $.arguments = {};
+      $.relations = [];
       currentStatement = null;
       currentStatementOrArgument = null;
       currentArgumentReconstruction = null;
@@ -62,11 +94,15 @@ class ArgdownPreprocessor{
       rangesStack = [];
       parentsStack = [];
       currentRelation = null;
+      inStatementTree = false;
     }
     function onStatementEntry(node, parentNode){
       currentStatement = new Statement();
       if(parentNode.name == 'argdown'){
-          currentStatement.role = "thesis";
+          currentStatement.isRootOfStatementTree = true;
+          inStatementTree = true;
+      }else if(inStatementTree){
+        currentStatement.isChildOfStatementTree = true;
       }
       currentStatementOrArgument = currentStatement;
       node.statement = currentStatement;
@@ -76,10 +112,15 @@ class ArgdownPreprocessor{
       if(!statement.title || statement.title == ''){
         statement.title = getUniqueTitle();
       }
+      if(statement.isRootOfStatementTree){
+        inStatementTree = false;
+      }
       let equivalenceClass = getEquivalenceClass(statement.title);
       equivalenceClass.members.push(statement);
-      if(statement.role == "thesis"){
-        equivalenceClass.isUsedAsThesis = true; //members are used outside of argument reconstructions (not as premise or conclusion)
+      if(statement.isRootOfStatementTree){
+        equivalenceClass.isUsedAsRootOfStatementTree = true; //members are used outside of argument reconstructions (not as premise or conclusion)
+      }else if(statement.isChildOfStatementTree){
+        equivalenceClass.isUsedAsChildOfStatementTree;
       }
       currentStatement = null;
     }
@@ -234,6 +275,7 @@ class ArgdownPreprocessor{
         else {
           relation.from = target;
         }
+        $.relations.push(relation);
         relation.from.relations.push(relation);
         relation.to.relations.push(relation);
       }
@@ -258,6 +300,12 @@ class ArgdownPreprocessor{
       currentRelation = {type:"attack", to:target};
       node.relation = currentRelation;
     }
+    function onContradictionEntry(node){
+      let target = _.last(parentsStack);
+      currentRelation = {type:"contradiction", from:target};
+      node.relation = currentRelation;
+    }
+
     function onRelationsEntry(){
       parentsStack.push(getRelationTarget(currentStatementOrArgument));
     }
@@ -301,16 +349,19 @@ class ArgdownPreprocessor{
         //first node is ArgdownLexer.ArgumentStatementStart
         let statementNode = node.children[1];
         let statement = statementNode.statement;
+        let ec = getEquivalenceClass(statement.title);
         statement.role = "premise";
         if(childIndex > 0){
           let precedingSibling = parentNode.children[childIndex - 1];
           if(precedingSibling.name == 'inference'){
             statement.role = "conclusion";
+            ec.isUsedAsConclusion = true;
             statement.inference = precedingSibling.inference;
           }
         }
-        let ec = getEquivalenceClass(statement.title);
-        ec.isUsedInArgument = true;
+        if(statement.role == "premise"){
+          ec.isUsedAsPremise = true;
+        }
         currentArgumentReconstruction.pcs.push(statement);
         node.statement = statement;
         node.statementNr = currentArgumentReconstruction.pcs.length;
@@ -372,6 +423,8 @@ class ArgdownPreprocessor{
       outgoingSupportExit : onRelationExit,
       outgoingAttackEntry : onOutgoingAttackEntry,
       outgoingAttackExit : onRelationExit,
+      contradictionEntry : onContradictionEntry,
+      contradictionExit : onRelationExit,
       relationsEntry : onRelationsEntry,
       relationsExist : onRelationsExit,
       freestyleTextEntry : onFreestyleTextEntry,
@@ -402,5 +455,6 @@ class ArgdownPreprocessor{
   }
 }
 module.exports = {
-  ArgdownPreprocessor: ArgdownPreprocessor
+  ArgdownPreprocessor: ArgdownPreprocessor,
+  RelationObjectTypes : RelationObjectTypes
 }

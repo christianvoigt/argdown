@@ -1,32 +1,20 @@
 {
-  "name": "argdown-parser-chevrotain-test",
+  "name": "argdown-parser",
   "version": "0.0.2",
   "license": "MIT",
   "main": "lib/src/index.js",
   "dependencies": {
-    "babel-eslint": "^7.2.1",
     "chance": "^1.0.6",
     "chevrotain": "^0.27.0",
-    "chokidar": "^1.6.1",
-    "commander": "^2.9.0",
-    "commander-file": "0.0.5",
-    "eslint": "^3.18.0",
-    "eslint-loader": "^1.7.0",
     "eventemitter3": "^2.0.2",
     "glob": "^7.1.1",
-    "karma-mocha-reporter": "^2.2.3",
     "lodash": "^4.17.4",
     "mkdirp": "^0.5.1",
-    "source-map-support": "^0.4.14",
-    "webpack": "^2.3.2",
-    "xmlbuilder": "^8.2.2"
-  },
-  "bin": {
-    "argdown": "./lib/src/cli/cli.js"
+    "source-map-support": "^0.4.14"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/christianvoigt/argdown-parser-chevrotain-test"
+    "url": "https://github.com/christianvoigt/argdown-parser"
   },
   "author": {
     "name": "Christian Voigt",
@@ -35,7 +23,6 @@
   "scripts": {
     "build": "npm run build:src && npm run build:tests && npm run build:copy-argdown-files && npm run build:copy-css-files",
     "build:src": "babel src/ -d lib/src --source-maps",
-    "build:cli": "babel src/cli -d lib/src/cli --source-maps",
     "build:tests": "babel test/ -d lib/test --source-maps",
     "build:copy-argdown-files": "cpx \"test/**/*.{ad,argdown}\" lib/test --verbose",
     "build:copy-css-files": "cpx \"src/**/*.{css}\" lib/src --verbose",
@@ -55,13 +42,11 @@
     "babel-cli": "^6.23.0",
     "babel-core": "^6.23.1",
     "babel-eslint": "^7.1.1",
-    "babel-loader": "^6.3.0",
     "babel-preset-es2015": "^6.22.0",
     "babel-preset-es2016": "^6.22.0",
     "chai": "^3.5.0",
     "cpx": "^1.5.0",
     "eslint": "^3.15.0",
-    "eslint-loader": "^1.6.1",
     "karma": "^1.4.1",
     "karma-chai": "^0.1.0",
     "karma-mocha": "^1.3.0",
@@ -70,8 +55,6 @@
     "karma-sinon": "^1.0.5",
     "mocha": "^3.2.0",
     "sinon": "^1.17.7",
-    "source-map-support": "^0.4.11",
-    "webpack": "^2.2.1",
-    "yargs": "^6.6.0"
+    "source-map-support": "^0.4.11"
   }
 }

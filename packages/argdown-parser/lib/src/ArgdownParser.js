@@ -25,6 +25,7 @@ var ArgdownParser = function (_chevrotain$Parser) {
         var _this = _possibleConstructorReturn(this, (ArgdownParser.__proto__ || Object.getPrototypeOf(ArgdownParser)).call(this, input, lexer.tokens));
 
         var $ = _this;
+        $.lexer = lexer;
 
         $.argdown = $.RULE("argdown", function () {
             var atLeastOne = $.AT_LEAST_ONE_SEP({
@@ -320,6 +321,10 @@ var ArgdownParser = function (_chevrotain$Parser) {
                     ALT: function ALT() {
                         return $.SUBRULE($.outgoingAttack);
                     }
+                }, {
+                    ALT: function ALT() {
+                        return $.SUBRULE($.contradiction);
+                    }
                 }]);
             });
             children = children.concat(atLeastOne);
@@ -399,6 +404,16 @@ var ArgdownParser = function (_chevrotain$Parser) {
                 children: children
             };
         });
+        $.contradiction = $.RULE("contradiction", function () {
+            var children = [];
+            children.push($.CONSUME(lexer.Contradiction));
+            children.push($.SUBRULE($.statement));
+            return {
+                name: 'contradiction',
+                children: children
+            };
+        });
+
         $.bold = $.RULE("bold", function () {
             var children = [];
             $.OR([{
@@ -509,8 +524,8 @@ var ArgdownParser = function (_chevrotain$Parser) {
             if (value === undefined) {
                 str += "undefined";
                 return str;
-            } else if (value instanceof _chevrotain.Token) {
-                str += value.constructor.name;
+            } else if (value.tokenType) {
+                str += (0, _chevrotain.getTokenConstructor)(value).tokenName;
                 return str;
             }
             str += value.name;

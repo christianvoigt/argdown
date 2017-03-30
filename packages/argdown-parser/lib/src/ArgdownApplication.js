@@ -201,7 +201,7 @@ var ArgdownApplication = function () {
     }
   }, {
     key: "run",
-    value: function run(processorsToRun) {
+    value: function run(processorsToRun, verbose) {
       var data = {
         ast: this.ast,
         parserErrors: this.parserErrors,
@@ -228,10 +228,14 @@ var ArgdownApplication = function () {
 
           var processor = this.processors[processorId];
           if (!processor) {
-            console.log("Processor not found: " + processorId);
+            if (verbose) {
+              console.log("Processor not found: " + processorId);
+            }
             continue;
           }
-          console.log("Running processor: " + processorId);
+          if (verbose) {
+            console.log("Running processor: " + processorId);
+          }
 
           if (processor.walker) {
             processor.walker.walk(this.ast);
@@ -245,7 +249,9 @@ var ArgdownApplication = function () {
             for (var _iterator6 = processor.plugins[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
               var plugin = _step6.value;
 
-              console.log("Running plugin: " + plugin.name);
+              if (verbose) {
+                console.log("Running plugin: " + plugin.name);
+              }
               if (_.isFunction(plugin.run)) {
                 var newData = plugin.run(data);
                 if (_.isObject(newData)) {

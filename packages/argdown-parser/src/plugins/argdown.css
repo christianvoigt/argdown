@@ -35,7 +35,7 @@
     color: green;
     background-color: lightgreen;
 }
-.attack.relation-symbol {
+.attack.relation-symbol, .contradiction.relation-symbol {
     color: red;
     background-color: lightpink;
 }
