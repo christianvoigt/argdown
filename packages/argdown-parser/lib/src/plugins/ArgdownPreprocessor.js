@@ -20,7 +20,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var RelationObjectTypes = Object.freeze({ CONCLUSION: Symbol("CONCLUSION"), STATEMENT: Symbol("STATEMENT"), RECONSTRUCTED_ARGUMENT: Symbol("RECONSTRUCTED ARGUMENT"), SKETCHED_ARGUMENT: Symbol("SKETCHED ARGUMENT") });
+var RelationObjectTypes = Object.freeze({ STATEMENT: Symbol("STATEMENT"), RECONSTRUCTED_ARGUMENT: Symbol("RECONSTRUCTED ARGUMENT"), SKETCHED_ARGUMENT: Symbol("SKETCHED ARGUMENT") });
 
 var ArgdownPreprocessor = function () {
   _createClass(ArgdownPreprocessor, [{
@@ -38,7 +38,7 @@ var ArgdownPreprocessor = function () {
           var toType = this.getElementType(relation.to);
           if (fromType == RelationObjectTypes.SKETCHED_ARGUMENT || toType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT || toType == RelationObjectTypes.SKETCHED_ARGUMENT) {
             relation.status = "sketched";
-          } else if (fromType == RelationObjectTypes.STATEMENT || fromType == RelationObjectTypes.CONCLUSION || fromType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT) {
+          } else if (fromType == RelationObjectTypes.STATEMENT || fromType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT) {
             relation.status = "reconstructed";
           }
         }
@@ -67,16 +67,12 @@ var ArgdownPreprocessor = function () {
     value: function getElementType(obj) {
       if (obj instanceof _Argument.Argument) {
         if (obj.pcs && obj.pcs.length > 0) {
-          return RelationObjectTypes.SKETCHED_ARGUMENT;
-        } else {
           return RelationObjectTypes.RECONSTRUCTED_ARGUMENT;
-        }
-      } else if (obj instanceof _Statement.Statement) {
-        if (obj.isUsedConclusion) {
-          return RelationObjectTypes.CONCLUSION;
         } else {
-          return RelationObjectTypes.STATEMENT;
+          return RelationObjectTypes.SKETCHED_ARGUMENT;
         }
+      } else if (obj instanceof _EquivalenceClass.EquivalenceClass) {
+        return RelationObjectTypes.STATEMENT;
       }
       return null;
     }
@@ -161,7 +157,7 @@ var ArgdownPreprocessor = function () {
       if (statement.isRootOfStatementTree) {
         equivalenceClass.isUsedAsRootOfStatementTree = true; //members are used outside of argument reconstructions (not as premise or conclusion)
       } else if (statement.isChildOfStatementTree) {
-        equivalenceClass.isUsedAsChildOfStatementTree;
+        equivalenceClass.isUsedAsChildOfStatementTree = true;
       }
       currentStatement = null;
     }
@@ -200,19 +196,23 @@ var ArgdownPreprocessor = function () {
       currentArgument = $.arguments[title];
       if (!currentArgument) {
         currentArgument = new _Argument.Argument();
-        currentStatementOrArgument = currentArgument;
-        currentArgument.title = title;
+        if (!title) {
+          currentArgument.title = getUniqueTitle();
+        } else {
+          currentArgument.title = title;
+        }
         //we are in the ArgumentDefinition token, parentNode is the argumentDefinition rule
         $.arguments[currentArgument.title] = currentArgument;
       }
-      currentStatement = new _Statement.Statement();
-      currentArgument.descriptions.push(currentStatement);
+      currentStatementOrArgument = currentArgument;
     }
     function onArgumentDefinitionEntry(node, parentNode) {
       var match = argumentDefinitionPattern.exec(node.image);
       if (match != null) {
         var title = match[1];
         updateArgument(title);
+        currentStatement = new _Statement.Statement();
+        currentArgument.descriptions.push(currentStatement);
         parentNode.argument = currentArgument;
       }
     }
@@ -335,9 +335,41 @@ var ArgdownPreprocessor = function () {
         if (relation.from) relation.to = target;else {
           relation.from = target;
         }
-        $.relations.push(relation);
-        relation.from.relations.push(relation);
-        relation.to.relations.push(relation);
+
+        var relationExists = false;
+        var _iteratorNormalCompletion3 = true;
+        var _didIteratorError3 = false;
+        var _iteratorError3 = undefined;
+
+        try {
+          for (var _iterator3 = relation.from.relations[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+            var existingRelation = _step3.value;
+
+            if (relation.to == existingRelation.to && relation.type == existingRelation.type) {
+              relationExists = true;
+              break;
+            }
+          }
+        } catch (err) {
+          _didIteratorError3 = true;
+          _iteratorError3 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion3 && _iterator3.return) {
+              _iterator3.return();
+            }
+          } finally {
+            if (_didIteratorError3) {
+              throw _iteratorError3;
+            }
+          }
+        }
+
+        if (!relationExists) {
+          $.relations.push(relation);
+          relation.from.relations.push(relation);
+          relation.to.relations.push(relation);
+        }
       }
     }
     function onIncomingSupportEntry(node) {
@@ -396,12 +428,20 @@ var ArgdownPreprocessor = function () {
         }
       }
       if (!argument) {
-        argument = new _Argument.Argument();
-        argument.title = getUniqueTitle();
-        $.arguments[argument.title] = argument;
+        updateArgument();
+      }
+      //if there is a previous reconstruction, overwrite it
+      if (argument.pcs.length > 0) {
+        //TODO: throw error
+        argument.pcs = [];
       }
       node.argument = argument;
       currentArgumentReconstruction = argument;
+    }
+    function onArgumentExit() {
+      currentStatement = null;
+      currentArgument = null;
+      currentArgumentReconstruction = null;
     }
     function onArgumentStatementExit(node, parentNode, childIndex) {
       if (node.children.length > 1) {
@@ -431,29 +471,29 @@ var ArgdownPreprocessor = function () {
       node.inference = currentInference;
     }
     function onInferenceRulesExit(node) {
-      var _iteratorNormalCompletion3 = true;
-      var _didIteratorError3 = false;
-      var _iteratorError3 = undefined;
+      var _iteratorNormalCompletion4 = true;
+      var _didIteratorError4 = false;
+      var _iteratorError4 = undefined;
 
       try {
-        for (var _iterator3 = node.children[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-          var child = _step3.value;
+        for (var _iterator4 = node.children[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+          var child = _step4.value;
 
           if (child.name == 'freestyleText') {
             currentInference.inferenceRules.push(child.text.trim());
           }
         }
       } catch (err) {
-        _didIteratorError3 = true;
-        _iteratorError3 = err;
+        _didIteratorError4 = true;
+        _iteratorError4 = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion3 && _iterator3.return) {
-            _iterator3.return();
+          if (!_iteratorNormalCompletion4 && _iterator4.return) {
+            _iterator4.return();
           }
         } finally {
-          if (_didIteratorError3) {
-            throw _iteratorError3;
+          if (_didIteratorError4) {
+            throw _iteratorError4;
           }
         }
       }
@@ -483,6 +523,7 @@ var ArgdownPreprocessor = function () {
       statementEntry: onStatementEntry,
       statementExit: onStatementExit,
       argumentEntry: onArgumentEntry,
+      argumentExist: onArgumentExit,
       argumentStatementExit: onArgumentStatementExit,
       inferenceEntry: onInferenceEntry,
       inferenceRulesExit: onInferenceRulesExit,
@@ -519,76 +560,25 @@ var ArgdownPreprocessor = function () {
   _createClass(ArgdownPreprocessor, [{
     key: 'logRelations',
     value: function logRelations(data) {
-      var _iteratorNormalCompletion4 = true;
-      var _didIteratorError4 = false;
-      var _iteratorError4 = undefined;
-
-      try {
-        for (var _iterator4 = Object.keys(data.statements)[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-          var statementKey = _step4.value;
-
-          var statement = data.statements[statementKey];
-          var _iteratorNormalCompletion6 = true;
-          var _didIteratorError6 = false;
-          var _iteratorError6 = undefined;
-
-          try {
-            for (var _iterator6 = statement.relations[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-              var relation = _step6.value;
-
-              if (relation.from == statement) {
-                console.log("Relation from: " + relation.from.title + " to: " + relation.to.title + " type: " + relation.type);
-              }
-            }
-          } catch (err) {
-            _didIteratorError6 = true;
-            _iteratorError6 = err;
-          } finally {
-            try {
-              if (!_iteratorNormalCompletion6 && _iterator6.return) {
-                _iterator6.return();
-              }
-            } finally {
-              if (_didIteratorError6) {
-                throw _iteratorError6;
-              }
-            }
-          }
-        }
-      } catch (err) {
-        _didIteratorError4 = true;
-        _iteratorError4 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion4 && _iterator4.return) {
-            _iterator4.return();
-          }
-        } finally {
-          if (_didIteratorError4) {
-            throw _iteratorError4;
-          }
-        }
-      }
-
       var _iteratorNormalCompletion5 = true;
       var _didIteratorError5 = false;
       var _iteratorError5 = undefined;
 
       try {
-        for (var _iterator5 = Object.keys(data.arguments)[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-          var argumentKey = _step5.value;
+        for (var _iterator5 = Object.keys(data.statements)[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+          var statementKey = _step5.value;
 
-          var argument = data.arguments[argumentKey];
+          var statement = data.statements[statementKey];
           var _iteratorNormalCompletion7 = true;
           var _didIteratorError7 = false;
           var _iteratorError7 = undefined;
 
           try {
-            for (var _iterator7 = argument.relations[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
-              var _relation = _step7.value;
+            for (var _iterator7 = statement.relations[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+              var relation = _step7.value;
 
-              if (_relation.from == argument) {
-                console.log("Relation from: " + _relation.from.title + " to: " + _relation.to.title + " type: " + _relation.type);
+              if (relation.from == statement) {
+                console.log("Relation from: " + relation.from.title + " to: " + relation.to.title + " type: " + relation.type);
               }
             }
           } catch (err) {
@@ -617,6 +607,57 @@ var ArgdownPreprocessor = function () {
         } finally {
           if (_didIteratorError5) {
             throw _iteratorError5;
+          }
+        }
+      }
+
+      var _iteratorNormalCompletion6 = true;
+      var _didIteratorError6 = false;
+      var _iteratorError6 = undefined;
+
+      try {
+        for (var _iterator6 = Object.keys(data.arguments)[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+          var argumentKey = _step6.value;
+
+          var argument = data.arguments[argumentKey];
+          var _iteratorNormalCompletion8 = true;
+          var _didIteratorError8 = false;
+          var _iteratorError8 = undefined;
+
+          try {
+            for (var _iterator8 = argument.relations[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+              var _relation = _step8.value;
+
+              if (_relation.from == argument) {
+                console.log("Relation from: " + _relation.from.title + " to: " + _relation.to.title + " type: " + _relation.type);
+              }
+            }
+          } catch (err) {
+            _didIteratorError8 = true;
+            _iteratorError8 = err;
+          } finally {
+            try {
+              if (!_iteratorNormalCompletion8 && _iterator8.return) {
+                _iterator8.return();
+              }
+            } finally {
+              if (_didIteratorError8) {
+                throw _iteratorError8;
+              }
+            }
+          }
+        }
+      } catch (err) {
+        _didIteratorError6 = true;
+        _iteratorError6 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion6 && _iterator6.return) {
+            _iterator6.return();
+          }
+        } finally {
+          if (_didIteratorError6) {
+            throw _iteratorError6;
           }
         }
       }

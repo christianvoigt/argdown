@@ -6,7 +6,7 @@ var Argument = function Argument() {
   _classCallCheck(this, Argument);
 
   this.relations = [];
-  //Premise Conclusion Structure
+  //Premise Conclusion Structure (PCS)
   this.pcs = [];
   this.descriptions = [];
 };

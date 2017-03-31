@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 import {ArgdownApplication, ArgdownPreprocessor} from '../src/index.js';
-import * as util from 'util';
 
 let app = new ArgdownApplication();
 
@@ -32,10 +31,14 @@ describe("ArgdownPreprocessor", function() {
     expect(description.ranges[0].start).to.equal(6);
     expect(description.ranges[0].stop).to.equal(10);
   });
-  it("can create statement relations", function(){
-    let source = "[A]: The Beatles are the best!\n  +[B]: The Beatles made 'Rubber Soul'!\n  -><C>: The Rolling Stones were cooler!";
+  it("can create statement relations and ignore duplicates", function(){
+    let source = "[A]: The Beatles are the best!\n  +[B]: The Beatles made 'Rubber Soul'!\n  -><C>: The Rolling Stones were cooler!\n\n [A]\n  +[B]\n  -><C>";
     app.parse(source);
     let result = app.run('preprocessor');
+    expect(Object.keys(result.statements).length).to.equal(2);
+    expect(Object.keys(result.arguments).length).to.equal(1);
+    expect(result.relations.length).to.equal(2);
+
     expect(result.statements['A']).to.exist;
     expect(result.statements['A'].relations.length).to.equal(2);
     expect(result.statements['A'].relations[0].type).to.equal('support');
@@ -80,7 +83,7 @@ describe("ArgdownPreprocessor", function() {
   expect(Object.keys(result.statements).length).to.equal(5);
 
   let argument = result.arguments['Reconstructed Argument'];
-  console.log(util.inspect(argument));
+  //console.log(util.inspect(argument));
   expect(argument).to.exist;
   expect(argument.pcs.length).to.equal(3);
   expect(argument.relations.length).to.equal(2);

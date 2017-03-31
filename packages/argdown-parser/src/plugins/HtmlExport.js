@@ -86,7 +86,7 @@ class HtmlExport{
         $.html += "</div>"
       },
       contradictionEntry : ()=>{
-        $.html += "<div class='contradiction relation'><div class='contradiction relation-symbol'><span>-</span></div>"
+        $.html += "<div class='contradiction relation'><div class='contradiction relation-symbol'><span>&gt;&lt;</span></div>"
       },
       contradictionExit : ()=>{
         $.html += "</div>"

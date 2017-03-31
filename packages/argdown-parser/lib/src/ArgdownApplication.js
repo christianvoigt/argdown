@@ -191,13 +191,19 @@ var ArgdownApplication = function () {
     }
   }, {
     key: "parse",
-    value: function parse(inputText) {
+    value: function parse(inputText, verbose) {
       var lexResult = this.lexer.tokenize(inputText);
       this.lexerErrors = lexResult.errors;
       this.tokens = lexResult.tokens;
       this.parser.input = lexResult.tokens;
       this.parserErrors = this.parser.errors;
       this.ast = this.parser.argdown();
+      if (verbose && this.lexerErrors && this.lexerErrors.length > 0) {
+        console.log(this.lexerErrors);
+      }
+      if (verbose && this.parserErrors && this.parserErrors.length > 0) {
+        console.log(this.parserErrors);
+      }
     }
   }, {
     key: "run",

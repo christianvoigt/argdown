@@ -275,9 +275,20 @@ class ArgdownPreprocessor{
         else {
           relation.from = target;
         }
-        $.relations.push(relation);
-        relation.from.relations.push(relation);
-        relation.to.relations.push(relation);
+
+        let relationExists = false;
+        for(let existingRelation of relation.from.relations){
+          if(relation.to == existingRelation.to && relation.type == existingRelation.type){
+            relationExists = true;
+            break;
+          }
+        }
+
+        if(!relationExists){
+          $.relations.push(relation);
+          relation.from.relations.push(relation);
+          relation.to.relations.push(relation);
+        }
       }
     }
     function onIncomingSupportEntry(node){
@@ -338,6 +349,11 @@ class ArgdownPreprocessor{
         }
         if(!argument){
           updateArgument();
+        }
+        //if there is a previous reconstruction, overwrite it
+        if(argument.pcs.length > 0){
+          //TODO: throw error
+          argument.pcs = [];
         }
         node.argument = argument;
         currentArgumentReconstruction = argument;
@@ -406,6 +422,7 @@ class ArgdownPreprocessor{
       statementEntry : onStatementEntry,
       statementExit : onStatementExit,
       argumentEntry : onArgumentEntry,
+      argumentExist : onArgumentExit,
       argumentStatementExit : onArgumentStatementExit,
       inferenceEntry : onInferenceEntry,
       inferenceRulesExit : onInferenceRulesExit,

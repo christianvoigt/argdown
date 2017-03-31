@@ -110,7 +110,7 @@ var HtmlExport = function () {
         $.html += "</div>";
       },
       contradictionEntry: function contradictionEntry() {
-        $.html += "<div class='contradiction relation'><div class='contradiction relation-symbol'><span>-</span></div>";
+        $.html += "<div class='contradiction relation'><div class='contradiction relation-symbol'><span>&gt;&lt;</span></div>";
       },
       contradictionExit: function contradictionExit() {
         $.html += "</div>";

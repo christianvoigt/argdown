@@ -83,13 +83,19 @@ class ArgdownApplication{
     this.lexer = ArgdownLexer;
     this.parser = ArgdownParser;
   }
-  parse(inputText){
+  parse(inputText, verbose){
       let lexResult = this.lexer.tokenize(inputText);
       this.lexerErrors = lexResult.errors;
       this.tokens = lexResult.tokens;
       this.parser.input = lexResult.tokens;
       this.parserErrors = this.parser.errors;
       this.ast = this.parser.argdown();
+      if(verbose && this.lexerErrors && this.lexerErrors.length > 0){
+        console.log(this.lexerErrors);
+      }
+      if(verbose && this.parserErrors && this.parserErrors.length > 0){
+        console.log(this.parserErrors);
+      }
   }
   run(processorsToRun, verbose){
     let data = {
@@ -126,7 +132,7 @@ class ArgdownApplication{
 
       for(let plugin of processor.plugins){
         if(verbose){
-          console.log("Running plugin: "+plugin.name);          
+          console.log("Running plugin: "+plugin.name);
         }
         if(_.isFunction(plugin.run)){
           let newData = plugin.run(data);
