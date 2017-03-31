@@ -5,7 +5,7 @@ import {EquivalenceClass} from '../model/EquivalenceClass.js';
 import {tokenMatcher} from 'chevrotain';
 import {ArgdownLexer} from './../ArgdownLexer.js';
 
-const RelationObjectTypes = Object.freeze({CONCLUSION: Symbol("CONCLUSION"), STATEMENT: Symbol("STATEMENT"), RECONSTRUCTED_ARGUMENT: Symbol("RECONSTRUCTED ARGUMENT"), SKETCHED_ARGUMENT: Symbol("SKETCHED ARGUMENT")});
+const RelationObjectTypes = Object.freeze({STATEMENT: Symbol("STATEMENT"), RECONSTRUCTED_ARGUMENT: Symbol("RECONSTRUCTED ARGUMENT"), SKETCHED_ARGUMENT: Symbol("SKETCHED ARGUMENT")});
 
 class ArgdownPreprocessor{
   run(result){
@@ -14,7 +14,7 @@ class ArgdownPreprocessor{
       let toType = this.getElementType(relation.to);
       if(fromType == RelationObjectTypes.SKETCHED_ARGUMENT ||toType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT ||toType == RelationObjectTypes.SKETCHED_ARGUMENT){
         relation.status = "sketched";
-      }else if(fromType == RelationObjectTypes.STATEMENT ||fromType == RelationObjectTypes.CONCLUSION ||fromType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT){
+      }else if(fromType == RelationObjectTypes.STATEMENT ||fromType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT){
         relation.status = "reconstructed";
       }
     }
@@ -28,16 +28,12 @@ class ArgdownPreprocessor{
   getElementType(obj){
     if(obj instanceof Argument){
       if(obj.pcs && obj.pcs.length > 0){
-        return RelationObjectTypes.SKETCHED_ARGUMENT;
-      }else{
         return RelationObjectTypes.RECONSTRUCTED_ARGUMENT;
-      }
-    }else if(obj instanceof Statement){
-      if(obj.isUsedConclusion){
-        return RelationObjectTypes.CONCLUSION;
       }else{
-        return RelationObjectTypes.STATEMENT;
+        return RelationObjectTypes.SKETCHED_ARGUMENT;
       }
+    }else if(obj instanceof EquivalenceClass){
+        return RelationObjectTypes.STATEMENT;
     }
     return null;
   }
@@ -120,7 +116,7 @@ class ArgdownPreprocessor{
       if(statement.isRootOfStatementTree){
         equivalenceClass.isUsedAsRootOfStatementTree = true; //members are used outside of argument reconstructions (not as premise or conclusion)
       }else if(statement.isChildOfStatementTree){
-        equivalenceClass.isUsedAsChildOfStatementTree;
+        equivalenceClass.isUsedAsChildOfStatementTree = true;
       }
       currentStatement = null;
     }
@@ -159,19 +155,23 @@ class ArgdownPreprocessor{
       currentArgument = $.arguments[title];
       if(!currentArgument){
         currentArgument = new Argument();
-        currentStatementOrArgument = currentArgument;
-        currentArgument.title = title;
+        if(!title){
+          currentArgument.title = getUniqueTitle();
+        }else {
+          currentArgument.title = title;
+        }
         //we are in the ArgumentDefinition token, parentNode is the argumentDefinition rule
         $.arguments[currentArgument.title] = currentArgument;
       }
-      currentStatement = new Statement();
-      currentArgument.descriptions.push(currentStatement);
+      currentStatementOrArgument = currentArgument;
     }
     function onArgumentDefinitionEntry(node, parentNode){
       let match = argumentDefinitionPattern.exec(node.image);
       if(match != null){
         let title = match[1];
         updateArgument(title);
+        currentStatement = new Statement();
+        currentArgument.descriptions.push(currentStatement);
         parentNode.argument = currentArgument;
       }
     }
@@ -337,12 +337,15 @@ class ArgdownPreprocessor{
           }
         }
         if(!argument){
-          argument = new Argument();
-          argument.title = getUniqueTitle();
-          $.arguments[argument.title] = argument;
+          updateArgument();
         }
         node.argument = argument;
         currentArgumentReconstruction = argument;
+    }
+    function onArgumentExit(){
+      currentStatement = null;
+      currentArgument = null;
+      currentArgumentReconstruction = null;
     }
     function onArgumentStatementExit(node, parentNode, childIndex){
       if(node.children.length > 1){

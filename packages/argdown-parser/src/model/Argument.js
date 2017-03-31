@@ -1,7 +1,7 @@
 class Argument{
   constructor(){
     this.relations = [];
-    //Premise Conclusion Structure
+    //Premise Conclusion Structure (PCS)
     this.pcs = [];
     this.descriptions = [];
   }
