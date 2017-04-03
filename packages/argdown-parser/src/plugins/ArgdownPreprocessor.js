@@ -8,7 +8,7 @@ import {ArgdownLexer} from './../ArgdownLexer.js';
 const RelationObjectTypes = Object.freeze({STATEMENT: Symbol("STATEMENT"), RECONSTRUCTED_ARGUMENT: Symbol("RECONSTRUCTED ARGUMENT"), SKETCHED_ARGUMENT: Symbol("SKETCHED ARGUMENT")});
 
 class ArgdownPreprocessor{
-  run(result){
+  run(data){
     for(let relation of this.relations){
       let fromType = this.getElementType(relation.from);
       let toType = this.getElementType(relation.to);
@@ -16,14 +16,25 @@ class ArgdownPreprocessor{
         relation.status = "sketched";
       }else if(fromType == RelationObjectTypes.STATEMENT ||fromType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT){
         relation.status = "reconstructed";
+        if(fromType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT){
+          //change relation.from to point to the argument's conclusion
+          let argument = relation.from;
+          let index = _.indexOf(argument.relations, relation);
+          argument.relations.splice(index, 1);
+
+          let conclusionStatement = argument.pcs[relation.from.pcs.length - 1];
+          let equivalenceClass = this.statements[conclusionStatement.title];
+          relation.from = equivalenceClass;
+          equivalenceClass.relations.push(relation);
+        }
       }
     }
 
 
-    result.relations = this.relations;
-    result.statements = this.statements;
-    result.arguments = this.arguments;
-    return result;
+    data.relations = this.relations;
+    data.statements = this.statements;
+    data.arguments = this.arguments;
+    return data;
   }
   getElementType(obj){
     if(obj instanceof Argument){

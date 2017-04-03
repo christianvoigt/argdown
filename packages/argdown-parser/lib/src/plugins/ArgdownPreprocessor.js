@@ -25,7 +25,7 @@ var RelationObjectTypes = Object.freeze({ STATEMENT: Symbol("STATEMENT"), RECONS
 var ArgdownPreprocessor = function () {
   _createClass(ArgdownPreprocessor, [{
     key: 'run',
-    value: function run(result) {
+    value: function run(data) {
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
       var _iteratorError = undefined;
@@ -40,6 +40,17 @@ var ArgdownPreprocessor = function () {
             relation.status = "sketched";
           } else if (fromType == RelationObjectTypes.STATEMENT || fromType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT) {
             relation.status = "reconstructed";
+            if (fromType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT) {
+              //change relation.from to point to the argument's conclusion
+              var argument = relation.from;
+              var index = _.indexOf(argument.relations, relation);
+              argument.relations.splice(index, 1);
+
+              var conclusionStatement = argument.pcs[relation.from.pcs.length - 1];
+              var equivalenceClass = this.statements[conclusionStatement.title];
+              relation.from = equivalenceClass;
+              equivalenceClass.relations.push(relation);
+            }
           }
         }
       } catch (err) {
@@ -57,10 +68,10 @@ var ArgdownPreprocessor = function () {
         }
       }
 
-      result.relations = this.relations;
-      result.statements = this.statements;
-      result.arguments = this.arguments;
-      return result;
+      data.relations = this.relations;
+      data.statements = this.statements;
+      data.arguments = this.arguments;
+      return data;
     }
   }, {
     key: 'getElementType',

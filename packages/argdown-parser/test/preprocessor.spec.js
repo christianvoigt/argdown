@@ -86,17 +86,12 @@ describe("ArgdownPreprocessor", function() {
   //console.log(util.inspect(argument));
   expect(argument).to.exist;
   expect(argument.pcs.length).to.equal(3);
-  expect(argument.relations.length).to.equal(2);
+  expect(argument.relations.length).to.equal(1); //second relation gets transformed to relation of conclusion
 
-  expect(argument.relations[0].type).to.equal("attack");
+  expect(argument.relations[0].type).to.equal("support");
   expect(argument.relations[0].from.title).to.equal("Reconstructed Argument");
-  expect(argument.relations[0].to.title).to.equal("E");
-  expect(argument.relations[0].status).to.equal("reconstructed");
-
-  expect(argument.relations[1].type).to.equal("support");
-  expect(argument.relations[1].from.title).to.equal("Reconstructed Argument");
-  expect(argument.relations[1].to.title).to.equal("Sketched Argument 2");
-  expect(argument.relations[1].status).to.equal("sketched");
+  expect(argument.relations[0].to.title).to.equal("Sketched Argument 2");
+  expect(argument.relations[0].status).to.equal("sketched");
 
 
   expect(argument.pcs[0].role).to.equal('premise');
@@ -129,7 +124,7 @@ describe("ArgdownPreprocessor", function() {
   expect(conclusion.isUsedAsPremise).to.be.false;
   expect(conclusion.isUsedAsRootOfStatementTree).to.be.false;
   expect(conclusion.isUsedAsChildOfStatementTree).to.be.false;
-  expect(conclusion.relations.length).to.equal(2);
+  expect(conclusion.relations.length).to.equal(3); //with transformed relation from the argument
 
   expect(conclusion.relations[0].status).to.equal('reconstructed');
   expect(conclusion.relations[0].from.title).to.equal('C');
@@ -140,6 +135,13 @@ describe("ArgdownPreprocessor", function() {
   expect(conclusion.relations[1].from.title).to.equal('C');
   expect(conclusion.relations[1].to.title).to.equal('Sketched Argument 1');
   expect(conclusion.relations[1].type).to.equal('support');
+
+
+  expect(conclusion.relations[2].type).to.equal("attack");
+  expect(conclusion.relations[2].from.title).to.equal("C");
+  expect(conclusion.relations[2].to.title).to.equal("E");
+  expect(conclusion.relations[2].status).to.equal("reconstructed");
+
 
   let inference = argument.pcs[2].inference;
   expect(inference).to.exist;
