@@ -88,17 +88,12 @@ describe("ArgdownPreprocessor", function () {
     //console.log(util.inspect(argument));
     (0, _chai.expect)(argument).to.exist;
     (0, _chai.expect)(argument.pcs.length).to.equal(3);
-    (0, _chai.expect)(argument.relations.length).to.equal(2);
+    (0, _chai.expect)(argument.relations.length).to.equal(1); //second relation gets transformed to relation of conclusion
 
-    (0, _chai.expect)(argument.relations[0].type).to.equal("attack");
+    (0, _chai.expect)(argument.relations[0].type).to.equal("support");
     (0, _chai.expect)(argument.relations[0].from.title).to.equal("Reconstructed Argument");
-    (0, _chai.expect)(argument.relations[0].to.title).to.equal("E");
-    (0, _chai.expect)(argument.relations[0].status).to.equal("reconstructed");
-
-    (0, _chai.expect)(argument.relations[1].type).to.equal("support");
-    (0, _chai.expect)(argument.relations[1].from.title).to.equal("Reconstructed Argument");
-    (0, _chai.expect)(argument.relations[1].to.title).to.equal("Sketched Argument 2");
-    (0, _chai.expect)(argument.relations[1].status).to.equal("sketched");
+    (0, _chai.expect)(argument.relations[0].to.title).to.equal("Sketched Argument 2");
+    (0, _chai.expect)(argument.relations[0].status).to.equal("sketched");
 
     (0, _chai.expect)(argument.pcs[0].role).to.equal('premise');
     (0, _chai.expect)(argument.pcs[1].role).to.equal('premise');
@@ -130,7 +125,7 @@ describe("ArgdownPreprocessor", function () {
     (0, _chai.expect)(conclusion.isUsedAsPremise).to.be.false;
     (0, _chai.expect)(conclusion.isUsedAsRootOfStatementTree).to.be.false;
     (0, _chai.expect)(conclusion.isUsedAsChildOfStatementTree).to.be.false;
-    (0, _chai.expect)(conclusion.relations.length).to.equal(2);
+    (0, _chai.expect)(conclusion.relations.length).to.equal(3); //with transformed relation from the argument
 
     (0, _chai.expect)(conclusion.relations[0].status).to.equal('reconstructed');
     (0, _chai.expect)(conclusion.relations[0].from.title).to.equal('C');
@@ -141,6 +136,11 @@ describe("ArgdownPreprocessor", function () {
     (0, _chai.expect)(conclusion.relations[1].from.title).to.equal('C');
     (0, _chai.expect)(conclusion.relations[1].to.title).to.equal('Sketched Argument 1');
     (0, _chai.expect)(conclusion.relations[1].type).to.equal('support');
+
+    (0, _chai.expect)(conclusion.relations[2].type).to.equal("attack");
+    (0, _chai.expect)(conclusion.relations[2].from.title).to.equal("C");
+    (0, _chai.expect)(conclusion.relations[2].to.title).to.equal("E");
+    (0, _chai.expect)(conclusion.relations[2].status).to.equal("reconstructed");
 
     var inference = argument.pcs[2].inference;
     (0, _chai.expect)(inference).to.exist;
