@@ -1,6 +1,6 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto');
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
 .argdown {
-    font-family: Roboto, sans-serif;
+    font-family: 'Source Sans Pro', sans-serif;
     max-width:35em;
     margin:0 auto;
 }
@@ -8,20 +8,20 @@
     margin-bottom: 2em;
     margin-top: 2em;
 }
-.statement-reference, .statement-definition, .statement-mention {
+.argdown .statement-reference, .argdown .statement-definition, .argdown .statement-mention {
     color: cornflowerblue;
 }
 
-.relations {
+.argdown .relations {
     margin-left: 2em;
     margin-top: 0.5em;
     margin-bottom: 0.5em;
 }
-.relation {
+.argdown .relation {
     margin-bottom: 0.2em;
     padding-left: 1.5em;
 }
-.relation-symbol {
+.argdown .relation-symbol {
     margin-left: -1.5em;
     float: left;
     min-width: 0.5em;
@@ -32,52 +32,52 @@
     font-weight: bold;
     margin-right: 0.25em;
 }
-.support.relation-symbol {
+.argdown .support.relation-symbol {
     color: green;
     background-color: lightgreen;
 }
-.attack.relation-symbol, .contradiction.relation-symbol {
+.argdown .attack.relation-symbol, .argdown .contradiction.relation-symbol {
     color: red;
     background-color: lightpink;
 }
-.argument {
+.argdown .argument {
     margin-top: 1em;
     margin-bottom: 2em;
 }
-.argument-reference, .argument-definiendum, .argument-mention {
+.argdown .argument-reference, .argdown .argument-definiendum, .argdown .argument-mention {
     color: blue;
 }
-.title{
+.argdown .title{
   font-weight:bold;
 }
-.argument-statement {
+.argdown .argument-statement {
     padding-left: 3em;
     padding-top: 0.25em;
     padding-bottom: 0.25em;
 }
-.statement-nr {
+.argdown .statement-nr {
     margin-left: -2em;
     float: left;
     color:blue;
 }
-.inference{
+.argdown .inference{
   border-top:1px solid black;
   font-size: 0.8em;
   margin-top:1em;
   margin-bottom:1em;
 }
-.inference.with-data {
+.argdown .inference.with-data {
     border-top: 1px solid black;
     border-bottom: 1px solid black;
     padding: 0.5em;
     padding-left:1.5em;
 }
-.inference-rules {
+.argdown .inference-rules {
     font-style: italic;
 }
-.metadata{
+.argdown .metadata{
   font-style: italic;
 }
-.conclusion.argument-statement {
+.argdown .conclusion.argument-statement {
     font-weight: bold;
 }
