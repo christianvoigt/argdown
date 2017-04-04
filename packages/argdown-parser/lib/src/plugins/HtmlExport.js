@@ -46,8 +46,8 @@ var HtmlExport = function () {
 
     this.argdownListeners = {
       argdownEntry: function argdownEntry() {
+        $.html = "";
         if (!$.settings.headless) {
-          $.html = "";
           $.html += $.head;
           $.html += "<body>";
         }

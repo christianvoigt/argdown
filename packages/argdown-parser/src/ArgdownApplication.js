@@ -97,13 +97,16 @@ class ArgdownApplication{
         console.log(this.parserErrors);
       }
   }
-  run(processorsToRun, verbose){
-    let data = {
-      ast : this.ast,
-      parserErrors : this.parserErrors,
-      lexerErrors : this.lexerErrors,
-      tokens : this.tokens
-    };
+  run(processorsToRun, previousData, verbose){
+    let data = previousData;
+    if(!data){
+      data = {
+        ast : this.ast,
+        parserErrors : this.parserErrors,
+        lexerErrors : this.lexerErrors,
+        tokens : this.tokens
+      };
+    }
     if(!this.ast){
       return data;
     }

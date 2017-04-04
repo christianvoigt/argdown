@@ -207,13 +207,16 @@ var ArgdownApplication = function () {
     }
   }, {
     key: "run",
-    value: function run(processorsToRun, verbose) {
-      var data = {
-        ast: this.ast,
-        parserErrors: this.parserErrors,
-        lexerErrors: this.lexerErrors,
-        tokens: this.tokens
-      };
+    value: function run(processorsToRun, previousData, verbose) {
+      var data = previousData;
+      if (!data) {
+        data = {
+          ast: this.ast,
+          parserErrors: this.parserErrors,
+          lexerErrors: this.lexerErrors,
+          tokens: this.tokens
+        };
+      }
       if (!this.ast) {
         return data;
       }
