@@ -35,6 +35,14 @@ describe("Parser", function () {
     (0, _chai.expect)(lexResult.errors).to.be.empty;
     (0, _chai.expect)(parser.errors).to.be.empty;
   });
+  it("can return errors", function () {
+    var source = "Text <Title>:\n\n+ text";
+    var lexResult = lexer.tokenize(source);
+    parser.input = lexResult.tokens;
+    var parseResult = parser.argdown();
+    (0, _chai.expect)(lexResult.errors).to.be.empty;
+    (0, _chai.expect)(parser.errors).to.exit;
+  });
 });
 
 describe("ArgdownTreeWalker", function () {

@@ -196,8 +196,8 @@ var ArgdownApplication = function () {
       this.lexerErrors = lexResult.errors;
       this.tokens = lexResult.tokens;
       this.parser.input = lexResult.tokens;
-      this.parserErrors = this.parser.errors;
       this.ast = this.parser.argdown();
+      this.parserErrors = this.parser.errors;
       if (verbose && this.lexerErrors && this.lexerErrors.length > 0) {
         console.log(this.lexerErrors);
       }

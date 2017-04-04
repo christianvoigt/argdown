@@ -27,6 +27,14 @@ describe("Parser", function() {
     expect(lexResult.errors).to.be.empty;
     expect(parser.errors).to.be.empty;
   });
+  it("can return errors", function(){
+    let source = "Text <Title>:\n\n+ text";
+    let lexResult = lexer.tokenize(source);
+    parser.input = lexResult.tokens;
+    let parseResult = parser.argdown();
+    expect(lexResult.errors).to.be.empty;
+    expect(parser.errors).to.exit;
+  });
 });
 
 describe("ArgdownTreeWalker", function() {
