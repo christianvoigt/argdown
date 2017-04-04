@@ -32,8 +32,8 @@ class HtmlExport{
 
     this.argdownListeners = {
       argdownEntry : ()=>{
+        $.html = "";
         if(!$.settings.headless){
-          $.html = "";
           $.html += $.head;
           $.html += "<body>";
         }
