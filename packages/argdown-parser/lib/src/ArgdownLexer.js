@@ -247,7 +247,7 @@ var ArgdownLexer = function () {
         });
         $.tokens.push($.ArgumentStatementStart);
 
-        var emptylinePattern = /^((?:\n\r|\n|\r){2,})/; //two or more linebreaks
+        var emptylinePattern = /^((?:\n\r|\n|\r)[ \t]*(?:\n\r|\n|\r)+)/; //two or more linebreaks
         function matchEmptyline(text, offset, matchedTokens) {
             var remainingText = text.substr(offset);
             var last = _.last(matchedTokens);
