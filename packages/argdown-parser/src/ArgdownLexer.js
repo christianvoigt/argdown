@@ -231,7 +231,7 @@ class ArgdownLexer {
         $.tokens.push($.ArgumentStatementStart);
 
 
-        const emptylinePattern = /^((?:\n\r|\n|\r){2,})/; //two or more linebreaks
+        const emptylinePattern = /^((?:\n\r|\n|\r)[ \t]*(?:\n\r|\n|\r)+)/; //two or more linebreaks
         function matchEmptyline(text, offset, matchedTokens) {
             let remainingText = text.substr(offset);
             let last = _.last(matchedTokens);
