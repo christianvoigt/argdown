@@ -414,11 +414,11 @@ class ArgdownParser extends chevrotain.Parser {
         Parser.performSelfAnalysis(this);
     }
 
-    logAst(value) {
-        console.log(this.logAstRecursively(value, "", ""));
+    astToString(value) {
+        return this.logAstRecursively(value, "", "");
     }
-    logAstAsJson(value) {
-        console.log(JSON.stringify(value, null, 2));
+    astToJsonString(value) {
+        return JSON.stringify(value, null, 2);
     }
     logAstRecursively(value, pre, str) {
         if (value === undefined) {

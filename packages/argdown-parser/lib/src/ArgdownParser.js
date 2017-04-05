@@ -509,14 +509,14 @@ var ArgdownParser = function (_chevrotain$Parser) {
     }
 
     _createClass(ArgdownParser, [{
-        key: 'logAst',
-        value: function logAst(value) {
-            console.log(this.logAstRecursively(value, "", ""));
+        key: 'astToString',
+        value: function astToString(value) {
+            return this.logAstRecursively(value, "", "");
         }
     }, {
-        key: 'logAstAsJson',
-        value: function logAstAsJson(value) {
-            console.log(JSON.stringify(value, null, 2));
+        key: 'astToJsonString',
+        value: function astToJsonString(value) {
+            return JSON.stringify(value, null, 2);
         }
     }, {
         key: 'logAstRecursively',
