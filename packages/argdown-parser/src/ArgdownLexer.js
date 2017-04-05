@@ -517,10 +517,12 @@ class ArgdownLexer {
         this._lexer = new chevrotain.Lexer(lexerConfig);
 
     }
-    logTokens(tokens) {
-        for (let token of tokens) {
-            console.log(getTokenConstructor(token).tokenName + " " + token.image);
-        }
+    tokensToString(tokens) {
+      let str = "";
+      for (let token of tokens) {
+          str += getTokenConstructor(token).tokenName + " " + token.image +"\n";
+      }
+      return str;
     }
     tokenize(text) {
         this.init();

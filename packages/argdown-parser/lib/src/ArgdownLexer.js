@@ -492,8 +492,9 @@ var ArgdownLexer = function () {
     }
 
     _createClass(ArgdownLexer, [{
-        key: 'logTokens',
-        value: function logTokens(tokens) {
+        key: 'tokensToString',
+        value: function tokensToString(tokens) {
+            var str = "";
             var _iteratorNormalCompletion = true;
             var _didIteratorError = false;
             var _iteratorError = undefined;
@@ -502,7 +503,7 @@ var ArgdownLexer = function () {
                 for (var _iterator = tokens[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                     var token = _step.value;
 
-                    console.log(getTokenConstructor(token).tokenName + " " + token.image);
+                    str += getTokenConstructor(token).tokenName + " " + token.image + "\n";
                 }
             } catch (err) {
                 _didIteratorError = true;
@@ -518,6 +519,8 @@ var ArgdownLexer = function () {
                     }
                 }
             }
+
+            return str;
         }
     }, {
         key: 'tokenize',
