@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700');
 .argdown {
     font-family: 'Source Sans Pro', sans-serif;
     max-width:35em;
@@ -80,4 +80,7 @@
 }
 .argdown .conclusion.argument-statement {
     font-weight: bold;
+}
+.argdown .conclusion.argument-statement .relations {
+    font-weight: normal;
 }
