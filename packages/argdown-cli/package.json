@@ -1,6 +1,6 @@
 {
   "name": "argdown-cli",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "license": "MIT",
   "main": "lib/src/index.js",
   "dependencies": {
@@ -30,7 +30,7 @@
     "build:src": "babel src/ -d lib/src --source-maps",
     "test": "mocha --compilers js:babel-core/register --colors ./test/*.spec.js",
     "prepublish": "npm build",
-    "clean" : "rimraf lib/*"
+    "clean": "rimraf lib/*"
   },
   "readmeFilename": "Readme.md",
   "preferGlobal": true,

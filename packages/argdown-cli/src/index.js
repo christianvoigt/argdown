@@ -112,7 +112,7 @@ program
     .description('export Argdown graph as .dot files')
     .option('-h, --html', 'Use HTML node labels (default:false)')
     .option('-t, --titles','Use only titles in HTML labels (default:false)')
-    .option('-m, --mode', 'Set the statement selection mode (all|titled|roots|statement-trees|with-relations)')
+    .option('-m, --mode <mode>', 'Set the statement selection mode (all|titled|roots|statement-trees|with-relations)')
     .option('-i, --inclusive', 'Include disconnected nodes')
     .option('-n, --graphname <graphname>', 'Name of the graph (default: Argument Map)')
     .option('-w, --watch', 'Continuously watch files for changes and update exported dot files.')
@@ -185,7 +185,7 @@ program
       .command('argml [input] [output]')
       .description('export Argdown graph as .graphml files (with argML extensions)')
       .option('-i, --inclusive', 'Include disconnected nodes')
-      .option('-m, --mode', 'Set the statement selection mode (all|titled|roots|statement-trees|with-relations)')
+      .option('-m, --mode <mode>', 'Set the statement selection mode (all|titled|roots|statement-trees|with-relations)')
       .option('-w, --watch', 'Continuously watch files for changes and update exported dot files.')
       .action(function(_input, _output, options){
         let input = _input;
