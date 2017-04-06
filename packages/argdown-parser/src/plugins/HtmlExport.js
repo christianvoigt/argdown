@@ -29,10 +29,12 @@ class HtmlExport{
     this.html = "";
     let $ = this;
     this.config = config;
+    this.htmlIds = {};
 
     this.argdownListeners = {
       argdownEntry : ()=>{
         $.html = "";
+        $.htmlIds = {};
         if(!$.settings.headless){
           $.html += $.head;
           $.html += "<body>";
@@ -47,22 +49,30 @@ class HtmlExport{
       statementEntry : ()=>$.html += "<div class='statement'>",
       statementExit : ()=>$.html += "</div>",
       StatementDefinitionEntry : (node)=>{
-        $.html += "<span class='definition statement-definition definiendum'>[<span class='title statement-title'>"+node.statement.title+"</span>]: </span>"
+        let htmlId = $.getHtmlId("statement", node.statement.title);
+        $.htmlIds[htmlId] = node.statement;
+        $.html += "<span id='"+htmlId+"' class='definition statement-definition definiendum'>[<span class='title statement-title'>"+node.statement.title+"</span>]: </span>"
       },
       StatementReferenceEntry : (node)=>{
-        $.html += "<span class='reference statement-reference'>[<span class='title statement-title'>"+node.statement.title+"</span>] </span>"
+        let htmlId = $.getHtmlId("statement", node.statement.title, true);
+        $.html += "<a href='#"+htmlId+"' class='reference statement-reference'>[<span class='title statement-title'>"+node.statement.title+"</span>] </a>"
       },
       StatementMentionEntry : (node)=>{
-        $.html += "<span class='mention statement-mention'>@[<span class='title statement-title'>"+node.title+"</span>]</span>"+node.trailingWhitespace
+        let htmlId = $.getHtmlId("statement", node.title, true);
+        $.html += "<a href='#"+htmlId+"' class='mention statement-mention'>@[<span class='title statement-title'>"+node.title+"</span>]</a>"+node.trailingWhitespace
       },
       argumentReferenceEntry : (node)=>{
-        $.html += "<div class='argument-reference'>&lt;<span class='title argument-title'>"+node.argument.title+"</span>&gt; </div>"
+        let htmlId = $.getHtmlId("argument", node.argument.title, true);
+        $.html += "<a href='#"+htmlId+"' class='argument-reference'>&lt;<span class='title argument-title'>"+node.argument.title+"</span>&gt; </a>"
       },
       argumentDefinitionEntry : (node)=>{
-        $.html += "<div class='argument-definition'><span class='definiendum argument-definiendum'>&lt;<span class='title argument-title'>"+node.argument.title+"</span>&gt;: </span><span class='argument-definiens definiens description'>"
+        let htmlId = $.getHtmlId("argument", node.argument.title);
+        $.htmlIds[htmlId] = node.argument;
+        $.html += "<div id='"+htmlId+"' class='argument-definition'><span class='definiendum argument-definiendum'>&lt;<span class='title argument-title'>"+node.argument.title+"</span>&gt;: </span><span class='argument-definiens definiens description'>"
       },
       ArgumentMentionEntry : (node)=>{
-        $.html += "<span class='mention argument-mention'>@&lt;<span class='title argument-title'>"+node.title+"</span>&gt;</span>"+node.trailingWhitespace
+        let htmlId = $.getHtmlId("argument", node.argument.title, true);
+        $.html += "<a href='#"+htmlId+"' class='mention argument-mention'>@&lt;<span class='title argument-title'>"+node.title+"</span>&gt;</a>"+node.trailingWhitespace
       },
       argumentDefinitionExit : ()=>$.html+="</span></div>",
       incomingSupportEntry : ()=>{
@@ -111,7 +121,9 @@ class HtmlExport{
             $.html = $.html.replace('<title>Argdown Document</title>','<title>'+node.text+'</title>')
           }
         }
-        $.html += "<h"+node.heading+">"
+        let htmlId = $.getHtmlId("heading",node.text);
+        $.htmlIds[htmlId] = node;
+        $.html += "<h"+node.heading+" id='"+htmlId+"'>"
       },
       headingExit : (node)=>$.html += "</h"+node.heading+">",
       freestyleTextEntry : (node, parentNode)=>{
@@ -177,6 +189,31 @@ class HtmlExport{
       argumentStatementExit : ()=>$.html += "</div>"
     }
   }
+  getHtmlId(type, title, ignoreDuplicates){
+    let id = type + "-" + title;
+    id = id.toLowerCase();
+    id = id.replace(/ä/g,"ae");
+    id = id.replace(/ö/g,"oe");
+    id = id.replace(/ü/g,"ue");
+    id = id.replace(/ß/g,"ss");
+    id = id.replace(/\s/g,"-");
+    id = id.replace(/[^a-z0-9\-]/g,"");
+    if(!ignoreDuplicates){
+      let originalId = id;
+      let i = 1;
+      while(this.htmlIds && this.htmlIds[id]){
+        i++;
+        id = originalId + "-occurrence-" + i;
+      }
+    }
+    return id;
+  }
+  replaceAll(str, find, replace) {
+    return str.replace(new RegExp(find, 'g'), replace);
+  }  
+  escapeRegExp(str) {
+      return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+  }  
 }
 module.exports = {
   HtmlExport: HtmlExport

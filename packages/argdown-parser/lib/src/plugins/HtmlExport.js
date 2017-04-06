@@ -43,10 +43,12 @@ var HtmlExport = function () {
     this.html = "";
     var $ = this;
     this.config = config;
+    this.htmlIds = {};
 
     this.argdownListeners = {
       argdownEntry: function argdownEntry() {
         $.html = "";
+        $.htmlIds = {};
         if (!$.settings.headless) {
           $.html += $.head;
           $.html += "<body>";
@@ -65,22 +67,30 @@ var HtmlExport = function () {
         return $.html += "</div>";
       },
       StatementDefinitionEntry: function StatementDefinitionEntry(node) {
-        $.html += "<span class='definition statement-definition definiendum'>[<span class='title statement-title'>" + node.statement.title + "</span>]: </span>";
+        var htmlId = $.getHtmlId("statement", node.statement.title);
+        $.htmlIds[htmlId] = node.statement;
+        $.html += "<span id='" + htmlId + "' class='definition statement-definition definiendum'>[<span class='title statement-title'>" + node.statement.title + "</span>]: </span>";
       },
       StatementReferenceEntry: function StatementReferenceEntry(node) {
-        $.html += "<span class='reference statement-reference'>[<span class='title statement-title'>" + node.statement.title + "</span>] </span>";
+        var htmlId = $.getHtmlId("statement", node.statement.title, true);
+        $.html += "<a href='#" + htmlId + "' class='reference statement-reference'>[<span class='title statement-title'>" + node.statement.title + "</span>] </a>";
       },
       StatementMentionEntry: function StatementMentionEntry(node) {
-        $.html += "<span class='mention statement-mention'>@[<span class='title statement-title'>" + node.title + "</span>]</span>" + node.trailingWhitespace;
+        var htmlId = $.getHtmlId("statement", node.title, true);
+        $.html += "<a href='#" + htmlId + "' class='mention statement-mention'>@[<span class='title statement-title'>" + node.title + "</span>]</a>" + node.trailingWhitespace;
       },
       argumentReferenceEntry: function argumentReferenceEntry(node) {
-        $.html += "<div class='argument-reference'>&lt;<span class='title argument-title'>" + node.argument.title + "</span>&gt; </div>";
+        var htmlId = $.getHtmlId("argument", node.argument.title, true);
+        $.html += "<a href='#" + htmlId + "' class='argument-reference'>&lt;<span class='title argument-title'>" + node.argument.title + "</span>&gt; </a>";
       },
       argumentDefinitionEntry: function argumentDefinitionEntry(node) {
-        $.html += "<div class='argument-definition'><span class='definiendum argument-definiendum'>&lt;<span class='title argument-title'>" + node.argument.title + "</span>&gt;: </span><span class='argument-definiens definiens description'>";
+        var htmlId = $.getHtmlId("argument", node.argument.title);
+        $.htmlIds[htmlId] = node.argument;
+        $.html += "<div id='" + htmlId + "' class='argument-definition'><span class='definiendum argument-definiendum'>&lt;<span class='title argument-title'>" + node.argument.title + "</span>&gt;: </span><span class='argument-definiens definiens description'>";
       },
       ArgumentMentionEntry: function ArgumentMentionEntry(node) {
-        $.html += "<span class='mention argument-mention'>@&lt;<span class='title argument-title'>" + node.title + "</span>&gt;</span>" + node.trailingWhitespace;
+        var htmlId = $.getHtmlId("argument", node.argument.title, true);
+        $.html += "<a href='#" + htmlId + "' class='mention argument-mention'>@&lt;<span class='title argument-title'>" + node.title + "</span>&gt;</a>" + node.trailingWhitespace;
       },
       argumentDefinitionExit: function argumentDefinitionExit() {
         return $.html += "</span></div>";
@@ -151,7 +161,9 @@ var HtmlExport = function () {
             $.html = $.html.replace('<title>Argdown Document</title>', '<title>' + node.text + '</title>');
           }
         }
-        $.html += "<h" + node.heading + ">";
+        var htmlId = $.getHtmlId("heading", node.text);
+        $.htmlIds[htmlId] = node;
+        $.html += "<h" + node.heading + " id='" + htmlId + "'>";
       },
       headingExit: function headingExit(node) {
         return $.html += "</h" + node.heading + ">";
@@ -274,6 +286,39 @@ var HtmlExport = function () {
       }
     };
   }
+
+  _createClass(HtmlExport, [{
+    key: 'getHtmlId',
+    value: function getHtmlId(type, title, ignoreDuplicates) {
+      var id = type + "-" + title;
+      id = id.toLowerCase();
+      id = id.replace(/ä/g, "ae");
+      id = id.replace(/ö/g, "oe");
+      id = id.replace(/ü/g, "ue");
+      id = id.replace(/ß/g, "ss");
+      id = id.replace(/\s/g, "-");
+      id = id.replace(/[^a-z0-9\-]/g, "");
+      if (!ignoreDuplicates) {
+        var originalId = id;
+        var i = 1;
+        while (this.htmlIds && this.htmlIds[id]) {
+          i++;
+          id = originalId + "-occurrence-" + i;
+        }
+      }
+      return id;
+    }
+  }, {
+    key: 'replaceAll',
+    value: function replaceAll(str, find, replace) {
+      return str.replace(new RegExp(find, 'g'), replace);
+    }
+  }, {
+    key: 'escapeRegExp',
+    value: function escapeRegExp(str) {
+      return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+    }
+  }]);
 
   return HtmlExport;
 }();
