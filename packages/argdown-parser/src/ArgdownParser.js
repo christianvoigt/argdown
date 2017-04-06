@@ -12,9 +12,12 @@ class ArgdownParser extends chevrotain.Parser {
     constructor(input, lexer) {
         super(input, lexer.tokens);
         let $ = this;
-        $.lexer = lexer;
+        $.lexer = lexer;        
 
         $.argdown = $.RULE("argdown", () => {
+            $.OPTION1(() => {
+                $.CONSUME1(lexer.Emptyline);
+            });        
             let atLeastOne = $.AT_LEAST_ONE_SEP({
                 SEP: lexer.Emptyline,
                 DEF: () => $.OR([{
@@ -33,6 +36,11 @@ class ArgdownParser extends chevrotain.Parser {
                     ALT: () => $.SUBRULE($.unorderedList)
                 }])
             });
+            
+            $.OPTION2(() => {
+                $.CONSUME2(lexer.Emptyline);
+            });        
+            
             return {
                 name: 'argdown',
                 children: atLeastOne.values

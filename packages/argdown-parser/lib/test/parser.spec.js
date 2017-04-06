@@ -16,6 +16,14 @@ var parser = _index.ArgdownParser;
 var walker = new _index.ArgdownTreeWalker();
 
 describe("Parser", function () {
+  it("can parse argdown with leading and trailing emptylines", function () {
+    var source = "\n\n\nHallo World!\n\n\n\n";
+    var lexResult = lexer.tokenize(source);
+    parser.input = lexResult.tokens;
+    //let parseResult = parser.argdown();
+    (0, _chai.expect)(lexResult.errors).to.be.empty;
+    (0, _chai.expect)(parser.errors).to.be.empty;
+  });
   it("can parse complex argdown file", function () {
     var source = _fs2.default.readFileSync("./test/veggie_debate.argdown", 'utf8');
     var lexResult = lexer.tokenize(source);

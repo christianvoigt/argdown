@@ -28,6 +28,9 @@ var ArgdownParser = function (_chevrotain$Parser) {
         $.lexer = lexer;
 
         $.argdown = $.RULE("argdown", function () {
+            $.OPTION1(function () {
+                $.CONSUME1(lexer.Emptyline);
+            });
             var atLeastOne = $.AT_LEAST_ONE_SEP({
                 SEP: lexer.Emptyline,
                 DEF: function DEF() {
@@ -62,6 +65,11 @@ var ArgdownParser = function (_chevrotain$Parser) {
                     }]);
                 }
             });
+
+            $.OPTION2(function () {
+                $.CONSUME2(lexer.Emptyline);
+            });
+
             return {
                 name: 'argdown',
                 children: atLeastOne.values
