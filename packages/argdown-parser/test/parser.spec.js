@@ -8,7 +8,15 @@ const parser = ArgdownParser;
 const walker = new ArgdownTreeWalker();
 
 describe("Parser", function() {
-    it("can parse complex argdown file", function(){
+  it("can parse argdown with leading and trailing emptylines", function(){
+    let source = "\n\n\nHallo World!\n\n\n\n";
+    let lexResult = lexer.tokenize(source);
+    parser.input = lexResult.tokens;
+    //let parseResult = parser.argdown();
+    expect(lexResult.errors).to.be.empty;
+    expect(parser.errors).to.be.empty;
+  });
+  it("can parse complex argdown file", function(){
     let source = fs.readFileSync("./test/veggie_debate.argdown", 'utf8');
     let lexResult = lexer.tokenize(source);
     parser.input = lexResult.tokens;
