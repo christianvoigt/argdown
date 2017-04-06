@@ -239,7 +239,7 @@ class ArgdownLexer {
             if (last && tokenMatcher(last, $.Emptyline))
                 return null;
             let match = emptylinePattern.exec(remainingText);
-            if (match !== null) {
+            if (match !== null && match[0].length < remainingText.length) { //ignore trailing linebreaks
                 $.emitRemainingDedentTokens(matchedTokens);
                 //TODO: emitRemainingRanges (to be more resistant against unclosed bold and italic ranges)
                 return match;

@@ -35,12 +35,8 @@ class ArgdownParser extends chevrotain.Parser {
                 }, {
                     ALT: () => $.SUBRULE($.unorderedList)
                 }])
-            });
-            
-            $.OPTION2(() => {
-                $.CONSUME2(lexer.Emptyline);
-            });        
-            
+            });            
+                   
             return {
                 name: 'argdown',
                 children: atLeastOne.values

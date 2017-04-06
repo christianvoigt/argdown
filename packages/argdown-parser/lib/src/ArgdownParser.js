@@ -66,10 +66,6 @@ var ArgdownParser = function (_chevrotain$Parser) {
                 }
             });
 
-            $.OPTION2(function () {
-                $.CONSUME2(lexer.Emptyline);
-            });
-
             return {
                 name: 'argdown',
                 children: atLeastOne.values
