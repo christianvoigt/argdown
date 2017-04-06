@@ -163,8 +163,10 @@ class ArgdownPreprocessor{
       }
     }
     function updateArgument(title){
-      currentArgument = $.arguments[title];
-      if(!currentArgument){
+      if(title){
+        currentArgument = $.arguments[title];        
+      }
+      if(!title || !currentArgument){
         currentArgument = new Argument();
         if(!title){
           currentArgument.title = getUniqueTitle();
@@ -175,6 +177,7 @@ class ArgdownPreprocessor{
         $.arguments[currentArgument.title] = currentArgument;
       }
       currentStatementOrArgument = currentArgument;
+      return currentArgument;
     }
     function onArgumentDefinitionEntry(node, parentNode){
       let match = argumentDefinitionPattern.exec(node.image);
@@ -359,7 +362,7 @@ class ArgdownPreprocessor{
           }
         }
         if(!argument){
-          updateArgument();
+          argument = updateArgument();
         }
         //if there is a previous reconstruction, overwrite it
         if(argument.pcs.length > 0){

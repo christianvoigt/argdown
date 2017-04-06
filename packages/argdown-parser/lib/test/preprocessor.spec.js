@@ -76,6 +76,15 @@ describe("ArgdownPreprocessor", function () {
     (0, _chai.expect)(result.statements['C'].relations[0].to).to.equal(plugin.statements['C']);
     (0, _chai.expect)(result.statements['C'].relations[0].status).to.equal('sketched');
   });
+  it("can process a single argument", function () {
+    var source = "(1) [s1]: A\n(2) [s2]: B\n----\n(3) [s3]: C";
+    app.parse(source);
+    var result = app.run('preprocessor');
+    (0, _chai.expect)(result.arguments['Untitled 1']).to.exist;
+    (0, _chai.expect)(result.statements['s1']).to.exist;
+    (0, _chai.expect)(result.statements['s2']).to.exist;
+    (0, _chai.expect)(result.statements['s3']).to.exist;
+  });
 
   it("can create argument reconstructions", function () {
     var source = "<Reconstructed Argument>\n\n(1) [A]: text\n  -<Sketched Argument 1>\n  +[D]\n(2) B\n-- Modus Ponens (uses:1,2; depends on: 1) --\n(3) [C]: text\n  ->[D]: text\n  +><Sketched Argument 1>: text\n\n<Reconstructed Argument>\n  ->[E]: text\n  +><Sketched Argument 2>";
