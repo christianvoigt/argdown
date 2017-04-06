@@ -26,10 +26,11 @@
     "email": "1pxsolidblack@gmail.com"
   },
   "scripts": {
-    "build": "npm run build:src",
+    "build": "npm run clean && npm run build:src",
     "build:src": "babel src/ -d lib/src --source-maps",
     "test": "mocha --compilers js:babel-core/register --colors ./test/*.spec.js",
-    "prepublish": "npm build"
+    "prepublish": "npm build",
+    "clean" : "rimraf lib/*"
   },
   "readmeFilename": "Readme.md",
   "preferGlobal": true,
@@ -49,6 +50,7 @@
     "karma-phantomjs-launcher": "^1.0.2",
     "karma-sinon": "^1.0.5",
     "mocha": "^3.2.0",
+    "rimraf": "^2.6.1",
     "sinon": "^1.17.7",
     "source-map-support": "^0.4.11"
   }

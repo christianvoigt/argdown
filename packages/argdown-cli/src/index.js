@@ -112,6 +112,8 @@ program
     .description('export Argdown graph as .dot files')
     .option('-h, --html', 'Use HTML node labels (default:false)')
     .option('-t, --titles','Use only titles in HTML labels (default:false)')
+    .option('-m, --mode', 'Set the statement selection mode (all|titled|roots|statement-trees|with-relations)')
+    .option('-i, --inclusive', 'Include disconnected nodes')
     .option('-n, --graphname <graphname>', 'Name of the graph (default: Argument Map)')
     .option('-w, --watch', 'Continuously watch files for changes and update exported dot files.')
     .action(function(_input, _output, options){
@@ -135,6 +137,20 @@ program
       let output = _output;
       if(!output)
         output = "./dot";
+        
+      let statementSelectionMode = "statement-trees";
+      if(options.mode){
+        statementSelectionMode = options.mode;
+      }
+      let excludeDisconnected = true;
+      if(options.inclusive){
+        excludeDisconnected = false;        
+      }
+      mapMaker.config = {
+        statementSelectionMode: statementSelectionMode,
+        excludeDisconnected: excludeDisconnected
+      };
+        
 
       if(options.watch){
         var watcher = chokidar.watch(input, {});
@@ -168,6 +184,8 @@ program
     program
       .command('argml [input] [output]')
       .description('export Argdown graph as .graphml files (with argML extensions)')
+      .option('-i, --inclusive', 'Include disconnected nodes')
+      .option('-m, --mode', 'Set the statement selection mode (all|titled|roots|statement-trees|with-relations)')
       .option('-w, --watch', 'Continuously watch files for changes and update exported dot files.')
       .action(function(_input, _output, options){
         let input = _input;
@@ -181,7 +199,20 @@ program
         let output = _output;
         if(!output)
           output = "./graphml";
-
+          
+        let statementSelectionMode = "statement-trees";
+        if(options.mode){
+          statementSelectionMode = options.mode;
+        }
+        let excludeDisconnected = true;
+        if(options.inclusive){
+          excludeDisconnected = false;        
+        }
+        mapMaker.config = {
+          statementSelectionMode: statementSelectionMode,
+          excludeDisconnected: excludeDisconnected
+        };
+        
         if(options.watch){
           var watcher = chokidar.watch(input, {});
           watcher

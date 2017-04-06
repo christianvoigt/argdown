@@ -114,7 +114,7 @@ program.command('html [input] [output]').description('export Argdown input as HT
   }
 });
 
-program.command('dot [input] [output]').description('export Argdown graph as .dot files').option('-h, --html', 'Use HTML node labels (default:false)').option('-t, --titles', 'Use only titles in HTML labels (default:false)').option('-n, --graphname <graphname>', 'Name of the graph (default: Argument Map)').option('-w, --watch', 'Continuously watch files for changes and update exported dot files.').action(function (_input, _output, options) {
+program.command('dot [input] [output]').description('export Argdown graph as .dot files').option('-h, --html', 'Use HTML node labels (default:false)').option('-t, --titles', 'Use only titles in HTML labels (default:false)').option('-m, --mode', 'Set the statement selection mode (all|titled|roots|statement-trees|with-relations)').option('-i, --inclusive', 'Include disconnected nodes').option('-n, --graphname <graphname>', 'Name of the graph (default: Argument Map)').option('-w, --watch', 'Continuously watch files for changes and update exported dot files.').action(function (_input, _output, options) {
   var input = _input;
   var config = {};
 
@@ -130,6 +130,19 @@ program.command('dot [input] [output]').description('export Argdown graph as .do
 
   var output = _output;
   if (!output) output = "./dot";
+
+  var statementSelectionMode = "statement-trees";
+  if (options.mode) {
+    statementSelectionMode = options.mode;
+  }
+  var excludeDisconnected = true;
+  if (options.inclusive) {
+    excludeDisconnected = false;
+  }
+  mapMaker.config = {
+    statementSelectionMode: statementSelectionMode,
+    excludeDisconnected: excludeDisconnected
+  };
 
   if (options.watch) {
     var watcher = chokidar.watch(input, {});
@@ -178,7 +191,7 @@ program.command('dot [input] [output]').description('export Argdown graph as .do
   }
 });
 
-program.command('argml [input] [output]').description('export Argdown graph as .graphml files (with argML extensions)').option('-w, --watch', 'Continuously watch files for changes and update exported dot files.').action(function (_input, _output, options) {
+program.command('argml [input] [output]').description('export Argdown graph as .graphml files (with argML extensions)').option('-i, --inclusive', 'Include disconnected nodes').option('-m, --mode', 'Set the statement selection mode (all|titled|roots|statement-trees|with-relations)').option('-w, --watch', 'Continuously watch files for changes and update exported dot files.').action(function (_input, _output, options) {
   var input = _input;
   var config = {};
 
@@ -188,6 +201,19 @@ program.command('argml [input] [output]').description('export Argdown graph as .
 
   var output = _output;
   if (!output) output = "./graphml";
+
+  var statementSelectionMode = "statement-trees";
+  if (options.mode) {
+    statementSelectionMode = options.mode;
+  }
+  var excludeDisconnected = true;
+  if (options.inclusive) {
+    excludeDisconnected = false;
+  }
+  mapMaker.config = {
+    statementSelectionMode: statementSelectionMode,
+    excludeDisconnected: excludeDisconnected
+  };
 
   if (options.watch) {
     var watcher = chokidar.watch(input, {});
