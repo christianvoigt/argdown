@@ -20,10 +20,7 @@ describe("Parser", function () {
     var source = _fs2.default.readFileSync("./test/veggie_debate.argdown", 'utf8');
     var lexResult = lexer.tokenize(source);
     parser.input = lexResult.tokens;
-    var parseResult = parser.argdown();
-    //parser.logAst(parseResult);
-    //console.log(parser.errors);
-    //lexer.logTokens(lexResult.tokens);
+    //let parseResult = parser.argdown();
     (0, _chai.expect)(lexResult.errors).to.be.empty;
     (0, _chai.expect)(parser.errors).to.be.empty;
   });
@@ -31,7 +28,7 @@ describe("Parser", function () {
     var source = _fs2.default.readFileSync("./test/parser-arguments.argdown", 'utf8');
     var lexResult = lexer.tokenize(source);
     parser.input = lexResult.tokens;
-    var parseResult = parser.argdown();
+    //let parseResult = parser.argdown();
     (0, _chai.expect)(lexResult.errors).to.be.empty;
     (0, _chai.expect)(parser.errors).to.be.empty;
   });
@@ -39,7 +36,7 @@ describe("Parser", function () {
     var source = "Text <Title>:\n\n+ text";
     var lexResult = lexer.tokenize(source);
     parser.input = lexResult.tokens;
-    var parseResult = parser.argdown();
+    //let parseResult = parser.argdown();
     (0, _chai.expect)(lexResult.errors).to.be.empty;
     (0, _chai.expect)(parser.errors).to.exit;
   });
