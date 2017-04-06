@@ -204,8 +204,10 @@ var ArgdownPreprocessor = function () {
       }
     }
     function updateArgument(title) {
-      currentArgument = $.arguments[title];
-      if (!currentArgument) {
+      if (title) {
+        currentArgument = $.arguments[title];
+      }
+      if (!title || !currentArgument) {
         currentArgument = new _Argument.Argument();
         if (!title) {
           currentArgument.title = getUniqueTitle();
@@ -216,6 +218,7 @@ var ArgdownPreprocessor = function () {
         $.arguments[currentArgument.title] = currentArgument;
       }
       currentStatementOrArgument = currentArgument;
+      return currentArgument;
     }
     function onArgumentDefinitionEntry(node, parentNode) {
       var match = argumentDefinitionPattern.exec(node.image);
@@ -439,7 +442,7 @@ var ArgdownPreprocessor = function () {
         }
       }
       if (!argument) {
-        updateArgument();
+        argument = updateArgument();
       }
       //if there is a previous reconstruction, overwrite it
       if (argument.pcs.length > 0) {

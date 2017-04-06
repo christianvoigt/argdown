@@ -73,6 +73,15 @@ describe("ArgdownPreprocessor", function() {
     expect(result.statements['C'].relations[0].to).to.equal(plugin.statements['C']);
     expect(result.statements['C'].relations[0].status).to.equal('sketched');
   });
+  it("can process a single argument", function(){
+    let source = "(1) [s1]: A\n(2) [s2]: B\n----\n(3) [s3]: C";
+    app.parse(source);
+    let result = app.run('preprocessor');
+    expect(result.arguments['Untitled 1']).to.exist;
+    expect(result.statements['s1']).to.exist;
+    expect(result.statements['s2']).to.exist;
+    expect(result.statements['s3']).to.exist;
+  });  
 
 
   it("can create argument reconstructions", function(){
