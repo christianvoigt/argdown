@@ -1,8 +1,39 @@
-# argdown-browser
+# Argdown
 
-> A test environment for Argdown in the browser
+![Argdown](https://cdn.rawgit.com/christianvoigt/argdown/master/argdown-mark.svg)
 
-## Build Setup
+Argdown is a simple syntax for defining argumentative 
+structures, inspired by Markdown.
+
+  * Writing a pro & contra list in Argdown is as 
+    simple as writing a twitter message.
+  * But you can also
+    **logically reconstruct** more complex dialectical 
+    relations between arguments or dive into 
+    the details of their premise-conclusion structures.
+  * Finally, you can export Argdown as a graph and create 
+    **argument maps** of whole debates.
+    
+# Getting Started
+
+Try out Argdown in the Browser: [Demo Editor](http://christianvoigt.github.io/argdown).
+
+The following Argdown tools currently exist:
+
+  - A browser based [Editor](http://christianvoigt.github.io/argdown) (this repository contains its source code)
+  - A [commandline tool](https://github.com/christianvoigt/argdown-cli) that exports Argdown files to html, dot and graphml files
+  - [Argdown Syntax Highlighting](https://github.com/christianvoigt/language-argdown) for the Atom Editor
+  - [Argdown Syntax Highlighting](https://github.com/christianvoigt/argdown-codemirror-mode) for CodeMirror
+  - [Argdown Parser](https://github.com/christianvoigt/argdown-parser), the basic tool for building Argdown applications
+  - [Argdown Parser Plugins](https://github.com/christianvoigt/argdown-map-maker) for creating and exporting argument maps from Argdown code
+
+For further technical details, please visit these repositories.
+
+The development of Argdown and Argdown-related tools is funded by the KIT, Karlsruhe. All code is published under the MIT license. 
+
+Currently, the project is still in its alpha phase, so please excuse the lack of documentation. We are working on it.
+
+## Build Setup for Argdown Browser Demo
 
 ``` bash
 # install dependencies
