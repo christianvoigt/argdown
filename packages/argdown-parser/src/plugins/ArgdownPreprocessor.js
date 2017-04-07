@@ -93,6 +93,7 @@ class ArgdownPreprocessor{
       $.statements = {};
       $.arguments = {};
       $.relations = [];
+      uniqueTitleCounter = 0;
       currentStatement = null;
       currentStatementOrArgument = null;
       currentArgumentReconstruction = null;

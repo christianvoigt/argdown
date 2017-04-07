@@ -134,6 +134,7 @@ var ArgdownPreprocessor = function () {
       $.statements = {};
       $.arguments = {};
       $.relations = [];
+      uniqueTitleCounter = 0;
       currentStatement = null;
       currentStatementOrArgument = null;
       currentArgumentReconstruction = null;
