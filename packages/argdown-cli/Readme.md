@@ -4,20 +4,32 @@
 
 A commandline interface to process Argdown data.
 
-This is still an early alpha version. If you want to try it out use:
+For more information about the Argdown argumentation syntax, visit the [Argdown repository](https://github.com/christianvoigt/argdown).
 
-```bash
-npm install -g https://github.com/christianvoigt/argdown-cli
-```
-
-Current features:
+Current features of argdown-cli:
 
   - export to html with `argdown html`
   - export to dot  with `argdown dot`
   - export to graphml with `argdown argml`
 
+## Installation
+
+```bash
+npm install -g https://github.com/christianvoigt/argdown-cli
+```
+
+## Documentation
+
+Available commands:
+
+  - `argdown html [input files] [output folder]`: exports the input files as html files into the output folder.
+  - `argdown dot [input files] [output folder]`: exports the input files as dot files into the output folder.
+  - `argdown argml [input files] [output folder]`: exports the input files as .graphml files into the output folder.
+  
+The input files can specified with wildcards (e.g. './**/*.argdown').
+
 If used without input and output arguments these commands will export any .argdown files in the current folder.
 
 Using the `-w` option you can watch your .argdown files for changes and export them instantly.
 
-For more information use the `--help` option.
+For more information use the `--help` option with each command.
