@@ -34,7 +34,7 @@ const htmlExport = new HtmlExport();
 app.addPlugin(htmlExport, 'export-html'); //adds htmlExport plugin to the 'export-html' processor
 
 app.parse('The Beatles are the best!\n- The Rolling Stones are better!');
-let result = app.run(['preprocessor','run-html']); // runs the two processors one after another, returning a data object
+let result = app.run(['preprocessor','export-html']); // runs the two processors one after another, returning a data object
 
 console.log(result.html);
 ```
@@ -45,7 +45,7 @@ Processing Argdown text with an ArgdownApplication app consist of two steps: Fir
 
 Each processor has its own instance of an ArgdownTreeWalker and a list of plugins belonging to this processor. If the app runs the process it will first call the `walk` method of the processor's ArgdownTreeWalker. The tree walker will traverse the tree and call any plugins that have registered for its events. After the tree walk has been completed, the app calls each plugin's `run(data)` method in the order they have been registered, passing the same data object between the plugins. Each plugin can add data to this object and is expected to return the data object on completing its run method. By using a common data object plugins are thus chained together.
 
-Different procesors can also be chained together by either using `app.run(['processor1','processor2'])` or by calling the app's run method with a previous run's result:
+Different processors can also be chained together by either using `app.run(['processor1','processor2'])` or by calling the app's run method with a previous run's result:
 
 ```javascript
 let data = app.run('preprocessor');
@@ -72,6 +72,8 @@ const plugin = {
   name: 'TestPlugin',
   run(data){
       console.log('TestPlugin.run has been called!');
+      data.test = "some new data";
+      return data;
   },
   argdownListeners{
     argdownEntry: function(){
