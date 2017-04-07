@@ -14,6 +14,27 @@ structures, inspired by Markdown.
   * Finally, you can export Argdown as a graph and create 
     **argument maps** of whole debates.
     
+# Example
+    
+```
+[statement 1]: A statement
+  + <argument 1>: supporting the statement.
+  - <argument 2>: attacking the statement.
+     + <argument 3>: supporting @<argument 2>.
+     -> <argument 4>: is supported by @<argument 2>.
+        +> [statement 1] <!-- @<argument 4> is supporting @[statement 1]-->
+
+<!-- Now we are logically reconstructing @<argument 1> -->
+<argument 1>
+
+(1) A premise
+(2) [statement 2]: A premise with a title.
+    - <argument 2> <!-- the second premise is attacked by @<argument 2> -->
+----
+(3) A conclusion
+    +> [statement 1] <!-- the conclusion is supporting @[statement 1] -->   
+```
+    
 # Getting Started
 
 Try out Argdown in the Browser: [Demo Editor](http://christianvoigt.github.io/argdown).
@@ -29,7 +50,7 @@ The following Argdown tools currently exist:
 
 For further technical details, please visit these repositories.
 
-The development of Argdown and Argdown-related tools is funded by the KIT, Karlsruhe. All code is published under the MIT license. 
+The development of Argdown and Argdown-related tools is funded by the [DebateLab](http://debatelab.philosophie.kit.edu/) at KIT, Karlsruhe. All code is published under the MIT license. 
 
 Currently, the project is still in its alpha phase, so please excuse the lack of documentation. We are working on it.
 
