@@ -90,8 +90,8 @@ var ArgdownPreprocessor = function () {
                 var _index = _.indexOf(relation.to.relations, relation);
                 relation.to.relations.splice(_index, 1);
                 //remove relation from relations
-                _index = _.indexOf(data.relations, relation);
-                data.relations.splice(_index, 1);
+                _index = _.indexOf(this.relations, relation);
+                this.relations.splice(_index, 1);
               }
             }
           }

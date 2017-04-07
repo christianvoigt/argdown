@@ -44,8 +44,8 @@ class ArgdownPreprocessor{
             let index = _.indexOf(relation.to.relations, relation);
             relation.to.relations.splice(index, 1);
             //remove relation from relations
-            index = _.indexOf(data.relations, relation);
-            data.relations.splice(index, 1);
+            index = _.indexOf(this.relations, relation);
+            this.relations.splice(index, 1);
           }
         }
       }

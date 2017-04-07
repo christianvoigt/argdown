@@ -57,6 +57,14 @@ describe("ArgdownPreprocessor", function () {
     (0, _chai.expect)(result.arguments['C'].relations[0].to).to.equal(plugin.arguments['C']);
     (0, _chai.expect)(result.arguments['C'].relations[0].status).to.equal('sketched');
   });
+  it("can ignore duplicates of argument relations", function () {
+    var source = '\n    [A]: text\n      + <Argument 1>\n    \n    <Argument 1>\n    \n    (1) text\n    (2) text\n    ----\n    (3) [B]: text\n      +> [A]\n    ';
+    app.parse(source);
+    var result = app.run('preprocessor');
+    (0, _chai.expect)(Object.keys(result.statements).length).to.equal(4);
+    (0, _chai.expect)(Object.keys(result.arguments).length).to.equal(1);
+    (0, _chai.expect)(result.relations.length).to.equal(1);
+  });
   it("can create sketched argument relations", function () {
     var source = "<A>: The Beatles are the best!\n  +<B>: The Beatles made 'Rubber Soul'!\n  ->[C]: The Rolling Stones were cooler!";
     app.parse(source);
