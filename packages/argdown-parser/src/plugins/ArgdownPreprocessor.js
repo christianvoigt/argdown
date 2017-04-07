@@ -19,13 +19,34 @@ class ArgdownPreprocessor{
         if(fromType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT){
           //change relation.from to point to the argument's conclusion
           let argument = relation.from;
+          
+          //remove from argument
           let index = _.indexOf(argument.relations, relation);
           argument.relations.splice(index, 1);
-
+                    
           let conclusionStatement = argument.pcs[relation.from.pcs.length - 1];
           let equivalenceClass = this.statements[conclusionStatement.title];
+          
           relation.from = equivalenceClass;
-          equivalenceClass.relations.push(relation);
+
+          //check if this relation already exists
+          let relationExists = false;
+          for(let existingRelation of relation.from.relations){
+            if(relation.to == existingRelation.to && relation.type == existingRelation.type){
+              relationExists = true;
+              break;
+            }
+          }
+          if(!relationExists){
+            equivalenceClass.relations.push(relation);            
+          }else{
+            //remove relation from target
+            let index = _.indexOf(relation.to.relations, relation);
+            relation.to.relations.splice(index, 1);
+            //remove relation from relations
+            index = _.indexOf(data.relations, relation);
+            data.relations.splice(index, 1);
+          }
         }
       }
     }
