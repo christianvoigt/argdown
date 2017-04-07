@@ -54,6 +54,25 @@ describe("ArgdownPreprocessor", function() {
     expect(result.arguments['C'].relations[0].to).to.equal(plugin.arguments['C']);
     expect(result.arguments['C'].relations[0].status).to.equal('sketched');
   });
+  it("can ignore duplicates of argument relations", function(){
+    let source = `
+    [A]: text
+      + <Argument 1>
+    
+    <Argument 1>
+    
+    (1) text
+    (2) text
+    ----
+    (3) [B]: text
+      +> [A]
+    `;
+    app.parse(source);
+    let result = app.run('preprocessor');
+    expect(Object.keys(result.statements).length).to.equal(4);
+    expect(Object.keys(result.arguments).length).to.equal(1);
+    expect(result.relations.length).to.equal(1);
+  });  
   it("can create sketched argument relations", function(){
     let source = "<A>: The Beatles are the best!\n  +<B>: The Beatles made 'Rubber Soul'!\n  ->[C]: The Rolling Stones were cooler!";
     app.parse(source);
@@ -82,7 +101,6 @@ describe("ArgdownPreprocessor", function() {
     expect(result.statements['s2']).to.exist;
     expect(result.statements['s3']).to.exist;
   });  
-
 
   it("can create argument reconstructions", function(){
   let source = "<Reconstructed Argument>\n\n(1) [A]: text\n  -<Sketched Argument 1>\n  +[D]\n(2) B\n-- Modus Ponens (uses:1,2; depends on: 1) --\n(3) [C]: text\n  ->[D]: text\n  +><Sketched Argument 1>: text\n\n<Reconstructed Argument>\n  ->[E]: text\n  +><Sketched Argument 2>";
