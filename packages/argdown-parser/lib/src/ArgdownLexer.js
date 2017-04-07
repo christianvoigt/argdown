@@ -146,7 +146,11 @@ var ArgdownLexer = function () {
             var remainingText = text.substr(offset);
             var startsWithNewline = /^[\n\r|\n|\r]/.exec(remainingText) != null;
             if (_.isEmpty(matchedTokens) || startsWithNewline) {
-                return inferenceStartPattern.exec(remainingText);
+                var match = inferenceStartPattern.exec(remainingText);
+                if (match != null) {
+                    $.emitRemainingDedentTokens(matchedTokens);
+                    return match;
+                }
             }
             return null;
         }

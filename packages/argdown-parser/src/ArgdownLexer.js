@@ -129,7 +129,11 @@ class ArgdownLexer {
             let remainingText = text.substr(offset);
             let startsWithNewline = /^[\n\r|\n|\r]/.exec(remainingText) != null;
             if (_.isEmpty(matchedTokens) || startsWithNewline) {
-                return inferenceStartPattern.exec(remainingText);
+                let match = inferenceStartPattern.exec(remainingText);
+                if(match != null){
+                  $.emitRemainingDedentTokens(matchedTokens);
+                  return match;
+                }
             }
             return null;
         }

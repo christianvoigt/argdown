@@ -89,7 +89,7 @@ var HtmlExport = function () {
         $.html += "<div id='" + htmlId + "' class='argument-definition'><span class='definiendum argument-definiendum'>&lt;<span class='title argument-title'>" + node.argument.title + "</span>&gt;: </span><span class='argument-definiens definiens description'>";
       },
       ArgumentMentionEntry: function ArgumentMentionEntry(node) {
-        var htmlId = $.getHtmlId("argument", node.argument.title, true);
+        var htmlId = $.getHtmlId("argument", node.title, true);
         $.html += "<a href='#" + htmlId + "' class='mention argument-mention'>@&lt;<span class='title argument-title'>" + node.title + "</span>&gt;</a>" + node.trailingWhitespace;
       },
       argumentDefinitionExit: function argumentDefinitionExit() {
