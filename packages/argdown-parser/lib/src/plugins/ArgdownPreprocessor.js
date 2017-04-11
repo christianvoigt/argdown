@@ -605,7 +605,7 @@ var ArgdownPreprocessor = function () {
       contradictionEntry: onContradictionEntry,
       contradictionExit: onRelationExit,
       relationsEntry: onRelationsEntry,
-      relationsExist: onRelationsExit,
+      relationsExit: onRelationsExit,
       freestyleTextEntry: onFreestyleTextEntry,
       italicEntry: onItalicEntry,
       italicExit: onItalicExit,
