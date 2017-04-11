@@ -482,7 +482,7 @@ class ArgdownPreprocessor{
       contradictionEntry : onContradictionEntry,
       contradictionExit : onRelationExit,
       relationsEntry : onRelationsEntry,
-      relationsExist : onRelationsExit,
+      relationsExit : onRelationsExit,
       freestyleTextEntry : onFreestyleTextEntry,
       italicEntry : onItalicEntry,
       italicExit : onItalicExit,
