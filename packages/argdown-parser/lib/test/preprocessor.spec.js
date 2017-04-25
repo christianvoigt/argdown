@@ -84,6 +84,13 @@ describe("ArgdownPreprocessor", function () {
     (0, _chai.expect)(result.statements['C'].relations[0].to).to.equal(plugin.statements['C']);
     (0, _chai.expect)(result.statements['C'].relations[0].status).to.equal('sketched');
   });
+  it("does not add empty statements as members to equivalence class", function () {
+    var source = '[A]: B\n    \n    [A]';
+    app.parse(source);
+    var result = app.run('preprocessor');
+    (0, _chai.expect)(result.statements['A']).to.exist;
+    (0, _chai.expect)(result.statements['A'].members.length).to.equal(1);
+  });
   it("can process a single argument", function () {
     var source = "(1) [s1]: A\n(2) [s2]: B\n----\n(3) [s3]: C";
     app.parse(source);

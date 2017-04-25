@@ -92,6 +92,15 @@ describe("ArgdownPreprocessor", function() {
     expect(result.statements['C'].relations[0].to).to.equal(plugin.statements['C']);
     expect(result.statements['C'].relations[0].status).to.equal('sketched');
   });
+  it("does not add empty statements as members to equivalence class", function(){
+    let source = `[A]: B
+    
+    [A]`;
+    app.parse(source);
+    let result = app.run('preprocessor');
+    expect(result.statements['A']).to.exist;
+    expect(result.statements['A'].members.length).to.equal(1);
+  });    
   it("can process a single argument", function(){
     let source = "(1) [s1]: A\n(2) [s2]: B\n----\n(3) [s3]: C";
     app.parse(source);

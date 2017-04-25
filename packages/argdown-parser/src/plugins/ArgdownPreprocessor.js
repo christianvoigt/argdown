@@ -145,7 +145,9 @@ class ArgdownPreprocessor{
         inStatementTree = false;
       }
       let equivalenceClass = getEquivalenceClass(statement.title);
-      equivalenceClass.members.push(statement);
+      if(!_.isEmpty(statement.text)){
+        equivalenceClass.members.push(statement);        
+      }
       if(statement.isRootOfStatementTree){
         equivalenceClass.isUsedAsRootOfStatementTree = true; //members are used outside of argument reconstructions (not as premise or conclusion)
       }else if(statement.isChildOfStatementTree){
