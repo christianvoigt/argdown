@@ -91,6 +91,14 @@ describe("ArgdownPreprocessor", function () {
     (0, _chai.expect)(result.statements['A']).to.exist;
     (0, _chai.expect)(result.statements['A'].members.length).to.equal(1);
   });
+  it("does not create duplicate relations for contradictions", function () {
+    var source = '[A]: A\n      >< [B]: B\n    \n    [B]\n      >< [A]';
+    app.parse(source);
+    var result = app.run('preprocessor');
+    (0, _chai.expect)(result.parserErrors.length).to.equal(0);
+    (0, _chai.expect)(Object.keys(result.statements).length).to.equal(2);
+    (0, _chai.expect)(Object.keys(result.relations).length).to.equal(1);
+  });
   it("can process a single argument", function () {
     var source = "(1) [s1]: A\n(2) [s2]: B\n----\n(3) [s3]: C";
     app.parse(source);
