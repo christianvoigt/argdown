@@ -533,12 +533,17 @@ var ArgdownLexer = function () {
             this.init();
 
             var lexResult = this._lexer.tokenize(text);
-
-            this.emitRemainingDedentTokens(lexResult.tokens);
-
             if (lexResult.errors.length > 0) {
                 throw new Error("sad sad panda lexing errors detected");
             }
+
+            //remove trailing Emptyline (parser cannot cope with it)
+            if (tokenMatcher(_.last(lexResult.tokens), this.Emptyline)) {
+                lexResult.tokens.pop();
+            }
+
+            this.emitRemainingDedentTokens(lexResult.tokens);
+
             return lexResult;
         }
     }]);

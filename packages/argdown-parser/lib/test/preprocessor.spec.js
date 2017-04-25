@@ -95,16 +95,16 @@ describe("ArgdownPreprocessor", function () {
   });
 
   it("can create argument reconstructions", function () {
-    var source = "<Reconstructed Argument>\n\n(1) [A]: text\n  -<Sketched Argument 1>\n  +[D]\n(2) B\n-- Modus Ponens (uses:1,2; depends on: 1) --\n(3) [C]: text\n  ->[D]: text\n  +><Sketched Argument 1>: text\n\n<Reconstructed Argument>\n  ->[E]: text\n  +><Sketched Argument 2>";
+    var source = '<Reconstructed Argument>\n  \n  (1) [A]: text\n    -<Sketched Argument 1>\n    +[E]\n  (2) B\n  ----\n  (3) C\n  -- Modus Ponens (uses:1,2; depends on: 1) --\n  (4) [D]: text\n    ->[E]: text\n    +><Sketched Argument 1>: text\n    \n<Reconstructed Argument>\n  ->[F]: text\n  +><Sketched Argument 2>';
     app.parse(source);
     var result = app.run('preprocessor');
     (0, _chai.expect)(Object.keys(result.arguments).length).to.equal(3);
-    (0, _chai.expect)(Object.keys(result.statements).length).to.equal(5);
+    (0, _chai.expect)(Object.keys(result.statements).length).to.equal(6);
 
     var argument = result.arguments['Reconstructed Argument'];
     //console.log(util.inspect(argument));
     (0, _chai.expect)(argument).to.exist;
-    (0, _chai.expect)(argument.pcs.length).to.equal(3);
+    (0, _chai.expect)(argument.pcs.length).to.equal(4);
     (0, _chai.expect)(argument.relations.length).to.equal(1); //second relation gets transformed to relation of conclusion
 
     (0, _chai.expect)(argument.relations[0].type).to.equal("support");
@@ -115,9 +115,11 @@ describe("ArgdownPreprocessor", function () {
     (0, _chai.expect)(argument.pcs[0].role).to.equal('premise');
     (0, _chai.expect)(argument.pcs[1].role).to.equal('premise');
     (0, _chai.expect)(argument.pcs[2].role).to.equal('conclusion');
+    (0, _chai.expect)(argument.pcs[3].role).to.equal('conclusion');
     (0, _chai.expect)(result.statements[argument.pcs[0].title]).to.exist;
     (0, _chai.expect)(result.statements[argument.pcs[1].title]).to.exist;
     (0, _chai.expect)(result.statements[argument.pcs[2].title]).to.exist;
+    (0, _chai.expect)(result.statements[argument.pcs[3].title]).to.exist;
 
     var premise = result.statements[argument.pcs[0].title];
     (0, _chai.expect)(premise.isUsedAsPremise).to.be.true;
@@ -131,13 +133,13 @@ describe("ArgdownPreprocessor", function () {
     (0, _chai.expect)(premise.relations[0].type).to.equal('attack');
     (0, _chai.expect)(premise.relations[0].status).to.equal('sketched');
 
-    (0, _chai.expect)(premise.relations[1].from.title).to.equal('D');
+    (0, _chai.expect)(premise.relations[1].from.title).to.equal('E');
     (0, _chai.expect)(premise.relations[1].to.title).to.equal('A');
     (0, _chai.expect)(premise.relations[1].type).to.equal('support');
     (0, _chai.expect)(premise.relations[1].status).to.equal('reconstructed');
 
-    (0, _chai.expect)(argument.pcs[2].title).to.equal('C');
-    var conclusion = result.statements[argument.pcs[2].title];
+    (0, _chai.expect)(argument.pcs[3].title).to.equal('D');
+    var conclusion = result.statements[argument.pcs[3].title];
     (0, _chai.expect)(conclusion.isUsedAsConclusion).to.be.true;
     (0, _chai.expect)(conclusion.isUsedAsPremise).to.be.false;
     (0, _chai.expect)(conclusion.isUsedAsRootOfStatementTree).to.be.false;
@@ -145,21 +147,21 @@ describe("ArgdownPreprocessor", function () {
     (0, _chai.expect)(conclusion.relations.length).to.equal(3); //with transformed relation from the argument
 
     (0, _chai.expect)(conclusion.relations[0].status).to.equal('reconstructed');
-    (0, _chai.expect)(conclusion.relations[0].from.title).to.equal('C');
-    (0, _chai.expect)(conclusion.relations[0].to.title).to.equal('D');
+    (0, _chai.expect)(conclusion.relations[0].from.title).to.equal('D');
+    (0, _chai.expect)(conclusion.relations[0].to.title).to.equal('E');
     (0, _chai.expect)(conclusion.relations[0].type).to.equal('attack');
 
     (0, _chai.expect)(conclusion.relations[1].status).to.equal('sketched');
-    (0, _chai.expect)(conclusion.relations[1].from.title).to.equal('C');
+    (0, _chai.expect)(conclusion.relations[1].from.title).to.equal('D');
     (0, _chai.expect)(conclusion.relations[1].to.title).to.equal('Sketched Argument 1');
     (0, _chai.expect)(conclusion.relations[1].type).to.equal('support');
 
     (0, _chai.expect)(conclusion.relations[2].type).to.equal("attack");
-    (0, _chai.expect)(conclusion.relations[2].from.title).to.equal("C");
-    (0, _chai.expect)(conclusion.relations[2].to.title).to.equal("E");
+    (0, _chai.expect)(conclusion.relations[2].from.title).to.equal("D");
+    (0, _chai.expect)(conclusion.relations[2].to.title).to.equal("F");
     (0, _chai.expect)(conclusion.relations[2].status).to.equal("reconstructed");
 
-    var inference = argument.pcs[2].inference;
+    var inference = argument.pcs[3].inference;
     (0, _chai.expect)(inference).to.exist;
     (0, _chai.expect)(inference.inferenceRules.length).to.equal(1);
     (0, _chai.expect)(inference.inferenceRules[0]).to.equal('Modus Ponens');
@@ -168,7 +170,7 @@ describe("ArgdownPreprocessor", function () {
     (0, _chai.expect)(inference.metaData['uses'][1]).to.equal('2');
     (0, _chai.expect)(inference.metaData['depends on']).to.equal('1');
 
-    var statement = result.statements['D'];
+    var statement = result.statements['E'];
     (0, _chai.expect)(statement).to.exist;
     (0, _chai.expect)(statement.isUsedAsRootOfStatementTree).to.be.false;
     (0, _chai.expect)(statement.isUsedAsChildOfStatementTree).to.be.false;

@@ -272,5 +272,14 @@ describe("Lexer", function () {
     expectToken(lexer.Link);
     expectToken(lexer.Freestyle);
   });
+  it("can ignore trailing Emptyline before comment", function () {
+    var source = _fs2.default.readFileSync("./test/lexer-trailing-emptyline.argdown", 'utf8');
+    var result = lexer.tokenize(source);
+    startTest(result.tokens);
+    (0, _chai.expect)(result.tokens.length).to.equal(3);
+    expectToken(lexer.Emptyline);
+    expectToken(lexer.StatementDefinition);
+    expectToken(lexer.Freestyle);
+  });
 });
 //# sourceMappingURL=lexer.spec.js.map

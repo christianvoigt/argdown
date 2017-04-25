@@ -100,41 +100,30 @@ var ArgdownParser = function (_chevrotain$Parser) {
                 children: children
             };
         });
-        /*
-         * An argument consists of at least one inferential step.
-         * Note that the inferential steps are not atomic self-contained elements within the argument.
-         * An inferential step can use and depend on statements from other inferential steps.
-         * Inferential steps are only used to ascertain that the basic syntax of arguments is maintained:
-         * There can not be inferences without premises or conclusions.
-         * Isolated inferential steps are thus of no further use when working with Argdown data and should be ignored.
-         * Instead, always work with the complete argument.
-         */
         $.argument = $.RULE("argument", function () {
             var children = [];
-            var atLeastOne = $.AT_LEAST_ONE(function () {
-                return children.push($.SUBRULE($.inferentialStep));
+            children.push($.SUBRULE($.argumentStatement));
+            $.AT_LEAST_ONE({
+                DEF: function DEF() {
+                    children.push($.SUBRULE($.argumentBody));
+                }
             });
-            children.concat(atLeastOne.values);
             return {
                 name: "argument",
                 children: children
             };
         });
-
-        /*
-         * One inferential step in an argument consisting of at least one premise, an inference and a conclusion.
-         * Do not use this when traversing the AST. Instead, always work with the whole argument.
-         * For further information, see $.argument.
-         */
-        $.inferentialStep = $.RULE("inferentialStep", function () {
+        $.argumentBody = $.RULE("argumentBody", function () {
             var children = [];
-            $.AT_LEAST_ONE(function () {
-                return children.push($.SUBRULE1($.argumentStatement));
+            $.MANY({
+                DEF: function DEF() {
+                    children.push($.SUBRULE2($.argumentStatement));
+                }
             });
             children.push($.SUBRULE($.inference));
-            children.push($.SUBRULE2($.argumentStatement));
+            children.push($.SUBRULE1($.argumentStatement));
             return {
-                name: "inferentialStep",
+                name: "argumentBody",
                 children: children
             };
         });

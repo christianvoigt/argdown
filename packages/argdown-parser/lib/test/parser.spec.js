@@ -17,7 +17,7 @@ var walker = new _index.ArgdownTreeWalker();
 
 describe("Parser", function () {
   it("can parse argdown with leading and trailing emptylines", function () {
-    var source = "\n\n\n\n\nHallo World!\n\n\n\n\n";
+    var source = "\n\n\n\n\nHallo World!\n\n\n<!-- Comment -->\n\n";
     var lexResult = lexer.tokenize(source);
     parser.input = lexResult.tokens;
     var parseResult = parser.argdown();
