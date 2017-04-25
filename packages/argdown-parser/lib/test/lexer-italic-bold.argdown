@@ -8,3 +8,5 @@ ___This text is also bold and italic.___
 __This text is bold and *this one is also italic.*__
 *This text is italic and __this one is also bold.__*
 ****This text is sourrounded by eight stars.****
+(*This text is italic and in brackets.*)
+*This text is italic and followed by a full stop*.
