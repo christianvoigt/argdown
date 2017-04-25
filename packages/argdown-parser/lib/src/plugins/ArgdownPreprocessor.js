@@ -408,6 +408,9 @@ var ArgdownPreprocessor = function () {
             if (relation.to == existingRelation.to && relation.type == existingRelation.type) {
               relationExists = true;
               break;
+            } else if (relation.type == "contradiction" && relation.type == existingRelation.type && relation.from == existingRelation.to && relation.to == existingRelation.from) {
+              relationExists = true;
+              break;
             }
           }
         } catch (err) {
