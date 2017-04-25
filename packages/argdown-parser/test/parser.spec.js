@@ -9,7 +9,7 @@ const walker = new ArgdownTreeWalker();
 
 describe("Parser", function() {
   it("can parse argdown with leading and trailing emptylines", function(){
-    let source = "\n\n\n\n\nHallo World!\n\n\n\n\n";
+    let source = "\n\n\n\n\nHallo World!\n\n\n<!-- Comment -->\n\n";
     let lexResult = lexer.tokenize(source);
     parser.input = lexResult.tokens;
     let parseResult = parser.argdown();

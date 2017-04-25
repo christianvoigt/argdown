@@ -265,4 +265,13 @@ describe("Lexer", function() {
      expectToken(lexer.Link);
      expectToken(lexer.Freestyle);
    });
+   it("can ignore trailing Emptyline before comment", function(){
+     let source = fs.readFileSync("./test/lexer-trailing-emptyline.argdown", 'utf8');
+     const result = lexer.tokenize(source);
+     startTest(result.tokens);
+     expect(result.tokens.length).to.equal(3);
+     expectToken(lexer.Emptyline);
+     expectToken(lexer.StatementDefinition);
+     expectToken(lexer.Freestyle);
+   });   
  });
