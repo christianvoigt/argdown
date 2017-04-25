@@ -103,16 +103,31 @@ describe("ArgdownPreprocessor", function() {
   });  
 
   it("can create argument reconstructions", function(){
-  let source = "<Reconstructed Argument>\n\n(1) [A]: text\n  -<Sketched Argument 1>\n  +[D]\n(2) B\n-- Modus Ponens (uses:1,2; depends on: 1) --\n(3) [C]: text\n  ->[D]: text\n  +><Sketched Argument 1>: text\n\n<Reconstructed Argument>\n  ->[E]: text\n  +><Sketched Argument 2>";
+  let source = `<Reconstructed Argument>
+  
+  (1) [A]: text
+    -<Sketched Argument 1>
+    +[E]
+  (2) B
+  ----
+  (3) C
+  -- Modus Ponens (uses:1,2; depends on: 1) --
+  (4) [D]: text
+    ->[E]: text
+    +><Sketched Argument 1>: text
+    
+<Reconstructed Argument>
+  ->[F]: text
+  +><Sketched Argument 2>`;
   app.parse(source);
   let result = app.run('preprocessor');
   expect(Object.keys(result.arguments).length).to.equal(3);
-  expect(Object.keys(result.statements).length).to.equal(5);
+  expect(Object.keys(result.statements).length).to.equal(6);
 
   let argument = result.arguments['Reconstructed Argument'];
   //console.log(util.inspect(argument));
   expect(argument).to.exist;
-  expect(argument.pcs.length).to.equal(3);
+  expect(argument.pcs.length).to.equal(4);
   expect(argument.relations.length).to.equal(1); //second relation gets transformed to relation of conclusion
 
   expect(argument.relations[0].type).to.equal("support");
@@ -124,9 +139,11 @@ describe("ArgdownPreprocessor", function() {
   expect(argument.pcs[0].role).to.equal('premise');
   expect(argument.pcs[1].role).to.equal('premise');
   expect(argument.pcs[2].role).to.equal('conclusion');
+  expect(argument.pcs[3].role).to.equal('conclusion');
   expect(result.statements[argument.pcs[0].title]).to.exist;
   expect(result.statements[argument.pcs[1].title]).to.exist;
   expect(result.statements[argument.pcs[2].title]).to.exist;
+  expect(result.statements[argument.pcs[3].title]).to.exist;
 
   let premise = result.statements[argument.pcs[0].title];
   expect(premise.isUsedAsPremise).to.be.true;
@@ -140,13 +157,13 @@ describe("ArgdownPreprocessor", function() {
   expect(premise.relations[0].type).to.equal('attack');
   expect(premise.relations[0].status).to.equal('sketched');
 
-  expect(premise.relations[1].from.title).to.equal('D');
+  expect(premise.relations[1].from.title).to.equal('E');
   expect(premise.relations[1].to.title).to.equal('A');
   expect(premise.relations[1].type).to.equal('support');
   expect(premise.relations[1].status).to.equal('reconstructed');
 
-  expect(argument.pcs[2].title).to.equal('C');
-  let conclusion = result.statements[argument.pcs[2].title];
+  expect(argument.pcs[3].title).to.equal('D');
+  let conclusion = result.statements[argument.pcs[3].title];
   expect(conclusion.isUsedAsConclusion).to.be.true;
   expect(conclusion.isUsedAsPremise).to.be.false;
   expect(conclusion.isUsedAsRootOfStatementTree).to.be.false;
@@ -154,23 +171,23 @@ describe("ArgdownPreprocessor", function() {
   expect(conclusion.relations.length).to.equal(3); //with transformed relation from the argument
 
   expect(conclusion.relations[0].status).to.equal('reconstructed');
-  expect(conclusion.relations[0].from.title).to.equal('C');
-  expect(conclusion.relations[0].to.title).to.equal('D');
+  expect(conclusion.relations[0].from.title).to.equal('D');
+  expect(conclusion.relations[0].to.title).to.equal('E');
   expect(conclusion.relations[0].type).to.equal('attack');
 
   expect(conclusion.relations[1].status).to.equal('sketched');
-  expect(conclusion.relations[1].from.title).to.equal('C');
+  expect(conclusion.relations[1].from.title).to.equal('D');
   expect(conclusion.relations[1].to.title).to.equal('Sketched Argument 1');
   expect(conclusion.relations[1].type).to.equal('support');
 
 
   expect(conclusion.relations[2].type).to.equal("attack");
-  expect(conclusion.relations[2].from.title).to.equal("C");
-  expect(conclusion.relations[2].to.title).to.equal("E");
+  expect(conclusion.relations[2].from.title).to.equal("D");
+  expect(conclusion.relations[2].to.title).to.equal("F");
   expect(conclusion.relations[2].status).to.equal("reconstructed");
 
 
-  let inference = argument.pcs[2].inference;
+  let inference = argument.pcs[3].inference;
   expect(inference).to.exist;
   expect(inference.inferenceRules.length).to.equal(1);
   expect(inference.inferenceRules[0]).to.equal('Modus Ponens');
@@ -179,7 +196,7 @@ describe("ArgdownPreprocessor", function() {
   expect(inference.metaData['uses'][1]).to.equal('2');
   expect(inference.metaData['depends on']).to.equal('1');
 
-  let statement = result.statements['D'];
+  let statement = result.statements['E'];
   expect(statement).to.exist;
   expect(statement.isUsedAsRootOfStatementTree).to.be.false;
   expect(statement.isUsedAsChildOfStatementTree).to.be.false;

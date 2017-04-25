@@ -65,39 +65,32 @@ class ArgdownParser extends chevrotain.Parser {
                 children: children
             };
         });
-        /*
-         * An argument consists of at least one inferential step.
-         * Note that the inferential steps are not atomic self-contained elements within the argument.
-         * An inferential step can use and depend on statements from other inferential steps.
-         * Inferential steps are only used to ascertain that the basic syntax of arguments is maintained:
-         * There can not be inferences without premises or conclusions.
-         * Isolated inferential steps are thus of no further use when working with Argdown data and should be ignored.
-         * Instead, always work with the complete argument.
-         */
         $.argument = $.RULE("argument", () => {
             let children = [];
-            let atLeastOne = ($.AT_LEAST_ONE(() => children.push($.SUBRULE($.inferentialStep))));
-            children.concat(atLeastOne.values);
+            children.push($.SUBRULE($.argumentStatement));                        
+            $.AT_LEAST_ONE({
+              DEF:()=>{
+                children.push($.SUBRULE($.argumentBody));
+              }
+            });
             return {
                 name: "argument",
                 children: children
             };
         });
-
-        /*
-         * One inferential step in an argument consisting of at least one premise, an inference and a conclusion.
-         * Do not use this when traversing the AST. Instead, always work with the whole argument.
-         * For further information, see $.argument.
-         */
-        $.inferentialStep = $.RULE("inferentialStep", () => {
-            let children = [];
-            $.AT_LEAST_ONE(() => children.push($.SUBRULE1($.argumentStatement)));
-            children.push($.SUBRULE($.inference));
-            children.push($.SUBRULE2($.argumentStatement));
-            return {
-                name: "inferentialStep",
-                children: children
-            };
+        $.argumentBody = $.RULE("argumentBody",() =>{
+          let children = [];
+          $.MANY({
+            DEF:()=>{
+              children.push($.SUBRULE2($.argumentStatement));
+            }
+          });
+          children.push($.SUBRULE($.inference));          
+          children.push($.SUBRULE1($.argumentStatement));
+          return {
+              name: "argumentBody",
+              children: children
+          };        
         });
         $.argumentStatement = $.RULE("argumentStatement", () => {
             let children = [];

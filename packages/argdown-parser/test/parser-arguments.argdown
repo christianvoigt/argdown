@@ -9,15 +9,13 @@
 
 [Statement 1]: text
   + <Argument 3>
-
-(1) D
-(2) E
-----
-(3) F
-
-[Statement 2]: text
-
-(1) D
-(2) E
-----
-(3) F
+  
+    (1) D
+    (2) E
+    ----
+    (3) F
+    ----
+    (4) G
+    (5) H
+    ----
+    (6) I
