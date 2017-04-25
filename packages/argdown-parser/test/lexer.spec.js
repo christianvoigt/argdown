@@ -185,11 +185,13 @@ describe("Lexer", function() {
     expectToken(lexer.Freestyle);
     expectToken(lexer.AsteriskItalicEnd);
     expectToken(lexer.AsteriskBoldEnd);
+    
     expectToken(lexer.UnderscoreBoldStart);
     expectToken(lexer.UnderscoreItalicStart);
     expectToken(lexer.Freestyle);
     expectToken(lexer.UnderscoreItalicEnd);
     expectToken(lexer.UnderscoreBoldEnd);
+    
     expectToken(lexer.UnderscoreBoldStart);
     expectToken(lexer.Freestyle);
     expectToken(lexer.AsteriskItalicStart);
@@ -207,6 +209,15 @@ describe("Lexer", function() {
     expectToken(lexer.Freestyle);
     expectToken(lexer.AsteriskBoldEnd);
     expectToken(lexer.AsteriskBoldEnd);
+    expectToken(lexer.UnusedControlChar);
+    expectToken(lexer.AsteriskItalicStart);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.AsteriskItalicEnd);
+    expectToken(lexer.UnusedControlChar);
+    expectToken(lexer.AsteriskItalicStart);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.AsteriskItalicEnd);
+    expectToken(lexer.Freestyle);    
   });
      it("can lex complex indentation", function() {
      let source = fs.readFileSync("./test/lexer-indentation.argdown", 'utf8');
