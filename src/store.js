@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {ArgdownApplication, ArgdownPreprocessor, HtmlExport} from 'argdown-parser'
+import {ArgdownApplication, ArgdownPreprocessor, HtmlExport, JSONExport} from 'argdown-parser'
 import {MapMaker, DotExport, ArgMLExport} from 'argdown-map-maker'
 
 const app = new ArgdownApplication()
@@ -8,6 +8,7 @@ const preprocessor = new ArgdownPreprocessor()
 const htmlExport = new HtmlExport({
   headless: true
 })
+const jsonExport = new JSONExport({removeEmbeddedRelations: true})
 const mapMaker = new MapMaker()
 const dotExport = new DotExport()
 const argMLExport = new ArgMLExport()
@@ -98,6 +99,7 @@ app.addPlugin(mapMaker, 'export-dot')
 app.addPlugin(dotExport, 'export-dot')
 app.addPlugin(mapMaker, 'export-argml')
 app.addPlugin(argMLExport, 'export-argml')
+app.addPlugin(jsonExport, 'export-json')
 
 Vue.use(Vuex)
 
@@ -144,6 +146,13 @@ export default new Vuex.Store({
       }
       let result = app.run('export-argml', state.preprocessedData)
       return result.argml
+    },
+    json: (state) => {
+      if (!state.preprocessedData) {
+        return null
+      }
+      let result = app.run('export-json', state.preprocessedData)
+      return result.json
     },
     parserErrors: (state) => {
       if (state.preprocessedData) {

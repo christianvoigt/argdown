@@ -51,7 +51,7 @@ To see the resulting graph, paste this code into the [online editor](http://chri
 Argdown tools currently available:
 
   - A browser based [Editor](http://christianvoigt.github.io/argdown) (this repository contains its source code)
-  - A [commandline tool](https://github.com/christianvoigt/argdown-cli) that exports Argdown files to html, dot and graphml files
+  - A [commandline tool](https://github.com/christianvoigt/argdown-cli) that exports Argdown files to html, json, dot and graphml files
   - [Atom Editor Syntax Highlighting](https://github.com/christianvoigt/language-argdown)
   - [CodeMirror Syntax Highlighting](https://github.com/christianvoigt/argdown-codemirror-mode) 
   - [Argdown Parser](https://github.com/christianvoigt/argdown-parser), the basic tools for building Argdown applications
