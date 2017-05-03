@@ -25,10 +25,12 @@ var htmlExport = new _argdownParser.HtmlExport();
 var mapMaker = new _argdownMapMaker.MapMaker();
 var dotExport = new _argdownMapMaker.DotExport();
 var argmlExport = new _argdownMapMaker.ArgMLExport();
+var jsonExport = new _argdownParser.JSONExport();
 var saveAsFilePlugin = new _SaveAsFilePlugin.SaveAsFilePlugin();
 app.addPlugin(preprocessor, "preprocessor");
 
 app.addPlugin(htmlExport, "export-html");
+app.addPlugin(jsonExport, "eport-json");
 
 app.addPlugin(mapMaker, "export-dot");
 app.addPlugin(dotExport, "export-dot");
@@ -262,6 +264,77 @@ program.command('argml [input] [output]').description('export Argdown graph as .
   }
 });
 
+program.command('json [input] [output]').description('export Argdown data as JSON file').option('-s, --spaces', 'Spaces used for indentation (default 2)').option('-rer, --remove-embedded-relations', 'Remove relations embedded in statement and relation objects').action(function (_input, _output, options) {
+  var input = _input;
+  var config = {};
+
+  argmlExport.config = config;
+
+  if (!input) input = "./*.argdown";
+
+  var output = _output;
+  if (!output) output = "./graphml";
+
+  var spaces = 2;
+  if (options.spaces !== null) {
+    spaces = options.spaces;
+  }
+  var removeEmbeddedRelations = false;
+  if (options.removeEmbeddedRelations) {
+    removeEmbeddedRelations = false;
+  }
+  mapMaker.config = {
+    spaces: spaces,
+    removeEmbeddedRelations: removeEmbeddedRelations
+  };
+
+  if (options.watch) {
+    var watcher = chokidar.watch(input, {});
+    watcher.on('add', function (path) {
+      console.log('File ' + path + ' has been added.');
+      exportFile(path, output, "json");
+    }).on('change', function (path) {
+      console.log('File ' + path + ' has been changed.');
+      exportFile(path, output, "json");
+    }).on('unlink', function (path) {
+      console.log('File ' + path + ' has been removed.');
+    });
+  } else {
+    glob(input, function (er, files) {
+      if (er) {
+        console.log(er);
+        return;
+      } else {
+        console.log("glob files: " + files);
+        var _iteratorNormalCompletion4 = true;
+        var _didIteratorError4 = false;
+        var _iteratorError4 = undefined;
+
+        try {
+          for (var _iterator4 = files[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+            var file = _step4.value;
+
+            exportFile(file, output, "json");
+          }
+        } catch (err) {
+          _didIteratorError4 = true;
+          _iteratorError4 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion4 && _iterator4.return) {
+              _iterator4.return();
+            }
+          } finally {
+            if (_didIteratorError4) {
+              throw _iteratorError4;
+            }
+          }
+        }
+      }
+    });
+  }
+});
+
 program.parse(process.argv);
 
 if (!process.argv.slice(2).length) {
@@ -289,6 +362,9 @@ function exportFile(file, outputDir, format) {
     } else if (format == "argml") {
       saveAsFilePlugin.config = { outputDir: outputDir, sourceFile: file, dataKey: "argml", extension: ".graphml" };
       processors = ["preprocessor", "export-argml", "save-as-file"];
+    } else if (format == "jsons") {
+      saveAsFilePlugin.config = { outputDir: outputDir, sourceFile: file, dataKey: "json", extension: ".json" };
+      processors = ["preprocessor", "export-json", "save-as-file"];
     } else {
       console.log("Format " + format + " not supported.");
       return;
