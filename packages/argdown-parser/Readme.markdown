@@ -15,6 +15,9 @@ This package contains the basic tools to build an Argdown application:
   - ArgdownApplication class: a wrapper that allows to write cleanly separated plugins for processing Argdown data
   - Preprocessor plugin: a plugin for ArgdownApplication that has to be run before most other plugins to provide a basic data model containing arguments, statements and relations
   - HtmlExport: plugin that exports Argdown code to html
+  - JSONExport: plugin that exports Argdown code to JSON
+  
+Both export plugins require that the preprocessor plugin is run before them (see below).
 
 Additional plugins that help build argument maps with the parser can be found in the [argdown-map-maker package](https://github.com/christianvoigt/argdown-map-maker).
 
@@ -23,7 +26,7 @@ Additional plugins that help build argument maps with the parser can be found in
 Basic example:
 
 ```javascript
-import {ArgdownApplication, Preprocessor, HtmlExport} from 'argdown-parser';
+import {ArgdownApplication, Preprocessor, HtmlExport, JSONExport} from 'argdown-parser';
 
 const app = new ArgdownApplication();
 
@@ -33,10 +36,23 @@ app.addPlugin(preprocessor, 'preprocessor'); // adds preprocessor plugin to the 
 const htmlExport = new HtmlExport();
 app.addPlugin(htmlExport, 'export-html'); //adds htmlExport plugin to the 'export-html' processor
 
+const jsonExport = new JSONExport();
+app.addPlugin(jsonExport, 'export-json'); //adds jsonExport plugin to the 'export-json' processor
+
 app.parse('The Beatles are the best!\n- The Rolling Stones are better!');
 let result = app.run(['preprocessor','export-html']); // runs the two processors one after another, returning a data object
 
 console.log(result.html);
+
+/*
+* Now we run the 'export-json' processor, while passing the result of the previous run to the app.
+* By doing this we can avoid to run the 'preprocessor' again, 
+* even though the JSONExport plugin requires the data produced by the preprocessor.
+*/
+app.run('export-json', result); 
+
+console.log(result.json);
+
 ```
 
 # How ArgdownApplication processes Argdown text
