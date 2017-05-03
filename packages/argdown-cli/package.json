@@ -26,11 +26,13 @@
     "email": "1pxsolidblack@gmail.com"
   },
   "scripts": {
+    "deploy": "npm run build && npm run version:patch && npm run push",    
     "build": "npm run clean && npm run build:src",
     "build:src": "babel src/ -d lib/src --source-maps",
     "test": "mocha --compilers js:babel-core/register --colors ./test/*.spec.js",
     "prepublish": "npm build",
-    "clean": "rimraf lib/*"
+    "clean": "rimraf lib/*",
+    "version:patch": "npm version patch"  
   },
   "readmeFilename": "Readme.md",
   "preferGlobal": true,

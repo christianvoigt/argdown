@@ -11,7 +11,7 @@ let fs = require('fs');
 let chokidar = require('chokidar');
 let mkdirp = require('mkdirp');
 
-import {ArgdownApplication, ArgdownPreprocessor, HtmlExport} from 'argdown-parser';
+import {ArgdownApplication, ArgdownPreprocessor, HtmlExport, JSONExport} from 'argdown-parser';
 import {MapMaker, DotExport, ArgMLExport} from 'argdown-map-maker';
 import {SaveAsFilePlugin} from './SaveAsFilePlugin.js';
 
@@ -22,10 +22,12 @@ let htmlExport = new HtmlExport();
 let mapMaker = new MapMaker();
 let dotExport = new DotExport();
 let argmlExport = new ArgMLExport();
+let jsonExport = new JSONExport();
 let saveAsFilePlugin = new SaveAsFilePlugin();
 app.addPlugin(preprocessor, "preprocessor");
 
 app.addPlugin(htmlExport, "export-html");
+app.addPlugin(jsonExport, "eport-json");
 
 app.addPlugin(mapMaker, "export-dot");
 app.addPlugin(dotExport, "export-dot");
@@ -241,7 +243,67 @@ program
           });
         }
       });
+      
+      program
+        .command('json [input] [output]')
+        .description('export Argdown data as JSON file')
+        .option('-s, --spaces', 'Spaces used for indentation (default 2)')
+        .option('-rer, --remove-embedded-relations', 'Remove relations embedded in statement and relation objects')
+        .action(function(_input, _output, options){
+          let input = _input;
+          let config = {};
 
+          argmlExport.config = config;
+
+          if(!input)
+            input = "./*.argdown";
+
+          let output = _output;
+          if(!output)
+            output = "./graphml";
+            
+          let spaces = 2;
+          if(options.spaces !== null){
+            spaces = options.spaces;
+          }
+          let removeEmbeddedRelations = false;
+          if(options.removeEmbeddedRelations){
+            removeEmbeddedRelations = false;        
+          }
+          mapMaker.config = {
+            spaces: spaces,
+            removeEmbeddedRelations: removeEmbeddedRelations
+          };
+          
+          if(options.watch){
+            var watcher = chokidar.watch(input, {});
+            watcher
+            .on('add', path => {
+              console.log(`File ${path} has been added.`);
+              exportFile(path, output, "json");
+            })
+            .on('change', path => {
+              console.log(`File ${path} has been changed.`);
+              exportFile(path, output, "json");
+            })
+            .on('unlink', path => {
+              console.log(`File ${path} has been removed.`);
+            });
+          }else{
+            glob(input, function (er, files) {
+              if(er){
+                console.log(er);
+                return;
+              }else{
+                console.log("glob files: "+files);
+                for(let file of files){
+                  exportFile(file, output, "json");
+                }
+              }
+            });
+          }
+        });
+        
 program.parse(process.argv);
 
 if (!process.argv.slice(2).length) {
@@ -269,6 +331,9 @@ function exportFile(file, outputDir, format){
       }else if(format == "argml"){
         saveAsFilePlugin.config = {outputDir: outputDir, sourceFile: file, dataKey:"argml", extension:".graphml"};
         processors = ["preprocessor", "export-argml", "save-as-file"];
+      }else if(format == "jsons"){
+        saveAsFilePlugin.config = {outputDir: outputDir, sourceFile: file, dataKey:"json", extension:".json"};
+        processors = ["preprocessor", "export-json", "save-as-file"];
       }else{
         console.log("Format "+format+" not supported.");
         return;
