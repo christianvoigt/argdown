@@ -13,7 +13,6 @@ describe("JSONExport", function() {
     let source = "[Test]: Hello _World_!\n  +<Argument 1>\n    -[Test]\n\n[Test]: Tschüss!";
     app.parse(source);
     let result = app.run();
-    console.log(result.json);
     expect(result.json).to.exist;
   });
 });
