@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import {Relation} from '../model/Relation.js';
 import {Argument} from '../model/Argument.js';
-import {Statement} from '../model/EquivalenceClass.js';
+import {EquivalenceClass} from '../model/EquivalenceClass.js';
 
 class JSONExport{
   set config(config){

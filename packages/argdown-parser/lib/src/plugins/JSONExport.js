@@ -27,7 +27,7 @@ var JSONExport = function () {
       };
       var $ = this;
       data.json = JSON.stringify(argdown, function (key, value) {
-        if ($.settings.removeEmbeddedRelations && key == "relations" && (this instanceof _Argument.Argument || this instanceof EquivalenceClass)) {
+        if ($.settings.removeEmbeddedRelations && key == "relations" && (this instanceof _Argument.Argument || this instanceof _EquivalenceClass.EquivalenceClass)) {
           return undefined;
         }
         if (this instanceof _Relation.Relation) {
