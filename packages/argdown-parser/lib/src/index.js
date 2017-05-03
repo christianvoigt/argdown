@@ -12,9 +12,13 @@ var _ArgdownPreprocessor = require("./plugins/ArgdownPreprocessor.js");
 
 var _HtmlExport = require("./plugins/HtmlExport.js");
 
+var _JSONExport = require("./plugins/JSONExport.js");
+
 var _Argument = require("./model/Argument.js");
 
 var _Statement = require("./model/Statement.js");
+
+var _Relation = require("./model/Relation.js");
 
 var _EquivalenceClass = require("./model/EquivalenceClass.js");
 
@@ -27,6 +31,8 @@ module.exports = {
   HtmlExport: _HtmlExport.HtmlExport,
   Argument: _Argument.Argument,
   Statement: _Statement.Statement,
-  EquivalenceClass: _EquivalenceClass.EquivalenceClass
+  Relation: _Relation.Relation,
+  EquivalenceClass: _EquivalenceClass.EquivalenceClass,
+  JSONExport: _JSONExport.JSONExport
 };
 //# sourceMappingURL=index.js.map

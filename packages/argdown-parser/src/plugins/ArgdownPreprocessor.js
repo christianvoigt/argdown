@@ -1,6 +1,7 @@
 import * as _ from 'lodash';
 import {Statement} from '../model/Statement.js';
 import {Argument} from '../model/Argument.js';
+import {Relation} from '../model/Relation.js';
 import {EquivalenceClass} from '../model/EquivalenceClass.js';
 import {tokenMatcher} from 'chevrotain';
 import {ArgdownLexer} from './../ArgdownLexer.js';
@@ -333,27 +334,32 @@ class ArgdownPreprocessor{
     }
     function onIncomingSupportEntry(node){
       let target = _.last(parentsStack);
-      currentRelation = {type:"support", from:target};
+      currentRelation = new Relation("support");
+      currentRelation.from = target;
       node.relation = currentRelation;
     }
     function onIncomingAttackEntry(node){
       let target = _.last(parentsStack);
-      currentRelation = {type:"attack", from:target};
+      currentRelation = new Relation("attack");
+      currentRelation.from = target;
       node.relation = currentRelation;
     }
     function onOutgoingSupportEntry(node){
       let target = _.last(parentsStack);
-      currentRelation = {type:"support", to:target};
+      currentRelation = new Relation("support");
+      currentRelation.to = target;
       node.relation = currentRelation;
     }
     function onOutgoingAttackEntry(node){
       let target = _.last(parentsStack);
-      currentRelation = {type:"attack", to:target};
+      currentRelation = new Relation("attack");
+      currentRelation.to = target;
       node.relation = currentRelation;
     }
     function onContradictionEntry(node){
       let target = _.last(parentsStack);
-      currentRelation = {type:"contradiction", from:target};
+      currentRelation = new Relation("contradiction");
+      currentRelation.from = target;
       node.relation = currentRelation;
     }
 

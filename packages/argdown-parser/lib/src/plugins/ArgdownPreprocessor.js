@@ -10,6 +10,8 @@ var _Statement = require('../model/Statement.js');
 
 var _Argument = require('../model/Argument.js');
 
+var _Relation = require('../model/Relation.js');
+
 var _EquivalenceClass = require('../model/EquivalenceClass.js');
 
 var _chevrotain = require('chevrotain');
@@ -437,27 +439,32 @@ var ArgdownPreprocessor = function () {
     }
     function onIncomingSupportEntry(node) {
       var target = _.last(parentsStack);
-      currentRelation = { type: "support", from: target };
+      currentRelation = new _Relation.Relation("support");
+      currentRelation.from = target;
       node.relation = currentRelation;
     }
     function onIncomingAttackEntry(node) {
       var target = _.last(parentsStack);
-      currentRelation = { type: "attack", from: target };
+      currentRelation = new _Relation.Relation("attack");
+      currentRelation.from = target;
       node.relation = currentRelation;
     }
     function onOutgoingSupportEntry(node) {
       var target = _.last(parentsStack);
-      currentRelation = { type: "support", to: target };
+      currentRelation = new _Relation.Relation("support");
+      currentRelation.to = target;
       node.relation = currentRelation;
     }
     function onOutgoingAttackEntry(node) {
       var target = _.last(parentsStack);
-      currentRelation = { type: "attack", to: target };
+      currentRelation = new _Relation.Relation("attack");
+      currentRelation.to = target;
       node.relation = currentRelation;
     }
     function onContradictionEntry(node) {
       var target = _.last(parentsStack);
-      currentRelation = { type: "contradiction", from: target };
+      currentRelation = new _Relation.Relation("contradiction");
+      currentRelation.from = target;
       node.relation = currentRelation;
     }
 
