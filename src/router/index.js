@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import HtmlOutput from '@/components/HtmlOutput'
+import JSONOutput from '@/components/JSONOutput'
 import ArgMLOutput from '@/components/ArgMLOutput'
 import DotOutput from '@/components/DotOutput'
 import DebugLexerParserOutput from '@/components/DebugLexerParserOutput'
@@ -76,6 +77,11 @@ export default new Router({
       path: '/html',
       name: 'html',
       component: HtmlOutput
+    },
+    {
+      path: '/json',
+      name: 'json',
+      component: JSONOutput
     },
     {path: '/', redirect: { name: 'html' }},
     {

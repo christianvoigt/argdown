@@ -1,8 +1,9 @@
 <template>
   <nav class="output-navigation">
     <ul class="nav-list">
-      <li><router-link to="/html">Html</router-link></li>
+      <li><router-link to="/html">HTML</router-link></li>
       <li><router-link to="/map">Map</router-link></li>
+      <li><router-link to="/json">JSON</router-link></li>
       <li><router-link to="/debug">Debug</router-link></li>
     </ul>
   </nav>
