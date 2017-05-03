@@ -27,7 +27,7 @@ let saveAsFilePlugin = new SaveAsFilePlugin();
 app.addPlugin(preprocessor, "preprocessor");
 
 app.addPlugin(htmlExport, "export-html");
-app.addPlugin(jsonExport, "eport-json");
+app.addPlugin(jsonExport, "export-json");
 
 app.addPlugin(mapMaker, "export-dot");
 app.addPlugin(dotExport, "export-dot");
@@ -260,7 +260,7 @@ program
 
           let output = _output;
           if(!output)
-            output = "./graphml";
+            output = "./json";
             
           let spaces = 2;
           if(options.spaces !== null){
@@ -331,7 +331,7 @@ function exportFile(file, outputDir, format){
       }else if(format == "argml"){
         saveAsFilePlugin.config = {outputDir: outputDir, sourceFile: file, dataKey:"argml", extension:".graphml"};
         processors = ["preprocessor", "export-argml", "save-as-file"];
-      }else if(format == "jsons"){
+      }else if(format == "json"){
         saveAsFilePlugin.config = {outputDir: outputDir, sourceFile: file, dataKey:"json", extension:".json"};
         processors = ["preprocessor", "export-json", "save-as-file"];
       }else{
