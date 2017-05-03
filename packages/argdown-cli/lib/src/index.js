@@ -30,7 +30,7 @@ var saveAsFilePlugin = new _SaveAsFilePlugin.SaveAsFilePlugin();
 app.addPlugin(preprocessor, "preprocessor");
 
 app.addPlugin(htmlExport, "export-html");
-app.addPlugin(jsonExport, "eport-json");
+app.addPlugin(jsonExport, "export-json");
 
 app.addPlugin(mapMaker, "export-dot");
 app.addPlugin(dotExport, "export-dot");
@@ -273,7 +273,7 @@ program.command('json [input] [output]').description('export Argdown data as JSO
   if (!input) input = "./*.argdown";
 
   var output = _output;
-  if (!output) output = "./graphml";
+  if (!output) output = "./json";
 
   var spaces = 2;
   if (options.spaces !== null) {

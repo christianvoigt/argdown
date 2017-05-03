@@ -27,7 +27,7 @@ let saveAsFilePlugin = new SaveAsFilePlugin();
 app.addPlugin(preprocessor, "preprocessor");
 
 app.addPlugin(htmlExport, "export-html");
-app.addPlugin(jsonExport, "eport-json");
+app.addPlugin(jsonExport, "export-json");
 
 app.addPlugin(mapMaker, "export-dot");
 app.addPlugin(dotExport, "export-dot");
@@ -260,7 +260,7 @@ program
 
           let output = _output;
           if(!output)
-            output = "./graphml";
+            output = "./json";
             
           let spaces = 2;
           if(options.spaces !== null){
