@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import {Relation} from '../model/Relation.js';
 import {Argument} from '../model/Argument.js';
-import {Statement} from '../model/Statement.js';
+import {Statement} from '../model/EquivalenceClass.js';
 
 class JSONExport{
   set config(config){
@@ -19,7 +19,7 @@ class JSONExport{
     };
     const $ = this;
     data.json = JSON.stringify(argdown, function(key, value){
-      if($.settings.removeEmbeddedRelations && key == "relations" && (this instanceof Argument || this instanceof Statement)){
+      if($.settings.removeEmbeddedRelations && key == "relations" && (this instanceof Argument || this instanceof EquivalenceClass)){
         return undefined;
       }
       if(this instanceof Relation){

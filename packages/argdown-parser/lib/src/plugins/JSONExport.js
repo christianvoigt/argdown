@@ -10,7 +10,7 @@ var _Relation = require('../model/Relation.js');
 
 var _Argument = require('../model/Argument.js');
 
-var _Statement = require('../model/Statement.js');
+var _EquivalenceClass = require('../model/EquivalenceClass.js');
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -27,7 +27,7 @@ var JSONExport = function () {
       };
       var $ = this;
       data.json = JSON.stringify(argdown, function (key, value) {
-        if ($.settings.removeEmbeddedRelations && key == "relations" && (this instanceof _Argument.Argument || this instanceof _Statement.Statement)) {
+        if ($.settings.removeEmbeddedRelations && key == "relations" && (this instanceof _Argument.Argument || this instanceof EquivalenceClass)) {
           return undefined;
         }
         if (this instanceof _Relation.Relation) {
