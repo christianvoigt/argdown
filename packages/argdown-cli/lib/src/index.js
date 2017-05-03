@@ -362,7 +362,7 @@ function exportFile(file, outputDir, format) {
     } else if (format == "argml") {
       saveAsFilePlugin.config = { outputDir: outputDir, sourceFile: file, dataKey: "argml", extension: ".graphml" };
       processors = ["preprocessor", "export-argml", "save-as-file"];
-    } else if (format == "jsons") {
+    } else if (format == "json") {
       saveAsFilePlugin.config = { outputDir: outputDir, sourceFile: file, dataKey: "json", extension: ".json" };
       processors = ["preprocessor", "export-json", "save-as-file"];
     } else {
