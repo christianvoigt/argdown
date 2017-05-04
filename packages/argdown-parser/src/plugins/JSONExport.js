@@ -7,7 +7,8 @@ class JSONExport{
   set config(config){
     this.settings = _.defaults(config ||{}, {
       spaces : 2,
-      removeEmbeddedRelations: false
+      removeEmbeddedRelations: false,
+      exportMap : true
     });
   }
   
@@ -17,17 +18,16 @@ class JSONExport{
       statements: data.statements,
       relations: data.relations
     };
+    if(this.settings.exportMap && data.map && data.map.nodes && data.map.edges){
+      argdown.map = {
+        nodes: data.map.nodes,
+        edges: data.map.edges
+      }
+    }
     const $ = this;
     data.json = JSON.stringify(argdown, function(key, value){
       if($.settings.removeEmbeddedRelations && key == "relations" && (this instanceof Argument || this instanceof EquivalenceClass)){
         return undefined;
-      }
-      if(this instanceof Relation){
-        if(value && (key == "from" || key == "to")){
-          return this[key].title;
-        }else{
-          return value;
-        }
       }else{
         return value;
       }
