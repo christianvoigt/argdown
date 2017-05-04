@@ -30,6 +30,8 @@ var saveAsFilePlugin = new _SaveAsFilePlugin.SaveAsFilePlugin();
 app.addPlugin(preprocessor, "preprocessor");
 
 app.addPlugin(htmlExport, "export-html");
+
+app.addPlugin(mapMaker, "export-json");
 app.addPlugin(jsonExport, "export-json");
 
 app.addPlugin(mapMaker, "export-dot");
@@ -264,7 +266,7 @@ program.command('argml [input] [output]').description('export Argdown graph as .
   }
 });
 
-program.command('json [input] [output]').description('export Argdown data as JSON file').option('-s, --spaces', 'Spaces used for indentation (default 2)').option('-rer, --remove-embedded-relations', 'Remove relations embedded in statement and relation objects').action(function (_input, _output, options) {
+program.command('json [input] [output]').description('export Argdown data as JSON file').option('-s, --spaces', 'Spaces used for indentation (default 2)').option('-rm, --remove-map', 'Remove map data').option('-rer, --remove-embedded-relations', 'Remove relations embedded in statement and relation objects').action(function (_input, _output, options) {
   var input = _input;
   var config = {};
 
@@ -281,11 +283,17 @@ program.command('json [input] [output]').description('export Argdown data as JSO
   }
   var removeEmbeddedRelations = false;
   if (options.removeEmbeddedRelations) {
-    removeEmbeddedRelations = false;
+    removeEmbeddedRelations = true;
   }
+  var exportMap = true;
+  if (options.removeMap) {
+    exportMap = false;
+  }
+
   mapMaker.config = {
     spaces: spaces,
-    removeEmbeddedRelations: removeEmbeddedRelations
+    removeEmbeddedRelations: removeEmbeddedRelations,
+    exportMap: exportMap
   };
 
   if (options.watch) {
