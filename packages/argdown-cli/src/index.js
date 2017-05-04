@@ -27,6 +27,8 @@ let saveAsFilePlugin = new SaveAsFilePlugin();
 app.addPlugin(preprocessor, "preprocessor");
 
 app.addPlugin(htmlExport, "export-html");
+
+app.addPlugin(mapMaker, "export-json");
 app.addPlugin(jsonExport, "export-json");
 
 app.addPlugin(mapMaker, "export-dot");
@@ -248,6 +250,7 @@ program
         .command('json [input] [output]')
         .description('export Argdown data as JSON file')
         .option('-s, --spaces', 'Spaces used for indentation (default 2)')
+        .option('-rm, --remove-map', 'Remove map data')
         .option('-rer, --remove-embedded-relations', 'Remove relations embedded in statement and relation objects')
         .action(function(_input, _output, options){
           let input = _input;
@@ -268,11 +271,17 @@ program
           }
           let removeEmbeddedRelations = false;
           if(options.removeEmbeddedRelations){
-            removeEmbeddedRelations = false;        
+            removeEmbeddedRelations = true;        
           }
+          let exportMap = true;
+          if(options.removeMap){
+            exportMap = false;
+          }
+          
           mapMaker.config = {
             spaces: spaces,
-            removeEmbeddedRelations: removeEmbeddedRelations
+            removeEmbeddedRelations: removeEmbeddedRelations,
+            exportMap: exportMap
           };
           
           if(options.watch){
