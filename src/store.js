@@ -99,6 +99,7 @@ app.addPlugin(mapMaker, 'export-dot')
 app.addPlugin(dotExport, 'export-dot')
 app.addPlugin(mapMaker, 'export-argml')
 app.addPlugin(argMLExport, 'export-argml')
+app.addPlugin(mapMaker, 'export-json')
 app.addPlugin(jsonExport, 'export-json')
 
 Vue.use(Vuex)

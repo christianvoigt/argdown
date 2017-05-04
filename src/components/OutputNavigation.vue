@@ -5,6 +5,7 @@
       <li><router-link to="/map">Map</router-link></li>
       <li><router-link to="/json">JSON</router-link></li>
       <li><router-link to="/debug">Debug</router-link></li>
+      <li><a href="https://github.com/christianvoigt/argdown">View on Github</a></li>
     </ul>
   </nav>
 </template>
