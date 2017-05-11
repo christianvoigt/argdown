@@ -10,31 +10,31 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Argument = function () {
-  function Argument() {
-    _classCallCheck(this, Argument);
+var Section = function () {
+  function Section(id, title, level) {
+    _classCallCheck(this, Section);
 
-    this.relations = [];
-    //Premise Conclusion Structure (PCS)
-    this.pcs = [];
-    this.descriptions = [];
+    this.id = id;
+    this.title = title;
+    this.level = level;
+    this.children = [];
   }
 
-  _createClass(Argument, [{
+  _createClass(Section, [{
     key: 'toJSON',
     value: function toJSON() {
       var copy = _.clone(this);
-      if (copy.section) {
-        copy.section = copy.section.id;
+      if (copy.parent) {
+        copy.parent = copy.parent.id;
       }
       return copy;
     }
   }]);
 
-  return Argument;
+  return Section;
 }();
 
 module.exports = {
-  Argument: Argument
+  Section: Section
 };
-//# sourceMappingURL=Argument.js.map
+//# sourceMappingURL=Section.js.map

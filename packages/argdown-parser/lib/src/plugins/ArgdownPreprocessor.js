@@ -12,6 +12,8 @@ var _Argument = require('../model/Argument.js');
 
 var _Relation = require('../model/Relation.js');
 
+var _Section = require('../model/Section.js');
+
 var _EquivalenceClass = require('../model/EquivalenceClass.js');
 
 var _chevrotain = require('chevrotain');
@@ -124,6 +126,7 @@ var ArgdownPreprocessor = function () {
       data.relations = this.relations;
       data.statements = this.statements;
       data.arguments = this.arguments;
+      data.sections = this.sections;
       return data;
     }
   }, {
@@ -182,13 +185,16 @@ var ArgdownPreprocessor = function () {
     var parentsStack = [];
     var currentRelation = null;
     var inStatementTree = false;
+    var currentSection = null;
+    var sectionCounter = 0;
 
     function onArgdownEntry() {
       $.statements = {};
       $.arguments = {};
+      $.sections = [];
       $.relations = [];
       uniqueTitleCounter = 0;
-      currentStatement = null;
+      currentSection = null;
       currentStatementOrArgument = null;
       currentArgumentReconstruction = null;
       currentInference = null;
@@ -197,6 +203,7 @@ var ArgdownPreprocessor = function () {
       parentsStack = [];
       currentRelation = null;
       inStatementTree = false;
+      sectionCounter = 0;
     }
     function onStatementEntry(node, parentNode) {
       currentStatement = new _Statement.Statement();
@@ -219,6 +226,9 @@ var ArgdownPreprocessor = function () {
       }
       var equivalenceClass = getEquivalenceClass(statement.title);
       if (!_.isEmpty(statement.text)) {
+        if (currentSection) {
+          statement.section = currentSection;
+        }
         equivalenceClass.members.push(statement);
       }
       if (statement.isRootOfStatementTree) {
@@ -270,7 +280,6 @@ var ArgdownPreprocessor = function () {
         } else {
           currentArgument.title = title;
         }
-        //we are in the ArgumentDefinition token, parentNode is the argumentDefinition rule
         $.arguments[currentArgument.title] = currentArgument;
       }
       currentStatementOrArgument = currentArgument;
@@ -282,6 +291,9 @@ var ArgdownPreprocessor = function () {
         var title = match[1];
         updateArgument(title);
         currentStatement = new _Statement.Statement();
+        if (currentSection) {
+          currentStatement.section = currentSection;
+        }
         currentArgument.descriptions.push(currentStatement);
         parentNode.argument = currentArgument;
       }
@@ -509,6 +521,9 @@ var ArgdownPreprocessor = function () {
       if (!argument) {
         argument = updateArgument();
       }
+      if (currentSection) {
+        argument.section = currentSection;
+      }
       //if there is a previous reconstruction, overwrite it
       if (argument.pcs.length > 0) {
         //TODO: throw error
@@ -594,6 +609,21 @@ var ArgdownPreprocessor = function () {
       var headingStart = node.children[0];
       node.heading = headingStart.image.length;
       node.text = node.children[1].text;
+      sectionCounter++;
+      var sectionId = 'section-' + sectionCounter;
+      var newSection = new _Section.Section(sectionId, node.text, node.heading);
+
+      if (newSection.level > 1 && currentSection) {
+        var parentSection = currentSection;
+        while (parentSection.parent && parentSection.level >= newSection.level) {
+          parentSection = parentSection.parent;
+        }
+        parentSection.children.push(newSection);
+        newSection.parent = parentSection;
+      } else {
+        $.sections.push(newSection);
+      }
+      currentSection = newSection;
     }
 
     this.argdownListeners = {

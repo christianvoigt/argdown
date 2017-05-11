@@ -10,6 +10,7 @@ import {JSONExport} from "./plugins/JSONExport.js";
 import {Argument} from "./model/Argument.js";
 import {Statement} from "./model/Statement.js";
 import {Relation} from "./model/Relation.js";
+import {Section} from "./model/Section.js";
 import {EquivalenceClass} from "./model/EquivalenceClass.js";
 
 module.exports = {
@@ -22,6 +23,7 @@ module.exports = {
   Argument : Argument,
   Statement : Statement,
   Relation: Relation,
+  Section: Section,
   EquivalenceClass : EquivalenceClass,
   JSONExport : JSONExport
 }

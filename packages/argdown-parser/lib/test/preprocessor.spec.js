@@ -197,5 +197,32 @@ describe("ArgdownPreprocessor", function () {
     (0, _chai.expect)(sketchedArgument).to.exist;
     (0, _chai.expect)(sketchedArgument.relations.length).to.equal(2);
   });
+  it("can create the section hierarchy and set section property of statements and arguments", function () {
+    var source = '# Section 1\n  \n  ## Section 2\n  \n  [A]: Text\n  \n  ### Section 3\n  \n  <B>: Text\n  \n  ## Section 4\n  \n  <B>\n  \n  (1) p\n  (2) q\n  ----\n  (3) r\n  ';
+    app.parse(source);
+    var result = app.run('preprocessor');
+    //console.log(JSON.stringify(result.sections,null,2));
+    (0, _chai.expect)(result.sections).to.exist;
+    (0, _chai.expect)(result.sections.length).to.equal(1);
+    (0, _chai.expect)(result.sections[0].title).to.equal('Section 1');
+    (0, _chai.expect)(result.sections[0].children).to.exist;
+    (0, _chai.expect)(result.sections[0].children.length).to.equal(2);
+    (0, _chai.expect)(result.sections[0].children[0].title).to.equal('Section 2');
+    (0, _chai.expect)(result.sections[0].children[0].children.length).to.equal(1);
+    (0, _chai.expect)(result.sections[0].children[0].children[0].title).to.equal('Section 3');
+    (0, _chai.expect)(result.sections[0].children[0].children[0].children.length).to.equal(0);
+    (0, _chai.expect)(result.sections[0].children[1].title).to.equal('Section 4');
+    (0, _chai.expect)(result.sections[0].children[1].children.length).to.equal(0);
+
+    (0, _chai.expect)(result.statements['A']).to.exist;
+    (0, _chai.expect)(result.statements['A'].members[0].section).to.exist;
+    (0, _chai.expect)(result.statements['A'].members[0].section.title).to.equal('Section 2');
+
+    (0, _chai.expect)(result.arguments['B']).to.exist;
+    (0, _chai.expect)(result.arguments['B'].section).to.exist;
+    (0, _chai.expect)(result.arguments['B'].section.title).to.equal('Section 4');
+    (0, _chai.expect)(result.arguments['B'].descriptions[0].section).to.exist;
+    (0, _chai.expect)(result.arguments['B'].descriptions[0].section.title).to.equal('Section 3');
+  });
 });
 //# sourceMappingURL=preprocessor.spec.js.map
