@@ -41,7 +41,7 @@ describe("ArgdownPreprocessor", function() {
 
     expect(result.statements['A']).to.exist;
     expect(result.statements['A'].relations.length).to.equal(2);
-    expect(result.statements['A'].relations[0].type).to.equal('support');
+    expect(result.statements['A'].relations[0].type).to.equal('entails');
     expect(result.statements['A'].relations[0].to).to.equal(plugin.statements['A']);
     expect(result.statements['A'].relations[0].from).to.equal(plugin.statements['B']);
     expect(result.statements['A'].relations[0].status).to.equal('reconstructed');
@@ -180,7 +180,7 @@ describe("ArgdownPreprocessor", function() {
 
   expect(premise.relations[1].from.title).to.equal('E');
   expect(premise.relations[1].to.title).to.equal('A');
-  expect(premise.relations[1].type).to.equal('support');
+  expect(premise.relations[1].type).to.equal('entails');
   expect(premise.relations[1].status).to.equal('reconstructed');
 
   expect(argument.pcs[3].title).to.equal('D');
@@ -194,7 +194,7 @@ describe("ArgdownPreprocessor", function() {
   expect(conclusion.relations[0].status).to.equal('reconstructed');
   expect(conclusion.relations[0].from.title).to.equal('D');
   expect(conclusion.relations[0].to.title).to.equal('E');
-  expect(conclusion.relations[0].type).to.equal('attack');
+  expect(conclusion.relations[0].type).to.equal('contrary');
 
   expect(conclusion.relations[1].status).to.equal('sketched');
   expect(conclusion.relations[1].from.title).to.equal('D');
@@ -202,7 +202,7 @@ describe("ArgdownPreprocessor", function() {
   expect(conclusion.relations[1].type).to.equal('support');
 
 
-  expect(conclusion.relations[2].type).to.equal("attack");
+  expect(conclusion.relations[2].type).to.equal("contrary");
   expect(conclusion.relations[2].from.title).to.equal("D");
   expect(conclusion.relations[2].to.title).to.equal("F");
   expect(conclusion.relations[2].status).to.equal("reconstructed");

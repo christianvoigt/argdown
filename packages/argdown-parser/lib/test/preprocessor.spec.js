@@ -44,7 +44,7 @@ describe("ArgdownPreprocessor", function () {
 
     (0, _chai.expect)(result.statements['A']).to.exist;
     (0, _chai.expect)(result.statements['A'].relations.length).to.equal(2);
-    (0, _chai.expect)(result.statements['A'].relations[0].type).to.equal('support');
+    (0, _chai.expect)(result.statements['A'].relations[0].type).to.equal('entails');
     (0, _chai.expect)(result.statements['A'].relations[0].to).to.equal(plugin.statements['A']);
     (0, _chai.expect)(result.statements['A'].relations[0].from).to.equal(plugin.statements['B']);
     (0, _chai.expect)(result.statements['A'].relations[0].status).to.equal('reconstructed');
@@ -150,7 +150,7 @@ describe("ArgdownPreprocessor", function () {
 
     (0, _chai.expect)(premise.relations[1].from.title).to.equal('E');
     (0, _chai.expect)(premise.relations[1].to.title).to.equal('A');
-    (0, _chai.expect)(premise.relations[1].type).to.equal('support');
+    (0, _chai.expect)(premise.relations[1].type).to.equal('entails');
     (0, _chai.expect)(premise.relations[1].status).to.equal('reconstructed');
 
     (0, _chai.expect)(argument.pcs[3].title).to.equal('D');
@@ -164,14 +164,14 @@ describe("ArgdownPreprocessor", function () {
     (0, _chai.expect)(conclusion.relations[0].status).to.equal('reconstructed');
     (0, _chai.expect)(conclusion.relations[0].from.title).to.equal('D');
     (0, _chai.expect)(conclusion.relations[0].to.title).to.equal('E');
-    (0, _chai.expect)(conclusion.relations[0].type).to.equal('attack');
+    (0, _chai.expect)(conclusion.relations[0].type).to.equal('contrary');
 
     (0, _chai.expect)(conclusion.relations[1].status).to.equal('sketched');
     (0, _chai.expect)(conclusion.relations[1].from.title).to.equal('D');
     (0, _chai.expect)(conclusion.relations[1].to.title).to.equal('Sketched Argument 1');
     (0, _chai.expect)(conclusion.relations[1].type).to.equal('support');
 
-    (0, _chai.expect)(conclusion.relations[2].type).to.equal("attack");
+    (0, _chai.expect)(conclusion.relations[2].type).to.equal("contrary");
     (0, _chai.expect)(conclusion.relations[2].from.title).to.equal("D");
     (0, _chai.expect)(conclusion.relations[2].to.title).to.equal("F");
     (0, _chai.expect)(conclusion.relations[2].status).to.equal("reconstructed");
