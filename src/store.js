@@ -14,16 +14,16 @@ const dotExport = new DotExport()
 const argMLExport = new ArgMLExport()
 const testInput = `# Welcome to Argdown!
 
-Argdown is a simple syntax for defining argumentative 
+[Intro]: Argdown is a simple syntax for defining argumentative 
 structures, inspired by Markdown.
-
-  * Writing a pro & contra list in Argdown is as 
-    simple as writing a twitter message.
-  * But you can also
+  + Writing a *pro & contra list* in Argdown is as 
+    simple as writing a twitter message (actually we are 
+    right in the middle of one).
+  + But you can also 
     **logically reconstruct** more complex dialectical 
     relations between arguments or dive into 
     the details of their premise-conclusion structures.
-  * Finally, you can export Argdown as a graph and create 
+  + Finally, you can export Argdown as a graph and create 
     **argument maps** of whole debates.
 
 ## Argdown Basics
@@ -44,22 +44,28 @@ statement was @[Statement 1].
   - <Another argument>: This arguments attacks @[Statement 2].
     - <Yet another argument>: Arguments can also 
       be supported or attacked.
-      -> [Statement 1]
       <!--
-      In the above line, we have defined a 
-      relation the other way around: 
-      @<Yet another argument> attacks @[Statement 1]. 
-      By the way, this is a multiline comment.
+      By the way, 
+      this is a multiline comment.
       -->
 
+We can also do that the other way around:
+
+[Intro]
+  -> <Argument 1>
+  
 A blank line signals that the above "tree" of statements 
 and arguments is finished and that we want to start 
 with a new block (in this case a new statement).
 
-## Argument reconstructions
+Headings can be used to group arguments and statements together. 
+In the map these groups are visualized as grey boxes.
 
-Arguments can be logically reconstructed, by defining 
-their premise-conclusion structure.
+### Argument reconstructions
+
+So far, we have ignored the internal structure of arguments. Arguments 
+consist of premises from which conclusions are inferred. We can precisely 
+define this premise-conclusion structure with Argdown:
 
 <Argument 1>
 
@@ -67,8 +73,8 @@ their premise-conclusion structure.
     and you can do everything with it, we have done 
     with the statements above).
 (2) [Statement 2]: We have already defined a statement 
-    with this statement.
-    But Argdown allows you to add multiple statements 
+    with this title. 
+    Argdown allows you to add multiple statements 
     to the same "equivalence class" by giving them 
     the same title. The statements will then be treated 
     as logically equivalent.
