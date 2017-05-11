@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 import {Statement} from '../model/Statement.js';
 import {Argument} from '../model/Argument.js';
 import {Relation} from '../model/Relation.js';
+import {Section} from '../model/Section.js';
 import {EquivalenceClass} from '../model/EquivalenceClass.js';
 import {tokenMatcher} from 'chevrotain';
 import {ArgdownLexer} from './../ArgdownLexer.js';
@@ -68,6 +69,7 @@ class ArgdownPreprocessor{
     data.relations = this.relations;
     data.statements = this.statements;
     data.arguments = this.arguments;
+    data.sections = this.sections;
     return data;
   }
   getElementType(obj){
@@ -122,13 +124,16 @@ class ArgdownPreprocessor{
     let parentsStack = [];
     let currentRelation = null;
     let inStatementTree = false;
+    let currentSection = null;
+    let sectionCounter = 0;
 
     function onArgdownEntry(){
       $.statements = {};
       $.arguments = {};
+      $.sections = [];
       $.relations = [];
       uniqueTitleCounter = 0;
-      currentStatement = null;
+      currentSection = null;
       currentStatementOrArgument = null;
       currentArgumentReconstruction = null;
       currentInference = null;
@@ -137,6 +142,7 @@ class ArgdownPreprocessor{
       parentsStack = [];
       currentRelation = null;
       inStatementTree = false;
+      sectionCounter = 0;
     }
     function onStatementEntry(node, parentNode){
       currentStatement = new Statement();
@@ -159,6 +165,9 @@ class ArgdownPreprocessor{
       }
       let equivalenceClass = getEquivalenceClass(statement.title);
       if(!_.isEmpty(statement.text)){
+        if(currentSection){
+          statement.section = currentSection;
+        }
         equivalenceClass.members.push(statement);        
       }
       if(statement.isRootOfStatementTree){
@@ -203,14 +212,13 @@ class ArgdownPreprocessor{
       if(title){
         currentArgument = $.arguments[title];        
       }
-      if(!title || !currentArgument){
+      if(!title ||!currentArgument){
         currentArgument = new Argument();
         if(!title){
           currentArgument.title = getUniqueTitle();
         }else {
           currentArgument.title = title;
         }
-        //we are in the ArgumentDefinition token, parentNode is the argumentDefinition rule
         $.arguments[currentArgument.title] = currentArgument;
       }
       currentStatementOrArgument = currentArgument;
@@ -222,6 +230,9 @@ class ArgdownPreprocessor{
         let title = match[1];
         updateArgument(title);
         currentStatement = new Statement();
+        if(currentSection){          
+          currentStatement.section = currentSection;
+        }
         currentArgument.descriptions.push(currentStatement);
         parentNode.argument = currentArgument;
       }
@@ -407,6 +418,9 @@ class ArgdownPreprocessor{
         if(!argument){
           argument = updateArgument();
         }
+        if(currentSection){
+          argument.section = currentSection;
+        }
         //if there is a previous reconstruction, overwrite it
         if(argument.pcs.length > 0){
           //TODO: throw error
@@ -471,6 +485,21 @@ class ArgdownPreprocessor{
       let headingStart = node.children[0];
       node.heading = headingStart.image.length;
       node.text = node.children[1].text;
+      sectionCounter++;
+      let sectionId = 'section-'+sectionCounter;
+      let newSection = new Section(sectionId, node.text, node.heading);
+      
+      if(newSection.level > 1 && currentSection){
+        let parentSection = currentSection;
+        while(parentSection.parent && parentSection.level >= newSection.level){
+          parentSection = parentSection.parent;
+        }
+        parentSection.children.push(newSection);
+        newSection.parent = parentSection;        
+      }else{
+        $.sections.push(newSection);
+      }
+      currentSection = newSection;
     }
 
     this.argdownListeners = {

@@ -230,4 +230,49 @@ describe("ArgdownPreprocessor", function() {
   expect(sketchedArgument.relations.length).to.equal(2);
 
 });
+it("can create the section hierarchy and set section property of statements and arguments", function(){
+  let source = `# Section 1
+  
+  ## Section 2
+  
+  [A]: Text
+  
+  ### Section 3
+  
+  <B>: Text
+  
+  ## Section 4
+  
+  <B>
+  
+  (1) p
+  (2) q
+  ----
+  (3) r
+  `;
+  app.parse(source);
+  let result = app.run('preprocessor');
+  //console.log(JSON.stringify(result.sections,null,2));
+  expect(result.sections).to.exist;
+  expect(result.sections.length).to.equal(1);
+  expect(result.sections[0].title).to.equal('Section 1');
+  expect(result.sections[0].children).to.exist;
+  expect(result.sections[0].children.length).to.equal(2);
+  expect(result.sections[0].children[0].title).to.equal('Section 2');
+  expect(result.sections[0].children[0].children.length).to.equal(1);
+  expect(result.sections[0].children[0].children[0].title).to.equal('Section 3');
+  expect(result.sections[0].children[0].children[0].children.length).to.equal(0);
+  expect(result.sections[0].children[1].title).to.equal('Section 4');
+  expect(result.sections[0].children[1].children.length).to.equal(0);
+  
+  expect(result.statements['A']).to.exist;
+  expect(result.statements['A'].members[0].section).to.exist;
+  expect(result.statements['A'].members[0].section.title).to.equal('Section 2');  
+  
+  expect(result.arguments['B']).to.exist;
+  expect(result.arguments['B'].section).to.exist;
+  expect(result.arguments['B'].section.title).to.equal('Section 4');
+  expect(result.arguments['B'].descriptions[0].section).to.exist;
+  expect(result.arguments['B'].descriptions[0].section.title).to.equal('Section 3');
+}); 
 });

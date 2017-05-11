@@ -8,7 +8,8 @@ class JSONExport{
     this.settings = _.defaults(config ||{}, {
       spaces : 2,
       removeEmbeddedRelations: false,
-      exportMap : true
+      exportMap : true,
+      exportSections : true
     });
   }
   
@@ -24,13 +25,20 @@ class JSONExport{
         edges: data.map.edges
       }
     }
+    if(this.settings.exportSections && data.sections){
+      argdown.sections = data.sections;
+    }
     const $ = this;
     data.json = JSON.stringify(argdown, function(key, value){
       if($.settings.removeEmbeddedRelations && key == "relations" && (this instanceof Argument || this instanceof EquivalenceClass)){
         return undefined;
-      }else{
-        return value;
       }
+      
+      if(!$.settings.exportSections && key == "section" && (this instanceof Argument || this instanceof EquivalenceClass)){
+        return undefined;
+      }
+      
+      return value;
     }, this.settings.spaces);
     return data;
   }

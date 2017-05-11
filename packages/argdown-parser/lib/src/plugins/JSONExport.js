@@ -31,13 +31,20 @@ var JSONExport = function () {
           edges: data.map.edges
         };
       }
+      if (this.settings.exportSections && data.sections) {
+        argdown.sections = data.sections;
+      }
       var $ = this;
       data.json = JSON.stringify(argdown, function (key, value) {
         if ($.settings.removeEmbeddedRelations && key == "relations" && (this instanceof _Argument.Argument || this instanceof _EquivalenceClass.EquivalenceClass)) {
           return undefined;
-        } else {
-          return value;
         }
+
+        if (!$.settings.exportSections && key == "section" && (this instanceof _Argument.Argument || this instanceof _EquivalenceClass.EquivalenceClass)) {
+          return undefined;
+        }
+
+        return value;
       }, this.settings.spaces);
       return data;
     }
@@ -47,7 +54,8 @@ var JSONExport = function () {
       this.settings = _.defaults(config || {}, {
         spaces: 2,
         removeEmbeddedRelations: false,
-        exportMap: true
+        exportMap: true,
+        exportSections: true
       });
     }
   }]);

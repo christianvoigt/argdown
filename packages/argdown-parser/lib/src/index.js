@@ -20,6 +20,8 @@ var _Statement = require("./model/Statement.js");
 
 var _Relation = require("./model/Relation.js");
 
+var _Section = require("./model/Section.js");
+
 var _EquivalenceClass = require("./model/EquivalenceClass.js");
 
 module.exports = {
@@ -32,6 +34,7 @@ module.exports = {
   Argument: _Argument.Argument,
   Statement: _Statement.Statement,
   Relation: _Relation.Relation,
+  Section: _Section.Section,
   EquivalenceClass: _EquivalenceClass.EquivalenceClass,
   JSONExport: _JSONExport.JSONExport
 };
