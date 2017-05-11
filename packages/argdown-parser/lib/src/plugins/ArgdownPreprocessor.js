@@ -42,6 +42,7 @@ var ArgdownPreprocessor = function () {
             relation.status = "sketched";
           } else if (fromType == RelationObjectTypes.STATEMENT || fromType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT) {
             relation.status = "reconstructed";
+
             if (fromType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT) {
               //change relation.from to point to the argument's conclusion
               var argument = relation.from;
@@ -95,6 +96,13 @@ var ArgdownPreprocessor = function () {
                 _index = _.indexOf(this.relations, relation);
                 this.relations.splice(_index, 1);
               }
+            }
+
+            //Change dialectical types of statement-to-statement relations to semantic types
+            if (relation.type == "support") {
+              relation.type = "entails";
+            } else if (relation.type == "attack") {
+              relation.type = "contrary";
             }
           }
         }
@@ -394,10 +402,11 @@ var ArgdownPreprocessor = function () {
       var content = contentNode.argument || contentNode.statement;
       var target = getRelationTarget(content);
       if (relation) {
-        if (relation.from) relation.to = target;else {
+        if (relation.from) {
+          relation.to = target;
+        } else {
           relation.from = target;
         }
-
         var relationExists = false;
         var _iteratorNormalCompletion4 = true;
         var _didIteratorError4 = false;
@@ -410,7 +419,7 @@ var ArgdownPreprocessor = function () {
             if (relation.to == existingRelation.to && relation.type == existingRelation.type) {
               relationExists = true;
               break;
-            } else if (relation.type == "contradiction" && relation.type == existingRelation.type && relation.from == existingRelation.to && relation.to == existingRelation.from) {
+            } else if (relation.type == "contradictory" && relation.type == existingRelation.type && relation.from == existingRelation.to && relation.to == existingRelation.from) {
               relationExists = true;
               break;
             }
@@ -463,7 +472,7 @@ var ArgdownPreprocessor = function () {
     }
     function onContradictionEntry(node) {
       var target = _.last(parentsStack);
-      currentRelation = new _Relation.Relation("contradiction");
+      currentRelation = new _Relation.Relation("contradictory");
       currentRelation.from = target;
       node.relation = currentRelation;
     }

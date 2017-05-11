@@ -13,10 +13,14 @@ class ArgdownPreprocessor{
     for(let relation of this.relations){
       let fromType = this.getElementType(relation.from);
       let toType = this.getElementType(relation.to);
-      if(fromType == RelationObjectTypes.SKETCHED_ARGUMENT ||toType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT ||toType == RelationObjectTypes.SKETCHED_ARGUMENT){
+      if(fromType == RelationObjectTypes.SKETCHED_ARGUMENT 
+        ||toType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT 
+        ||toType == RelationObjectTypes.SKETCHED_ARGUMENT){
         relation.status = "sketched";
-      }else if(fromType == RelationObjectTypes.STATEMENT ||fromType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT){
+      }else if(fromType == RelationObjectTypes.STATEMENT 
+        ||fromType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT){
         relation.status = "reconstructed";
+        
         if(fromType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT){
           //change relation.from to point to the argument's conclusion
           let argument = relation.from;
@@ -49,6 +53,14 @@ class ArgdownPreprocessor{
             this.relations.splice(index, 1);
           }
         }
+        
+        //Change dialectical types of statement-to-statement relations to semantic types
+        if(relation.type == "support"){
+          relation.type = "entails";
+        }else if(relation.type == "attack"){
+          relation.type = "contrary"
+        }
+        
       }
     }
 
@@ -309,18 +321,17 @@ class ArgdownPreprocessor{
       let content = contentNode.argument ||contentNode.statement;
       let target = getRelationTarget(content);
       if(relation){
-        if(relation.from)
+        if(relation.from){
           relation.to = target;
-        else {
+        }else {
           relation.from = target;
         }
-
         let relationExists = false;
         for(let existingRelation of relation.from.relations){
           if(relation.to == existingRelation.to && relation.type == existingRelation.type){
             relationExists = true;
             break;
-          }else if(relation.type == "contradiction" && relation.type == existingRelation.type && relation.from == existingRelation.to && relation.to == existingRelation.from){
+          }else if(relation.type == "contradictory" && relation.type == existingRelation.type && relation.from == existingRelation.to && relation.to == existingRelation.from){
             relationExists = true;
             break;
           }
@@ -358,7 +369,7 @@ class ArgdownPreprocessor{
     }
     function onContradictionEntry(node){
       let target = _.last(parentsStack);
-      currentRelation = new Relation("contradiction");
+      currentRelation = new Relation("contradictory");
       currentRelation.from = target;
       node.relation = currentRelation;
     }
