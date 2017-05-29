@@ -130,7 +130,7 @@ class ArgdownApplication{
       }
 
       if(processor.walker){
-        processor.walker.walk(this.ast);
+        processor.walker.walk(this.ast, data.config);
       }
 
       for(let plugin of processor.plugins){

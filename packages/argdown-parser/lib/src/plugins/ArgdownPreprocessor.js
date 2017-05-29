@@ -610,7 +610,7 @@ var ArgdownPreprocessor = function () {
       node.heading = headingStart.image.length;
       node.text = node.children[1].text;
       sectionCounter++;
-      var sectionId = 'section-' + sectionCounter;
+      var sectionId = 's' + sectionCounter;
       var newSection = new _Section.Section(sectionId, node.text, node.heading);
 
       if (newSection.level > 1 && currentSection) {

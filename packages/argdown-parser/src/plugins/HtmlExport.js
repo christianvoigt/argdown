@@ -20,9 +20,16 @@ class HtmlExport{
         }
         this.head += "</head>";
   }
-  run(result){
-    result.html = this.html;
-    return result;
+  run(data){
+    if(data.config){
+      if(data.config.html){
+        this.config = data.config.html;
+      }else if(data.config.HtmlExport){
+        this.config = data.config.HtmlExport;
+      }
+    }
+    data.html = this.html;
+    return data;
   }
   constructor(config){
     this.name = "HtmlExport";
@@ -32,7 +39,10 @@ class HtmlExport{
     this.htmlIds = {};
 
     this.argdownListeners = {
-      argdownEntry : ()=>{
+      argdownEntry : (node, parentNode, childIndex, config)=>{
+        if(config){
+          $.config = config;
+        }
         $.html = "";
         $.htmlIds = {};
         if(!$.settings.headless){
