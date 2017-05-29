@@ -486,7 +486,7 @@ class ArgdownPreprocessor{
       node.heading = headingStart.image.length;
       node.text = node.children[1].text;
       sectionCounter++;
-      let sectionId = 'section-'+sectionCounter;
+      let sectionId = 's'+sectionCounter;
       let newSection = new Section(sectionId, node.text, node.heading);
       
       if(newSection.level > 1 && currentSection){

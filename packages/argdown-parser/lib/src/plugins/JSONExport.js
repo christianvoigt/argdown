@@ -6,8 +6,6 @@ var _lodash = require('lodash');
 
 var _ = _interopRequireWildcard(_lodash);
 
-var _Relation = require('../model/Relation.js');
-
 var _Argument = require('../model/Argument.js');
 
 var _EquivalenceClass = require('../model/EquivalenceClass.js');
@@ -20,6 +18,13 @@ var JSONExport = function () {
   _createClass(JSONExport, [{
     key: 'run',
     value: function run(data) {
+      if (data.config) {
+        if (data.config.json) {
+          this.config = data.config.json;
+        } else if (data.config.JSONExport) {
+          this.config = data.config.JSONExport;
+        }
+      }
       var argdown = {
         arguments: data.arguments,
         statements: data.statements,

@@ -13,9 +13,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var HtmlExport = function () {
   _createClass(HtmlExport, [{
     key: 'run',
-    value: function run(result) {
-      result.html = this.html;
-      return result;
+    value: function run(data) {
+      if (data.config) {
+        if (data.config.html) {
+          this.config = data.config.html;
+        } else if (data.config.HtmlExport) {
+          this.config = data.config.HtmlExport;
+        }
+      }
+      data.html = this.html;
+      return data;
     }
   }, {
     key: 'config',
@@ -46,7 +53,10 @@ var HtmlExport = function () {
     this.htmlIds = {};
 
     this.argdownListeners = {
-      argdownEntry: function argdownEntry() {
+      argdownEntry: function argdownEntry(node, parentNode, childIndex, config) {
+        if (config) {
+          $.config = config;
+        }
         $.html = "";
         $.htmlIds = {};
         if (!$.settings.headless) {

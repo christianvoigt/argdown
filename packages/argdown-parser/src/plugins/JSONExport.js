@@ -1,5 +1,4 @@
 import * as _ from 'lodash';
-import {Relation} from '../model/Relation.js';
 import {Argument} from '../model/Argument.js';
 import {EquivalenceClass} from '../model/EquivalenceClass.js';
 
@@ -14,6 +13,13 @@ class JSONExport{
   }
   
   run(data){
+    if(data.config){
+      if(data.config.json){
+        this.config = data.config.json;
+      }else if(data.config.JSONExport){
+        this.config = data.config.JSONExport;
+      }
+    }
     const argdown = {
       arguments: data.arguments,
       statements: data.statements,
