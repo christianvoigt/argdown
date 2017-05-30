@@ -272,16 +272,20 @@ describe("Lexer", function () {
     expectToken(lexer.Freestyle);
     expectToken(lexer.Freestyle);
   });
-  it("can recognize links", function () {
-    var source = _fs2.default.readFileSync("./test/lexer-links.argdown", 'utf8');
+  it("can recognize links and tags", function () {
+    var source = _fs2.default.readFileSync("./test/lexer-links-and-tags.argdown", 'utf8');
     var result = lexer.tokenize(source);
     startTest(result.tokens);
+    //console.log(lexer.tokensToString(result.tokens));
     expectToken(lexer.StatementDefinition);
     expectToken(lexer.UnusedControlChar);
     expectToken(lexer.Freestyle);
     expectToken(lexer.UnusedControlChar);
     expectToken(lexer.Link);
     expectToken(lexer.Freestyle);
+    expectToken(lexer.Tag);
+    expectToken(lexer.Tag);
+    expectToken(lexer.Tag);
   });
   it("can ignore trailing Emptyline before comment", function () {
     var source = _fs2.default.readFileSync("./test/lexer-trailing-emptyline.argdown", 'utf8');

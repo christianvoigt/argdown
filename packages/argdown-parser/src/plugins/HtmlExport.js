@@ -18,8 +18,6 @@ class HtmlExport{
     if(data.config){
       if(data.config.html){
         this.config = data.config.html;
-      }else if(data.config.HtmlExport){
-        this.config = data.config.HtmlExport;
       }
     }
     
@@ -34,10 +32,26 @@ class HtmlExport{
     this.htmlIds = {};
 
     this.argdownListeners = {
-      argdownEntry : (node, parentNode, childIndex, config)=>{
-        if(config){
-          $.config = config;
+      argdownEntry : (node, parentNode, childIndex, data)=>{
+        if(data && data.config){
+          if(data.config.html){
+            $.config = data.config.html;
+          }
         }
+        data.config = data.config||{};
+        data.config.tags = data.config.tags||{};
+        $.tags = data.config.tags;
+        if(data.tags){
+          for(let tag of data.tags){
+            let tagData = $.tags[tag];
+            if(!tagData){
+              tagData = {};
+              $.tags[tag] = tagData;
+            }
+            tagData.cssClassName = $.getHtmlId("tag",tag,true);
+          }          
+        }
+        
         $.html = "";
         $.htmlIds = {};
         if(!$.settings.headless){
@@ -63,33 +77,65 @@ class HtmlExport{
           $.html += "</body></html>";
         }
       },
-      statementEntry : ()=>$.html += "<div class='statement'>",
+      statementEntry : (node, parentNode, childIndex, data)=>{
+        let classes = "statement";
+        if(node.equivalenceClass.tags){
+          classes += " " + $.getCssClassesFromTags(node.equivalenceClass.tags, data);
+        }        
+        $.html += "<div class='"+classes+"'>";
+      },
       statementExit : ()=>$.html += "</div>",
-      StatementDefinitionEntry : (node)=>{
+      StatementDefinitionEntry : (node, parentNode, childIndex, data)=>{
         let htmlId = $.getHtmlId("statement", node.statement.title);
         $.htmlIds[htmlId] = node.statement;
-        $.html += "<span id='"+htmlId+"' class='definition statement-definition definiendum'>[<span class='title statement-title'>"+node.statement.title+"</span>]: </span>"
+        let classes = "definition statement-definition definiendum";
+        if(parentNode.equivalenceClass && parentNode.equivalenceClass.tags){
+          classes += " " + $.getCssClassesFromTags(parentNode.equivalenceClass.tags, data);          
+        }
+        $.html += "<span id='"+htmlId+"' class='"+classes+"'>[<span class='title statement-title'>"+node.statement.title+"</span>]: </span>"
       },
-      StatementReferenceEntry : (node)=>{
+      StatementReferenceEntry : (node, parentNode, childIndex, data)=>{
         let htmlId = $.getHtmlId("statement", node.statement.title, true);
-        $.html += "<a href='#"+htmlId+"' class='reference statement-reference'>[<span class='title statement-title'>"+node.statement.title+"</span>] </a>"
+        let classes = "reference statement-reference";
+        if(parentNode.equivalenceClass && parentNode.equivalenceClass.tags){
+          classes += " " + $.getCssClassesFromTags(parentNode.equivalenceClass.tags, data);          
+        }
+        $.html += "<a href='#"+htmlId+"' class='"+classes+"'>[<span class='title statement-title'>"+node.statement.title+"</span>] </a>"
       },
-      StatementMentionEntry : (node)=>{
+      StatementMentionEntry : (node, parentNode, childIndex, data)=>{
+        const equivalenceClass = data.statements[node.title];
+        let classes = "mention statement-mention";
+        if(equivalenceClass.tags){
+          classes += " " + $.getCssClassesFromTags(equivalenceClass.tags, data);
+        }
         let htmlId = $.getHtmlId("statement", node.title, true);
-        $.html += "<a href='#"+htmlId+"' class='mention statement-mention'>@[<span class='title statement-title'>"+node.title+"</span>]</a>"+node.trailingWhitespace
+        $.html += "<a href='#"+htmlId+"' class='"+classes+"'>@[<span class='title statement-title'>"+node.title+"</span>]</a>"+node.trailingWhitespace
       },
-      argumentReferenceEntry : (node)=>{
+      argumentReferenceEntry : (node, parentNode, childIndex, data)=>{
         let htmlId = $.getHtmlId("argument", node.argument.title, true);
-        $.html += "<a href='#"+htmlId+"' class='argument-reference'>&lt;<span class='title argument-title'>"+node.argument.title+"</span>&gt; </a>"
+        let classes = "reference argument-reference";
+        if(node.argument.tags){
+          classes += " " + $.getCssClassesFromTags(node.argument.tags, data);
+        }
+        $.html += "<a href='#"+htmlId+"' class='"+classes+"'>&lt;<span class='title argument-title'>"+node.argument.title+"</span>&gt; </a>"
       },
-      argumentDefinitionEntry : (node)=>{
+      argumentDefinitionEntry : (node, parentNode, childIndex, data)=>{
         let htmlId = $.getHtmlId("argument", node.argument.title);
         $.htmlIds[htmlId] = node.argument;
-        $.html += "<div id='"+htmlId+"' class='argument-definition'><span class='definiendum argument-definiendum'>&lt;<span class='title argument-title'>"+node.argument.title+"</span>&gt;: </span><span class='argument-definiens definiens description'>"
+        let classes = "definition argument-definition";
+        if(node.argument.tags){
+          classes += " " + $.getCssClassesFromTags(node.argument.tags, data);
+        }
+        $.html += "<div id='"+htmlId+"' class='"+classes+"'><span class='definiendum argument-definiendum'>&lt;<span class='title argument-title'>"+node.argument.title+"</span>&gt;: </span><span class='argument-definiens definiens description'>"
       },
-      ArgumentMentionEntry : (node)=>{
+      ArgumentMentionEntry : (node, parentNode, childIndex, data)=>{
         let htmlId = $.getHtmlId("argument", node.title, true);
-        $.html += "<a href='#"+htmlId+"' class='mention argument-mention'>@&lt;<span class='title argument-title'>"+node.title+"</span>&gt;</a>"+node.trailingWhitespace
+        let classes = "mention argument-mention";
+        const argument = data.arguments[node.title];
+        if(argument.tags){
+          classes += " " + $.getCssClassesFromTags(argument.tags, data);
+        }
+        $.html += "<a href='#"+htmlId+"' class='"+classes+"'>@&lt;<span class='title argument-title'>"+node.title+"</span>&gt;</a>"+node.trailingWhitespace
       },
       argumentDefinitionExit : ()=>$.html+="</span></div>",
       incomingSupportEntry : ()=>{
@@ -152,7 +198,14 @@ class HtmlExport{
       italicEntry : ()=>$.html += "<i>",
       italicExit : (node)=>$.html += "</i>"+node.trailingWhitespace,
       LinkEntry : (node)=>$.html += "<a href='"+node.url+"'>"+node.text+"</a>"+node.trailingWhitespace,
-      argumentEntry : ()=>$.html += "<div class='argument'>",
+      TagEntry : (node, parentNode, childIndex, data)=>$.html += "<span class='tag "+$.getCssClassesFromTags([node.tag], data)+"'>"+node.text+"</span>",
+      argumentEntry : (node, parentNode, childIndex, data)=>{
+        let classes = "argument";
+        if(node.argument.tags){
+          classes += " " + $.getCssClassesFromTags(node.argument.tags, data);          
+        }
+        $.html += "<div class='"+classes+"'>";
+      },
       argumentExit : ()=>$.html += "</div>",
       argumentStatementEntry : (node)=>{
         if(node.statement.role == 'conclusion'){
@@ -224,6 +277,33 @@ class HtmlExport{
       }
     }
     return id;
+  }
+  getCssClassesFromTags(tags, data){
+    let classes = "";
+    // let sortedTags = tags;
+    // if(this.settings.sortTagsByDocumentOccurrence && data && data.tags){
+    //   sortedTags = _.sortBy(tags, function(tag){
+    //     return data.tags.indexOf(tag);
+    //   });      
+    // }
+    let tagConfig = null;
+    if(data && data.config){
+      tagConfig = data.config.tags;
+    }
+
+    let index = 0;
+    for(let tag of tags){
+      if(index > 0){
+        classes += " ";
+      }
+      index++;
+      if(tagConfig){
+        let tagData = tagConfig[tag];
+        classes += tagData.cssClassName;
+        classes += " tag-"+tagData.index;        
+      }
+    }
+    return classes;
   }
   replaceAll(str, find, replace) {
     return str.replace(new RegExp(find, 'g'), replace);

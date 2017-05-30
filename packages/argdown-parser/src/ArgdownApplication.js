@@ -161,7 +161,7 @@ class ArgdownApplication{
       }
 
       if(processor.walker){
-        processor.walker.walk(ast, data.config);
+        processor.walker.walk(ast, data);
       }
 
       for(let plugin of processor.plugins){

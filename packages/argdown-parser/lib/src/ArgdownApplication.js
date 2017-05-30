@@ -279,7 +279,7 @@ var ArgdownApplication = function () {
           }
 
           if (processor.walker) {
-            processor.walker.walk(ast, data.config);
+            processor.walker.walk(ast, data);
           }
 
           var _iteratorNormalCompletion6 = true;

@@ -224,5 +224,16 @@ describe("ArgdownPreprocessor", function () {
     (0, _chai.expect)(result.arguments['B'].descriptions[0].section).to.exist;
     (0, _chai.expect)(result.arguments['B'].descriptions[0].section.title).to.equal('Section 3');
   });
+  it("can create tags lists", function () {
+    var source = '[Statement 1]: #tag-1 text\n  \n  [Statement 2]: text #tag-1 #(tag 2)\n  \n  <Argument 1>: text #tag-1 #tag3 #tag4\n  \n  [Statement 1]: #tag-5 #tag-6 \n  ';
+    app.parse(source);
+    var result = app.run('preprocessor');
+    (0, _chai.expect)(result.tags).to.exist;
+    (0, _chai.expect)(result.tags.length).to.equal(6);
+    (0, _chai.expect)(result.statements["Statement 1"].tags.length).to.equal(3);
+    (0, _chai.expect)(result.statements["Statement 2"].members[result.statements["Statement 2"].members.length - 1].text).to.equal("text #tag-1 #(tag 2)");
+    (0, _chai.expect)(result.statements["Statement 2"].tags.length).to.equal(2);
+    (0, _chai.expect)(result.arguments["Argument 1"].tags.length).to.equal(3);
+  });
 });
 //# sourceMappingURL=preprocessor.spec.js.map

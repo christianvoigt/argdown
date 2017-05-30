@@ -427,6 +427,12 @@ class ArgdownLexer {
             pattern: /\[[^\]]+?\]\([^\)]+?\)[ \t]?/
         });
         $.tokens.push($.Link);
+        
+        $.Tag = createToken({
+          name: "Tag",
+          pattern: /#(?:\([^\)]+\)|[a-zA-z0-9-\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)[ \t]?/
+        });
+        $.tokens.push($.Tag);
 
         $.Newline = createToken({
             name: "Newline",
@@ -445,7 +451,7 @@ class ArgdownLexer {
         //The rest of the text that is free of any Argdown syntax
         $.Freestyle = createToken({
             name: "Freestyle",
-            pattern: /[^\@\*\_\[\]\,\:\;\<\/\>\-\n\r\(\)]+/
+            pattern: /[^\@\#\*\_\[\]\,\:\;\<\/\>\-\n\r\(\)]+/
         });
         $.tokens.push($.Freestyle);
 
@@ -455,7 +461,7 @@ class ArgdownLexer {
         //Note that some "meaningful" characters (like +) are not listed here, as they are only meaningful after a linebreak and freestyle text already gets "cut up" by each line break.
         $.UnusedControlChar = createToken({
             name: "UnusedControlChar",
-            pattern: /[\@\*\_\[\]\,\:\;\<\/\>\-\(\)][ \t]?/
+            pattern: /[\@\#\*\_\[\]\,\:\;\<\/\>\-\(\)][ \t]?/
         });
         $.tokens.push($.UnusedControlChar);
 
@@ -489,6 +495,7 @@ class ArgdownLexer {
                     $.AsteriskItalicStart,
                     $.UnderscoreItalicStart,
                     $.Link, //needs to be lexed before StatementReference
+                    $.Tag,
                     $.StatementDefinition,
                     $.StatementReference,
                     $.StatementMention,

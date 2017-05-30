@@ -12,6 +12,8 @@ var _ArgdownPreprocessor = require("./plugins/ArgdownPreprocessor.js");
 
 var _HtmlExport = require("./plugins/HtmlExport.js");
 
+var _TagConfiguration = require("./plugins/TagConfiguration.js");
+
 var _JSONExport = require("./plugins/JSONExport.js");
 
 var _Argument = require("./model/Argument.js");
@@ -36,6 +38,7 @@ module.exports = {
   Relation: _Relation.Relation,
   Section: _Section.Section,
   EquivalenceClass: _EquivalenceClass.EquivalenceClass,
-  JSONExport: _JSONExport.JSONExport
+  JSONExport: _JSONExport.JSONExport,
+  TagConfiguration: _TagConfiguration.TagConfiguration
 };
 //# sourceMappingURL=index.js.map

@@ -383,6 +383,8 @@ class ArgdownParser extends chevrotain.Parser {
             }, {
                 ALT: () => children.push($.SUBRULE($.italic))
             }, {
+                ALT: () => children.push($.CONSUME(lexer.Tag))
+            }, {
                 ALT: () => children.push($.CONSUME(lexer.ArgumentMention))
             }, {
                 ALT: () => children.push($.CONSUME(lexer.StatementMention))

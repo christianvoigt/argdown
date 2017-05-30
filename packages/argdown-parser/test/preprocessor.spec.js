@@ -275,4 +275,23 @@ it("can create the section hierarchy and set section property of statements and 
   expect(result.arguments['B'].descriptions[0].section).to.exist;
   expect(result.arguments['B'].descriptions[0].section.title).to.equal('Section 3');
 }); 
+it("can create tags lists", function(){
+  let source = `[Statement 1]: #tag-1 text
+  
+  [Statement 2]: text #tag-1 #(tag 2)
+  
+  <Argument 1>: text #tag-1 #tag3 #tag4
+  
+  [Statement 1]: #tag-5 #tag-6 
+  `;
+  app.parse(source);
+  let result = app.run('preprocessor');
+  expect(result.tags).to.exist;
+  expect(result.tags.length).to.equal(6);
+  expect(result.statements["Statement 1"].tags.length).to.equal(3);
+  expect(result.statements["Statement 2"].members[result.statements["Statement 2"].members.length - 1].text).to.equal("text #tag-1 #(tag 2)");
+  expect(result.statements["Statement 2"].tags.length).to.equal(2);
+  expect(result.arguments["Argument 1"].tags.length).to.equal(3);
+});
+
 });

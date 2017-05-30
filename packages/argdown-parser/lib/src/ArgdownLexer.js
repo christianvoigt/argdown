@@ -440,6 +440,12 @@ var ArgdownLexer = function () {
         });
         $.tokens.push($.Link);
 
+        $.Tag = createToken({
+            name: "Tag",
+            pattern: /#(?:\([^\)]+\)|[a-zA-z0-9-\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)[ \t]?/
+        });
+        $.tokens.push($.Tag);
+
         $.Newline = createToken({
             name: "Newline",
             pattern: /(?:\n\r|\n|\r)/,
@@ -457,7 +463,7 @@ var ArgdownLexer = function () {
         //The rest of the text that is free of any Argdown syntax
         $.Freestyle = createToken({
             name: "Freestyle",
-            pattern: /[^\@\*\_\[\]\,\:\;\<\/\>\-\n\r\(\)]+/
+            pattern: /[^\@\#\*\_\[\]\,\:\;\<\/\>\-\n\r\(\)]+/
         });
         $.tokens.push($.Freestyle);
 
@@ -467,7 +473,7 @@ var ArgdownLexer = function () {
         //Note that some "meaningful" characters (like +) are not listed here, as they are only meaningful after a linebreak and freestyle text already gets "cut up" by each line break.
         $.UnusedControlChar = createToken({
             name: "UnusedControlChar",
-            pattern: /[\@\*\_\[\]\,\:\;\<\/\>\-\(\)][ \t]?/
+            pattern: /[\@\#\*\_\[\]\,\:\;\<\/\>\-\(\)][ \t]?/
         });
         $.tokens.push($.UnusedControlChar);
 
@@ -486,7 +492,7 @@ var ArgdownLexer = function () {
                 $.AsteriskBoldStart, //BoldStart needs to be lexed before ItalicStart (** vs *)
                 $.UnderscoreBoldStart, //BoldStart needs to be lexed before ItalicStart (__ vs _)
                 $.AsteriskItalicStart, $.UnderscoreItalicStart, $.Link, //needs to be lexed before StatementReference
-                $.StatementDefinition, $.StatementReference, $.StatementMention, $.ArgumentDefinition, $.ArgumentReference, $.ArgumentMention, $.Newline, $.Spaces, $.Freestyle, $.UnusedControlChar],
+                $.Tag, $.StatementDefinition, $.StatementReference, $.StatementMention, $.ArgumentDefinition, $.ArgumentReference, $.ArgumentMention, $.Newline, $.Spaces, $.Freestyle, $.UnusedControlChar],
                 "inference_mode": [$.Comment, $.InferenceEnd, $.MetadataStart, $.MetadataEnd, $.MetadataStatementEnd, $.ListDelimiter, $.Colon, $.Newline, $.Spaces, $.Freestyle, $.UnusedControlChar]
             },
 
