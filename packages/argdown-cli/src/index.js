@@ -1,357 +1,144 @@
-#!/usr/bin/env node
-'use strict';
-/*jshint esversion: 6 */
-/*jslint node: true */
+import {ArgdownApplication, ArgdownPreprocessor, HtmlExport, JSONExport} from 'argdown-parser';
+import {MapMaker, DotExport, ArgMLExport} from 'argdown-map-maker';
+import {SaveAsFilePlugin} from './plugins/SaveAsFilePlugin.js';
+import {CopyDefaultCssPlugin} from './plugins/CopyDefaultCssPlugin.js';
+import * as _ from 'lodash';
 
-//for some reason this does not work with:
-//'import * as program from 'commander-file';
-let program = require('commander');
 let glob = require('glob');
 let fs = require('fs');
 let chokidar = require('chokidar');
-let mkdirp = require('mkdirp');
+let requireUncached = require("require-uncached");
 
-import {ArgdownApplication, ArgdownPreprocessor, HtmlExport, JSONExport} from 'argdown-parser';
-import {MapMaker, DotExport, ArgMLExport} from 'argdown-map-maker';
-import {SaveAsFilePlugin} from './SaveAsFilePlugin.js';
+const app = new ArgdownApplication();
+const preprocessor = new ArgdownPreprocessor();
+const htmlExport = new HtmlExport();
+const mapMaker = new MapMaker();
+const dotExport = new DotExport();
+const argmlExport = new ArgMLExport();
+const jsonExport = new JSONExport();
+const saveAsHtml = new SaveAsFilePlugin({
+  outputDir: './html',
+  dataKey: 'html',
+  extension: '.html'
+});
+const copyDefaultCss = new CopyDefaultCssPlugin();
 
-
-let app = new ArgdownApplication();
-let preprocessor = new ArgdownPreprocessor();
-let htmlExport = new HtmlExport();
-let mapMaker = new MapMaker();
-let dotExport = new DotExport();
-let argmlExport = new ArgMLExport();
-let jsonExport = new JSONExport();
-let saveAsFilePlugin = new SaveAsFilePlugin();
+const saveAsDot = new SaveAsFilePlugin({
+  outputDir: './dot',
+  dataKey: 'dot',
+  extension: '.dot'
+});
+const saveAsArgML = new SaveAsFilePlugin({
+  outputDir: './graphml',
+  dataKey: 'argml',
+  extension: '.graphml'
+});
+const saveAsJSON = new SaveAsFilePlugin({
+  outputDir: './json',
+  dataKey: 'json',
+  extension: '.json'
+});
 app.addPlugin(preprocessor, "preprocessor");
 
 app.addPlugin(htmlExport, "export-html");
+app.addPlugin(copyDefaultCss, "copy-default-css");
+app.addPlugin(saveAsHtml, "save-as-html");
 
 app.addPlugin(mapMaker, "export-json");
 app.addPlugin(jsonExport, "export-json");
+app.addPlugin(saveAsJSON, "save-as-json");
 
 app.addPlugin(mapMaker, "export-dot");
 app.addPlugin(dotExport, "export-dot");
+app.addPlugin(saveAsDot, "save-as-dot");
 
 app.addPlugin(mapMaker, "export-argml");
 app.addPlugin(argmlExport, "export-argml");
+app.addPlugin(saveAsArgML, "save-as-argml");
 
-app.addPlugin(saveAsFilePlugin, "save-as-file");
-
-program
-  .version('0.0.0')
-
-program
-  .command('html [input] [output]')
-  .description('export Argdown input as HTML files')
-  .option('-hl, --headless', 'Export without Html, Head and Body elements (default:false)')
-  .option('-c, --css <file>','CSS file to include in the HTML head (default:./argdown.css)')
-  .option('-l, --lang <language>', 'Language of HTML document (default:en)')
-  .option('-t, --title <title>', 'Title for HTML document (default: H1 element content)')
-  .option('-w, --watch', 'Continuously watch files for changes and update exported HTML files.')
-  .action(function(_input, _output, options){
-    let input = _input;
-    let config = {};
-
-    if(options.headless)
-      config.headless = true;
-
-    if(options.css)
-      config.css = options.css;
-
-    if(options.title)
-      config.title = options.title;
-
-    htmlExport.config = config;
-
-    if(!input)
-      input = "./*.argdown";
-
-    let output = _output;
-    if(!output)
-      output = "./html";
-
-    if(options.watch){
-      var watcher = chokidar.watch(input, {});
-      watcher
-      .on('add', path => {
-        console.log(`File ${path} has been added.`);
-        exportFile(path, output, "html");
-      })
-      .on('change', path => {
-        console.log(`File ${path} has been changed.`);
-        exportFile(path, output, "html");
-      })
-      .on('unlink', path => {
-        console.log(`File ${path} has been removed.`);
-      });
-    }else{
-      glob(input, function (er, files) {
-        if(er){
-          console.log(er);
-          return;
-        }else{
-          console.log("glob files: "+files);
-          for(let file of files){
-            exportFile(file, output, "html");
-          }
-        }
-      });
-    }
-    if(!options.css){
-      mkdirp(output, function (err) {
-        if (err){
-          console.log(err);
-        }
-        console.log("Copying default argdown.css to folder: "+output);
-        let pathToDefaultCssFile = __dirname + '/../../node_modules/argdown-parser/lib/src/plugins/argdown.css';
-        copySync(pathToDefaultCssFile, output+"/argdown.css");
-      });
-    }
-  });
-
-  program
-    .command('dot [input] [output]')
-    .description('export Argdown graph as .dot files')
-    .option('-h, --html', 'Use HTML node labels (default:false)')
-    .option('-t, --titles','Use only titles in HTML labels (default:false)')
-    .option('-m, --mode <mode>', 'Set the statement selection mode (all|titled|roots|statement-trees|with-relations)')
-    .option('-i, --inclusive', 'Include disconnected nodes')
-    .option('-n, --graphname <graphname>', 'Name of the graph (default: Argument Map)')
-    .option('-w, --watch', 'Continuously watch files for changes and update exported dot files.')
-    .action(function(_input, _output, options){
-      let input = _input;
-      let config = {};
-
-      if(options.html)
-        config.useHtmlLabels = true;
-
-      if(options.titles)
-        config.onlyTitlesInHtmlLabels = options.onlyTitlesInHtmlLabels;
-
-      if(options.graphname)
-        config.graphname = options.graphname;
-
-      dotExport.config = config;
-
-      if(!input)
-        input = "./*.argdown";
-
-      let output = _output;
-      if(!output)
-        output = "./dot";
-        
-      let statementSelectionMode = "statement-trees";
-      if(options.mode){
-        statementSelectionMode = options.mode;
-      }
-      let excludeDisconnected = true;
-      if(options.inclusive){
-        excludeDisconnected = false;        
-      }
-      mapMaker.config = {
-        statementSelectionMode: statementSelectionMode,
-        excludeDisconnected: excludeDisconnected
-      };
-        
-
-      if(options.watch){
-        var watcher = chokidar.watch(input, {});
-        watcher
-        .on('add', path => {
-          console.log(`File ${path} has been added.`);
-          exportFile(path, output, "dot");
-        })
-        .on('change', path => {
-          console.log(`File ${path} has been changed.`);
-          exportFile(path, output, "dot");
-        })
-        .on('unlink', path => {
-          console.log(`File ${path} has been removed.`);
-        });
-      }else{
-        glob(input, function (er, files) {
-          if(er){
-            console.log(er);
-            return;
-          }else{
-            console.log("glob files: "+files);
-            for(let file of files){
-              exportFile(file, output, "dot");
-            }
-          }
-        });
-      }
-    });
-
-    program
-      .command('argml [input] [output]')
-      .description('export Argdown graph as .graphml files (with argML extensions)')
-      .option('-i, --inclusive', 'Include disconnected nodes')
-      .option('-m, --mode <mode>', 'Set the statement selection mode (all|titled|roots|statement-trees|with-relations)')
-      .option('-w, --watch', 'Continuously watch files for changes and update exported dot files.')
-      .action(function(_input, _output, options){
-        let input = _input;
-        let config = {};
-
-        argmlExport.config = config;
-
-        if(!input)
-          input = "./*.argdown";
-
-        let output = _output;
-        if(!output)
-          output = "./graphml";
-          
-        let statementSelectionMode = "statement-trees";
-        if(options.mode){
-          statementSelectionMode = options.mode;
-        }
-        let excludeDisconnected = true;
-        if(options.inclusive){
-          excludeDisconnected = false;        
-        }
-        mapMaker.config = {
-          statementSelectionMode: statementSelectionMode,
-          excludeDisconnected: excludeDisconnected
-        };
-        
-        if(options.watch){
-          var watcher = chokidar.watch(input, {});
-          watcher
-          .on('add', path => {
-            console.log(`File ${path} has been added.`);
-            exportFile(path, output, "argml");
-          })
-          .on('change', path => {
-            console.log(`File ${path} has been changed.`);
-            exportFile(path, output, "argml");
-          })
-          .on('unlink', path => {
-            console.log(`File ${path} has been removed.`);
-          });
-        }else{
-          glob(input, function (er, files) {
-            if(er){
-              console.log(er);
-              return;
-            }else{
-              console.log("glob files: "+files);
-              for(let file of files){
-                exportFile(file, output, "argml");
-              }
-            }
-          });
-        }
-      });
-      
-      program
-        .command('json [input] [output]')
-        .description('export Argdown data as JSON file')
-        .option('-s, --spaces', 'Spaces used for indentation (default 2)')
-        .option('-rm, --remove-map', 'Remove map data')
-        .option('-rer, --remove-embedded-relations', 'Remove relations embedded in statement and relation objects')
-        .action(function(_input, _output, options){
-          let input = _input;
-          let config = {};
-
-          argmlExport.config = config;
-
-          if(!input)
-            input = "./*.argdown";
-
-          let output = _output;
-          if(!output)
-            output = "./json";
-            
-          let spaces = 2;
-          if(options.spaces !== null){
-            spaces = options.spaces;
-          }
-          let removeEmbeddedRelations = false;
-          if(options.removeEmbeddedRelations){
-            removeEmbeddedRelations = true;        
-          }
-          let exportMap = true;
-          if(options.removeMap){
-            exportMap = false;
-          }
-          
-          mapMaker.config = {
-            spaces: spaces,
-            removeEmbeddedRelations: removeEmbeddedRelations,
-            exportMap: exportMap
-          };
-          
-          if(options.watch){
-            var watcher = chokidar.watch(input, {});
-            watcher
-            .on('add', path => {
-              console.log(`File ${path} has been added.`);
-              exportFile(path, output, "json");
-            })
-            .on('change', path => {
-              console.log(`File ${path} has been changed.`);
-              exportFile(path, output, "json");
-            })
-            .on('unlink', path => {
-              console.log(`File ${path} has been removed.`);
-            });
-          }else{
-            glob(input, function (er, files) {
-              if(er){
-                console.log(er);
-                return;
-              }else{
-                console.log("glob files: "+files);
-                for(let file of files){
-                  exportFile(file, output, "json");
-                }
-              }
-            });
-          }
-        });
-        
-program.parse(process.argv);
-
-if (!process.argv.slice(2).length) {
-  program.outputHelp();
-}
-
-function copySync(src, dest) {
-  if (!fs.existsSync(src)) {
-    return false;
+app.load = function(config){
+  if(!config.input){
+    config.input = "./*.argdown";
   }
-
-  var data = fs.readFileSync(src, 'utf-8');
-  fs.writeFileSync(dest, data);
-}
-
-function exportFile(file, outputDir, format){
-  try {
-      let processors;
-      if(format == "html"){
-        saveAsFilePlugin.config = {outputDir: outputDir, sourceFile: file, dataKey:"html", extension:".html"};
-        processors = ["preprocessor","export-html","save-as-file"];
-      }else if(format == "dot"){
-        saveAsFilePlugin.config = {outputDir: outputDir, sourceFile: file, dataKey:"dot", extension:".dot"};
-        processors = ["preprocessor","export-dot","save-as-file"];
-      }else if(format == "argml"){
-        saveAsFilePlugin.config = {outputDir: outputDir, sourceFile: file, dataKey:"argml", extension:".graphml"};
-        processors = ["preprocessor", "export-argml", "save-as-file"];
-      }else if(format == "json"){
-        saveAsFilePlugin.config = {outputDir: outputDir, sourceFile: file, dataKey:"json", extension:".json"};
-        processors = ["preprocessor", "export-json", "save-as-file"];
-      }else{
-        console.log("Format "+format+" not supported.");
+  const $ = this;
+  if(config.watch){
+    const watcher = chokidar.watch(config.input, {});
+    const watcherConfig = _.cloneDeep(config);
+    watcherConfig.watch = false;
+    
+    watcher
+    .on('add', path => {
+      if(config.verbose){
+        console.log(`File ${path} has been added.`);        
+      }
+      watcherConfig.input = path;
+      $.load(watcherConfig);
+    })
+    .on('change', path => {
+      if(config.verbose){
+        console.log(`File ${path} has been changed.`);        
+      }
+      watcherConfig.input = path;
+      $.load(watcherConfig);
+    })
+    .on('unlink', path => {
+      if(config.verbose){
+        console.log(`File ${path} has been removed.`);        
+      }
+    });    
+  }else{
+    glob(config.input, function (er, files) {
+      if(er){
+        console.log(er);
         return;
+      }else{
+        for(let file of files){
+          if(config.verbose){
+            console.log("Processing file: "+file);
+          }
+          try{
+            const input = fs.readFileSync(file, 'utf8');
+            config.saveAs = config.saveAs ||{};
+            config.saveAs.sourceFile = file;
+            $.run({input: input, config:config});            
+          }catch(e){
+            console.log(e);
+          }
+        }
       }
-
-      var data = fs.readFileSync(file, 'utf8');
-      app.parse(data, true);
-      app.run(processors);
-  } catch(e) {
-      console.log('Error:', e.stack);
+    });    
   }
 }
+
+/**
+ * Taken from eslint: https://github.com/eslint/eslint/blob/master/lib/config/config-file.js
+ * Loads a JavaScript configuration from a file.
+ * @param {string} filePath The filename to load.
+ * @returns {Object} The configuration object from the file.
+ * @throws {Error} If the file cannot be read.
+ * @private
+ */
+app.loadJSFile = function loadJSFile(filePath) {
+    try {
+        return requireUncached(filePath);
+    } catch (e) {
+        e.message = `Cannot read file: ${filePath}\nError: ${e.message}`;
+        throw e;
+    }
+}
+
+app.loadConfig = function(filePath){
+  filePath = filePath ||process.cwd()+'/argdown.config.js';
+  let config = {};
+  try{
+    config = this.loadJSFile(filePath);
+    console.log(config);
+  }catch(e){
+    console.log(e);
+  }
+  return config;
+}
+
+export {
+  app, CopyDefaultCssPlugin, SaveAsFilePlugin
+};

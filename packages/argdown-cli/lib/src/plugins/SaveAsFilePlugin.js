@@ -18,12 +18,16 @@ var SaveAsFilePlugin = function () {
   _createClass(SaveAsFilePlugin, [{
     key: 'config',
     set: function set(config) {
-      this.settings = _.defaults(config || {}, {
-        dataKey: "test",
-        fileName: "default",
-        extension: ".txt",
-        outputDir: "."
-      });
+      var previousSettings = this.settings;
+      if (!previousSettings) {
+        previousSettings = {
+          dataKey: "test",
+          fileName: "default",
+          extension: ".txt",
+          outputDir: "."
+        };
+      }
+      this.settings = _.defaultsDeep({}, config, previousSettings);
     }
   }]);
 
@@ -37,6 +41,16 @@ var SaveAsFilePlugin = function () {
   _createClass(SaveAsFilePlugin, [{
     key: 'run',
     value: function run(data) {
+      var verbose = false;
+      if (data.config) {
+        if (data.config.saveAs) {
+          this.config = data.config.saveAs;
+        } else if (data.config.SaveAsFilePlugin) {
+          this.config = data.config.SaveAsFilePlugin;
+        }
+        verbose = data.config.verbose;
+      }
+
       var fileContent = data[this.settings.dataKey];
       if (!_.isEmpty(fileContent) && _.isString(fileContent)) {
         var fileName = "default";
@@ -44,12 +58,12 @@ var SaveAsFilePlugin = function () {
           fileName = this.getFileName(this.settings.sourceFile);
         } else if (_.isFunction(this.settings.fileName)) {
           fileName = this.settings.fileName.call(this, data);
-        } else if (data.sourceFile) {
-          fileName = this.getFileName(data.sourceFile);
         } else if (_.isString(this.settings.fileName)) {
           fileName = this.settings.fileName;
+        } else if (data.config && data.config.input) {
+          fileName = this.getFileName(data.config.input);
         }
-        this.saveAsFile(fileContent, this.settings.outputDir, fileName, this.settings.extension);
+        this.saveAsFile(fileContent, this.settings.outputDir, fileName, this.settings.extension, verbose);
       }
     }
   }, {
@@ -60,22 +74,19 @@ var SaveAsFilePlugin = function () {
     }
   }, {
     key: 'saveAsFile',
-    value: function saveAsFile(data, outputDir, fileName, extension) {
-      this.mkDir(outputDir);
-      //let dirName = path.dirname(output);
-      fs.writeFile(outputDir + '/' + fileName + extension, data, function (err) {
-        if (err) {
-          return console.log(err);
-        }
-        console.log("Exported " + fileName + " to " + outputDir + "/" + fileName + extension);
-      });
-    }
-  }, {
-    key: 'mkDir',
-    value: function mkDir(outputDir) {
+    value: function saveAsFile(data, outputDir, fileName, extension, verbose) {
       mkdirp(outputDir, function (err) {
         if (err) {
           console.log(err);
+        } else {
+          fs.writeFile(outputDir + '/' + fileName + extension, data, function (err) {
+            if (err) {
+              return console.log(err);
+            }
+            if (verbose) {
+              console.log("Saved " + outputDir + "/" + fileName + extension);
+            }
+          });
         }
       });
     }
