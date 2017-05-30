@@ -41,7 +41,9 @@ var ArgdownApplication = function () {
 
       processor.plugins.push(plugin);
       if (plugin.argdownListeners) {
-        if (!processor.walker) processor.walker = new _ArgdownTreeWalker.ArgdownTreeWalker();
+        if (!processor.walker) {
+          processor.walker = new _ArgdownTreeWalker.ArgdownTreeWalker();
+        }
         var _iteratorNormalCompletion = true;
         var _didIteratorError = false;
         var _iteratorError = undefined;
@@ -191,42 +193,72 @@ var ArgdownApplication = function () {
     }
   }, {
     key: "parse",
-    value: function parse(inputText, verbose) {
+    value: function parse(inputText, verbose, data) {
+      data = data || {};
       var lexResult = this.lexer.tokenize(inputText);
-      this.lexerErrors = lexResult.errors;
       this.tokens = lexResult.tokens;
+      data.tokens = lexResult.tokens;
+      this.lexerErrors = lexResult.errors;
+      data.lexerErrors = lexResult.errors;
+
       this.parser.input = lexResult.tokens;
       this.ast = this.parser.argdown();
+      data = this.ast;
+      data.parserErrors = this.parser.errors;
       this.parserErrors = this.parser.errors;
-      if (verbose && this.lexerErrors && this.lexerErrors.length > 0) {
-        console.log(this.lexerErrors);
+      if (verbose && data.lexerErrors && data.lexerErrors.length > 0) {
+        console.log(data.lexerErrors);
       }
-      if (verbose && this.parserErrors && this.parserErrors.length > 0) {
-        console.log(this.parserErrors);
+      if (verbose && data.parserErrors && data.parserErrors.length > 0) {
+        console.log(data.parserErrors);
       }
+      return data;
     }
   }, {
     key: "run",
-    value: function run(processorsToRun, previousData, verbose) {
-      var data = previousData;
-      if (!data) {
-        data = {
-          ast: this.ast,
-          parserErrors: this.parserErrors,
-          lexerErrors: this.lexerErrors,
-          tokens: this.tokens
-        };
+    value: function run(param) {
+      var processorsToRun = null;
+      var verbose = false;
+      var data = {};
+
+      if (param == null) {
+        processorsToRun = ['default'];
+      } else if (_.isString(param)) {
+        processorsToRun = [param];
+      } else if (_.isArray(param)) {
+        processorsToRun = param;
+      } else if (_.isObject(param)) {
+        data = param;
       }
-      if (!this.ast) {
+      if (data.config) {
+        verbose = data.config.verbose;
+        if (data.config.process) {
+          if (_.isArray(data.config.process)) {
+            processorsToRun = data.config.process;
+          }
+        }
+      }
+      if (data.input) {
+        this.parse(data.input, verbose, data);
+      }
+
+      if (_.isEmpty(processorsToRun)) {
+        if (verbose) {
+          console.log("No processors to run.");
+        }
         return data;
       }
 
-      if (!processorsToRun) {
-        processorsToRun = ['default'];
-      } else if (_.isString(processorsToRun)) {
-        processorsToRun = [processorsToRun];
+      var ast = data.ast;
+      if (!ast) {
+        ast = this.ast;
       }
-
+      if (!ast) {
+        if (verbose) {
+          console.log("Ast not found.");
+        }
+        return data;
+      }
       var _iteratorNormalCompletion5 = true;
       var _didIteratorError5 = false;
       var _iteratorError5 = undefined;
@@ -247,7 +279,7 @@ var ArgdownApplication = function () {
           }
 
           if (processor.walker) {
-            processor.walker.walk(this.ast, data.config);
+            processor.walker.walk(ast, data.config);
           }
 
           var _iteratorNormalCompletion6 = true;

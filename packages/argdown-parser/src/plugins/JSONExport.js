@@ -4,12 +4,16 @@ import {EquivalenceClass} from '../model/EquivalenceClass.js';
 
 class JSONExport{
   set config(config){
-    this.settings = _.defaults(config ||{}, {
-      spaces : 2,
-      removeEmbeddedRelations: false,
-      exportMap : true,
-      exportSections : true
-    });
+    let previousSettings = this.settings;
+    if(!previousSettings){
+      previousSettings = {
+        spaces : 2,
+        removeEmbeddedRelations: false,
+        exportMap : true,
+        exportSections : true
+      };
+    }
+    this.settings = _.defaultsDeep({}, config, previousSettings);
   }
   
   run(data){

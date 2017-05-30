@@ -109,7 +109,7 @@ describe("ArgdownPreprocessor", function() {
       >< [A]`;
     app.parse(source);
     let result = app.run('preprocessor');
-    expect(result.parserErrors.length).to.equal(0);
+    expect(app.parserErrors.length).to.equal(0);
     expect(Object.keys(result.statements).length).to.equal(2);
     expect(Object.keys(result.relations).length).to.equal(1);
   });      

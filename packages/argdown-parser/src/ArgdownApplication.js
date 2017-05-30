@@ -25,8 +25,9 @@ class ArgdownApplication{
 
     processor.plugins.push(plugin);
     if(plugin.argdownListeners){
-      if(!processor.walker)
-        processor.walker = new ArgdownTreeWalker();
+      if(!processor.walker){
+        processor.walker = new ArgdownTreeWalker();        
+      }
       for(let key of Object.keys(plugin.argdownListeners)){
         processor.walker.addListener(key, plugin.argdownListeners[key]);
       }
@@ -83,40 +84,70 @@ class ArgdownApplication{
     this.lexer = ArgdownLexer;
     this.parser = ArgdownParser;
   }
-  parse(inputText, verbose){
+  parse(inputText, verbose, data){
+      data = data ||{};
       let lexResult = this.lexer.tokenize(inputText);
-      this.lexerErrors = lexResult.errors;
       this.tokens = lexResult.tokens;
+      data.tokens = lexResult.tokens; 
+      this.lexerErrors = lexResult.errors;
+      data.lexerErrors = lexResult.errors;
+
       this.parser.input = lexResult.tokens;
       this.ast = this.parser.argdown();
+      data = this.ast;
+      data.parserErrors = this.parser.errors;
       this.parserErrors = this.parser.errors;
-      if(verbose && this.lexerErrors && this.lexerErrors.length > 0){
-        console.log(this.lexerErrors);
+      if(verbose && data.lexerErrors && data.lexerErrors.length > 0){
+        console.log(data.lexerErrors);
       }
-      if(verbose && this.parserErrors && this.parserErrors.length > 0){
-        console.log(this.parserErrors);
+      if(verbose && data.parserErrors && data.parserErrors.length > 0){
+        console.log(data.parserErrors);
       }
+      return data;
   }
-  run(processorsToRun, previousData, verbose){
-    let data = previousData;
-    if(!data){
-      data = {
-        ast : this.ast,
-        parserErrors : this.parserErrors,
-        lexerErrors : this.lexerErrors,
-        tokens : this.tokens
-      };
+  run(param){
+    let processorsToRun = null;
+    let verbose = false;
+    let data = {};
+    
+    if(param == null){
+      processorsToRun = ['default'];
+    }else if(_.isString(param)){
+      processorsToRun = [param];
+    }else if(_.isArray(param)){
+      processorsToRun = param;
+    }else if(_.isObject(param)){
+      data = param;
     }
-    if(!this.ast){
+    if(data.config){
+      verbose = data.config.verbose;
+      if(data.config.process){
+        if(_.isArray(data.config.process)){
+          processorsToRun = data.config.process;
+        }
+      }
+    }
+    if(data.input){
+      this.parse(data.input, verbose, data);
+    }
+    
+    if(_.isEmpty(processorsToRun)){
+      if(verbose){
+        console.log("No processors to run.");
+      }
       return data;
     }
-
-    if(!processorsToRun){
-      processorsToRun = ['default'];
-    }else if(_.isString(processorsToRun)){
-      processorsToRun = [processorsToRun];
+    
+    let ast = data.ast;
+    if(!ast){
+      ast = this.ast;
     }
-
+    if(!ast){
+      if(verbose){
+        console.log("Ast not found.");
+      }
+      return data;
+    }
     for(let processorId of processorsToRun){
       let processor = this.processors[processorId];
       if(!processor){
@@ -130,7 +161,7 @@ class ArgdownApplication{
       }
 
       if(processor.walker){
-        processor.walker.walk(this.ast, data.config);
+        processor.walker.walk(ast, data.config);
       }
 
       for(let plugin of processor.plugins){
