@@ -95,7 +95,7 @@ describe("ArgdownPreprocessor", function () {
     var source = '[A]: A\n      >< [B]: B\n    \n    [B]\n      >< [A]';
     app.parse(source);
     var result = app.run('preprocessor');
-    (0, _chai.expect)(result.parserErrors.length).to.equal(0);
+    (0, _chai.expect)(app.parserErrors.length).to.equal(0);
     (0, _chai.expect)(Object.keys(result.statements).length).to.equal(2);
     (0, _chai.expect)(Object.keys(result.relations).length).to.equal(1);
   });

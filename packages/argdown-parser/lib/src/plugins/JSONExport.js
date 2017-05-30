@@ -56,12 +56,16 @@ var JSONExport = function () {
   }, {
     key: 'config',
     set: function set(config) {
-      this.settings = _.defaults(config || {}, {
-        spaces: 2,
-        removeEmbeddedRelations: false,
-        exportMap: true,
-        exportSections: true
-      });
+      var previousSettings = this.settings;
+      if (!previousSettings) {
+        previousSettings = {
+          spaces: 2,
+          removeEmbeddedRelations: false,
+          exportMap: true,
+          exportSections: true
+        };
+      }
+      this.settings = _.defaultsDeep({}, config, previousSettings);
     }
   }]);
 

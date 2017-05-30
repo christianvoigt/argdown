@@ -21,25 +21,24 @@ var HtmlExport = function () {
           this.config = data.config.HtmlExport;
         }
       }
+
       data.html = this.html;
       return data;
     }
   }, {
     key: 'config',
     set: function set(config) {
-      this.settings = _.defaults(config || {}, {
-        headless: false,
-        cssFile: './argdown.css',
-        title: 'Argdown Document',
-        lang: 'en',
-        charset: 'utf8'
-      });
-
-      this.head = "<!doctype html>\n\n" + "<html lang='" + this.settings.lang + "'>\n" + "<head>\n" + "<meta charset='" + this.settings.charset + "'>\n" + "<title>" + this.settings.title + "</title>\n";
-      if (this.settings.cssFile) {
-        this.head += "<link rel='stylesheet' href='" + this.settings.cssFile + "'>\n";
+      var previousSettings = this.settings;
+      if (!previousSettings) {
+        previousSettings = {
+          headless: false,
+          cssFile: './argdown.css',
+          title: 'Argdown Document',
+          lang: 'en',
+          charset: 'utf8'
+        };
       }
-      this.head += "</head>";
+      this.settings = _.defaultsDeep({}, config, previousSettings);
     }
   }]);
 
@@ -60,7 +59,15 @@ var HtmlExport = function () {
         $.html = "";
         $.htmlIds = {};
         if (!$.settings.headless) {
-          $.html += $.head;
+          var head = $.settings.head;
+          if (!head) {
+            head = "<!doctype html>\n\n" + "<html lang='" + $.settings.lang + "'>\n" + "<head>\n" + "<meta charset='" + $.settings.charset + "'>\n" + "<title>" + $.settings.title + "</title>\n";
+            if ($.settings.cssFile) {
+              head += "<link rel='stylesheet' href='" + $.settings.cssFile + "'>\n";
+            }
+            head += "</head>";
+          }
+          $.html += head;
           $.html += "<body>";
         }
         $.html += "<div class='argdown'>";
