@@ -70,6 +70,7 @@ class ArgdownPreprocessor{
     data.statements = this.statements;
     data.arguments = this.arguments;
     data.sections = this.sections;
+    data.tags = this.tags;
     return data;
   }
   getElementType(obj){
@@ -95,6 +96,7 @@ class ArgdownPreprocessor{
     const argumentDefinitionPattern = /\<(.+)\>\:/;
     const argumentMentionPattern = /\@\<(.+)\>(\s?)/;
     const linkPattern = /\[(.+)\]\((.+)\)/;
+    const tagPattern = /#(?:\(([^\)]+)\)|([a-zA-z0-9-\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+))/;
 
     let uniqueTitleCounter = 0;
     function getUniqueTitle(){
@@ -132,6 +134,7 @@ class ArgdownPreprocessor{
       $.arguments = {};
       $.sections = [];
       $.relations = [];
+      $.tags = [];
       uniqueTitleCounter = 0;
       currentSection = null;
       currentStatementOrArgument = null;
@@ -164,6 +167,10 @@ class ArgdownPreprocessor{
         inStatementTree = false;
       }
       let equivalenceClass = getEquivalenceClass(statement.title);
+      node.equivalenceClass = equivalenceClass;
+      if(statement.tags){
+        addTags(statement.tags, equivalenceClass);
+      }
       if(!_.isEmpty(statement.text)){
         if(currentSection){
           statement.section = currentSection;
@@ -224,12 +231,19 @@ class ArgdownPreprocessor{
       currentStatementOrArgument = currentArgument;
       return currentArgument;
     }
+    function addTags(tags, object){
+      if(!object.tags){
+        object.tags = [];
+      }
+      object.tags = _.union(object.tags, tags);
+    }
     function onArgumentDefinitionEntry(node, parentNode){
       let match = argumentDefinitionPattern.exec(node.image);
       if(match != null){
         let title = match[1];
         updateArgument(title);
         currentStatement = new Statement();
+        currentStatement.role = "argument-description";
         if(currentSection){          
           currentStatement.section = currentSection;
         }
@@ -237,7 +251,17 @@ class ArgdownPreprocessor{
         parentNode.argument = currentArgument;
       }
     }
-    function onArgumentDefinitionOrReferenceExit(){
+    function onArgumentDefinitionExit(node){
+      if(node.argument){
+        let description = _.last(node.argument.descriptions);
+        if(description.tags){
+          addTags(description.tags, node.argument);
+        }
+      }
+      currentStatement = null;
+      currentArgument = null;
+    }
+    function onArgumentReferenceExit(){
       currentStatement = null;
       currentArgument = null;
     }
@@ -290,7 +314,25 @@ class ArgdownPreprocessor{
         node.trailingWhitespace = '';
       }
     }
-
+    function onTagEntry(node){
+      let match = tagPattern.exec(node.image);
+      let tag = match[1] || match[2];
+      let tagRange = {type:'tag', start: currentStatement.text.length};
+      node.tag = tag;
+      node.text = node.image;
+      currentStatement.text += node.text;
+      tagRange.stop = currentStatement.text.length - 1;
+      tagRange.tag = node.tag;
+      currentStatement.ranges.push(tagRange);
+      currentStatement.tags = currentStatement.tags ||[];
+      let tags = currentStatement.tags;
+      if(currentStatement.tags.indexOf(tag) == -1){
+        tags.push(tag);
+      }
+      if($.tags.indexOf(tag) == -1){
+        $.tags.push(tag);
+      }
+    }
     function onBoldEntry(){
       let boldRange = {type:'bold', start: currentStatement.text.length};
       rangesStack.push(boldRange);
@@ -519,8 +561,8 @@ class ArgdownPreprocessor{
       ArgumentDefinitionEntry : onArgumentDefinitionEntry,
       ArgumentReferenceEntry : onArgumentReferenceEntry,
       ArgumentMentionExit : onArgumentMentionExit,
-      argumentDefinitionExit : onArgumentDefinitionOrReferenceExit,
-      argumentReferenceExit : onArgumentDefinitionOrReferenceExit,
+      argumentDefinitionExit : onArgumentDefinitionExit,
+      argumentReferenceExit : onArgumentReferenceExit,
       incomingSupportEntry : onIncomingSupportEntry,
       incomingSupportExit : onRelationExit,
       incomingAttackEntry : onIncomingAttackEntry,
@@ -538,7 +580,8 @@ class ArgdownPreprocessor{
       italicExit : onItalicExit,
       boldEntry : onBoldEntry,
       boldExit : onBoldExit,
-      LinkEntry : onLinkEntry
+      LinkEntry : onLinkEntry,
+      TagEntry : onTagEntry
     }
   }
   logRelations(data){

@@ -17,8 +17,6 @@ var HtmlExport = function () {
       if (data.config) {
         if (data.config.html) {
           this.config = data.config.html;
-        } else if (data.config.HtmlExport) {
-          this.config = data.config.HtmlExport;
         }
       }
 
@@ -52,10 +50,47 @@ var HtmlExport = function () {
     this.htmlIds = {};
 
     this.argdownListeners = {
-      argdownEntry: function argdownEntry(node, parentNode, childIndex, config) {
-        if (config) {
-          $.config = config;
+      argdownEntry: function argdownEntry(node, parentNode, childIndex, data) {
+        if (data && data.config) {
+          if (data.config.html) {
+            $.config = data.config.html;
+          }
         }
+        data.config = data.config || {};
+        data.config.tags = data.config.tags || {};
+        $.tags = data.config.tags;
+        if (data.tags) {
+          var _iteratorNormalCompletion = true;
+          var _didIteratorError = false;
+          var _iteratorError = undefined;
+
+          try {
+            for (var _iterator = data.tags[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+              var tag = _step.value;
+
+              var tagData = $.tags[tag];
+              if (!tagData) {
+                tagData = {};
+                $.tags[tag] = tagData;
+              }
+              tagData.cssClassName = $.getHtmlId("tag", tag, true);
+            }
+          } catch (err) {
+            _didIteratorError = true;
+            _iteratorError = err;
+          } finally {
+            try {
+              if (!_iteratorNormalCompletion && _iterator.return) {
+                _iterator.return();
+              }
+            } finally {
+              if (_didIteratorError) {
+                throw _iteratorError;
+              }
+            }
+          }
+        }
+
         $.html = "";
         $.htmlIds = {};
         if (!$.settings.headless) {
@@ -77,37 +112,67 @@ var HtmlExport = function () {
           $.html += "</body></html>";
         }
       },
-      statementEntry: function statementEntry() {
-        return $.html += "<div class='statement'>";
+      statementEntry: function statementEntry(node, parentNode, childIndex, data) {
+        var classes = "statement";
+        if (node.equivalenceClass.tags) {
+          classes += " " + $.getCssClassesFromTags(node.equivalenceClass.tags, data);
+        }
+        $.html += "<div class='" + classes + "'>";
       },
       statementExit: function statementExit() {
         return $.html += "</div>";
       },
-      StatementDefinitionEntry: function StatementDefinitionEntry(node) {
+      StatementDefinitionEntry: function StatementDefinitionEntry(node, parentNode, childIndex, data) {
         var htmlId = $.getHtmlId("statement", node.statement.title);
         $.htmlIds[htmlId] = node.statement;
-        $.html += "<span id='" + htmlId + "' class='definition statement-definition definiendum'>[<span class='title statement-title'>" + node.statement.title + "</span>]: </span>";
+        var classes = "definition statement-definition definiendum";
+        if (parentNode.equivalenceClass && parentNode.equivalenceClass.tags) {
+          classes += " " + $.getCssClassesFromTags(parentNode.equivalenceClass.tags, data);
+        }
+        $.html += "<span id='" + htmlId + "' class='" + classes + "'>[<span class='title statement-title'>" + node.statement.title + "</span>]: </span>";
       },
-      StatementReferenceEntry: function StatementReferenceEntry(node) {
+      StatementReferenceEntry: function StatementReferenceEntry(node, parentNode, childIndex, data) {
         var htmlId = $.getHtmlId("statement", node.statement.title, true);
-        $.html += "<a href='#" + htmlId + "' class='reference statement-reference'>[<span class='title statement-title'>" + node.statement.title + "</span>] </a>";
+        var classes = "reference statement-reference";
+        if (parentNode.equivalenceClass && parentNode.equivalenceClass.tags) {
+          classes += " " + $.getCssClassesFromTags(parentNode.equivalenceClass.tags, data);
+        }
+        $.html += "<a href='#" + htmlId + "' class='" + classes + "'>[<span class='title statement-title'>" + node.statement.title + "</span>] </a>";
       },
-      StatementMentionEntry: function StatementMentionEntry(node) {
+      StatementMentionEntry: function StatementMentionEntry(node, parentNode, childIndex, data) {
+        var equivalenceClass = data.statements[node.title];
+        var classes = "mention statement-mention";
+        if (equivalenceClass.tags) {
+          classes += " " + $.getCssClassesFromTags(equivalenceClass.tags, data);
+        }
         var htmlId = $.getHtmlId("statement", node.title, true);
-        $.html += "<a href='#" + htmlId + "' class='mention statement-mention'>@[<span class='title statement-title'>" + node.title + "</span>]</a>" + node.trailingWhitespace;
+        $.html += "<a href='#" + htmlId + "' class='" + classes + "'>@[<span class='title statement-title'>" + node.title + "</span>]</a>" + node.trailingWhitespace;
       },
-      argumentReferenceEntry: function argumentReferenceEntry(node) {
+      argumentReferenceEntry: function argumentReferenceEntry(node, parentNode, childIndex, data) {
         var htmlId = $.getHtmlId("argument", node.argument.title, true);
-        $.html += "<a href='#" + htmlId + "' class='argument-reference'>&lt;<span class='title argument-title'>" + node.argument.title + "</span>&gt; </a>";
+        var classes = "reference argument-reference";
+        if (node.argument.tags) {
+          classes += " " + $.getCssClassesFromTags(node.argument.tags, data);
+        }
+        $.html += "<a href='#" + htmlId + "' class='" + classes + "'>&lt;<span class='title argument-title'>" + node.argument.title + "</span>&gt; </a>";
       },
-      argumentDefinitionEntry: function argumentDefinitionEntry(node) {
+      argumentDefinitionEntry: function argumentDefinitionEntry(node, parentNode, childIndex, data) {
         var htmlId = $.getHtmlId("argument", node.argument.title);
         $.htmlIds[htmlId] = node.argument;
-        $.html += "<div id='" + htmlId + "' class='argument-definition'><span class='definiendum argument-definiendum'>&lt;<span class='title argument-title'>" + node.argument.title + "</span>&gt;: </span><span class='argument-definiens definiens description'>";
+        var classes = "definition argument-definition";
+        if (node.argument.tags) {
+          classes += " " + $.getCssClassesFromTags(node.argument.tags, data);
+        }
+        $.html += "<div id='" + htmlId + "' class='" + classes + "'><span class='definiendum argument-definiendum'>&lt;<span class='title argument-title'>" + node.argument.title + "</span>&gt;: </span><span class='argument-definiens definiens description'>";
       },
-      ArgumentMentionEntry: function ArgumentMentionEntry(node) {
+      ArgumentMentionEntry: function ArgumentMentionEntry(node, parentNode, childIndex, data) {
         var htmlId = $.getHtmlId("argument", node.title, true);
-        $.html += "<a href='#" + htmlId + "' class='mention argument-mention'>@&lt;<span class='title argument-title'>" + node.title + "</span>&gt;</a>" + node.trailingWhitespace;
+        var classes = "mention argument-mention";
+        var argument = data.arguments[node.title];
+        if (argument.tags) {
+          classes += " " + $.getCssClassesFromTags(argument.tags, data);
+        }
+        $.html += "<a href='#" + htmlId + "' class='" + classes + "'>@&lt;<span class='title argument-title'>" + node.title + "</span>&gt;</a>" + node.trailingWhitespace;
       },
       argumentDefinitionExit: function argumentDefinitionExit() {
         return $.html += "</span></div>";
@@ -203,8 +268,15 @@ var HtmlExport = function () {
       LinkEntry: function LinkEntry(node) {
         return $.html += "<a href='" + node.url + "'>" + node.text + "</a>" + node.trailingWhitespace;
       },
-      argumentEntry: function argumentEntry() {
-        return $.html += "<div class='argument'>";
+      TagEntry: function TagEntry(node, parentNode, childIndex, data) {
+        return $.html += "<span class='tag " + $.getCssClassesFromTags([node.tag], data) + "'>" + node.text + "</span>";
+      },
+      argumentEntry: function argumentEntry(node, parentNode, childIndex, data) {
+        var classes = "argument";
+        if (node.argument.tags) {
+          classes += " " + $.getCssClassesFromTags(node.argument.tags, data);
+        }
+        $.html += "<div class='" + classes + "'>";
       },
       argumentExit: function argumentExit() {
         return $.html += "</div>";
@@ -222,29 +294,29 @@ var HtmlExport = function () {
           $.html += "<span class='inference-rules'>";
           if (inference.inferenceRules.length > 0) {
             var i = 0;
-            var _iteratorNormalCompletion = true;
-            var _didIteratorError = false;
-            var _iteratorError = undefined;
+            var _iteratorNormalCompletion2 = true;
+            var _didIteratorError2 = false;
+            var _iteratorError2 = undefined;
 
             try {
-              for (var _iterator = inference.inferenceRules[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                var inferenceRule = _step.value;
+              for (var _iterator2 = inference.inferenceRules[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                var inferenceRule = _step2.value;
 
                 if (i > 0) $.html += ", ";
                 $.html += "<span class='inference-rule'>" + inferenceRule + "</span>";
                 i++;
               }
             } catch (err) {
-              _didIteratorError = true;
-              _iteratorError = err;
+              _didIteratorError2 = true;
+              _iteratorError2 = err;
             } finally {
               try {
-                if (!_iteratorNormalCompletion && _iterator.return) {
-                  _iterator.return();
+                if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                  _iterator2.return();
                 }
               } finally {
-                if (_didIteratorError) {
-                  throw _iteratorError;
+                if (_didIteratorError2) {
+                  throw _iteratorError2;
                 }
               }
             }
@@ -261,29 +333,29 @@ var HtmlExport = function () {
                 $.html += "<span class='meta-data-value'>" + inference.metaData[key] + "</span>";
               } else {
                 var j = 0;
-                var _iteratorNormalCompletion2 = true;
-                var _didIteratorError2 = false;
-                var _iteratorError2 = undefined;
+                var _iteratorNormalCompletion3 = true;
+                var _didIteratorError3 = false;
+                var _iteratorError3 = undefined;
 
                 try {
-                  for (var _iterator2 = inference.metaData[key][Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                    var value = _step2.value;
+                  for (var _iterator3 = inference.metaData[key][Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                    var value = _step3.value;
 
                     if (j > 0) $.html += ", ";
                     $.html += "<span class='meta-data-value'>" + value + "</span>";
                     j++;
                   }
                 } catch (err) {
-                  _didIteratorError2 = true;
-                  _iteratorError2 = err;
+                  _didIteratorError3 = true;
+                  _iteratorError3 = err;
                 } finally {
                   try {
-                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                      _iterator2.return();
+                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                      _iterator3.return();
                     }
                   } finally {
-                    if (_didIteratorError2) {
-                      throw _iteratorError2;
+                    if (_didIteratorError3) {
+                      throw _iteratorError3;
                     }
                   }
                 }
@@ -324,6 +396,57 @@ var HtmlExport = function () {
         }
       }
       return id;
+    }
+  }, {
+    key: 'getCssClassesFromTags',
+    value: function getCssClassesFromTags(tags, data) {
+      var classes = "";
+      // let sortedTags = tags;
+      // if(this.settings.sortTagsByDocumentOccurrence && data && data.tags){
+      //   sortedTags = _.sortBy(tags, function(tag){
+      //     return data.tags.indexOf(tag);
+      //   });      
+      // }
+      var tagConfig = null;
+      if (data && data.config) {
+        tagConfig = data.config.tags;
+      }
+
+      var index = 0;
+      var _iteratorNormalCompletion4 = true;
+      var _didIteratorError4 = false;
+      var _iteratorError4 = undefined;
+
+      try {
+        for (var _iterator4 = tags[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+          var tag = _step4.value;
+
+          if (index > 0) {
+            classes += " ";
+          }
+          index++;
+          if (tagConfig) {
+            var tagData = tagConfig[tag];
+            classes += tagData.cssClassName;
+            classes += " tag-" + tagData.index;
+          }
+        }
+      } catch (err) {
+        _didIteratorError4 = true;
+        _iteratorError4 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion4 && _iterator4.return) {
+            _iterator4.return();
+          }
+        } finally {
+          if (_didIteratorError4) {
+            throw _iteratorError4;
+          }
+        }
+      }
+
+      return classes;
     }
   }, {
     key: 'replaceAll',

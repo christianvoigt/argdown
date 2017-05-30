@@ -6,6 +6,7 @@ import {ArgdownTreeWalker} from "./ArgdownTreeWalker.js";
 import {ArgdownApplication} from "./ArgdownApplication.js";
 import {ArgdownPreprocessor} from "./plugins/ArgdownPreprocessor.js";
 import {HtmlExport} from "./plugins/HtmlExport.js";
+import {TagConfiguration} from "./plugins/TagConfiguration.js";
 import {JSONExport} from "./plugins/JSONExport.js";
 import {Argument} from "./model/Argument.js";
 import {Statement} from "./model/Statement.js";
@@ -25,5 +26,6 @@ module.exports = {
   Relation: Relation,
   Section: Section,
   EquivalenceClass : EquivalenceClass,
-  JSONExport : JSONExport
+  JSONExport : JSONExport,
+  TagConfiguration : TagConfiguration
 }

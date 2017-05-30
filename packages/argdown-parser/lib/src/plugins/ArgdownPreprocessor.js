@@ -127,6 +127,7 @@ var ArgdownPreprocessor = function () {
       data.statements = this.statements;
       data.arguments = this.arguments;
       data.sections = this.sections;
+      data.tags = this.tags;
       return data;
     }
   }, {
@@ -158,6 +159,7 @@ var ArgdownPreprocessor = function () {
     var argumentDefinitionPattern = /\<(.+)\>\:/;
     var argumentMentionPattern = /\@\<(.+)\>(\s?)/;
     var linkPattern = /\[(.+)\]\((.+)\)/;
+    var tagPattern = /#(?:\(([^\)]+)\)|([a-zA-z0-9-\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+))/;
 
     var uniqueTitleCounter = 0;
     function getUniqueTitle() {
@@ -193,6 +195,7 @@ var ArgdownPreprocessor = function () {
       $.arguments = {};
       $.sections = [];
       $.relations = [];
+      $.tags = [];
       uniqueTitleCounter = 0;
       currentSection = null;
       currentStatementOrArgument = null;
@@ -225,6 +228,10 @@ var ArgdownPreprocessor = function () {
         inStatementTree = false;
       }
       var equivalenceClass = getEquivalenceClass(statement.title);
+      node.equivalenceClass = equivalenceClass;
+      if (statement.tags) {
+        addTags(statement.tags, equivalenceClass);
+      }
       if (!_.isEmpty(statement.text)) {
         if (currentSection) {
           statement.section = currentSection;
@@ -285,12 +292,19 @@ var ArgdownPreprocessor = function () {
       currentStatementOrArgument = currentArgument;
       return currentArgument;
     }
+    function addTags(tags, object) {
+      if (!object.tags) {
+        object.tags = [];
+      }
+      object.tags = _.union(object.tags, tags);
+    }
     function onArgumentDefinitionEntry(node, parentNode) {
       var match = argumentDefinitionPattern.exec(node.image);
       if (match != null) {
         var title = match[1];
         updateArgument(title);
         currentStatement = new _Statement.Statement();
+        currentStatement.role = "argument-description";
         if (currentSection) {
           currentStatement.section = currentSection;
         }
@@ -298,7 +312,17 @@ var ArgdownPreprocessor = function () {
         parentNode.argument = currentArgument;
       }
     }
-    function onArgumentDefinitionOrReferenceExit() {
+    function onArgumentDefinitionExit(node) {
+      if (node.argument) {
+        var description = _.last(node.argument.descriptions);
+        if (description.tags) {
+          addTags(description.tags, node.argument);
+        }
+      }
+      currentStatement = null;
+      currentArgument = null;
+    }
+    function onArgumentReferenceExit() {
       currentStatement = null;
       currentArgument = null;
     }
@@ -372,7 +396,25 @@ var ArgdownPreprocessor = function () {
         node.trailingWhitespace = '';
       }
     }
-
+    function onTagEntry(node) {
+      var match = tagPattern.exec(node.image);
+      var tag = match[1] || match[2];
+      var tagRange = { type: 'tag', start: currentStatement.text.length };
+      node.tag = tag;
+      node.text = node.image;
+      currentStatement.text += node.text;
+      tagRange.stop = currentStatement.text.length - 1;
+      tagRange.tag = node.tag;
+      currentStatement.ranges.push(tagRange);
+      currentStatement.tags = currentStatement.tags || [];
+      var tags = currentStatement.tags;
+      if (currentStatement.tags.indexOf(tag) == -1) {
+        tags.push(tag);
+      }
+      if ($.tags.indexOf(tag) == -1) {
+        $.tags.push(tag);
+      }
+    }
     function onBoldEntry() {
       var boldRange = { type: 'bold', start: currentStatement.text.length };
       rangesStack.push(boldRange);
@@ -643,8 +685,8 @@ var ArgdownPreprocessor = function () {
       ArgumentDefinitionEntry: onArgumentDefinitionEntry,
       ArgumentReferenceEntry: onArgumentReferenceEntry,
       ArgumentMentionExit: onArgumentMentionExit,
-      argumentDefinitionExit: onArgumentDefinitionOrReferenceExit,
-      argumentReferenceExit: onArgumentDefinitionOrReferenceExit,
+      argumentDefinitionExit: onArgumentDefinitionExit,
+      argumentReferenceExit: onArgumentReferenceExit,
       incomingSupportEntry: onIncomingSupportEntry,
       incomingSupportExit: onRelationExit,
       incomingAttackEntry: onIncomingAttackEntry,
@@ -662,7 +704,8 @@ var ArgdownPreprocessor = function () {
       italicExit: onItalicExit,
       boldEntry: onBoldEntry,
       boldExit: onBoldExit,
-      LinkEntry: onLinkEntry
+      LinkEntry: onLinkEntry,
+      TagEntry: onTagEntry
     };
   }
 

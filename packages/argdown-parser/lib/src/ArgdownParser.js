@@ -462,6 +462,10 @@ var ArgdownParser = function (_chevrotain$Parser) {
                     }
                 }, {
                     ALT: function ALT() {
+                        return children.push($.CONSUME(lexer.Tag));
+                    }
+                }, {
+                    ALT: function ALT() {
                         return children.push($.CONSUME(lexer.ArgumentMention));
                     }
                 }, {

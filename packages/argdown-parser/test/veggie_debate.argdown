@@ -98,7 +98,7 @@ Folgende Überlegungen sprechen gegen Fleischkonsum, können aber im Detail auf 
 
 ## Contra @[Strikt-Veggie] und @[Weniger-Fleisch]
 
-<Gutes Veggie-Essen teuer>: Die Zutaten für ansprechende vegetarische Gerichte (z.B. Mandelmus, Sesamöl, Cashewkerne) sind teuer, zahlreiche Personen können sich diese nicht leisten. Wenn man nicht nur Kartoffel-Möhren-Suppe essen will, wird Veggie-Essen schnell für viele unbezahlbar.
+<Gutes Veggie-Essen teuer>: Die Zutaten für ansprechende vegetarische Gerichte (z.B. Mandelmus, Sesamöl, Cashewkerne) sind teuer, zahlreiche Personen können sich diese nicht leisten. Wenn man nicht nur Kartoffel-Möhren-Suppe essen will, wird Veggie-Essen schnell für viele unbezahlbar. #test
   +  [Kulinarische Standards]
   -> [Strikt-Veggie]
   -> [Weniger-Fleisch]
@@ -109,8 +109,8 @@ Folgende Überlegungen sprechen gegen Fleischkonsum, können aber im Detail auf 
 # Natürlichkeits-Erwägungen
 
 [Fleisch-OK]
-  + <Menschheitsgeschichte>: Menschen haben schon immer Tiere gejagt, gehalten und getötet, um sie zu essen und zu verwerten.
-  + <Natürliche Nahrungsketten>: Es ist ganz natürlich, dass Tiere gejagt und getötet werden -- nicht nur Menschen, auch Tiere tun das.
+  + <Menschheitsgeschichte>: #test Menschen haben schon immer Tiere gejagt, gehalten und getötet, um sie zu essen und zu verwerten.
+  + <Natürliche Nahrungsketten>: Es ist ganz natürlich, dass Tiere gejagt und getötet werden #(test test) -- nicht nur Menschen, auch Tiere tun das.
 
 [Alles-Esser]
   - <Massentierhaltung unnatürlich>: Moderne Tierzucht und Massentierhaltung ist unnatürlich: ohne Präzedens in der Menschheitsgeschichte und wider die Natur der Tiere.
