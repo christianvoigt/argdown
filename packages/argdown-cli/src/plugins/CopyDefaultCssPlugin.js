@@ -7,7 +7,8 @@ class CopyDefaultCssPlugin{
     let previousSettings = this.settings;
     if(!previousSettings){
       previousSettings = {
-        outputDir: "./html"
+        outputDir: "./html",
+        appendTagColors: true
       }
     }
     this.settings = _.defaultsDeep({}, config, previousSettings);
@@ -16,14 +17,16 @@ class CopyDefaultCssPlugin{
     this.name = "CopyDefaultCssPlugin";
     this.config = config;
   }
-  run(){
+  run(data){
     const $ = this;
     mkdirp($.settings.outputDir, function (err) {
       if (err){
         console.log(err);
       }
-      console.log("Copying default argdown.css to folder: "+$.settings.outputDir);
-      let pathToDefaultCssFile = __dirname + '/../../node_modules/argdown-parser/lib/src/plugins/argdown.css';
+      if(data && data.config && data.config.verbose){
+        console.log("Copying default argdown.css to folder: "+$.settings.outputDir);        
+      }
+      let pathToDefaultCssFile = __dirname + '/../../../node_modules/argdown-parser/lib/src/plugins/argdown.css';
       $.copySync(pathToDefaultCssFile, $.settings.outputDir+"/argdown.css");
     });    
   }

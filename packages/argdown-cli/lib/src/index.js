@@ -27,6 +27,7 @@ var requireUncached = require("require-uncached");
 var app = new _argdownParser.ArgdownApplication();
 var preprocessor = new _argdownParser.ArgdownPreprocessor();
 var htmlExport = new _argdownParser.HtmlExport();
+var tagConfiguration = new _argdownParser.TagConfiguration();
 var mapMaker = new _argdownMapMaker.MapMaker();
 var dotExport = new _argdownMapMaker.DotExport();
 var argmlExport = new _argdownMapMaker.ArgMLExport();
@@ -54,6 +55,7 @@ var saveAsJSON = new _SaveAsFilePlugin.SaveAsFilePlugin({
   extension: '.json'
 });
 app.addPlugin(preprocessor, "preprocessor");
+app.addPlugin(tagConfiguration, "preprocessor");
 
 app.addPlugin(htmlExport, "export-html");
 app.addPlugin(copyDefaultCss, "copy-default-css");
