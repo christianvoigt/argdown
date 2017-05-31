@@ -1,4 +1,4 @@
-import {ArgdownApplication, ArgdownPreprocessor, HtmlExport, JSONExport} from 'argdown-parser';
+import {ArgdownApplication, ArgdownPreprocessor, HtmlExport, JSONExport, TagConfiguration} from 'argdown-parser';
 import {MapMaker, DotExport, ArgMLExport} from 'argdown-map-maker';
 import {SaveAsFilePlugin} from './plugins/SaveAsFilePlugin.js';
 import {CopyDefaultCssPlugin} from './plugins/CopyDefaultCssPlugin.js';
@@ -12,6 +12,7 @@ let requireUncached = require("require-uncached");
 const app = new ArgdownApplication();
 const preprocessor = new ArgdownPreprocessor();
 const htmlExport = new HtmlExport();
+const tagConfiguration = new TagConfiguration();
 const mapMaker = new MapMaker();
 const dotExport = new DotExport();
 const argmlExport = new ArgMLExport();
@@ -39,6 +40,7 @@ const saveAsJSON = new SaveAsFilePlugin({
   extension: '.json'
 });
 app.addPlugin(preprocessor, "preprocessor");
+app.addPlugin(tagConfiguration, "preprocessor");
 
 app.addPlugin(htmlExport, "export-html");
 app.addPlugin(copyDefaultCss, "copy-default-css");
