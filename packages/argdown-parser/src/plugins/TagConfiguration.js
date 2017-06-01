@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import util from './util.js';
 
 class TagConfiguration{
   set config(config){
@@ -20,30 +21,58 @@ class TagConfiguration{
       return;
     }
     data.config = data.config ||{};
+    data.tagsDictionary = {};
+    
     let previousConfig = data.config.tags != null;
     data.config.tags = data.config.tags ||[];
     if(data.config && data.config.tagColorScheme){
       this.config = {colorScheme: data.config.tagColorScheme};      
     }
-    let index = 0;
-    let tagList = data.tags;
+    let selectedTags = data.tags;
     if(previousConfig){
-      tagList = [];
+      selectedTags = [];
       for(let tagData of data.config.tags){
-        tagList.push(tagData.tag);
+        selectedTags.push(tagData.tag);
       }
     }
-    for(let tag of tagList){
-      let tagData = _.find(data.config.tags,{tag:tag});
+    for(let tag of data.tags){
+      let tagConfig = _.find(data.config.tags,{tag:tag});
+      let tagData = _.clone(tagConfig);
       if(!tagData){
         tagData = {tag:tag};
-        data.config.tags.push(tagData);
       }
-      if(!tagData.color && index < this.settings.colorScheme.length){
-        tagData.color = this.settings.colorScheme[index];
+      data.tagsDictionary[tag] = tagData;
+      let index = selectedTags.indexOf(tag);
+      tagData.cssClass = util.getHtmlId('tag-'+tag);
+      if(index > -1){
+        if(!tagData.color && index < this.settings.colorScheme.length){
+          tagData.color = this.settings.colorScheme[index];
+        }
+        tagData.cssClass += ' tag'+index;
+        tagData.index = index;
       }
-      index++;
     }
+    for(let title of Object.keys(data.statements)){
+      let equivalenceClass = data.statements[title];
+      if(equivalenceClass.tags){
+        equivalenceClass.sortedTags = this.sortTags(equivalenceClass.tags, data);
+      }
+    }
+    for(let title of Object.keys(data.arguments)){
+      let argument = data.arguments[title];
+      if(argument.tags){
+        argument.sortedTags = this.sortTags(argument.tags, data);
+      }
+    }
+  }
+  sortTags(tags, data){
+    const filtered = _.filter(tags, function(tag){
+      return data.tagsDictionary[tag].index != null;
+    });
+    const sorted = _.sortBy(filtered, function(tag){
+      return data.tagsDictionary[tag].index;
+    });
+    return sorted;
   }
 }
 module.exports = {

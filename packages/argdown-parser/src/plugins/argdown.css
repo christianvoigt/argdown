@@ -108,27 +108,27 @@
 .argdown .conclusion.argument-statement .relations {
     font-weight: normal;
 }
-.argument-definition.tag0 > .definiendum,.statement.tag0 > .statement-definition,.reference.tag0,.mention.tag0,.tag.tag0{
-  color:#1b9e77;
-}
-.argument-definition.tag1 > .definiendum,.statement.tag1 > .statement-definition,.reference.tag1,.mention.tag1,.tag.tag1{
-  color:#d95f02;
-}
-.argument-definition.tag2 > .definiendum,.statement.tag2 > .statement-definition,.reference.tag2,.mention.tag2,.tag.tag2{
-  color:#7570b3;
-}
-.argument-definition.tag3 > .definiendum,.statement.tag3 > .statement-definition,.reference.tag3,.mention.tag3,.tag.tag3{
-  color:#e7298a;
-}
-.argument-definition.tag4 > .definiendum,.statement.tag4 > .statement-definition,.reference.tag4,.mention.tag4,.tag.tag4{
-  color:#66a61e;
-}
-.argument-definition.tag5 > .definiendum,.statement.tag5 > .statement-definition,.reference.tag5,.mention.tag5,.tag.tag5{
-  color:#e6ab02;
+.argument-definition.tag7 > .definiendum,.statement.tag7 > .statement-definition,.reference.tag7,.mention.tag7,.tag.tag7{
+  color:#666666;
 }
 .argument-definition.tag6 > .definiendum,.statement.tag6 > .statement-definition,.reference.tag6,.mention.tag6,.tag.tag6{
   color:#a6761d;
 }
-.argument-definition.tag7 > .definiendum,.statement.tag7 > .statement-definition,.reference.tag7,.mention.tag7,.tag.tag7{
-  color:#666666;
+.argument-definition.tag5 > .definiendum,.statement.tag5 > .statement-definition,.reference.tag5,.mention.tag5,.tag.tag5{
+  color:#e6ab02;
+}
+.argument-definition.tag4 > .definiendum,.statement.tag4 > .statement-definition,.reference.tag4,.mention.tag4,.tag.tag4{
+  color:#66a61e;
+}
+.argument-definition.tag3 > .definiendum,.statement.tag3 > .statement-definition,.reference.tag3,.mention.tag3,.tag.tag3{
+  color:#e7298a;
+}
+.argument-definition.tag2 > .definiendum,.statement.tag2 > .statement-definition,.reference.tag2,.mention.tag2,.tag.tag2{
+  color:#7570b3;
+}
+.argument-definition.tag1 > .definiendum,.statement.tag1 > .statement-definition,.reference.tag1,.mention.tag1,.tag.tag1{
+  color:#d95f02;
+}
+.argument-definition.tag0 > .definiendum,.statement.tag0 > .statement-definition,.reference.tag0,.mention.tag0,.tag.tag0{
+  color:#1b9e77;
 }

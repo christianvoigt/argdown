@@ -1,10 +1,12 @@
 import { expect } from 'chai';
-import {ArgdownApplication, ArgdownPreprocessor,HtmlExport} from '../src/index.js';
+import {ArgdownApplication, ArgdownPreprocessor, TagConfiguration, HtmlExport} from '../src/index.js';
 import fs from 'fs';
 
 let app = new ArgdownApplication();
 let preprocessor = new ArgdownPreprocessor();
+let tagConfiguration = new TagConfiguration();
 app.addPlugin(preprocessor,'preprocessor');
+app.addPlugin(tagConfiguration, 'preprocessor');
 
 describe("HtmlExport", function() {
   let htmlExport = new HtmlExport();
@@ -22,17 +24,22 @@ describe("HtmlExport", function() {
     let result = app.run(['preprocessor','export-html']);
     expect(result.lexerErrors).to.be.empty;
     expect(result.parserErrors).to.be.empty;
-  });
-  it("can create class names for tags", function(){
-    let source = `Test #tag1
-      + test #tag2
-        - test #tag3`;
-    app.parse(source);
-    let result = app.run(['preprocessor','export-html']);
-    expect(htmlExport.tagsDictionary).to.exist;
-    expect(Object.keys(htmlExport.tagsDictionary).length).to.be.equal(3);
-    expect(htmlExport.tagsDictionary["tag1"].cssClassName).to.be.equal("tag-tag1");
-    expect(htmlExport.tagsDictionary["tag2"].cssClassName).to.be.equal("tag-tag2");
-    expect(htmlExport.tagsDictionary["tag3"].cssClassName).to.be.equal("tag-tag3");
   });  
+  it("can create class names for tags", function(){
+    let source = `[Statement 1]: #tag1
+      + [Statement 2]: #tag2
+        - [Statement 3]: #tag3`;
+    app.parse(source);
+    let result = app.run(['preprocessor']);
+    expect(result.tagsDictionary).to.exist;
+    expect(Object.keys(result.tagsDictionary).length).to.be.equal(3);
+    expect(result.tagsDictionary["tag1"].cssClass).to.be.equal("tag-tag1 tag0");
+    expect(result.tagsDictionary["tag1"].index).to.be.equal(0);
+    expect(result.tagsDictionary["tag2"].cssClass).to.be.equal("tag-tag2 tag1");
+    expect(result.tagsDictionary["tag2"].index).to.be.equal(1);
+    expect(result.tagsDictionary["tag3"].cssClass).to.be.equal("tag-tag3 tag2");
+    expect(result.tagsDictionary["tag3"].index).to.be.equal(2);
+    expect(result.statements["Statement 1"].sortedTags).to.exist;
+    expect(result.statements["Statement 1"].sortedTags.length).to.equal(1);
+  });
 });
