@@ -216,7 +216,7 @@ var ArgdownApplication = function () {
     }
   }, {
     key: "run",
-    value: function run(param) {
+    value: function run(param, previousData) {
       var processorsToRun = null;
       var verbose = false;
       var data = {};
@@ -225,8 +225,14 @@ var ArgdownApplication = function () {
         processorsToRun = ['default'];
       } else if (_.isString(param)) {
         processorsToRun = [param];
+        if (previousData) {
+          data = previousData;
+        }
       } else if (_.isArray(param)) {
         processorsToRun = param;
+        if (previousData) {
+          data = previousData;
+        }
       } else if (_.isObject(param)) {
         data = param;
       }
