@@ -12,7 +12,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var app = new _index.ArgdownApplication();
 var preprocessor = new _index.ArgdownPreprocessor();
+var tagConfiguration = new _index.TagConfiguration();
 app.addPlugin(preprocessor, 'preprocessor');
+app.addPlugin(tagConfiguration, 'preprocessor');
 
 describe("HtmlExport", function () {
   var htmlExport = new _index.HtmlExport();
@@ -32,14 +34,19 @@ describe("HtmlExport", function () {
     (0, _chai.expect)(result.parserErrors).to.be.empty;
   });
   it("can create class names for tags", function () {
-    var source = 'Test #tag1\n      + test #tag2\n        - test #tag3';
+    var source = '[Statement 1]: #tag1\n      + [Statement 2]: #tag2\n        - [Statement 3]: #tag3';
     app.parse(source);
-    var result = app.run(['preprocessor', 'export-html']);
-    (0, _chai.expect)(htmlExport.tagsDictionary).to.exist;
-    (0, _chai.expect)(Object.keys(htmlExport.tagsDictionary).length).to.be.equal(3);
-    (0, _chai.expect)(htmlExport.tagsDictionary["tag1"].cssClassName).to.be.equal("tag-tag1");
-    (0, _chai.expect)(htmlExport.tagsDictionary["tag2"].cssClassName).to.be.equal("tag-tag2");
-    (0, _chai.expect)(htmlExport.tagsDictionary["tag3"].cssClassName).to.be.equal("tag-tag3");
+    var result = app.run(['preprocessor']);
+    (0, _chai.expect)(result.tagsDictionary).to.exist;
+    (0, _chai.expect)(Object.keys(result.tagsDictionary).length).to.be.equal(3);
+    (0, _chai.expect)(result.tagsDictionary["tag1"].cssClass).to.be.equal("tag-tag1 tag0");
+    (0, _chai.expect)(result.tagsDictionary["tag1"].index).to.be.equal(0);
+    (0, _chai.expect)(result.tagsDictionary["tag2"].cssClass).to.be.equal("tag-tag2 tag1");
+    (0, _chai.expect)(result.tagsDictionary["tag2"].index).to.be.equal(1);
+    (0, _chai.expect)(result.tagsDictionary["tag3"].cssClass).to.be.equal("tag-tag3 tag2");
+    (0, _chai.expect)(result.tagsDictionary["tag3"].index).to.be.equal(2);
+    (0, _chai.expect)(result.statements["Statement 1"].sortedTags).to.exist;
+    (0, _chai.expect)(result.statements["Statement 1"].sortedTags.length).to.equal(1);
   });
 });
 //# sourceMappingURL=html-export.spec.js.map

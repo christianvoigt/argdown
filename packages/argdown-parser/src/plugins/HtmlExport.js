@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import util from './util.js';
 
 class HtmlExport{
   set config(config){
@@ -39,19 +40,6 @@ class HtmlExport{
           }
         }
         data.config = data.config||{};
-        $.tagsDictionary = {};
-        if(data.tags){
-          for(let tag of data.tags){
-            const tagData = {cssClassName: $.getHtmlId("tag",tag,true)};
-            if(data.config.tags){
-              const index = _.findIndex(data.config.tags,{tag:tag});
-              if(index > -1){
-                tagData.index = index;
-              }
-            }
-            $.tagsDictionary[tag] = tagData;
-          }          
-        }
         
         $.html = "";
         $.htmlIds = {};
@@ -78,54 +66,54 @@ class HtmlExport{
           $.html += "</body></html>";
         }
       },
-      statementEntry : (node)=>{
+      statementEntry : (node, parentNode, childIndex, data)=>{
         let classes = "statement";
         if(node.equivalenceClass.tags){
-          classes += " " + $.getCssClassesFromTags(node.equivalenceClass.tags);
+          classes += " " + $.getCssClassesFromTags(node.equivalenceClass.sortedTags, data);
         }        
         $.html += "<div class='"+classes+"'>";
       },
       statementExit : ()=>$.html += "</div>",
-      StatementDefinitionEntry : (node, parentNode)=>{
+      StatementDefinitionEntry : (node, parentNode, childIndex, data)=>{
         let htmlId = $.getHtmlId("statement", node.statement.title);
         $.htmlIds[htmlId] = node.statement;
         let classes = "definition statement-definition definiendum";
-        if(parentNode.equivalenceClass && parentNode.equivalenceClass.tags){
-          classes += " " + $.getCssClassesFromTags(parentNode.equivalenceClass.tags);          
+        if(parentNode.equivalenceClass && parentNode.equivalenceClass.sortedTags){
+          classes += " " + $.getCssClassesFromTags(parentNode.equivalenceClass.sortedTags, data);          
         }
         $.html += "<span id='"+htmlId+"' class='"+classes+"'>[<span class='title statement-title'>"+node.statement.title+"</span>]: </span>"
       },
-      StatementReferenceEntry : (node, parentNode)=>{
+      StatementReferenceEntry : (node, parentNode, childIndex, data)=>{
         let htmlId = $.getHtmlId("statement", node.statement.title, true);
         let classes = "reference statement-reference";
-        if(parentNode.equivalenceClass && parentNode.equivalenceClass.tags){
-          classes += " " + $.getCssClassesFromTags(parentNode.equivalenceClass.tags);          
+        if(parentNode.equivalenceClass && parentNode.equivalenceClass.sortedTags){
+          classes += " " + $.getCssClassesFromTags(parentNode.equivalenceClass.sortedTags, data);          
         }
         $.html += "<a href='#"+htmlId+"' class='"+classes+"'>[<span class='title statement-title'>"+node.statement.title+"</span>] </a>"
       },
       StatementMentionEntry : (node, parentNode, childIndex, data)=>{
         const equivalenceClass = data.statements[node.title];
         let classes = "mention statement-mention";
-        if(equivalenceClass.tags){
-          classes += " " + $.getCssClassesFromTags(equivalenceClass.tags);
+        if(equivalenceClass.sortedTags){
+          classes += " " + $.getCssClassesFromTags(equivalenceClass.sortedTags, data);
         }
         let htmlId = $.getHtmlId("statement", node.title, true);
         $.html += "<a href='#"+htmlId+"' class='"+classes+"'>@[<span class='title statement-title'>"+node.title+"</span>]</a>"+node.trailingWhitespace
       },
-      argumentReferenceEntry : (node)=>{
+      argumentReferenceEntry : (node, parentNode, childIndex, data)=>{
         let htmlId = $.getHtmlId("argument", node.argument.title, true);
         let classes = "reference argument-reference";
         if(node.argument.tags){
-          classes += " " + $.getCssClassesFromTags(node.argument.tags);
+          classes += " " + $.getCssClassesFromTags(node.argument.sortedTags, data);
         }
         $.html += "<a href='#"+htmlId+"' class='"+classes+"'>&lt;<span class='title argument-title'>"+node.argument.title+"</span>&gt; </a>"
       },
-      argumentDefinitionEntry : (node)=>{
+      argumentDefinitionEntry : (node, parentNode, childIndex, data)=>{
         let htmlId = $.getHtmlId("argument", node.argument.title);
         $.htmlIds[htmlId] = node.argument;
         let classes = "definition argument-definition";
         if(node.argument.tags){
-          classes += " " + $.getCssClassesFromTags(node.argument.tags);
+          classes += " " + $.getCssClassesFromTags(node.argument.sortedTags, data);
         }
         $.html += "<div id='"+htmlId+"' class='"+classes+"'><span class='definiendum argument-definiendum'>&lt;<span class='title argument-title'>"+node.argument.title+"</span>&gt;: </span><span class='argument-definiens definiens description'>"
       },
@@ -134,7 +122,7 @@ class HtmlExport{
         let classes = "mention argument-mention";
         const argument = data.arguments[node.title];
         if(argument.tags){
-          classes += " " + $.getCssClassesFromTags(argument.tags);
+          classes += " " + $.getCssClassesFromTags(argument.sortedTags, data);
         }
         $.html += "<a href='#"+htmlId+"' class='"+classes+"'>@&lt;<span class='title argument-title'>"+node.title+"</span>&gt;</a>"+node.trailingWhitespace
       },
@@ -199,11 +187,11 @@ class HtmlExport{
       italicEntry : ()=>$.html += "<i>",
       italicExit : (node)=>$.html += "</i>"+node.trailingWhitespace,
       LinkEntry : (node)=>$.html += "<a href='"+node.url+"'>"+node.text+"</a>"+node.trailingWhitespace,
-      TagEntry : (node)=>$.html += "<span class='tag "+$.getCssClassesFromTags([node.tag])+"'>"+node.text+"</span>",
-      argumentEntry : (node)=>{
+      TagEntry : (node, parentNode, childIndex, data)=>$.html += "<span class='tag "+$.getCssClassesFromTags([node.tag], data)+"'>"+node.text+"</span>",
+      argumentEntry : (node, parentNode, childIndex, data)=>{
         let classes = "argument";
         if(node.argument.tags){
-          classes += " " + $.getCssClassesFromTags(node.argument.tags);          
+          classes += " " + $.getCssClassesFromTags(node.argument.sortedTags, data);          
         }
         $.html += "<div class='"+classes+"'>";
       },
@@ -262,13 +250,7 @@ class HtmlExport{
   }
   getHtmlId(type, title, ignoreDuplicates){
     let id = type + "-" + title;
-    id = id.toLowerCase();
-    id = id.replace(/ä/g,"ae");
-    id = id.replace(/ö/g,"oe");
-    id = id.replace(/ü/g,"ue");
-    id = id.replace(/ß/g,"ss");
-    id = id.replace(/\s/g,"-");
-    id = id.replace(/[^a-z0-9\-]/g,"");
+    id = util.getHtmlId(id);
     if(!ignoreDuplicates){
       let originalId = id;
       let i = 1;
@@ -279,19 +261,19 @@ class HtmlExport{
     }
     return id;
   }
-  getCssClassesFromTags(tags){
+  getCssClassesFromTags(tags, data){
     let classes = "";
+    if(!tags || !data.tagsDictionary){
+      return classes;
+    }
     let index = 0;
     for(let tag of tags){
       if(index > 0){
         classes += " ";
       }
       index++;
-      const tagData = this.tagsDictionary[tag];
-      classes += tagData.cssClassName;
-      if(tagData.index != null && tagData.index > -1){
-        classes += " tag"+tagData.index;
-      }
+      const tagData = data.tagsDictionary[tag];
+      classes += tagData.cssClass;
     }
     return classes;
   }
