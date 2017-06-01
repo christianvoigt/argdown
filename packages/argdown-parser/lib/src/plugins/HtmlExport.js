@@ -57,8 +57,7 @@ var HtmlExport = function () {
           }
         }
         data.config = data.config || {};
-        data.config.tags = data.config.tags || {};
-        $.tags = data.config.tags;
+        $.tagsDictionary = {};
         if (data.tags) {
           var _iteratorNormalCompletion = true;
           var _didIteratorError = false;
@@ -68,12 +67,14 @@ var HtmlExport = function () {
             for (var _iterator = data.tags[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
               var tag = _step.value;
 
-              var tagData = $.tags[tag];
-              if (!tagData) {
-                tagData = {};
-                $.tags[tag] = tagData;
+              var tagData = { cssClassName: $.getHtmlId("tag", tag, true) };
+              if (data.config.tags) {
+                var index = _.findIndex(data.config.tags, { tag: tag });
+                if (index > -1) {
+                  tagData.index = index;
+                }
               }
-              tagData.cssClassName = $.getHtmlId("tag", tag, true);
+              $.tagsDictionary[tag] = tagData;
             }
           } catch (err) {
             _didIteratorError = true;
@@ -112,30 +113,30 @@ var HtmlExport = function () {
           $.html += "</body></html>";
         }
       },
-      statementEntry: function statementEntry(node, parentNode, childIndex, data) {
+      statementEntry: function statementEntry(node) {
         var classes = "statement";
         if (node.equivalenceClass.tags) {
-          classes += " " + $.getCssClassesFromTags(node.equivalenceClass.tags, data);
+          classes += " " + $.getCssClassesFromTags(node.equivalenceClass.tags);
         }
         $.html += "<div class='" + classes + "'>";
       },
       statementExit: function statementExit() {
         return $.html += "</div>";
       },
-      StatementDefinitionEntry: function StatementDefinitionEntry(node, parentNode, childIndex, data) {
+      StatementDefinitionEntry: function StatementDefinitionEntry(node, parentNode) {
         var htmlId = $.getHtmlId("statement", node.statement.title);
         $.htmlIds[htmlId] = node.statement;
         var classes = "definition statement-definition definiendum";
         if (parentNode.equivalenceClass && parentNode.equivalenceClass.tags) {
-          classes += " " + $.getCssClassesFromTags(parentNode.equivalenceClass.tags, data);
+          classes += " " + $.getCssClassesFromTags(parentNode.equivalenceClass.tags);
         }
         $.html += "<span id='" + htmlId + "' class='" + classes + "'>[<span class='title statement-title'>" + node.statement.title + "</span>]: </span>";
       },
-      StatementReferenceEntry: function StatementReferenceEntry(node, parentNode, childIndex, data) {
+      StatementReferenceEntry: function StatementReferenceEntry(node, parentNode) {
         var htmlId = $.getHtmlId("statement", node.statement.title, true);
         var classes = "reference statement-reference";
         if (parentNode.equivalenceClass && parentNode.equivalenceClass.tags) {
-          classes += " " + $.getCssClassesFromTags(parentNode.equivalenceClass.tags, data);
+          classes += " " + $.getCssClassesFromTags(parentNode.equivalenceClass.tags);
         }
         $.html += "<a href='#" + htmlId + "' class='" + classes + "'>[<span class='title statement-title'>" + node.statement.title + "</span>] </a>";
       },
@@ -143,25 +144,25 @@ var HtmlExport = function () {
         var equivalenceClass = data.statements[node.title];
         var classes = "mention statement-mention";
         if (equivalenceClass.tags) {
-          classes += " " + $.getCssClassesFromTags(equivalenceClass.tags, data);
+          classes += " " + $.getCssClassesFromTags(equivalenceClass.tags);
         }
         var htmlId = $.getHtmlId("statement", node.title, true);
         $.html += "<a href='#" + htmlId + "' class='" + classes + "'>@[<span class='title statement-title'>" + node.title + "</span>]</a>" + node.trailingWhitespace;
       },
-      argumentReferenceEntry: function argumentReferenceEntry(node, parentNode, childIndex, data) {
+      argumentReferenceEntry: function argumentReferenceEntry(node) {
         var htmlId = $.getHtmlId("argument", node.argument.title, true);
         var classes = "reference argument-reference";
         if (node.argument.tags) {
-          classes += " " + $.getCssClassesFromTags(node.argument.tags, data);
+          classes += " " + $.getCssClassesFromTags(node.argument.tags);
         }
         $.html += "<a href='#" + htmlId + "' class='" + classes + "'>&lt;<span class='title argument-title'>" + node.argument.title + "</span>&gt; </a>";
       },
-      argumentDefinitionEntry: function argumentDefinitionEntry(node, parentNode, childIndex, data) {
+      argumentDefinitionEntry: function argumentDefinitionEntry(node) {
         var htmlId = $.getHtmlId("argument", node.argument.title);
         $.htmlIds[htmlId] = node.argument;
         var classes = "definition argument-definition";
         if (node.argument.tags) {
-          classes += " " + $.getCssClassesFromTags(node.argument.tags, data);
+          classes += " " + $.getCssClassesFromTags(node.argument.tags);
         }
         $.html += "<div id='" + htmlId + "' class='" + classes + "'><span class='definiendum argument-definiendum'>&lt;<span class='title argument-title'>" + node.argument.title + "</span>&gt;: </span><span class='argument-definiens definiens description'>";
       },
@@ -170,7 +171,7 @@ var HtmlExport = function () {
         var classes = "mention argument-mention";
         var argument = data.arguments[node.title];
         if (argument.tags) {
-          classes += " " + $.getCssClassesFromTags(argument.tags, data);
+          classes += " " + $.getCssClassesFromTags(argument.tags);
         }
         $.html += "<a href='#" + htmlId + "' class='" + classes + "'>@&lt;<span class='title argument-title'>" + node.title + "</span>&gt;</a>" + node.trailingWhitespace;
       },
@@ -268,13 +269,13 @@ var HtmlExport = function () {
       LinkEntry: function LinkEntry(node) {
         return $.html += "<a href='" + node.url + "'>" + node.text + "</a>" + node.trailingWhitespace;
       },
-      TagEntry: function TagEntry(node, parentNode, childIndex, data) {
-        return $.html += "<span class='tag " + $.getCssClassesFromTags([node.tag], data) + "'>" + node.text + "</span>";
+      TagEntry: function TagEntry(node) {
+        return $.html += "<span class='tag " + $.getCssClassesFromTags([node.tag]) + "'>" + node.text + "</span>";
       },
-      argumentEntry: function argumentEntry(node, parentNode, childIndex, data) {
+      argumentEntry: function argumentEntry(node) {
         var classes = "argument";
         if (node.argument.tags) {
-          classes += " " + $.getCssClassesFromTags(node.argument.tags, data);
+          classes += " " + $.getCssClassesFromTags(node.argument.tags);
         }
         $.html += "<div class='" + classes + "'>";
       },
@@ -399,19 +400,8 @@ var HtmlExport = function () {
     }
   }, {
     key: 'getCssClassesFromTags',
-    value: function getCssClassesFromTags(tags, data) {
+    value: function getCssClassesFromTags(tags) {
       var classes = "";
-      // let sortedTags = tags;
-      // if(this.settings.sortTagsByDocumentOccurrence && data && data.tags){
-      //   sortedTags = _.sortBy(tags, function(tag){
-      //     return data.tags.indexOf(tag);
-      //   });      
-      // }
-      var tagConfig = null;
-      if (data && data.config) {
-        tagConfig = data.config.tags;
-      }
-
       var index = 0;
       var _iteratorNormalCompletion4 = true;
       var _didIteratorError4 = false;
@@ -425,10 +415,10 @@ var HtmlExport = function () {
             classes += " ";
           }
           index++;
-          if (tagConfig) {
-            var tagData = tagConfig[tag];
-            classes += tagData.cssClassName;
-            classes += " tag-" + tagData.index;
+          var tagData = this.tagsDictionary[tag];
+          classes += tagData.cssClassName;
+          if (tagData.index != null && tagData.index > -1) {
+            classes += " tag" + tagData.index;
           }
         }
       } catch (err) {

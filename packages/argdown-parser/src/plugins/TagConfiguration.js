@@ -5,8 +5,8 @@ class TagConfiguration{
     let previousSettings = this.settings;
     if(!previousSettings){
       previousSettings = {
-        //default colorScheme taken from ColorBrewer Paired: https://bl.ocks.org/mbostock/5577023
-        colorScheme: ["#a6cee3","#1f78b4","#b2df8a","#33a02c","#fb9a99","#e31a1c","#fdbf6f","#ff7f00","#cab2d6","#6a3d9a","#ffff99","#b15928"]
+        //default colorScheme taken from ColorBrewer: https://bl.ocks.org/mbostock/5577023
+        colorScheme: ["#1b9e77","#d95f02","#7570b3","#e7298a","#66a61e","#e6ab02","#a6761d","#666666"]
       }
     }
     this.settings = _.defaultsDeep({}, config, previousSettings);    
@@ -20,16 +20,28 @@ class TagConfiguration{
       return;
     }
     data.config = data.config ||{};
-    data.config.tags = data.config.tags ||{};
-    this.config = data.config.tagColor;
+    let previousConfig = data.config.tags != null;
+    data.config.tags = data.config.tags ||[];
+    if(data.config && data.config.tagColorScheme){
+      this.config = {colorScheme: data.config.tagColorScheme};      
+    }
     let index = 0;
-    for(let tag of data.tags){
-      const tagData = data.config.tags[tag]||{};
-      data.config.tags[tag] = tagData;
+    let tagList = data.tags;
+    if(previousConfig){
+      tagList = [];
+      for(let tagData of data.config.tags){
+        tagList.push(tagData.tag);
+      }
+    }
+    for(let tag of tagList){
+      let tagData = _.find(data.config.tags,{tag:tag});
+      if(!tagData){
+        tagData = {tag:tag};
+        data.config.tags.push(tagData);
+      }
       if(!tagData.color && index < this.settings.colorScheme.length){
         tagData.color = this.settings.colorScheme[index];
       }
-      tagData.index = index;
       index++;
     }
   }

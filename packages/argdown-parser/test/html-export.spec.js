@@ -29,10 +29,10 @@ describe("HtmlExport", function() {
         - test #tag3`;
     app.parse(source);
     let result = app.run(['preprocessor','export-html']);
-    expect(result.config.tags).to.exist;
-    expect(Object.keys(result.config.tags).length).to.be.equal(3);
-    expect(result.config.tags["tag1"].cssClassName).to.be.equal("tag-tag1");
-    expect(result.config.tags["tag2"].cssClassName).to.be.equal("tag-tag2");
-    expect(result.config.tags["tag3"].cssClassName).to.be.equal("tag-tag3");
+    expect(htmlExport.tagsDictionary).to.exist;
+    expect(Object.keys(htmlExport.tagsDictionary).length).to.be.equal(3);
+    expect(htmlExport.tagsDictionary["tag1"].cssClassName).to.be.equal("tag-tag1");
+    expect(htmlExport.tagsDictionary["tag2"].cssClassName).to.be.equal("tag-tag2");
+    expect(htmlExport.tagsDictionary["tag3"].cssClassName).to.be.equal("tag-tag3");
   });  
 });

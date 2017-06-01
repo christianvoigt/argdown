@@ -17,8 +17,8 @@ var TagConfiguration = function () {
       var previousSettings = this.settings;
       if (!previousSettings) {
         previousSettings = {
-          //default colorScheme taken from ColorBrewer Paired: https://bl.ocks.org/mbostock/5577023
-          colorScheme: ["#a6cee3", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00", "#cab2d6", "#6a3d9a", "#ffff99", "#b15928"]
+          //default colorScheme taken from ColorBrewer: https://bl.ocks.org/mbostock/5577023
+          colorScheme: ["#1b9e77", "#d95f02", "#7570b3", "#e7298a", "#66a61e", "#e6ab02", "#a6761d", "#666666"]
         };
       }
       this.settings = _.defaultsDeep({}, config, previousSettings);
@@ -39,36 +39,69 @@ var TagConfiguration = function () {
         return;
       }
       data.config = data.config || {};
-      data.config.tags = data.config.tags || {};
-      this.config = data.config.tagColor;
+      var previousConfig = data.config.tags != null;
+      data.config.tags = data.config.tags || [];
+      if (data.config && data.config.tagColorScheme) {
+        this.config = { colorScheme: data.config.tagColorScheme };
+      }
       var index = 0;
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
+      var tagList = data.tags;
+      if (previousConfig) {
+        tagList = [];
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+          for (var _iterator = data.config.tags[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var tagData = _step.value;
+
+            tagList.push(tagData.tag);
+          }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion && _iterator.return) {
+              _iterator.return();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
+          }
+        }
+      }
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
 
       try {
-        for (var _iterator = data.tags[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var tag = _step.value;
+        for (var _iterator2 = tagList[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var tag = _step2.value;
 
-          var tagData = data.config.tags[tag] || {};
-          data.config.tags[tag] = tagData;
-          if (!tagData.color && index < this.settings.colorScheme.length) {
-            tagData.color = this.settings.colorScheme[index];
+          var _tagData = _.find(data.config.tags, { tag: tag });
+          if (!_tagData) {
+            _tagData = { tag: tag };
+            data.config.tags.push(_tagData);
           }
-          tagData.index = index;
+          if (!_tagData.color && index < this.settings.colorScheme.length) {
+            _tagData.color = this.settings.colorScheme[index];
+          }
           index++;
         }
       } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion && _iterator.return) {
-            _iterator.return();
+          if (!_iteratorNormalCompletion2 && _iterator2.return) {
+            _iterator2.return();
           }
         } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
+          if (_didIteratorError2) {
+            throw _iteratorError2;
           }
         }
       }
