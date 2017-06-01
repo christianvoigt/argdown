@@ -16,8 +16,8 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var TagConfiguration = function () {
-  _createClass(TagConfiguration, [{
+var TagPlugin = function () {
+  _createClass(TagPlugin, [{
     key: 'config',
     set: function set(config) {
       var previousSettings = this.settings;
@@ -31,14 +31,14 @@ var TagConfiguration = function () {
     }
   }]);
 
-  function TagConfiguration(config) {
-    _classCallCheck(this, TagConfiguration);
+  function TagPlugin(config) {
+    _classCallCheck(this, TagPlugin);
 
-    this.name = "TagConfiguration";
+    this.name = "TagPlugin";
     this.config = config;
   }
 
-  _createClass(TagConfiguration, [{
+  _createClass(TagPlugin, [{
     key: 'run',
     value: function run(data) {
       if (!data.tags) {
@@ -188,10 +188,10 @@ var TagConfiguration = function () {
     }
   }]);
 
-  return TagConfiguration;
+  return TagPlugin;
 }();
 
 module.exports = {
-  TagConfiguration: TagConfiguration
+  TagPlugin: TagPlugin
 };
-//# sourceMappingURL=TagConfiguration.js.map
+//# sourceMappingURL=TagPlugin.js.map

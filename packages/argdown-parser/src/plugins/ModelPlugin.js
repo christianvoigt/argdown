@@ -9,8 +9,20 @@ import {ArgdownLexer} from './../ArgdownLexer.js';
 
 const RelationObjectTypes = Object.freeze({STATEMENT: Symbol("STATEMENT"), RECONSTRUCTED_ARGUMENT: Symbol("RECONSTRUCTED ARGUMENT"), SKETCHED_ARGUMENT: Symbol("SKETCHED ARGUMENT")});
 
-class ArgdownPreprocessor{
+class ModelPlugin{
+  set config(config){
+    let previousSettings = this.settings;
+    if(!previousSettings){
+      previousSettings = {
+        removeTagsFromText: false
+      }
+    }
+    this.settings = _.defaultsDeep({}, config, previousSettings);
+  }
   run(data){
+    if(data.config && data.config.model){
+      this.config = data.config.model;
+    }
     for(let relation of this.relations){
       let fromType = this.getElementType(relation.from);
       let toType = this.getElementType(relation.to);
@@ -85,8 +97,10 @@ class ArgdownPreprocessor{
     }
     return null;
   }
-  constructor(){
-    this.name = "ArgdownPreprocessor";
+  constructor(config){
+    this.name = "ModelPlugin";
+    this.config = config;
+    
     let $ = this;
 
     const statementReferencePattern = /\[(.+)\]/;
@@ -129,7 +143,7 @@ class ArgdownPreprocessor{
     let currentSection = null;
     let sectionCounter = 0;
 
-    function onArgdownEntry(){
+    function onArgdownEntry(node, parentNode, childIndex, data){
       $.statements = {};
       $.arguments = {};
       $.sections = [];
@@ -146,6 +160,9 @@ class ArgdownPreprocessor{
       currentRelation = null;
       inStatementTree = false;
       sectionCounter = 0;
+      if(data && data.config && data.config.model){
+        this.config = data.config.model;
+      }
     }
     function onStatementEntry(node, parentNode){
       currentStatement = new Statement();
@@ -317,13 +334,15 @@ class ArgdownPreprocessor{
     function onTagEntry(node){
       let match = tagPattern.exec(node.image);
       let tag = match[1] || match[2];
-      let tagRange = {type:'tag', start: currentStatement.text.length};
       node.tag = tag;
-      node.text = node.image;
-      currentStatement.text += node.text;
-      tagRange.stop = currentStatement.text.length - 1;
-      tagRange.tag = node.tag;
-      currentStatement.ranges.push(tagRange);
+      if(!$.settings.removeTagsFromText){
+        let tagRange = {type:'tag', start: currentStatement.text.length};
+        node.text = node.image;        
+        currentStatement.text += node.text;
+        tagRange.stop = currentStatement.text.length - 1;
+        tagRange.tag = node.tag;
+        currentStatement.ranges.push(tagRange);
+      }
       currentStatement.tags = currentStatement.tags ||[];
       let tags = currentStatement.tags;
       if(currentStatement.tags.indexOf(tag) == -1){
@@ -604,6 +623,6 @@ class ArgdownPreprocessor{
   }
 }
 module.exports = {
-  ArgdownPreprocessor: ArgdownPreprocessor,
+  ModelPlugin: ModelPlugin,
   RelationObjectTypes : RelationObjectTypes
 }

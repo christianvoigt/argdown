@@ -4,9 +4,9 @@ import {ArgdownLexer} from './ArgdownLexer.js';
 import {ArgdownParser} from "./ArgdownParser.js";
 import {ArgdownTreeWalker} from "./ArgdownTreeWalker.js";
 import {ArgdownApplication} from "./ArgdownApplication.js";
-import {ArgdownPreprocessor} from "./plugins/ArgdownPreprocessor.js";
+import {ModelPlugin} from "./plugins/ModelPlugin.js";
 import {HtmlExport} from "./plugins/HtmlExport.js";
-import {TagConfiguration} from "./plugins/TagConfiguration.js";
+import {TagPlugin} from "./plugins/TagPlugin.js";
 import {JSONExport} from "./plugins/JSONExport.js";
 import {Argument} from "./model/Argument.js";
 import {Statement} from "./model/Statement.js";
@@ -19,7 +19,7 @@ module.exports = {
   ArgdownParser: ArgdownParser,
   ArgdownLexer: ArgdownLexer,
   ArgdownApplication: ArgdownApplication,
-  ArgdownPreprocessor: ArgdownPreprocessor,
+  ModelPlugin: ModelPlugin,
   HtmlExport : HtmlExport,
   Argument : Argument,
   Statement : Statement,
@@ -27,5 +27,5 @@ module.exports = {
   Section: Section,
   EquivalenceClass : EquivalenceClass,
   JSONExport : JSONExport,
-  TagConfiguration : TagConfiguration
+  TagPlugin : TagPlugin
 }

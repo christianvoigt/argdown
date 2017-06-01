@@ -26,10 +26,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var RelationObjectTypes = Object.freeze({ STATEMENT: Symbol("STATEMENT"), RECONSTRUCTED_ARGUMENT: Symbol("RECONSTRUCTED ARGUMENT"), SKETCHED_ARGUMENT: Symbol("SKETCHED ARGUMENT") });
 
-var ArgdownPreprocessor = function () {
-  _createClass(ArgdownPreprocessor, [{
+var ModelPlugin = function () {
+  _createClass(ModelPlugin, [{
     key: 'run',
     value: function run(data) {
+      if (data.config && data.config.model) {
+        this.config = data.config.model;
+      }
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
       var _iteratorError = undefined;
@@ -144,12 +147,25 @@ var ArgdownPreprocessor = function () {
       }
       return null;
     }
+  }, {
+    key: 'config',
+    set: function set(config) {
+      var previousSettings = this.settings;
+      if (!previousSettings) {
+        previousSettings = {
+          removeTagsFromText: false
+        };
+      }
+      this.settings = _.defaultsDeep({}, config, previousSettings);
+    }
   }]);
 
-  function ArgdownPreprocessor() {
-    _classCallCheck(this, ArgdownPreprocessor);
+  function ModelPlugin(config) {
+    _classCallCheck(this, ModelPlugin);
 
-    this.name = "ArgdownPreprocessor";
+    this.name = "ModelPlugin";
+    this.config = config;
+
     var $ = this;
 
     var statementReferencePattern = /\[(.+)\]/;
@@ -190,7 +206,7 @@ var ArgdownPreprocessor = function () {
     var currentSection = null;
     var sectionCounter = 0;
 
-    function onArgdownEntry() {
+    function onArgdownEntry(node, parentNode, childIndex, data) {
       $.statements = {};
       $.arguments = {};
       $.sections = [];
@@ -207,6 +223,9 @@ var ArgdownPreprocessor = function () {
       currentRelation = null;
       inStatementTree = false;
       sectionCounter = 0;
+      if (data && data.config && data.config.model) {
+        this.config = data.config.model;
+      }
     }
     function onStatementEntry(node, parentNode) {
       currentStatement = new _Statement.Statement();
@@ -399,13 +418,15 @@ var ArgdownPreprocessor = function () {
     function onTagEntry(node) {
       var match = tagPattern.exec(node.image);
       var tag = match[1] || match[2];
-      var tagRange = { type: 'tag', start: currentStatement.text.length };
       node.tag = tag;
-      node.text = node.image;
-      currentStatement.text += node.text;
-      tagRange.stop = currentStatement.text.length - 1;
-      tagRange.tag = node.tag;
-      currentStatement.ranges.push(tagRange);
+      if (!$.settings.removeTagsFromText) {
+        var tagRange = { type: 'tag', start: currentStatement.text.length };
+        node.text = node.image;
+        currentStatement.text += node.text;
+        tagRange.stop = currentStatement.text.length - 1;
+        tagRange.tag = node.tag;
+        currentStatement.ranges.push(tagRange);
+      }
       currentStatement.tags = currentStatement.tags || [];
       var tags = currentStatement.tags;
       if (currentStatement.tags.indexOf(tag) == -1) {
@@ -709,7 +730,7 @@ var ArgdownPreprocessor = function () {
     };
   }
 
-  _createClass(ArgdownPreprocessor, [{
+  _createClass(ModelPlugin, [{
     key: 'logRelations',
     value: function logRelations(data) {
       var _iteratorNormalCompletion6 = true;
@@ -816,11 +837,11 @@ var ArgdownPreprocessor = function () {
     }
   }]);
 
-  return ArgdownPreprocessor;
+  return ModelPlugin;
 }();
 
 module.exports = {
-  ArgdownPreprocessor: ArgdownPreprocessor,
+  ModelPlugin: ModelPlugin,
   RelationObjectTypes: RelationObjectTypes
 };
-//# sourceMappingURL=ArgdownPreprocessor.js.map
+//# sourceMappingURL=ModelPlugin.js.map

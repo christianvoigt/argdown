@@ -8,11 +8,11 @@ var _ArgdownTreeWalker = require("./ArgdownTreeWalker.js");
 
 var _ArgdownApplication = require("./ArgdownApplication.js");
 
-var _ArgdownPreprocessor = require("./plugins/ArgdownPreprocessor.js");
+var _ModelPlugin = require("./plugins/ModelPlugin.js");
 
 var _HtmlExport = require("./plugins/HtmlExport.js");
 
-var _TagConfiguration = require("./plugins/TagConfiguration.js");
+var _TagPlugin = require("./plugins/TagPlugin.js");
 
 var _JSONExport = require("./plugins/JSONExport.js");
 
@@ -31,7 +31,7 @@ module.exports = {
   ArgdownParser: _ArgdownParser.ArgdownParser,
   ArgdownLexer: _ArgdownLexer.ArgdownLexer,
   ArgdownApplication: _ArgdownApplication.ArgdownApplication,
-  ArgdownPreprocessor: _ArgdownPreprocessor.ArgdownPreprocessor,
+  ModelPlugin: _ModelPlugin.ModelPlugin,
   HtmlExport: _HtmlExport.HtmlExport,
   Argument: _Argument.Argument,
   Statement: _Statement.Statement,
@@ -39,6 +39,6 @@ module.exports = {
   Section: _Section.Section,
   EquivalenceClass: _EquivalenceClass.EquivalenceClass,
   JSONExport: _JSONExport.JSONExport,
-  TagConfiguration: _TagConfiguration.TagConfiguration
+  TagPlugin: _TagPlugin.TagPlugin
 };
 //# sourceMappingURL=index.js.map
