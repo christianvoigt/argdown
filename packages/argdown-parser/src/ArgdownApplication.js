@@ -105,7 +105,7 @@ class ArgdownApplication{
       }
       return data;
   }
-  run(param){
+  run(param, previousData){
     let processorsToRun = null;
     let verbose = false;
     let data = {};
@@ -114,8 +114,14 @@ class ArgdownApplication{
       processorsToRun = ['default'];
     }else if(_.isString(param)){
       processorsToRun = [param];
+      if(previousData){
+        data = previousData;
+      }
     }else if(_.isArray(param)){
       processorsToRun = param;
+      if(previousData){
+        data = previousData;
+      }
     }else if(_.isObject(param)){
       data = param;
     }
