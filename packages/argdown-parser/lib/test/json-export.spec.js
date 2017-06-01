@@ -5,8 +5,8 @@ var _chai = require('chai');
 var _index = require('../src/index.js');
 
 var app = new _index.ArgdownApplication();
-var preprocessor = new _index.ArgdownPreprocessor();
-app.addPlugin(preprocessor);
+var modelPlugin = new _index.ModelPlugin();
+app.addPlugin(modelPlugin);
 var jsonExport = new _index.JSONExport();
 app.addPlugin(jsonExport);
 

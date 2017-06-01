@@ -1,9 +1,9 @@
 import { expect } from 'chai';
-import {ArgdownApplication, ArgdownPreprocessor, JSONExport} from '../src/index.js';
+import {ArgdownApplication, ModelPlugin, JSONExport} from '../src/index.js';
 
 let app = new ArgdownApplication();
-let preprocessor = new ArgdownPreprocessor();
-app.addPlugin(preprocessor);
+let modelPlugin = new ModelPlugin();
+app.addPlugin(modelPlugin);
 let jsonExport = new JSONExport();
 app.addPlugin(jsonExport);
 

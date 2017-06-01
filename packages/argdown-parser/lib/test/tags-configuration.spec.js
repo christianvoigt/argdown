@@ -5,16 +5,16 @@ var _chai = require('chai');
 var _index = require('../src/index.js');
 
 var app = new _index.ArgdownApplication();
-var preprocessor = new _index.ArgdownPreprocessor();
-var tagConfiguration = new _index.TagConfiguration();
-app.addPlugin(preprocessor, 'preprocessor');
-app.addPlugin(tagConfiguration, 'preprocessor');
+var modelPlugin = new _index.ModelPlugin();
+var tagPlugin = new _index.TagPlugin();
+app.addPlugin(modelPlugin, 'build-model');
+app.addPlugin(tagPlugin, 'build-model');
 
 describe("TagConfiguration", function () {
   it("can sort tags and create class names for tags", function () {
     var source = '[Statement 1]: #tag1\n      + [Statement 2]: #tag2 #tag3\n        - [Statement 3]: #tag3';
     app.parse(source);
-    var result = app.run(['preprocessor']);
+    var result = app.run(['build-model']);
     (0, _chai.expect)(result.tagsDictionary).to.exist;
     (0, _chai.expect)(Object.keys(result.tagsDictionary).length).to.be.equal(3);
     (0, _chai.expect)(result.tagsDictionary["tag1"].cssClass).to.be.equal("tag-tag1 tag0");

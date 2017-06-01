@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import util from './util.js';
 
-class TagConfiguration{
+class TagPlugin{
   set config(config){
     let previousSettings = this.settings;
     if(!previousSettings){
@@ -13,7 +13,7 @@ class TagConfiguration{
     this.settings = _.defaultsDeep({}, config, previousSettings);    
   }
   constructor(config){
-    this.name = "TagConfiguration";
+    this.name = "TagPlugin";
     this.config = config;
   }
   run(data){
@@ -76,5 +76,5 @@ class TagConfiguration{
   }
 }
 module.exports = {
-  TagConfiguration: TagConfiguration
+  TagPlugin: TagPlugin
 }

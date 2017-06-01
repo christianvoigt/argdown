@@ -6,14 +6,14 @@ var _index = require('../src/index.js');
 
 var app = new _index.ArgdownApplication();
 
-describe("ArgdownPreprocessor", function () {
-  var plugin = new _index.ArgdownPreprocessor();
-  app.addPlugin(plugin, 'preprocessor');
+describe("ModelPlugin", function () {
+  var plugin = new _index.ModelPlugin();
+  app.addPlugin(plugin, 'build-model');
 
   it("can create statements dictionary and save statement by title", function () {
     var source = "[Test]: Hello _World_!";
     app.parse(source);
-    var result = app.run('preprocessor');
+    var result = app.run('build-model');
     (0, _chai.expect)(result.statements['Test']).to.exist;
     (0, _chai.expect)(result.statements['Test'].members[0].text).to.equal('Hello World!');
     (0, _chai.expect)(result.statements['Test'].members[0].ranges.length).to.equal(1);
@@ -24,7 +24,7 @@ describe("ArgdownPreprocessor", function () {
   it("can create arguments dictionary and save argument by title", function () {
     var source = "<Test>: Hello _World_!";
     app.parse(source);
-    var result = app.run('preprocessor');
+    var result = app.run('build-model');
     (0, _chai.expect)(result.arguments['Test']).to.exist;
     (0, _chai.expect)(result.arguments['Test'].descriptions.length).to.equal(1);
     var description = result.arguments['Test'].descriptions[0];
@@ -37,7 +37,7 @@ describe("ArgdownPreprocessor", function () {
   it("can create statement relations and ignore duplicates", function () {
     var source = "[A]: The Beatles are the best!\n  +[B]: The Beatles made 'Rubber Soul'!\n  -><C>: The Rolling Stones were cooler!\n\n [A]\n  +[B]\n  -><C>";
     app.parse(source);
-    var result = app.run('preprocessor');
+    var result = app.run('build-model');
     (0, _chai.expect)(Object.keys(result.statements).length).to.equal(2);
     (0, _chai.expect)(Object.keys(result.arguments).length).to.equal(1);
     (0, _chai.expect)(result.relations.length).to.equal(2);
@@ -60,7 +60,7 @@ describe("ArgdownPreprocessor", function () {
   it("can ignore duplicates of argument relations", function () {
     var source = '\n    [A]: text\n      + <Argument 1>\n    \n    <Argument 1>\n    \n    (1) text\n    (2) text\n    ----\n    (3) [B]: text\n      +> [A]\n    ';
     app.parse(source);
-    var result = app.run('preprocessor');
+    var result = app.run('build-model');
     (0, _chai.expect)(Object.keys(result.statements).length).to.equal(4);
     (0, _chai.expect)(Object.keys(result.arguments).length).to.equal(1);
     (0, _chai.expect)(result.relations.length).to.equal(1);
@@ -68,7 +68,7 @@ describe("ArgdownPreprocessor", function () {
   it("can create sketched argument relations", function () {
     var source = "<A>: The Beatles are the best!\n  +<B>: The Beatles made 'Rubber Soul'!\n  ->[C]: The Rolling Stones were cooler!";
     app.parse(source);
-    var result = app.run('preprocessor');
+    var result = app.run('build-model');
     (0, _chai.expect)(result.arguments['A']).to.exist;
     (0, _chai.expect)(result.arguments['A'].relations.length).to.equal(2);
     (0, _chai.expect)(result.arguments['A'].relations[0].type).to.equal('support');
@@ -87,14 +87,14 @@ describe("ArgdownPreprocessor", function () {
   it("does not add empty statements as members to equivalence class", function () {
     var source = '[A]: B\n    \n    [A]';
     app.parse(source);
-    var result = app.run('preprocessor');
+    var result = app.run('build-model');
     (0, _chai.expect)(result.statements['A']).to.exist;
     (0, _chai.expect)(result.statements['A'].members.length).to.equal(1);
   });
   it("does not create duplicate relations for contradictions", function () {
     var source = '[A]: A\n      >< [B]: B\n    \n    [B]\n      >< [A]';
     app.parse(source);
-    var result = app.run('preprocessor');
+    var result = app.run('build-model');
     (0, _chai.expect)(app.parserErrors.length).to.equal(0);
     (0, _chai.expect)(Object.keys(result.statements).length).to.equal(2);
     (0, _chai.expect)(Object.keys(result.relations).length).to.equal(1);
@@ -102,7 +102,7 @@ describe("ArgdownPreprocessor", function () {
   it("can process a single argument", function () {
     var source = "(1) [s1]: A\n(2) [s2]: B\n----\n(3) [s3]: C";
     app.parse(source);
-    var result = app.run('preprocessor');
+    var result = app.run('build-model');
     (0, _chai.expect)(result.arguments['Untitled 1']).to.exist;
     (0, _chai.expect)(result.statements['s1']).to.exist;
     (0, _chai.expect)(result.statements['s2']).to.exist;
@@ -112,7 +112,7 @@ describe("ArgdownPreprocessor", function () {
   it("can create argument reconstructions", function () {
     var source = '<Reconstructed Argument>\n  \n  (1) [A]: text\n    -<Sketched Argument 1>\n    +[E]\n  (2) B\n  ----\n  (3) C\n  -- Modus Ponens (uses:1,2; depends on: 1) --\n  (4) [D]: text\n    ->[E]: text\n    +><Sketched Argument 1>: text\n    \n<Reconstructed Argument>\n  ->[F]: text\n  +><Sketched Argument 2>';
     app.parse(source);
-    var result = app.run('preprocessor');
+    var result = app.run('build-model');
     (0, _chai.expect)(Object.keys(result.arguments).length).to.equal(3);
     (0, _chai.expect)(Object.keys(result.statements).length).to.equal(6);
 
@@ -200,7 +200,7 @@ describe("ArgdownPreprocessor", function () {
   it("can create the section hierarchy and set section property of statements and arguments", function () {
     var source = '# Section 1\n  \n  ## Section 2\n  \n  [A]: Text\n  \n  ### Section 3\n  \n  <B>: Text\n  \n  ## Section 4\n  \n  <B>\n  \n  (1) p\n  (2) q\n  ----\n  (3) r\n  ';
     app.parse(source);
-    var result = app.run('preprocessor');
+    var result = app.run('build-model');
     //console.log(JSON.stringify(result.sections,null,2));
     (0, _chai.expect)(result.sections).to.exist;
     (0, _chai.expect)(result.sections.length).to.equal(1);
@@ -227,7 +227,7 @@ describe("ArgdownPreprocessor", function () {
   it("can create tags lists", function () {
     var source = '[Statement 1]: #tag-1 text\n  \n  [Statement 2]: text #tag-1 #(tag 2)\n  \n  <Argument 1>: text #tag-1 #tag3 #tag4\n  \n  [Statement 1]: #tag-5 #tag-6 \n  ';
     app.parse(source);
-    var result = app.run('preprocessor');
+    var result = app.run('build-model');
     (0, _chai.expect)(result.tags).to.exist;
     (0, _chai.expect)(result.tags.length).to.equal(6);
     (0, _chai.expect)(result.statements["Statement 1"].tags.length).to.equal(3);
@@ -236,4 +236,4 @@ describe("ArgdownPreprocessor", function () {
     (0, _chai.expect)(result.arguments["Argument 1"].tags.length).to.equal(3);
   });
 });
-//# sourceMappingURL=preprocessor.spec.js.map
+//# sourceMappingURL=ModelPlugin.spec.js.map

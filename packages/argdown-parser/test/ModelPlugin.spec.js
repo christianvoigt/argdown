@@ -1,16 +1,16 @@
 import { expect } from 'chai';
-import {ArgdownApplication, ArgdownPreprocessor} from '../src/index.js';
+import {ArgdownApplication, ModelPlugin} from '../src/index.js';
 
 let app = new ArgdownApplication();
 
-describe("ArgdownPreprocessor", function() {
-  let plugin = new ArgdownPreprocessor();
-  app.addPlugin(plugin,'preprocessor');
+describe("ModelPlugin", function() {
+  let plugin = new ModelPlugin();
+  app.addPlugin(plugin,'build-model');
 
   it("can create statements dictionary and save statement by title", function(){
     let source = "[Test]: Hello _World_!";
     app.parse(source);
-    let result = app.run('preprocessor');
+    let result = app.run('build-model');
     expect(result.statements['Test']).to.exist;
     expect(result.statements['Test'].members[0].text).to.equal('Hello World!');
     expect(result.statements['Test'].members[0].ranges.length).to.equal(1);
@@ -21,7 +21,7 @@ describe("ArgdownPreprocessor", function() {
   it("can create arguments dictionary and save argument by title", function(){
     let source = "<Test>: Hello _World_!";
     app.parse(source);
-    let result = app.run('preprocessor');
+    let result = app.run('build-model');
     expect(result.arguments['Test']).to.exist;
     expect(result.arguments['Test'].descriptions.length).to.equal(1);
     let description = result.arguments['Test'].descriptions[0];
@@ -34,7 +34,7 @@ describe("ArgdownPreprocessor", function() {
   it("can create statement relations and ignore duplicates", function(){
     let source = "[A]: The Beatles are the best!\n  +[B]: The Beatles made 'Rubber Soul'!\n  -><C>: The Rolling Stones were cooler!\n\n [A]\n  +[B]\n  -><C>";
     app.parse(source);
-    let result = app.run('preprocessor');
+    let result = app.run('build-model');
     expect(Object.keys(result.statements).length).to.equal(2);
     expect(Object.keys(result.arguments).length).to.equal(1);
     expect(result.relations.length).to.equal(2);
@@ -68,7 +68,7 @@ describe("ArgdownPreprocessor", function() {
       +> [A]
     `;
     app.parse(source);
-    let result = app.run('preprocessor');
+    let result = app.run('build-model');
     expect(Object.keys(result.statements).length).to.equal(4);
     expect(Object.keys(result.arguments).length).to.equal(1);
     expect(result.relations.length).to.equal(1);
@@ -76,7 +76,7 @@ describe("ArgdownPreprocessor", function() {
   it("can create sketched argument relations", function(){
     let source = "<A>: The Beatles are the best!\n  +<B>: The Beatles made 'Rubber Soul'!\n  ->[C]: The Rolling Stones were cooler!";
     app.parse(source);
-    let result = app.run('preprocessor');
+    let result = app.run('build-model');
     expect(result.arguments['A']).to.exist;
     expect(result.arguments['A'].relations.length).to.equal(2);
     expect(result.arguments['A'].relations[0].type).to.equal('support');
@@ -97,7 +97,7 @@ describe("ArgdownPreprocessor", function() {
     
     [A]`;
     app.parse(source);
-    let result = app.run('preprocessor');
+    let result = app.run('build-model');
     expect(result.statements['A']).to.exist;
     expect(result.statements['A'].members.length).to.equal(1);
   });  
@@ -108,7 +108,7 @@ describe("ArgdownPreprocessor", function() {
     [B]
       >< [A]`;
     app.parse(source);
-    let result = app.run('preprocessor');
+    let result = app.run('build-model');
     expect(app.parserErrors.length).to.equal(0);
     expect(Object.keys(result.statements).length).to.equal(2);
     expect(Object.keys(result.relations).length).to.equal(1);
@@ -116,7 +116,7 @@ describe("ArgdownPreprocessor", function() {
   it("can process a single argument", function(){
     let source = "(1) [s1]: A\n(2) [s2]: B\n----\n(3) [s3]: C";
     app.parse(source);
-    let result = app.run('preprocessor');
+    let result = app.run('build-model');
     expect(result.arguments['Untitled 1']).to.exist;
     expect(result.statements['s1']).to.exist;
     expect(result.statements['s2']).to.exist;
@@ -141,7 +141,7 @@ describe("ArgdownPreprocessor", function() {
   ->[F]: text
   +><Sketched Argument 2>`;
   app.parse(source);
-  let result = app.run('preprocessor');
+  let result = app.run('build-model');
   expect(Object.keys(result.arguments).length).to.equal(3);
   expect(Object.keys(result.statements).length).to.equal(6);
 
@@ -251,7 +251,7 @@ it("can create the section hierarchy and set section property of statements and 
   (3) r
   `;
   app.parse(source);
-  let result = app.run('preprocessor');
+  let result = app.run('build-model');
   //console.log(JSON.stringify(result.sections,null,2));
   expect(result.sections).to.exist;
   expect(result.sections.length).to.equal(1);
@@ -285,7 +285,7 @@ it("can create tags lists", function(){
   [Statement 1]: #tag-5 #tag-6 
   `;
   app.parse(source);
-  let result = app.run('preprocessor');
+  let result = app.run('build-model');
   expect(result.tags).to.exist;
   expect(result.tags.length).to.equal(6);
   expect(result.statements["Statement 1"].tags.length).to.equal(3);

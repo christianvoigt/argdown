@@ -1,11 +1,11 @@
 import { expect } from 'chai';
-import {ArgdownApplication, ArgdownPreprocessor, TagConfiguration} from '../src/index.js';
+import {ArgdownApplication, ModelPlugin, TagPlugin} from '../src/index.js';
 
 let app = new ArgdownApplication();
-let preprocessor = new ArgdownPreprocessor();
-let tagConfiguration = new TagConfiguration();
-app.addPlugin(preprocessor,'preprocessor');
-app.addPlugin(tagConfiguration, 'preprocessor');
+let modelPlugin = new ModelPlugin();
+let tagPlugin = new TagPlugin();
+app.addPlugin(modelPlugin,'build-model');
+app.addPlugin(tagPlugin, 'build-model');
 
 describe("TagConfiguration", function() {
   it("can sort tags and create class names for tags", function(){
@@ -13,7 +13,7 @@ describe("TagConfiguration", function() {
       + [Statement 2]: #tag2 #tag3
         - [Statement 3]: #tag3`;
     app.parse(source);
-    let result = app.run(['preprocessor']);
+    let result = app.run(['build-model']);
     expect(result.tagsDictionary).to.exist;
     expect(Object.keys(result.tagsDictionary).length).to.be.equal(3);
     expect(result.tagsDictionary["tag1"].cssClass).to.be.equal("tag-tag1 tag0");
