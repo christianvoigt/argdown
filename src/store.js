@@ -107,6 +107,7 @@ app.addPlugin(mapMaker, 'export-argml')
 app.addPlugin(argMLExport, 'export-argml')
 app.addPlugin(mapMaker, 'export-json')
 app.addPlugin(jsonExport, 'export-json')
+app.addPlugin(mapMaker, 'make-map')
 
 Vue.use(Vuex)
 
@@ -195,6 +196,13 @@ export default new Vuex.Store({
       if (state.preprocessedData) {
         return app.lexer.tokensToString(app.tokens)
       }
+    },
+    map: (state) => {
+      if (!state.preprocessedData) {
+        return null
+      }
+      let result = app.run('make-map', state.preprocessedData)
+      return result.map
     }
   }
 })

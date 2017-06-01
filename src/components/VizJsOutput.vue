@@ -1,5 +1,5 @@
 <template>
-  <div class="map-output output">
+  <div class="viz-js-output map-output output">
     <div class="content">
       <div class="rendered" v-html="svg"></div>
     </div>
@@ -10,7 +10,7 @@
 import * as Viz from 'viz.js'
 
 export default {
-  name: 'map-output',
+  name: 'viz-js-output',
   computed: {
     svg: function () {
       return Viz(this.$store.getters.dot)

@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "argdown-codemirror-mode": "git+https://github.com/christianvoigt/argdown-codemirror-mode.git",
-    "argdown-map-maker": "git+https://github.com/christianvoigt/argdown-map-maker.git",
+    "argdown-map-maker": "git+https://github.com/christianvoigt/argdown-map-maker.git#develop",
     "argdown-parser": "git+https://github.com/christianvoigt/argdown-parser.git",
     "autoprefixer": "^6.7.2",
     "babel-core": "^6.22.1",
@@ -35,6 +35,7 @@
     "copy-webpack-plugin": "^4.0.1",
     "cross-env": "^3.1.4",
     "css-loader": "^0.26.1",
+    "dagre-d3": "git+https://github.com/christianvoigt/dagre-d3.git",
     "eslint": "^3.14.1",
     "eslint-config-standard": "^6.2.1",
     "eslint-friendly-formatter": "^2.0.7",

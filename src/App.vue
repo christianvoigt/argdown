@@ -81,7 +81,7 @@ html,body{
   .right{
     width:50%;
     display:flex;
-    padding:1em;
+    padding:1em 1em 0 1em;
     flex-direction:column;
     .output{
       flex:1;
@@ -93,6 +93,11 @@ html,body{
       /* End of Firefox bug fix styles */      
       .content{
         flex:1;
+        display:flex;
+        flex-direction:column;
+        /* Firefox bug fix styles */
+        min-width:0;
+        min-height:0;
         overflow:auto;
       }
     }

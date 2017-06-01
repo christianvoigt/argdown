@@ -28,7 +28,13 @@ export default {
         foldGutter: true,
         styleActiveLine: true,
         lineNumbers: true,
-        line: true
+        line: true,
+        extraKeys: {
+          Tab: function (cm) {
+            let spaces = Array(cm.getOption('indentUnit') + 1).join(' ')
+            cm.replaceSelection(spaces)
+          }
+        }
       }
     }
   },

@@ -10,10 +10,17 @@ import DebugNavigation from '@/components/DebugNavigation'
 import MapNavigation from '@/components/MapNavigation'
 import MapSettings from '@/components/MapSettings'
 
-const MapOutput = resolve => {
+const VizJsOutput = resolve => {
   // require.ensure is Webpack's special syntax for a code-split point.
-  require.ensure(['@/components/MapOutput'], () => {
-    resolve(require('@/components/MapOutput'))
+  require.ensure(['@/components/VizJsOutput'], () => {
+    resolve(require('@/components/VizJsOutput'))
+  })
+}
+
+const DagreD3Output = resolve => {
+  // require.ensure is Webpack's special syntax for a code-split point.
+  require.ensure(['@/components/DagreD3Output'], () => {
+    resolve(require('@/components/DagreD3Output'))
   })
 }
 
@@ -47,10 +54,19 @@ export default new Router({
       }
     },
     {
-      path: '/map',
-      name: 'map',
+      path: '/map/viz-js',
+      name: 'map-viz-js',
       components: {
-        default: MapOutput,
+        default: VizJsOutput,
+        'output-header': MapNavigation,
+        'output-footer': MapSettings
+      }
+    },
+    {
+      path: '/map',
+      name: 'map-dagre-d3',
+      components: {
+        default: DagreD3Output,
         'output-header': MapNavigation,
         'output-footer': MapSettings
       }
