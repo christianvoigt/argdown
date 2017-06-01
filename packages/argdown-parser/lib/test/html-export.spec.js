@@ -35,11 +35,11 @@ describe("HtmlExport", function () {
     var source = 'Test #tag1\n      + test #tag2\n        - test #tag3';
     app.parse(source);
     var result = app.run(['preprocessor', 'export-html']);
-    (0, _chai.expect)(result.config.tags).to.exist;
-    (0, _chai.expect)(Object.keys(result.config.tags).length).to.be.equal(3);
-    (0, _chai.expect)(result.config.tags["tag1"].cssClassName).to.be.equal("tag-tag1");
-    (0, _chai.expect)(result.config.tags["tag2"].cssClassName).to.be.equal("tag-tag2");
-    (0, _chai.expect)(result.config.tags["tag3"].cssClassName).to.be.equal("tag-tag3");
+    (0, _chai.expect)(htmlExport.tagsDictionary).to.exist;
+    (0, _chai.expect)(Object.keys(htmlExport.tagsDictionary).length).to.be.equal(3);
+    (0, _chai.expect)(htmlExport.tagsDictionary["tag1"].cssClassName).to.be.equal("tag-tag1");
+    (0, _chai.expect)(htmlExport.tagsDictionary["tag2"].cssClassName).to.be.equal("tag-tag2");
+    (0, _chai.expect)(htmlExport.tagsDictionary["tag3"].cssClassName).to.be.equal("tag-tag3");
   });
 });
 //# sourceMappingURL=html-export.spec.js.map

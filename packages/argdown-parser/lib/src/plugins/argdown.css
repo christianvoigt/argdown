@@ -108,40 +108,27 @@
 .argdown .conclusion.argument-statement .relations {
     font-weight: normal;
 }
-
-.argument-definition.tag-0 > .definiendum,.statement.tag-0 > .statement-definition,.reference.tag-0,.mention.tag-0,.tag.tag-0{
-  color:#a6cee3;
+.argument-definition.tag0 > .definiendum,.statement.tag0 > .statement-definition,.reference.tag0,.mention.tag0,.tag.tag0{
+  color:#1b9e77;
 }
-.argument-definition.tag-1 > .definiendum,.statement.tag-1 > .statement-definition,.reference.tag-1,.mention.tag-1,.tag.tag-1{
-  color:#1f78b4;
+.argument-definition.tag1 > .definiendum,.statement.tag1 > .statement-definition,.reference.tag1,.mention.tag1,.tag.tag1{
+  color:#d95f02;
 }
-.argument-definition.tag-2 > .definiendum,.statement.tag-2 > .statement-definition,.reference.tag-2,.mention.tag-2,.tag.tag-2{
-  color:#b2df8a;
+.argument-definition.tag2 > .definiendum,.statement.tag2 > .statement-definition,.reference.tag2,.mention.tag2,.tag.tag2{
+  color:#7570b3;
 }
-.argument-definition.tag-3 > .definiendum,.statement.tag-3 > .statement-definition,.reference.tag-3,.mention.tag-3,.tag.tag-3{
-  color:#33a02c;
+.argument-definition.tag3 > .definiendum,.statement.tag3 > .statement-definition,.reference.tag3,.mention.tag3,.tag.tag3{
+  color:#e7298a;
 }
-.argument-definition.tag-4 > .definiendum,.statement.tag-4 > .statement-definition,.reference.tag-4,.mention.tag-4,.tag.tag-4{
-  color:#fb9a99;
+.argument-definition.tag4 > .definiendum,.statement.tag4 > .statement-definition,.reference.tag4,.mention.tag4,.tag.tag4{
+  color:#66a61e;
 }
-.argument-definition.tag-5 > .definiendum,.statement.tag-5 > .statement-definition,.reference.tag-5,.mention.tag-5,.tag.tag-5{
-  color:#e31a1c;
+.argument-definition.tag5 > .definiendum,.statement.tag5 > .statement-definition,.reference.tag5,.mention.tag5,.tag.tag5{
+  color:#e6ab02;
 }
-.argument-definition.tag-6 > .definiendum,.statement.tag-6 > .statement-definition,.reference.tag-6,.mention.tag-6,.tag.tag-6{
-  color:#fdbf6f;
+.argument-definition.tag6 > .definiendum,.statement.tag6 > .statement-definition,.reference.tag6,.mention.tag6,.tag.tag6{
+  color:#a6761d;
 }
-.argument-definition.tag-7 > .definiendum,.statement.tag-7 > .statement-definition,.reference.tag-7,.mention.tag-7,.tag.tag-7{
-  color:#ff7f00;
-}
-.argument-definition.tag-8 > .definiendum,.statement.tag-8 > .statement-definition,.reference.tag-8,.mention.tag-8,.tag.tag-8{
-  color:#cab2d6;
-}
-.argument-definition.tag-9 > .definiendum,.statement.tag-9 > .statement-definition,.reference.tag-9,.mention.tag-9,.tag.tag-9{
-  color:#6a3d9a;
-}
-.argument-definition.tag-10 > .definiendum,.statement.tag-10 > .statement-definition,.reference.tag-10,.mention.tag-10,.tag.tag-10{
-  color:#ffff99;
-}
-.argument-definition.tag-11 > .definiendum,.statement.tag-11 > .statement-definition,.reference.tag-11,.mention.tag-11,.tag.tag-11{
-  color:#b15928;
+.argument-definition.tag7 > .definiendum,.statement.tag7 > .statement-definition,.reference.tag7,.mention.tag7,.tag.tag7{
+  color:#666666;
 }
