@@ -10,7 +10,7 @@ var tagPlugin = new _index.TagPlugin();
 app.addPlugin(modelPlugin, 'build-model');
 app.addPlugin(tagPlugin, 'build-model');
 
-describe("TagConfiguration", function () {
+describe("TagPlugin", function () {
   it("can sort tags and create class names for tags", function () {
     var source = '[Statement 1]: #tag1\n      + [Statement 2]: #tag2 #tag3\n        - [Statement 3]: #tag3';
     app.parse(source);

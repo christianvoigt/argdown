@@ -203,7 +203,7 @@ var ArgdownApplication = function () {
 
       this.parser.input = lexResult.tokens;
       this.ast = this.parser.argdown();
-      data = this.ast;
+      data.ast = this.ast;
       data.parserErrors = this.parser.errors;
       this.parserErrors = this.parser.errors;
       if (verbose && data.lexerErrors && data.lexerErrors.length > 0) {

@@ -47,13 +47,12 @@ var TagPlugin = function () {
       data.config = data.config || {};
       data.tagsDictionary = {};
 
-      var previousConfig = data.config.tags != null;
-      data.config.tags = data.config.tags || [];
+      var tagConfigExists = data.config.tags != null;
       if (data.config && data.config.tagColorScheme) {
         this.config = { colorScheme: data.config.tagColorScheme };
       }
       var selectedTags = data.tags;
-      if (previousConfig) {
+      if (tagConfigExists) {
         selectedTags = [];
         var _iteratorNormalCompletion = true;
         var _didIteratorError = false;
@@ -88,8 +87,11 @@ var TagPlugin = function () {
         for (var _iterator2 = data.tags[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
           var tag = _step2.value;
 
-          var tagConfig = _.find(data.config.tags, { tag: tag });
-          var _tagData = _.clone(tagConfig);
+          var _tagData = null;
+          if (tagConfigExists) {
+            var tagConfig = _.find(data.config.tags, { tag: tag });
+            _tagData = _.clone(tagConfig);
+          }
           if (!_tagData) {
             _tagData = { tag: tag };
           }
