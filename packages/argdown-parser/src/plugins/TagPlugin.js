@@ -23,21 +23,23 @@ class TagPlugin{
     data.config = data.config ||{};
     data.tagsDictionary = {};
     
-    let previousConfig = data.config.tags != null;
-    data.config.tags = data.config.tags ||[];
+    let tagConfigExists = data.config.tags != null;
     if(data.config && data.config.tagColorScheme){
       this.config = {colorScheme: data.config.tagColorScheme};      
     }
     let selectedTags = data.tags;
-    if(previousConfig){
+    if(tagConfigExists){
       selectedTags = [];
       for(let tagData of data.config.tags){
         selectedTags.push(tagData.tag);
       }
     }
     for(let tag of data.tags){
-      let tagConfig = _.find(data.config.tags,{tag:tag});
-      let tagData = _.clone(tagConfig);
+      let tagData = null;
+      if(tagConfigExists){
+        let tagConfig = _.find(data.config.tags,{tag:tag});
+        tagData = _.clone(tagConfig);        
+      }
       if(!tagData){
         tagData = {tag:tag};
       }

@@ -7,7 +7,7 @@ let tagPlugin = new TagPlugin();
 app.addPlugin(modelPlugin,'build-model');
 app.addPlugin(tagPlugin, 'build-model');
 
-describe("TagConfiguration", function() {
+describe("TagPlugin", function() {
   it("can sort tags and create class names for tags", function(){
     let source = `[Statement 1]: #tag1
       + [Statement 2]: #tag2 #tag3
