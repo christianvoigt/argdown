@@ -28,6 +28,10 @@ _yargs2.default.options({
     alias: 'v',
     type: 'boolean',
     describe: 'verbose mode'
+  },
+  stdout: {
+    type: 'boolean',
+    describe: 'Export data to stdout'
   }
 }).commandDir('commands').help().version(_package.version).argv;
 //# sourceMappingURL=cli.js.map

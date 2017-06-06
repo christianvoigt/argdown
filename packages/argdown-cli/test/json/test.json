@@ -1,0 +1,91 @@
+{
+  "arguments": {},
+  "statements": {
+    "Statement 1": {
+      "relations": [
+        {
+          "type": "entails",
+          "status": "reconstructed",
+          "from": "Statement 2",
+          "fromType": "statement",
+          "to": "Statement 1",
+          "toType": "statement"
+        }
+      ],
+      "members": [
+        {
+          "text": "text",
+          "ranges": [],
+          "isRootOfStatementTree": true,
+          "title": "Statement 1"
+        }
+      ],
+      "title": "Statement 1",
+      "isUsedAsPremise": false,
+      "isUsedAsConclusion": false,
+      "isUsedAsRootOfStatementTree": true,
+      "isUsedAsChildOfStatementTree": false
+    },
+    "Statement 2": {
+      "relations": [
+        {
+          "type": "entails",
+          "status": "reconstructed",
+          "from": "Statement 2",
+          "fromType": "statement",
+          "to": "Statement 1",
+          "toType": "statement"
+        }
+      ],
+      "members": [
+        {
+          "text": "text",
+          "ranges": [],
+          "isChildOfStatementTree": true,
+          "title": "Statement 2"
+        }
+      ],
+      "title": "Statement 2",
+      "isUsedAsPremise": false,
+      "isUsedAsConclusion": false,
+      "isUsedAsRootOfStatementTree": false,
+      "isUsedAsChildOfStatementTree": true
+    }
+  },
+  "relations": [
+    {
+      "type": "entails",
+      "status": "reconstructed",
+      "from": "Statement 2",
+      "fromType": "statement",
+      "to": "Statement 1",
+      "toType": "statement"
+    }
+  ],
+  "map": {
+    "nodes": [
+      {
+        "id": "n0",
+        "title": "Statement 1",
+        "type": "statement"
+      },
+      {
+        "id": "n1",
+        "title": "Statement 2",
+        "type": "statement"
+      }
+    ],
+    "edges": [
+      {
+        "id": "e0",
+        "type": "support",
+        "status": "reconstructed",
+        "from": "n1",
+        "to": "n0",
+        "fromStatement": "Statement 2",
+        "toStatement": "Statement 1"
+      }
+    ]
+  },
+  "sections": []
+}

@@ -1,7 +1,8 @@
-import {ArgdownApplication, ArgdownPreprocessor, HtmlExport, JSONExport, TagConfiguration} from 'argdown-parser';
+import {ArgdownApplication, ModelPlugin, HtmlExport, JSONExport, TagPlugin} from 'argdown-parser';
 import {MapMaker, DotExport, ArgMLExport} from 'argdown-map-maker';
 import {SaveAsFilePlugin} from './plugins/SaveAsFilePlugin.js';
 import {CopyDefaultCssPlugin} from './plugins/CopyDefaultCssPlugin.js';
+import {StdOutPlugin} from './plugins/StdOutPlugin.js';
 import * as _ from 'lodash';
 
 let glob = require('glob');
@@ -10,9 +11,9 @@ let chokidar = require('chokidar');
 let requireUncached = require("require-uncached");
 
 const app = new ArgdownApplication();
-const preprocessor = new ArgdownPreprocessor();
+const modelPlugin = new ModelPlugin();
 const htmlExport = new HtmlExport();
-const tagConfiguration = new TagConfiguration();
+const tagPlugin = new TagPlugin();
 const mapMaker = new MapMaker();
 const dotExport = new DotExport();
 const argmlExport = new ArgMLExport();
@@ -39,24 +40,33 @@ const saveAsJSON = new SaveAsFilePlugin({
   dataKey: 'json',
   extension: '.json'
 });
-app.addPlugin(preprocessor, "preprocessor");
-app.addPlugin(tagConfiguration, "preprocessor");
+const stdoutDot = new StdOutPlugin({dataKey:'dot'});
+const stdoutArgML = new StdOutPlugin({dataKey:'argml'});
+const stdoutJSON = new StdOutPlugin({dataKey:'json'});
+const stdoutHtml = new StdOutPlugin({dataKey:'html'});
+
+app.addPlugin(modelPlugin, "build-model");
+app.addPlugin(tagPlugin, "build-model");
 
 app.addPlugin(htmlExport, "export-html");
 app.addPlugin(copyDefaultCss, "copy-default-css");
 app.addPlugin(saveAsHtml, "save-as-html");
+app.addPlugin(stdoutHtml, "stdout-html");
 
 app.addPlugin(mapMaker, "export-json");
 app.addPlugin(jsonExport, "export-json");
 app.addPlugin(saveAsJSON, "save-as-json");
+app.addPlugin(stdoutJSON, "stdout-json");
 
 app.addPlugin(mapMaker, "export-dot");
 app.addPlugin(dotExport, "export-dot");
 app.addPlugin(saveAsDot, "save-as-dot");
+app.addPlugin(stdoutDot, "stdout-dot");
 
 app.addPlugin(mapMaker, "export-argml");
 app.addPlugin(argmlExport, "export-argml");
 app.addPlugin(saveAsArgML, "save-as-argml");
+app.addPlugin(stdoutArgML, "stdout-argml");
 
 app.load = function(config){
   if(!config.input){
@@ -136,7 +146,7 @@ app.loadConfig = function(filePath){
     config = this.loadJSFile(filePath);
     console.log(config);
   }catch(e){
-    console.log(e);
+    // console.log(e);
   }
   return config;
 }
