@@ -4,8 +4,8 @@
   "license": "MIT",
   "main": "lib/src/index.js",
   "dependencies": {
-    "argdown-map-maker": "git+https://github.com/christianvoigt/argdown-map-maker.git#develop",
-    "argdown-parser": "git+https://github.com/christianvoigt/argdown-parser.git#develop",
+    "argdown-map-maker": "git+https://github.com/christianvoigt/argdown-map-maker.git",
+    "argdown-parser": "git+https://github.com/christianvoigt/argdown-parser.git",
     "chokidar": "^1.6.1",
     "glob": "^7.1.1",
     "lodash": "^4.17.4",
