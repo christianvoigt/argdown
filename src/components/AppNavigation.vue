@@ -1,5 +1,5 @@
 <template>
-  <nav class="output-navigation">
+  <nav class="app-navigation">
     <ul class="nav-list">
       <li><router-link to="/html">HTML</router-link></li>
       <li><router-link to="/map">Map</router-link></li>
@@ -12,7 +12,7 @@
 
 <script>
 export default {
-  name: 'output-navigation',
+  name: 'app-navigation',
   data () {
     return {
       title: 'Argdown Test Environment'
@@ -24,13 +24,21 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 nav{
-  font-size:1.5em;
+  font-size:1.25em;
+  padding: 0.25em 0;
   a{
-    display:block;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    padding: 0.2em 0.75em;
+    border-radius: 0.4em;
     padding:0.5em 0.75em;
     text-decoration:none;
+    color:#ddd;
     &:hover{
       text-decoration:underline;
+      color:#fff;
     }
   }
 }

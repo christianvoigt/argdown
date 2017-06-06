@@ -1,7 +1,7 @@
 <template>
   <header class="app-header">
-    <img class="logo" src="../assets/argdown-mark.svg" alt="Argdown - argumentation analysis syntax">
-    <h1>{{ title }}</h1>
+    <img class="logo" src="../assets/argdown-mark-white.svg" alt="Argdown - argumentation analysis syntax">
+    <!--<h1>{{ title }}</h1>-->
   </header>
 </template>
 
@@ -22,17 +22,17 @@ header{
   display:flex;
   flex-direction: row;
   align-items: center;
-  padding-bottom:1.35em;
 }
 .logo{
   display:block;
   padding-right:1em;
-  width:150px;
+  width:90px;
   height:auto;
 }
 h1{
-  font-size:3em;
+  font-size:1.5em;
   padding:0;
   margin:0;
+  color:#fff;
 }
 </style>

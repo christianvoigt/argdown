@@ -54,6 +54,13 @@ export default {
 </script>
 
 <style lang="scss">
+.input-maximized{
+  .argdown-input{
+    max-width:60em;
+    width:100%;
+    margin: 0 auto;
+  }
+}
 .argdown-input{
   flex:1;
   overflow:hidden;
