@@ -207,6 +207,9 @@ var ModelPlugin = function () {
     var sectionCounter = 0;
 
     function onArgdownEntry(node, parentNode, childIndex, data) {
+      if (data.config && data.config.model) {
+        $.config = data.config.model;
+      }
       $.statements = {};
       $.arguments = {};
       $.sections = [];
@@ -223,9 +226,6 @@ var ModelPlugin = function () {
       currentRelation = null;
       inStatementTree = false;
       sectionCounter = 0;
-      if (data && data.config && data.config.model) {
-        this.config = data.config.model;
-      }
     }
     function onStatementEntry(node, parentNode) {
       currentStatement = new _Statement.Statement();

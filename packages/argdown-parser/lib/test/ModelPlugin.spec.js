@@ -16,6 +16,8 @@ describe("ModelPlugin", function () {
     var result = app.run('build-model');
     (0, _chai.expect)(result.statements['Test']).to.exist;
     (0, _chai.expect)(result.statements['Test'].members[0].text).to.equal('Hello World!');
+    (0, _chai.expect)(result.statements['Test'].getCanonicalStatement().text).to.equal('Hello World!');
+    (0, _chai.expect)(result.statements['Test'].getCanonicalText()).to.equal('Hello World!');
     (0, _chai.expect)(result.statements['Test'].members[0].ranges.length).to.equal(1);
     (0, _chai.expect)(result.statements['Test'].members[0].ranges[0].type).to.equal('italic');
     (0, _chai.expect)(result.statements['Test'].members[0].ranges[0].start).to.equal(6);
@@ -28,6 +30,7 @@ describe("ModelPlugin", function () {
     (0, _chai.expect)(result.arguments['Test']).to.exist;
     (0, _chai.expect)(result.arguments['Test'].descriptions.length).to.equal(1);
     var description = result.arguments['Test'].descriptions[0];
+    (0, _chai.expect)(result.arguments['Test'].getCanonicalDescription()).to.equal(description);
     (0, _chai.expect)(description.text).to.equal('Hello World!');
     (0, _chai.expect)(description.ranges.length).to.equal(1);
     (0, _chai.expect)(description.ranges[0].type).to.equal('italic');

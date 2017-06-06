@@ -14,6 +14,12 @@ class Argument{
     }
     return copy;
   }
+  getCanonicalDescription(){
+    if(!this.descriptions || this.descriptions.length <= 0){
+      return null;
+    }
+    return this.descriptions[this.descriptions.length - 1];
+  }
 }
 module.exports = {
   Argument: Argument

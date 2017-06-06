@@ -242,7 +242,9 @@ var HtmlExport = function () {
         return $.html += "<a href='" + node.url + "'>" + node.text + "</a>" + node.trailingWhitespace;
       },
       TagEntry: function TagEntry(node, parentNode, childIndex, data) {
-        return $.html += "<span class='tag " + $.getCssClassesFromTags([node.tag], data) + "'>" + node.text + "</span>";
+        if (node.text) {
+          $.html += "<span class='tag " + $.getCssClassesFromTags([node.tag], data) + "'>" + node.text + "</span>";
+        }
       },
       argumentEntry: function argumentEntry(node, parentNode, childIndex, data) {
         var classes = "argument";

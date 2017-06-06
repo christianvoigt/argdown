@@ -187,7 +187,7 @@ class HtmlExport{
       italicEntry : ()=>$.html += "<i>",
       italicExit : (node)=>$.html += "</i>"+node.trailingWhitespace,
       LinkEntry : (node)=>$.html += "<a href='"+node.url+"'>"+node.text+"</a>"+node.trailingWhitespace,
-      TagEntry : (node, parentNode, childIndex, data)=>$.html += "<span class='tag "+$.getCssClassesFromTags([node.tag], data)+"'>"+node.text+"</span>",
+      TagEntry : (node, parentNode, childIndex, data)=>{if(node.text){$.html += "<span class='tag "+$.getCssClassesFromTags([node.tag], data)+"'>"+node.text+"</span>"}},
       argumentEntry : (node, parentNode, childIndex, data)=>{
         let classes = "argument";
         if(node.argument.tags){
