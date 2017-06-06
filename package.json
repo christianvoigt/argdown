@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "argdown-codemirror-mode": "git+https://github.com/christianvoigt/argdown-codemirror-mode.git",
-    "argdown-map-maker": "git+https://github.com/christianvoigt/argdown-map-maker.git#develop",
+    "argdown-map-maker": "git+https://github.com/christianvoigt/argdown-map-maker.git",
     "argdown-parser": "git+https://github.com/christianvoigt/argdown-parser.git",
     "autoprefixer": "^6.7.2",
     "babel-core": "^6.22.1",

@@ -1,10 +1,11 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {ArgdownApplication, ArgdownPreprocessor, HtmlExport, JSONExport} from 'argdown-parser'
+import {ArgdownApplication, ModelPlugin, TagPlugin, HtmlExport, JSONExport} from 'argdown-parser'
 import {MapMaker, DotExport, ArgMLExport} from 'argdown-map-maker'
 
 const app = new ArgdownApplication()
-const preprocessor = new ArgdownPreprocessor()
+const modelPlugin = new ModelPlugin()
+const tagPlugin = new TagPlugin()
 const htmlExport = new HtmlExport({
   headless: true
 })
@@ -99,7 +100,8 @@ Some inference rule (Some additional info: 1,2)
   [Back to top](#heading-welcome-to-argdown) 
 `
 
-app.addPlugin(preprocessor, 'preprocessor')
+app.addPlugin(modelPlugin, 'build-model')
+app.addPlugin(tagPlugin, 'build-model')
 app.addPlugin(htmlExport, 'export-html')
 app.addPlugin(mapMaker, 'export-dot')
 app.addPlugin(dotExport, 'export-dot')
@@ -114,95 +116,95 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     argdownInput: testInput,
-    preprocessedData: null,
-    statementSelectionMode: 'statement-trees',
-    excludeDisconnected: true
+    config: {
+      map: {
+        excludeDisconnected: true,
+        statementSelectionMode: 'statement-trees',
+        statementLabelMode: 'hide-untitled',
+        argumentLabelMode: 'hide-untitled',
+        groupDepth: 2
+      },
+      dot: {
+        graphVizSettings: {
+          rankdir: 'BT',
+          concentrate: 'true',
+          ratio: 'auto',
+          size: '10,10'
+        }
+      },
+      dagre: {
+        rankDir: 'BT',
+        rankSep: 50,
+        nodeSep: 70
+      },
+      model: {
+        removeTagsFromText: false
+      }
+    },
+    viewState: 'default',
+    showSettings: false
   },
   mutations: {
     setArgdownInput (state, value) {
       state.argdownInput = value
-      app.parse(state.argdownInput)
-      state.preprocessedData = app.run('preprocessor')
+    },
+    setViewState (state, value) {
+      state.viewState = value
+    },
+    toggleSettings (state) {
+      state.showSettings = !state.showSettings
     }
   },
   getters: {
-    html: (state) => {
-      if (!state.preprocessedData) {
-        return null
-      }
-      let result = app.run('export-html', state.preprocessedData)
-      return result.html
+    argdownData: (state, getters) => {
+      let config = state.config
+      let data = app.parse(state.argdownInput, null, {config: config})
+      data = app.run('build-model', data)
+      return data
     },
-    dot: (state) => {
-      if (!state.preprocessedData) {
-        return null
-      }
-      mapMaker.config = {
-        statementSelectionMode: state.statementSelectionMode,
-        excludeDisconnected: state.excludeDisconnected
-      }
-      let result = app.run('export-dot', state.preprocessedData)
-      return result.dot
+    html: (state, getters) => {
+      let data = app.run('export-html', getters.argdownData)
+      return data.html
     },
-    argml: (state) => {
-      if (!state.preprocessedData) {
-        return null
-      }
-      mapMaker.config = {
-        statementSelectionMode: state.statementSelectionMode,
-        excludeDisconnected: state.excludeDisconnected
-      }
-      let result = app.run('export-argml', state.preprocessedData)
-      return result.argml
+    dot: (state, getters) => {
+      let data = app.run('export-dot', getters.argdownData)
+      return data.dot
     },
-    json: (state) => {
-      if (!state.preprocessedData) {
-        return null
-      }
-      let result = app.run('export-json', state.preprocessedData)
-      return result.json
+    argml: (state, getters) => {
+      let data = app.run('export-argml', getters.argdownData)
+      return data.argml
     },
-    parserErrors: (state) => {
-      if (state.preprocessedData) {
-        return app.parserErrors
-      }
+    json: (state, getters) => {
+      let data = app.run('export-json', getters.argdownData)
+      return data.json
     },
-    lexerErrors: (state) => {
-      if (state.preprocessedData) {
-        return app.lexerErrors
-      }
+    parserErrors: (state, getters) => {
+      return getters.argdownData.parserErrors
     },
-    statements: (state) => {
-      if (state.preprocessedData) {
-        return state.preprocessedData.statements
-      }
+    lexerErrors: (state, getters) => {
+      return getters.argdownData.lexerErrors
     },
-    arguments: (state) => {
-      if (state.preprocessedData) {
-        return state.preprocessedData.arguments
-      }
+    statements: (state, getters) => {
+      return getters.argdownData.statements
     },
-    relations: (state) => {
-      if (state.preprocessedData) {
-        return state.preprocessedData.relations
-      }
+    arguments: (state, getters) => {
+      return getters.argdownData.arguments
     },
-    ast: (state) => {
-      if (state.preprocessedData) {
-        return app.parser.astToString(app.ast)
-      }
+    relations: (state, getters) => {
+      return getters.argdownData.relations
     },
-    tokens: (state) => {
-      if (state.preprocessedData) {
-        return app.lexer.tokensToString(app.tokens)
-      }
+    ast: (state, getters) => {
+      return getters.argdownData.ast
     },
-    map: (state) => {
-      if (!state.preprocessedData) {
-        return null
-      }
-      let result = app.run('make-map', state.preprocessedData)
-      return result.map
+    tokens: (state, getters) => {
+      return getters.argdownData.tokens
+    },
+    map: (state, getters) => {
+      let data = app.run('make-map', getters.argdownData)
+      return data.map
+    },
+    tagsDictionary: (state, getters) => {
+      return getters.argdownData.tagsDictionary
     }
   }
 })

@@ -19,36 +19,70 @@ export default {
   name: 'dagre-d3-output',
   computed: {
     map: function () {
-      console.log('map called!')
+      // console.log('map called!')
       this.updateSVG()
+      this.$store.getters.argdownData
       return this.$store.getters.map
+    },
+    rankDir: function () {
+      // console.log('rankDir called!')
+      this.updateSVG()
+      return this.$store.state.config.dagre.rankDir
+    },
+    nodeSep: function () {
+      // console.log('nodeSep called!')
+      this.updateSVG()
+      return this.$store.state.config.dagre.nodeSep
+    },
+    rankSep: function () {
+      // console.log('nodeSep called!')
+      this.updateSVG()
+      return this.$store.state.config.dagre.rankSep
     }
   },
   watch: {
     map: function () {
-      console.log('map watcher called!')
+      // console.log('map watcher called!')
+    },
+    rankDir: function () {
+      // console.log('rankDir watcher called!')
+    },
+    nodeSep: function () {
+    },
+    rankSep: function () {
     }
   },
   mounted: function () {
     this.updateSVG()
   },
   methods: {
-    addNode (node, g, currentGroup) {
-      console.log(node.id)
-
-      let labelHtml = '<div class="node-label"><h3>' + node.title + '</h3><p>Long long long long test text</p></div>'
-
+    addNode: function (node, g, currentGroup) {
       const nodeProperties = {
         labelType: 'html',
-        label: labelHtml,
         class: node.type,
         paddingBottom: 0,
         paddingTop: 0,
         paddingLeft: 0,
         paddingRight: 0
       }
+      nodeProperties.label = '<div class="node-label">'
+      if (node.labelTitle) {
+        nodeProperties.label += '<h3>' + node.labelTitle + '</h3>'
+      }
+      if (node.labelText && (node.type === 'statement' || node.type === 'argument')) {
+        nodeProperties.label += '<p>' + node.labelText + '</p>'
+      }
+      if (node.tags) {
+        for (let tag of node.tags) {
+          nodeProperties.class += ' '
+          nodeProperties.class += this.$store.getters.tagsDictionary[tag].cssClass
+        }
+      }
+      nodeProperties.label += '</div>'
+
       if (node.type === 'group') {
         nodeProperties.clusterLabelPos = 'top'
+        nodeProperties.class += ' level-' + node.level
       }
       g.setNode(node.id, nodeProperties)
       if (currentGroup) {
@@ -61,19 +95,19 @@ export default {
       }
     },
     updateSVG: function () {
-      console.log('updateSVG called!')
+      // console.log('updateSVG called!')
       const map = this.$store.getters.map
 
       if (!this.$refs.svg || !map || !map.nodes || !map.edges) {
-        console.log('svg or map undefined')
+        // console.log('svg or map undefined')
         return
       }
       // Create the input graph
       const g = new dagreD3.graphlib.Graph({ compound: true })
         .setGraph({
-          rankdir: 'BT',
-          rankSep: 50,
-          nodeSep: 70,
+          rankdir: this.$store.state.config.dagre.rankDir,
+          rankSep: this.$store.state.config.dagre.rankSep,
+          nodeSep: this.$store.state.config.dagre.nodeSep,
           marginx: 20,
           marginy: 20
         })
@@ -88,7 +122,6 @@ export default {
       }
 
       const nodes = g.nodes()
-      console.log(JSON.stringify(g, null, 2))
 
       for (let v of nodes) {
         const node = g.node(v)
@@ -102,14 +135,13 @@ export default {
       // const layout = dagreD3.layout().rankSep(50).rankDir('BT')
 
       // Set up an SVG group so that we can translate the final graph.
-      console.log(this.$refs.svg)
       const svg = d3.select(this.$refs.svg)
       svg.selectAll('*').remove()
 
       svg.append('g')
       const svgGroup = svg.select('g')
-      console.log('svg ' + svg)
-      console.log('svgGroup ' + svgGroup)
+      // console.log('svg ' + svg)
+      // console.log('svgGroup ' + svgGroup)
 
       var zoom = d3.behavior.zoom().on('zoom', function () {
         svgGroup.attr('transform', 'translate(' + d3.event.translate + ')' + 'scale(' + d3.event.scale + ')')
@@ -153,6 +185,23 @@ export default {
     rect{
       fill: #ddd;      
     }
+    .node-label{
+      width:auto;
+    }
+    h3{
+      margin:0;
+      padding-top:3px;
+      font-size:14px;
+    }
+    &.level-0 rect{
+      fill:#dadada;
+    }
+    &.level-1 rect{
+      fill:#bababa;
+    }
+    &.level-2 rect{
+      fill:#aaa;
+    }
   }
 
   text {
@@ -192,7 +241,6 @@ export default {
   display:block;
   position:static;
   margin:0;
-  padding:0;
   white-space: normal;
   width:200px;
   height:auto;
@@ -200,16 +248,17 @@ export default {
   color:#000;
   .node-label{
     white-space:normal;
+    padding:5px;
   }
 p{
-  padding: 0em 5px 5px 5px;
+  padding: 0px;
   margin:0;
   font-weight:normal;
   font-size:12px;
   display:block;
 } 
 h3{
-  padding: 5px 5px 0px 5px;
+  padding: 0px;
   margin:0;
   font-size:14px;
   font-weight:bold;
@@ -244,6 +293,54 @@ h3{
     h3{
         font-weight:bold;
     }
+  }
+  .node.statement.tag7 rect{
+    stroke:#666666;
+  }
+  .node.argument.tag7 rect{
+    fill:#666666;
+  }
+  .node.statement.tag6 rect{
+    stroke:#a6761d;
+  }
+  .node.argument.tag6 rect{
+    fill:#a6761d;
+  }
+  .node.statement.tag5 rect{
+    stroke:#e6ab02;
+  }
+  .node.argument.tag5 rect{
+    fill:#e6ab02;
+  }
+  .node.statement.tag4 rect{
+    stroke:#66a61e;
+  }
+  .node.argument.tag4 rect{
+    fill:#66a61e;
+  }
+  .node.statement.tag3 rect{
+    stroke:#e7298a;
+  }
+  .node.argument.tag3 rect{
+    fill:#e7298a;
+  }
+  .node.statement.tag2 rect{
+    stroke:#7570b3;
+  }
+  .node.argument.tag2 rect{
+    fill:#7570b3;
+  }
+  .node.statement.tag1 rect{
+    stroke:#d95f02;
+  }
+  .node.argument.tag1 rect{
+    fill:#d95f02;
+  }
+  .node.statement.tag0 rect{
+    stroke:#1b9e77;
+  }
+  .node.argument.tag0 rect{
+    fill:#1b9e77;
   }
 }
 

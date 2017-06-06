@@ -1,14 +1,14 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import HtmlOutput from '@/components/HtmlOutput'
+import HtmlNavigation from '@/components/HtmlNavigation'
 import JSONOutput from '@/components/JSONOutput'
-import ArgMLOutput from '@/components/ArgMLOutput'
+// import ArgMLOutput from '@/components/ArgMLOutput'
 import DotOutput from '@/components/DotOutput'
 import DebugLexerParserOutput from '@/components/DebugLexerParserOutput'
 import DebugPreprocessorOutput from '@/components/DebugPreprocessorOutput'
 import DebugNavigation from '@/components/DebugNavigation'
 import MapNavigation from '@/components/MapNavigation'
-import MapSettings from '@/components/MapSettings'
 
 const VizJsOutput = resolve => {
   // require.ensure is Webpack's special syntax for a code-split point.
@@ -58,8 +58,7 @@ export default new Router({
       name: 'map-viz-js',
       components: {
         default: VizJsOutput,
-        'output-header': MapNavigation,
-        'output-footer': MapSettings
+        'output-header': MapNavigation
       }
     },
     {
@@ -67,8 +66,7 @@ export default new Router({
       name: 'map-dagre-d3',
       components: {
         default: DagreD3Output,
-        'output-header': MapNavigation,
-        'output-footer': MapSettings
+        'output-header': MapNavigation
       }
     },
     {
@@ -76,23 +74,24 @@ export default new Router({
       name: 'map-dot',
       components: {
         default: DotOutput,
-        'output-header': MapNavigation,
-        'output-footer': MapSettings
+        'output-header': MapNavigation
       }
     },
-    {
-      path: '/map/graphml',
-      name: 'map-graphml',
-      components: {
-        default: ArgMLOutput,
-        'output-header': MapNavigation,
-        'output-footer': MapSettings
-      }
-    },
+    // {
+    //   path: '/map/graphml',
+    //   name: 'map-graphml',
+    //   components: {
+    //     default: ArgMLOutput,
+    //     'output-header': MapNavigation
+    //   }
+    // },
     {
       path: '/html',
       name: 'html',
-      component: HtmlOutput
+      components: {
+        default: HtmlOutput,
+        'output-header': HtmlNavigation
+      }
     },
     {
       path: '/json',
@@ -103,7 +102,10 @@ export default new Router({
     {
       path: '/html/source',
       name: 'html-source',
-      component: HtmlOutput,
+      components: {
+        default: HtmlOutput,
+        'output-header': HtmlNavigation
+      },
       props: {
         source: true
       }
