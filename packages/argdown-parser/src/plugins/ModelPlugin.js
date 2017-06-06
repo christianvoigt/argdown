@@ -145,7 +145,7 @@ class ModelPlugin{
 
     function onArgdownEntry(node, parentNode, childIndex, data){
       if(data.config && data.config.model){
-        this.config = data.config.model;
+        $.config = data.config.model;
       }
       $.statements = {};
       $.arguments = {};
@@ -163,9 +163,6 @@ class ModelPlugin{
       currentRelation = null;
       inStatementTree = false;
       sectionCounter = 0;
-      if(data && data.config && data.config.model){
-        this.config = data.config.model;
-      }
     }
     function onStatementEntry(node, parentNode){
       currentStatement = new Statement();

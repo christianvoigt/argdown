@@ -29,6 +29,14 @@ var Argument = function () {
       }
       return copy;
     }
+  }, {
+    key: 'getCanonicalDescription',
+    value: function getCanonicalDescription() {
+      if (!this.descriptions || this.descriptions.length <= 0) {
+        return null;
+      }
+      return this.descriptions[this.descriptions.length - 1];
+    }
   }]);
 
   return Argument;

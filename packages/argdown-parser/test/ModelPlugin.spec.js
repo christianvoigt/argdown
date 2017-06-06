@@ -13,6 +13,8 @@ describe("ModelPlugin", function() {
     let result = app.run('build-model');
     expect(result.statements['Test']).to.exist;
     expect(result.statements['Test'].members[0].text).to.equal('Hello World!');
+    expect(result.statements['Test'].getCanonicalStatement().text).to.equal('Hello World!');
+    expect(result.statements['Test'].getCanonicalText()).to.equal('Hello World!');
     expect(result.statements['Test'].members[0].ranges.length).to.equal(1);
     expect(result.statements['Test'].members[0].ranges[0].type).to.equal('italic');
     expect(result.statements['Test'].members[0].ranges[0].start).to.equal(6);
@@ -25,6 +27,7 @@ describe("ModelPlugin", function() {
     expect(result.arguments['Test']).to.exist;
     expect(result.arguments['Test'].descriptions.length).to.equal(1);
     let description = result.arguments['Test'].descriptions[0];
+    expect(result.arguments['Test'].getCanonicalDescription()).to.equal(description);
     expect(description.text).to.equal('Hello World!');
     expect(description.ranges.length).to.equal(1);
     expect(description.ranges[0].type).to.equal('italic');
