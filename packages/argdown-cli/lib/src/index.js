@@ -13,6 +13,8 @@ var _SaveAsFilePlugin = require('./plugins/SaveAsFilePlugin.js');
 
 var _CopyDefaultCssPlugin = require('./plugins/CopyDefaultCssPlugin.js');
 
+var _StdOutPlugin = require('./plugins/StdOutPlugin.js');
+
 var _lodash = require('lodash');
 
 var _ = _interopRequireWildcard(_lodash);
@@ -25,9 +27,9 @@ var chokidar = require('chokidar');
 var requireUncached = require("require-uncached");
 
 var app = new _argdownParser.ArgdownApplication();
-var preprocessor = new _argdownParser.ArgdownPreprocessor();
+var modelPlugin = new _argdownParser.ModelPlugin();
 var htmlExport = new _argdownParser.HtmlExport();
-var tagConfiguration = new _argdownParser.TagConfiguration();
+var tagPlugin = new _argdownParser.TagPlugin();
 var mapMaker = new _argdownMapMaker.MapMaker();
 var dotExport = new _argdownMapMaker.DotExport();
 var argmlExport = new _argdownMapMaker.ArgMLExport();
@@ -54,24 +56,33 @@ var saveAsJSON = new _SaveAsFilePlugin.SaveAsFilePlugin({
   dataKey: 'json',
   extension: '.json'
 });
-app.addPlugin(preprocessor, "preprocessor");
-app.addPlugin(tagConfiguration, "preprocessor");
+var stdoutDot = new _StdOutPlugin.StdOutPlugin({ dataKey: 'dot' });
+var stdoutArgML = new _StdOutPlugin.StdOutPlugin({ dataKey: 'argml' });
+var stdoutJSON = new _StdOutPlugin.StdOutPlugin({ dataKey: 'json' });
+var stdoutHtml = new _StdOutPlugin.StdOutPlugin({ dataKey: 'html' });
+
+app.addPlugin(modelPlugin, "build-model");
+app.addPlugin(tagPlugin, "build-model");
 
 app.addPlugin(htmlExport, "export-html");
 app.addPlugin(copyDefaultCss, "copy-default-css");
 app.addPlugin(saveAsHtml, "save-as-html");
+app.addPlugin(stdoutHtml, "stdout-html");
 
 app.addPlugin(mapMaker, "export-json");
 app.addPlugin(jsonExport, "export-json");
 app.addPlugin(saveAsJSON, "save-as-json");
+app.addPlugin(stdoutJSON, "stdout-json");
 
 app.addPlugin(mapMaker, "export-dot");
 app.addPlugin(dotExport, "export-dot");
 app.addPlugin(saveAsDot, "save-as-dot");
+app.addPlugin(stdoutDot, "stdout-dot");
 
 app.addPlugin(mapMaker, "export-argml");
 app.addPlugin(argmlExport, "export-argml");
 app.addPlugin(saveAsArgML, "save-as-argml");
+app.addPlugin(stdoutArgML, "stdout-argml");
 
 app.load = function (config) {
   if (!config.input) {
@@ -169,7 +180,7 @@ app.loadConfig = function (filePath) {
     config = this.loadJSFile(filePath);
     console.log(config);
   } catch (e) {
-    console.log(e);
+    // console.log(e);
   }
   return config;
 };

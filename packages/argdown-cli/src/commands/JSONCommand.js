@@ -42,6 +42,13 @@ export const handler = function(argv){
   
   config.verbose = argv.verbose ||config.verbose;
   config.watch = argv.watch ||config.watch;
-  config.process = ["preprocessor","export-json","save-as-json"];
+  config.process = ["build-model","export-json"];
+  if(!argv.stdout || argv.outputDir){
+    config.process.push("save-as-json");
+  }
+  if(argv.stdout){
+    config.process.push("stdout-json");
+  }
+  
   app.load(config);  
 } 

@@ -20,8 +20,7 @@ var CopyDefaultCssPlugin = function () {
       var previousSettings = this.settings;
       if (!previousSettings) {
         previousSettings = {
-          outputDir: "./html",
-          appendTagColors: true
+          outputDir: "./html"
         };
       }
       this.settings = _.defaultsDeep({}, config, previousSettings);
@@ -38,6 +37,11 @@ var CopyDefaultCssPlugin = function () {
   _createClass(CopyDefaultCssPlugin, [{
     key: 'run',
     value: function run(data) {
+      if (data.config && data.config.saveAs && data.config.saveAs.outputDir) {
+        this.config = {
+          outputDir: data.config.saveAs.outputDir
+        };
+      }
       var $ = this;
       mkdirp($.settings.outputDir, function (err) {
         if (err) {

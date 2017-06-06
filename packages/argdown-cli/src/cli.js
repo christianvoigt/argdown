@@ -23,6 +23,10 @@ yargs
       alias: 'v',
       type: 'boolean',
       describe: 'verbose mode'
+    },
+    stdout: {
+      type: 'boolean',
+      describe: 'Export data to stdout'
     }
   })
   .commandDir('commands')

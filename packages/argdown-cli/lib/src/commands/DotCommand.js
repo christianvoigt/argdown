@@ -50,9 +50,9 @@ var builder = exports.builder = {
     type: 'boolean',
     describe: 'Include disconnected nodes.'
   },
-  rankDir: {
+  rankdir: {
     type: 'string',
-    describe: 'Graphviz rankDir setting'
+    describe: 'Graphviz rankdir setting'
   },
   concentrate: {
     type: 'string',
@@ -110,8 +110,8 @@ var handler = exports.handler = function handler(argv) {
   if (argv.ratio) {
     config.dot.graphVizSettings.ratio = argv.ratio;
   }
-  if (argv.rankDir) {
-    config.dot.graphVizSettings.rankDir = argv.rankDir;
+  if (argv.rankdir) {
+    config.dot.graphVizSettings.rankdir = argv.rankdir;
   }
 
   if (argv.inputGlob) {
@@ -123,7 +123,14 @@ var handler = exports.handler = function handler(argv) {
   }
   config.verbose = argv.verbose || config.verbose;
   config.watch = argv.watch || config.watch;
-  config.process = ["preprocessor", "export-dot", "save-as-dot"];
+  config.process = ["build-model", "export-dot"];
+  if (!argv.stdout || argv.outputDir) {
+    config.process.push("save-as-dot");
+  }
+
+  if (argv.stdout) {
+    config.process.push("stdout-dot");
+  }
   _index.app.load(config);
 };
 //# sourceMappingURL=DotCommand.js.map
