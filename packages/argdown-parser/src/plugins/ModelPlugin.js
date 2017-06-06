@@ -144,6 +144,9 @@ class ModelPlugin{
     let sectionCounter = 0;
 
     function onArgdownEntry(node, parentNode, childIndex, data){
+      if(data.config && data.config.model){
+        this.config = data.config.model;
+      }
       $.statements = {};
       $.arguments = {};
       $.sections = [];
