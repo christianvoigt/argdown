@@ -23,6 +23,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 var glob = require('glob');
 var fs = require('fs');
+var path = require('path');
 var chokidar = require('chokidar');
 var requireUncached = require("require-uncached");
 
@@ -89,8 +90,9 @@ app.load = function (config) {
     config.input = "./*.argdown";
   }
   var $ = this;
+  var absoluteInputGlob = path.resolve(process.cwd(), config.input);
   if (config.watch) {
-    var watcher = chokidar.watch(config.input, {});
+    var watcher = chokidar.watch(absoluteInputGlob, {});
     var watcherConfig = _.cloneDeep(config);
     watcherConfig.watch = false;
 
@@ -112,7 +114,7 @@ app.load = function (config) {
       }
     });
   } else {
-    glob(config.input, function (er, files) {
+    glob(absoluteInputGlob, function (er, files) {
       if (er) {
         console.log(er);
         return;
@@ -165,20 +167,26 @@ app.load = function (config) {
  * @private
  */
 app.loadJSFile = function loadJSFile(filePath) {
+  var absoluteFilePath = path.resolve(process.cwd(), filePath);
   try {
-    return requireUncached(filePath);
+    return requireUncached(absoluteFilePath);
   } catch (e) {
-    e.message = 'Cannot read file: ' + filePath + '\nError: ' + e.message;
+    e.message = 'Cannot read file: ' + absoluteFilePath + '\nError: ' + e.message;
     throw e;
   }
 };
 
 app.loadConfig = function (filePath) {
-  filePath = filePath || process.cwd() + '/argdown.config.js';
+  filePath = filePath || './argdown.config.js';
   var config = {};
   try {
-    config = this.loadJSFile(filePath);
-    console.log(config);
+    var jsModuleExports = this.loadJSFile(filePath);
+    if (jsModuleExports.config) {
+      config = jsModuleExports.config;
+    } else {
+      // let's try the default export
+      config = jsModuleExports;
+    }
   } catch (e) {
     // console.log(e);
   }

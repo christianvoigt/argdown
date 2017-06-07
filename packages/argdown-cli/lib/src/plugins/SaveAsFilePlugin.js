@@ -24,7 +24,7 @@ var SaveAsFilePlugin = function () {
           dataKey: "test",
           fileName: "default",
           extension: ".txt",
-          outputDir: "."
+          outputDir: "./output"
         };
       }
       this.settings = _.defaultsDeep({}, config, previousSettings);
@@ -75,16 +75,17 @@ var SaveAsFilePlugin = function () {
   }, {
     key: 'saveAsFile',
     value: function saveAsFile(data, outputDir, fileName, extension, verbose) {
-      mkdirp(outputDir, function (err) {
+      var absoluteOutputDir = path.resolve(process.cwd(), outputDir);
+      mkdirp(absoluteOutputDir, function (err) {
         if (err) {
           console.log(err);
         } else {
-          fs.writeFile(outputDir + '/' + fileName + extension, data, function (err) {
+          fs.writeFile(absoluteOutputDir + '/' + fileName + extension, data, function (err) {
             if (err) {
               return console.log(err);
             }
             if (verbose) {
-              console.log("Saved " + outputDir + "/" + fileName + extension);
+              console.log("Saved " + absoluteOutputDir + "/" + fileName + extension);
             }
           });
         }

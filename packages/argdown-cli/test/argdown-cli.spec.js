@@ -51,7 +51,7 @@ describe("argdown-cli", function(){
   it('can load config and run process', (done) => {
     let filePathToCli = path.resolve(__dirname, '../lib/src/cli.js');
     let filePathToConfig = path.resolve(__dirname, './argdown.config.js');
-    require('child_process').exec('node ' + filePathToCli + ' --stdout --config ' + filePathToConfig, function(error, stdout, stderr) {
+    require('child_process').exec('node ' + filePathToCli + ' --stdout --verbose --config ' + filePathToConfig, function(error, stdout, stderr) {
         expect(error).to.equal(null);
         expect(stderr).to.equal('');
         expect(stdout).to.not.equal('');
@@ -137,4 +137,30 @@ describe("argdown-cli", function(){
         done();
     });
   });  
+  it('can load glob input', (done) => {
+    let jsonFolder = path.resolve(__dirname, './json');
+    let globPath = './test/*.argdown';
+    
+    rimraf(jsonFolder, {}, function(err){
+      if(err){
+        console.log(err);
+      }
+    });
+    let filePathToJson = path.resolve(__dirname, './json/test.json');    
+    let filePathToCli = path.resolve(__dirname, '../lib/src/cli.js');
+    require('child_process').exec('node ' + filePathToCli + ' json ' + globPath + ' ' + jsonFolder + ' --verbose', function(error, stdout, stderr) {
+        if (error !== null) {
+            console.log('exec error: ' + error);
+        }
+        expect(error).to.equal(null);
+        expect(stderr).to.equal('');
+        expect(filePathToJson).to.be.a.file();
+        rimraf(jsonFolder, {}, function(err){
+          if(err){
+            console.log(err);
+          }
+        });
+        done();
+    });
+  });    
 });
