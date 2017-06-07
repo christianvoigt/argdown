@@ -11,6 +11,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var fs = require('fs');
+var path = require('path');
 var mkdirp = require('mkdirp');
 
 var CopyDefaultCssPlugin = function () {
@@ -43,15 +44,16 @@ var CopyDefaultCssPlugin = function () {
         };
       }
       var $ = this;
-      mkdirp($.settings.outputDir, function (err) {
+      var absoluteOutputDir = path.resolve(process.cwd(), $.settings.outputDir);
+      mkdirp(absoluteOutputDir, function (err) {
         if (err) {
           console.log(err);
         }
         if (data && data.config && data.config.verbose) {
           console.log("Copying default argdown.css to folder: " + $.settings.outputDir);
         }
-        var pathToDefaultCssFile = __dirname + '/../../../node_modules/argdown-parser/lib/src/plugins/argdown.css';
-        $.copySync(pathToDefaultCssFile, $.settings.outputDir + "/argdown.css");
+        var pathToDefaultCssFile = path.resolve(__dirname, '/../../../node_modules/argdown-parser/lib/src/plugins/argdown.css');
+        $.copySync(pathToDefaultCssFile, absoluteOutputDir + "/argdown.css");
       });
     }
   }, {
