@@ -29,22 +29,22 @@ structures, inspired by Markdown.
 
 ## Argdown Basics
 
-This is a normal statement with __bold__ and _italic_ text 
-and a [link](https://github.com/christianvoigt/argdown-parser).
+This is a normal statement with __bold__ and _italic_ text, 
+a #tag and a [link](https://github.com/christianvoigt/argdown-parser).
 
 [Statement 1]: Another statement (after a blank line), 
 this time with a title defined in square brackets. 
 We can use the title to refer to this statement later 
-or mention it in other statements.
+or mention it in other statements. #(Another tag)
 
 [Statement 2]: Let's do that now: The previous 
 statement was @[Statement 1].
   + <Argument title>: Statements can be supported 
     by __arguments__. Arguments are defined by 
-    using angle brackets.
-  - <Another argument>: This arguments attacks @[Statement 2].
+    using angle brackets. #tag
+  - <Another argument>: This arguments attacks @[Statement 2]. #tag
     - <Yet another argument>: Arguments can also 
-      be supported or attacked.
+      be supported or attacked. #yet-another-tag
       <!--
       By the way, 
       this is a multiline comment.
@@ -54,13 +54,11 @@ We can also do that the other way around:
 
 [Intro]
   -> <Argument 1>
-  
-A blank line signals that the above "tree" of statements 
-and arguments is finished and that we want to start 
-with a new block (in this case a new statement).
 
 Headings can be used to group arguments and statements together. 
 In the map these groups are visualized as grey boxes.
+
+Tags are visualized by the colors of the arguments and statements in the map.
 
 ### Argument reconstructions
 

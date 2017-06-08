@@ -1,5 +1,5 @@
 <template>
-  <div class="output debug-preprocessor-output">
+  <div class="output debug-model-output">
     <div class="content">
   <h3>Statements</h3>
   <table>
@@ -26,9 +26,12 @@
 
 <script>
 export default {
-  name: 'debug-preprocessor-output'
+  name: 'debug-model-output'
 }
 </script>
 
 <style scoped>
+.output .content{
+  padding:1em;
+}
 </style>

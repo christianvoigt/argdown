@@ -21,7 +21,7 @@ export default {
 </script>
 
 <style scoped>
-.output{
-padding:1em 0 0 1em;  
+.output .content{
+  padding:1em;
 }
 </style>
