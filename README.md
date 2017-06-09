@@ -16,11 +16,11 @@ structures, inspired by Markdown.
   * Finally, you can export Argdown as a graph and create 
     **argument maps** of whole debates.
     
-Argdown can currently be exported to __.html__, __.dot__ and __.graphml__ files.
-    
+Argdown can currently be exported to __.html__, __.dot__ and __.json__ files.
+
 ## Example
     
-```Markdown
+```
 # Example 
 
 First we define some relations between statements and arguments:
@@ -61,15 +61,15 @@ For further technical details, please visit these repositories.
 
 ## Documentation
 
-Currently, the project is still in its alpha phase, so please excuse the lack of documentation. We are working on it.
+Currently, the project is still in its beta phase, so please excuse the lack of documentation. It is next on our list.
 
 ## Build Setup for Argdown Browser Demo
 
-The demo uses the following frameworks and libraries: 
+The online editor uses the following frameworks and libraries: 
 
-  - The demo uses the [Vue.js](https://github.com/vuejs/vue) and [Vuex](https://github.com/vuejs/vuex) frameworks for the frontend. 
+  - [Vue.js](https://github.com/vuejs/vue) and [Vuex](https://github.com/vuejs/vuex) 
   - The editor uses [CodeMirror](https://github.com/codemirror/CodeMirror) with the [argdown-codemirror-mode](https://github.com/christianvoigt/argdown-codemirror-mode). 
-  - The graph visualization uses the .dot export in combination with [viz.js.](https://github.com/mdaines/viz.js).
+  - The graph visualization uses [dagre-d3](https://github.com/christianvoigt/dagre-d3) and the .dot export in combination with [viz.js.](https://github.com/mdaines/viz.js).
 
 ``` bash
 # install dependencies

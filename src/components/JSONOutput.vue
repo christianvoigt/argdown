@@ -13,4 +13,7 @@ export default {
 </script>
 
 <style scoped>
+.output .content{
+padding:1em;  
+}
 </style>

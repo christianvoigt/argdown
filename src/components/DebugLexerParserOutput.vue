@@ -36,6 +36,9 @@ export default {
 </script>
 
 <style scoped>
+.output .content{
+  padding:1em;
+}
 table.error{
   border:1px solid red;
   padding:1em;

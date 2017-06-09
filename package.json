@@ -1,6 +1,6 @@
 {
   "name": "argdown-browser",
-  "version": "1.0.1",
+  "version": "1.1.1",
   "description": "A simple Argdown editor for the browser",
   "author": "Christian Voigt <1pxsolidblack@googlemail.com>",
   "private": true,
@@ -10,7 +10,7 @@
     "unit": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run",
     "test": "npm run unit",
     "lint": "eslint --ext .js,.vue src test/unit/specs",
-    "deploy": "git subtree push --prefix dist origin gh-pages"
+    "deploy": "git push --tags origin HEAD:master && git subtree push --prefix dist origin gh-pages"
   },
   "dependencies": {
     "vue": "^2.2.2",

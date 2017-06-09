@@ -1,7 +1,9 @@
 <template>
   <div class="dot-output output">
     <div class="content">
-      <pre>{{$store.getters.dot}}</pre>
+      <div class="dot-source">
+        <pre>{{$store.getters.dot}}</pre>
+      </div>
     </div>
   </div>
 </template>
@@ -13,4 +15,7 @@ export default {
 </script>
 
 <style scoped>
+.output .content{
+padding:1em;  
+}
 </style>

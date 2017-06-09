@@ -6,7 +6,7 @@ import JSONOutput from '@/components/JSONOutput'
 // import ArgMLOutput from '@/components/ArgMLOutput'
 import DotOutput from '@/components/DotOutput'
 import DebugLexerParserOutput from '@/components/DebugLexerParserOutput'
-import DebugPreprocessorOutput from '@/components/DebugPreprocessorOutput'
+import DebugModelOutput from '@/components/DebugModelOutput'
 import DebugNavigation from '@/components/DebugNavigation'
 import MapNavigation from '@/components/MapNavigation'
 
@@ -46,10 +46,10 @@ export default new Router({
     },
     {path: '/debug', redirect: { name: 'debug-lexer-parser' }},
     {
-      path: '/debug/preprocessor',
-      name: 'debug-preprocessor',
+      path: '/debug/model',
+      name: 'debug-model',
       components: {
-        default: DebugPreprocessorOutput,
+        default: DebugModelOutput,
         'output-header': DebugNavigation
       }
     },
@@ -107,7 +107,7 @@ export default new Router({
         'output-header': HtmlNavigation
       },
       props: {
-        source: true
+        default: { source: true }
       }
     }
   ]
