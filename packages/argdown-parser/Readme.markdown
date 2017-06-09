@@ -12,26 +12,29 @@ This package contains the basic tools to build an Argdown application:
 
   - ArgdownParser and ArgdownLexer: parse text and return an abstract syntax tree (AST)
   - ArgdownTreeWalker class: traverses the AST and emits events on entering and exiting nodes
-  - ArgdownApplication class: a wrapper that allows to write cleanly separated plugins for processing Argdown data
-  - Preprocessor plugin: a plugin for ArgdownApplication that has to be run before most other plugins to provide a basic data model containing arguments, statements and relations
+  - ArgdownApplication class: a wrapper that allows to write cleanly separated configurable plugins for processing Argdown data
+  - ModelPlugin: a plugin for ArgdownApplication that has to be run before most other plugins to provide a basic data model containing arguments, statements and relations
+  - TagPlugin: a plugin that will add tag data to the data model
   - HtmlExport: plugin that exports Argdown code to html
   - JSONExport: plugin that exports Argdown code to JSON
   
-Both export plugins require that the preprocessor plugin is run before them (see below).
+Both export plugins require that the ModelPlugin and the TagPlugin are run before them (see below). For configuration options of these plugins take a look at (the Readme of argdown-cli)[https://github.com/christianvoigt/argdown-cli/blob/master/Readme.md].
 
 Additional plugins that help build argument maps with the parser can be found in the [argdown-map-maker package](https://github.com/christianvoigt/argdown-map-maker).
 
-# Getting Started
+## Getting started with a new Argdown app
 
 Basic example:
 
 ```javascript
-import {ArgdownApplication, Preprocessor, HtmlExport, JSONExport} from 'argdown-parser';
+import {ArgdownApplication, ModelPlugin, TagPlugin, HtmlExport, JSONExport} from 'argdown-parser';
 
 const app = new ArgdownApplication();
 
-const preprocessor = new Preprocessor();
-app.addPlugin(preprocessor, 'preprocessor'); // adds preprocessor plugin to the 'preprocessor' processor
+const modelPlugin = new ModelPlugin();
+app.addPlugin(modelPlugin, 'build-model'); // adds model plugin to the 'build-model' processor
+const tagPlugin = new TagPlugin();
+app.addPlugin(tagPlugin, 'build-model'); // adds tag plugin to the 'build-model' processor
 
 const htmlExport = new HtmlExport();
 app.addPlugin(htmlExport, 'export-html'); //adds htmlExport plugin to the 'export-html' processor
@@ -40,38 +43,38 @@ const jsonExport = new JSONExport();
 app.addPlugin(jsonExport, 'export-json'); //adds jsonExport plugin to the 'export-json' processor
 
 app.parse('The Beatles are the best!\n- The Rolling Stones are better!');
-let result = app.run(['preprocessor','export-html']); // runs the two processors one after another, returning a data object
+let data = app.run(['build-model','export-html']); // runs the two processors one after another, returning a data object
 
-console.log(result.html);
+console.log(data.html);
 
 /*
 * Now we run the 'export-json' processor, while passing the result of the previous run to the app.
-* By doing this we can avoid to run the 'preprocessor' again, 
-* even though the JSONExport plugin requires the data produced by the preprocessor.
+* By doing this we can avoid to run 'build-model' again, 
+* even though the JSONExport plugin requires the data produced by the processor.
 */
-app.run('export-json', result); 
+app.run('export-json', data); 
 
-console.log(result.json);
+console.log(data.json);
 
 ```
 
-# How ArgdownApplication processes Argdown text
+## How ArgdownApplication processes Argdown text
 
 Processing Argdown text with an ArgdownApplication app consist of two steps: First `app.parse(text);` has to be called to lex and parse the text and return the AST (you can access the ast afterwards with `app.ast`). Secondly, different "processors" can be run to process the data in the AST. Building the application means adding plugins to the processors of the app. A new processor is created by simply adding a plugin to a processor that has not been initialized before (using `app.addPlugin(plugin, processorName);`).
 
-Each processor has its own instance of an ArgdownTreeWalker and a list of plugins belonging to this processor. If the app runs the process it will first call the `walk` method of the processor's ArgdownTreeWalker. The tree walker will traverse the tree and call any plugins that have registered for its events. After the tree walk has been completed, the app calls each plugin's `run(data)` method in the order they have been registered, passing the same data object between the plugins. Each plugin can add data to this object and is expected to return the data object on completing its run method. By using a common data object plugins are thus chained together.
+Each processor has its own instance of an ArgdownTreeWalker and a list of plugins belonging to this processor. If the app runs the process it will first call the `walk` method of the processor's ArgdownTreeWalker. The tree walker will traverse the tree and call any plugins that have registered for its events passing the data object along. After the tree walk has been completed, the app calls each plugin's `run(data)` method in the order they have been registered, once again passing the same data object between the plugins. Each plugin can add data to this object and is expected to return the data object on completing its run method. By using a common data object plugins are thus chained together.
 
 Different processors can also be chained together by either using `app.run(['processor1','processor2'])` or by calling the app's run method with a previous run's result:
 
 ```javascript
-let data = app.run('preprocessor');
+let data = app.run('build-model');
 data = app.run('export-html', data);
 data = app.run('export-dot', data);
 ```
 
 This method allows to only run the preprocessor once, using its result for several different processors that will be called on different occasions.
 
-# Writing your own plugin
+## Writing your own plugin
 
 A plugin is an object with 
 
@@ -115,3 +118,54 @@ app.run(); // omitting a processor name will run the default processor
 The ArgdownTreeWalker will emit [node-name]Entry and [node-name]Exit events for each parser rule or token visited. Note that token names are capitalized, while parser rule names are not.
 
 After parsing some Argdown text you can use `console.log(app.parser.astToString(app.ast);` to print the AST to the console and learn about the parser rule and token names in the AST. For each entry in the AST you can register listeners for your plugin.
+
+You can also use the online (Demo Editor)[christianvoigt.github.io/argdown] and use the "Debug/Parser & Lexer" view to inspect the AST structure.
+
+## Configuration
+
+Argdown plugins can also use the configuration system of ArgdownApplication. Here is the plugin from above, changed to es6 class syntax with configuration options added. This pattern is used for all standard Argdown plugins:
+
+```JavaScript
+class MyNewPlugin{
+  set config(config){ // This pattern allows default settings that can be overwritten by consecutive calls to this.config = config;
+    let previousSettings = this.settings;
+    if(!previousSettings){
+      previousSettings = { // defaul settings
+        configOption: true
+      }
+    }
+    this.settings = _.defaultsDeep({}, config, previousSettings);
+  }  
+  constructor(config){ // allow configuration on initialization
+    this.name = 'MyNewPlugin';
+    this.config = config;
+    const $ = this;
+    this.argdownListeners = {
+      argdownEntry: function(node, parentNode, childIndex, data){ // each listener receives the data object
+        if(data.config && data.config.myNewPlugin){ // allow on the fly configuration
+          $.config = data.config.myNewPlugin;
+        }
+        console.log("Tree traversal started.");
+      },
+      statementEntry: function(node, parentNode){
+        console.log('TestPlugin event listener has been called on statement entry!');
+        console.log(node.statement.text);
+      }
+      argdownExit: function(){
+        console.log("Tree traversal finished.");
+      }
+    }    
+  }
+  run(data){
+      if(data.config && data.config.myNewPlugin){ // allow on the fly configuration
+        this.config = data.config.myNewPlugin;
+      }
+      console.log('TestPlugin.run has been called!');
+      data.test = "some new data";
+      return data;
+  }
+};
+const myNewPlugin = new MyNewPlugin({
+  configOption: true
+});
+```
