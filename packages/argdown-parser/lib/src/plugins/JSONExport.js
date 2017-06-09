@@ -39,6 +39,9 @@ var JSONExport = function () {
       if (this.settings.exportSections && data.sections) {
         argdown.sections = data.sections;
       }
+      if (this.settings.exportTags && data.tags) {
+        argdown.tags = data.tags;
+      }
       var $ = this;
       data.json = JSON.stringify(argdown, function (key, value) {
         if ($.settings.removeEmbeddedRelations && key == "relations" && (this instanceof _Argument.Argument || this instanceof _EquivalenceClass.EquivalenceClass)) {
@@ -62,7 +65,8 @@ var JSONExport = function () {
           spaces: 2,
           removeEmbeddedRelations: false,
           exportMap: true,
-          exportSections: true
+          exportSections: true,
+          exportTags: true
         };
       }
       this.settings = _.defaultsDeep({}, config, previousSettings);

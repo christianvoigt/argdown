@@ -41,7 +41,7 @@ var TagPlugin = function () {
   _createClass(TagPlugin, [{
     key: 'run',
     value: function run(data) {
-      if (!data.tags) {
+      if (!data.tags || !data.statements || !data.arguments) {
         return;
       }
       data.config = data.config || {};

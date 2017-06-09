@@ -2,10 +2,6 @@
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _ArgdownLexer = require("./ArgdownLexer.js");
-
-var _ArgdownParser = require("./ArgdownParser.js");
-
 var _ArgdownTreeWalker = require("./ArgdownTreeWalker.js");
 
 var _lodash = require("lodash");
@@ -127,27 +123,29 @@ var ArgdownApplication = function () {
     key: "getPlugin",
     value: function getPlugin(name, processorId) {
       var plugins = this.getPlugins(processorId);
-      var _iteratorNormalCompletion3 = true;
-      var _didIteratorError3 = false;
-      var _iteratorError3 = undefined;
+      if (plugins) {
+        var _iteratorNormalCompletion3 = true;
+        var _didIteratorError3 = false;
+        var _iteratorError3 = undefined;
 
-      try {
-        for (var _iterator3 = plugins[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-          var plugin = _step3.value;
-
-          if (plugin.name == name) return plugin;
-        }
-      } catch (err) {
-        _didIteratorError3 = true;
-        _iteratorError3 = err;
-      } finally {
         try {
-          if (!_iteratorNormalCompletion3 && _iterator3.return) {
-            _iterator3.return();
+          for (var _iterator3 = plugins[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+            var plugin = _step3.value;
+
+            if (plugin.name == name) return plugin;
           }
+        } catch (err) {
+          _didIteratorError3 = true;
+          _iteratorError3 = err;
         } finally {
-          if (_didIteratorError3) {
-            throw _iteratorError3;
+          try {
+            if (!_iteratorNormalCompletion3 && _iterator3.return) {
+              _iterator3.return();
+            }
+          } finally {
+            if (_didIteratorError3) {
+              throw _iteratorError3;
+            }
           }
         }
       }
@@ -188,31 +186,6 @@ var ArgdownApplication = function () {
     key: "init",
     value: function init() {
       this.processors = {};
-      this.lexer = _ArgdownLexer.ArgdownLexer;
-      this.parser = _ArgdownParser.ArgdownParser;
-    }
-  }, {
-    key: "parse",
-    value: function parse(inputText, verbose, data) {
-      data = data || {};
-      var lexResult = this.lexer.tokenize(inputText);
-      this.tokens = lexResult.tokens;
-      data.tokens = lexResult.tokens;
-      this.lexerErrors = lexResult.errors;
-      data.lexerErrors = lexResult.errors;
-
-      this.parser.input = lexResult.tokens;
-      this.ast = this.parser.argdown();
-      data.ast = this.ast;
-      data.parserErrors = this.parser.errors;
-      this.parserErrors = this.parser.errors;
-      if (verbose && data.lexerErrors && data.lexerErrors.length > 0) {
-        console.log(data.lexerErrors);
-      }
-      if (verbose && data.parserErrors && data.parserErrors.length > 0) {
-        console.log(data.parserErrors);
-      }
-      return data;
     }
   }, {
     key: "run",
@@ -244,9 +217,6 @@ var ArgdownApplication = function () {
           }
         }
       }
-      if (data.input) {
-        this.parse(data.input, verbose, data);
-      }
 
       if (_.isEmpty(processorsToRun)) {
         if (verbose) {
@@ -255,16 +225,6 @@ var ArgdownApplication = function () {
         return data;
       }
 
-      var ast = data.ast;
-      if (!ast) {
-        ast = this.ast;
-      }
-      if (!ast) {
-        if (verbose) {
-          console.log("Ast not found.");
-        }
-        return data;
-      }
       var _iteratorNormalCompletion5 = true;
       var _didIteratorError5 = false;
       var _iteratorError5 = undefined;
@@ -284,8 +244,8 @@ var ArgdownApplication = function () {
             console.log("Running processor: " + processorId);
           }
 
-          if (processor.walker) {
-            processor.walker.walk(ast, data);
+          if (data.ast && processor.walker) {
+            processor.walker.walk(data.ast, data);
           }
 
           var _iteratorNormalCompletion6 = true;
@@ -336,6 +296,7 @@ var ArgdownApplication = function () {
         }
       }
 
+      this.dataOfLastRun = data;
       return data;
     }
   }]);

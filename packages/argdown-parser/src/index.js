@@ -5,6 +5,7 @@ import {ArgdownParser} from "./ArgdownParser.js";
 import {ArgdownTreeWalker} from "./ArgdownTreeWalker.js";
 import {ArgdownApplication} from "./ArgdownApplication.js";
 import {ModelPlugin} from "./plugins/ModelPlugin.js";
+import {ParserPlugin} from "./plugins/ParserPlugin.js";
 import {HtmlExport} from "./plugins/HtmlExport.js";
 import {TagPlugin} from "./plugins/TagPlugin.js";
 import {JSONExport} from "./plugins/JSONExport.js";
@@ -19,6 +20,7 @@ module.exports = {
   ArgdownParser: ArgdownParser,
   ArgdownLexer: ArgdownLexer,
   ArgdownApplication: ArgdownApplication,
+  ParserPlugin: ParserPlugin,
   ModelPlugin: ModelPlugin,
   HtmlExport : HtmlExport,
   Argument : Argument,

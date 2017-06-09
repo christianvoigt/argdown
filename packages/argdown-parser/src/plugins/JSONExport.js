@@ -10,7 +10,8 @@ class JSONExport{
         spaces : 2,
         removeEmbeddedRelations: false,
         exportMap : true,
-        exportSections : true
+        exportSections : true,
+        exportTags : true
       };
     }
     this.settings = _.defaultsDeep({}, config, previousSettings);
@@ -37,6 +38,9 @@ class JSONExport{
     }
     if(this.settings.exportSections && data.sections){
       argdown.sections = data.sections;
+    }
+    if(this.settings.exportTags && data.tags){
+      argdown.tags = data.tags;
     }
     const $ = this;
     data.json = JSON.stringify(argdown, function(key, value){
