@@ -15,6 +15,8 @@ var _CopyDefaultCssPlugin = require('./plugins/CopyDefaultCssPlugin.js');
 
 var _StdOutPlugin = require('./plugins/StdOutPlugin.js');
 
+var _IncludePlugin = require('./plugins/IncludePlugin.js');
+
 var _lodash = require('lodash');
 
 var _ = _interopRequireWildcard(_lodash);
@@ -28,6 +30,8 @@ var chokidar = require('chokidar');
 var requireUncached = require("require-uncached");
 
 var app = new _argdownParser.ArgdownApplication();
+var includePlugin = new _IncludePlugin.IncludePlugin();
+var parserPlugin = new _argdownParser.ParserPlugin();
 var modelPlugin = new _argdownParser.ModelPlugin();
 var htmlExport = new _argdownParser.HtmlExport();
 var tagPlugin = new _argdownParser.TagPlugin();
@@ -57,13 +61,24 @@ var saveAsJSON = new _SaveAsFilePlugin.SaveAsFilePlugin({
   dataKey: 'json',
   extension: '.json'
 });
+var saveAsArgdown = new _SaveAsFilePlugin.SaveAsFilePlugin({
+  outputDir: './compiled',
+  dataKey: 'input',
+  extension: '.argdown'
+});
 var stdoutDot = new _StdOutPlugin.StdOutPlugin({ dataKey: 'dot' });
 var stdoutArgML = new _StdOutPlugin.StdOutPlugin({ dataKey: 'argml' });
 var stdoutJSON = new _StdOutPlugin.StdOutPlugin({ dataKey: 'json' });
 var stdoutHtml = new _StdOutPlugin.StdOutPlugin({ dataKey: 'html' });
+var stdoutArgdown = new _StdOutPlugin.StdOutPlugin({ dataKey: 'input' });
 
+app.addPlugin(includePlugin, 'preprocessor');
+app.addPlugin(parserPlugin, 'parse-input');
 app.addPlugin(modelPlugin, "build-model");
 app.addPlugin(tagPlugin, "build-model");
+
+app.addPlugin(stdoutArgdown, 'stdout-argdown');
+app.addPlugin(saveAsArgdown, 'save-as-argdown');
 
 app.addPlugin(htmlExport, "export-html");
 app.addPlugin(copyDefaultCss, "copy-default-css");
@@ -86,13 +101,19 @@ app.addPlugin(saveAsArgML, "save-as-argml");
 app.addPlugin(stdoutArgML, "stdout-argml");
 
 app.load = function (config) {
-  if (!config.input) {
-    config.input = "./*.argdown";
+  var inputGlob = config.input || './*.argdown';
+  var ignoreFiles = config.ignore || ['**/_*', // Exclude files starting with '_'.
+  '**/_*/**' // Exclude entire directories starting with '_'.
+  ];
+  var options = {};
+  if (ignoreFiles) {
+    options.ignore = ignoreFiles;
   }
+
   var $ = this;
-  var absoluteInputGlob = path.resolve(process.cwd(), config.input);
+  var absoluteInputGlob = path.resolve(process.cwd(), inputGlob);
   if (config.watch) {
-    var watcher = chokidar.watch(absoluteInputGlob, {});
+    var watcher = chokidar.watch(absoluteInputGlob, options);
     var watcherConfig = _.cloneDeep(config);
     watcherConfig.watch = false;
 
@@ -114,7 +135,7 @@ app.load = function (config) {
       }
     });
   } else {
-    glob(absoluteInputGlob, function (er, files) {
+    glob(absoluteInputGlob, options, function (er, files) {
       if (er) {
         console.log(er);
         return;
@@ -134,7 +155,7 @@ app.load = function (config) {
               var input = fs.readFileSync(file, 'utf8');
               config.saveAs = config.saveAs || {};
               config.saveAs.sourceFile = file;
-              $.run({ input: input, config: config });
+              $.run({ input: input, inputFile: file, config: config });
             } catch (e) {
               console.log(e);
             }

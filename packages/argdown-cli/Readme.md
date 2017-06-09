@@ -28,6 +28,7 @@ Available commands:
   - `argdown html [input glob] [output folder]`: exports the input files as html files into the output folder.
   - `argdown dot [input glob] [output folder]`: exports the input files as dot files into the output folder.
   - `argdown json [input glob] [output folder]`: exports the input files as .json files into the output folder.
+  - `argdown compile [input glob] [output folder]`: compiles the input files with included files into new .argdown files.
   
 All commands can be used with the `-w` option: The cli will then watch your .argdown files continuously for changes and export them instantly.
 
@@ -56,7 +57,12 @@ Currently you can use the following options (hint: you can try out the effects o
 ```JavaScript
 module.exports = {
   config: {
-    input: './*.argdown',
+    inputFile: './*.argdown',
+    ignoreFiles: [ // by default 'partial' argdown files and folders that start with an underscore are ignored
+          '**/_*',        // Exclude files starting with '_'.
+          '**/_*/**'  // Exclude entire directories starting with '_'.
+      ],
+    input: 'Some Argdown source', // if not set, the content of the input file (or input files) will be used as input
     watch: false, // should the input be continually watched for changes?
     verbose: false,
     process: ["build-model", "export-html", "save-as-html", "export-dot", "save-as-dot",], //just as an example, this will export to html and dot at the same time. If a process is defined, the config file can be run without a command (by entering `argdown`)

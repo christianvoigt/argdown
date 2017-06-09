@@ -49,12 +49,12 @@ var handler = exports.handler = function handler(argv) {
 
   config.verbose = argv.verbose || config.verbose;
   config.watch = argv.watch || config.watch;
-  config.process = ["build-model", "export-json"];
+  config.process = ['preprocessor', 'parse-input', 'build-model', 'export-json'];
   if (!argv.stdout || argv.outputDir) {
-    config.process.push("save-as-json");
+    config.process.push('save-as-json');
   }
   if (argv.stdout) {
-    config.process.push("stdout-json");
+    config.process.push('stdout-json');
   }
 
   _index.app.load(config);

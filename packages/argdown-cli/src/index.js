@@ -1,8 +1,9 @@
-import {ArgdownApplication, ModelPlugin, HtmlExport, JSONExport, TagPlugin} from 'argdown-parser';
+import {ArgdownApplication, ParserPlugin, ModelPlugin, HtmlExport, JSONExport, TagPlugin} from 'argdown-parser';
 import {MapMaker, DotExport, ArgMLExport} from 'argdown-map-maker';
 import {SaveAsFilePlugin} from './plugins/SaveAsFilePlugin.js';
 import {CopyDefaultCssPlugin} from './plugins/CopyDefaultCssPlugin.js';
 import {StdOutPlugin} from './plugins/StdOutPlugin.js';
+import {IncludePlugin} from './plugins/IncludePlugin.js';
 import * as _ from 'lodash';
 
 let glob = require('glob');
@@ -12,6 +13,8 @@ let chokidar = require('chokidar');
 let requireUncached = require("require-uncached");
 
 const app = new ArgdownApplication();
+const includePlugin = new IncludePlugin();
+const parserPlugin = new ParserPlugin();
 const modelPlugin = new ModelPlugin();
 const htmlExport = new HtmlExport();
 const tagPlugin = new TagPlugin();
@@ -41,13 +44,24 @@ const saveAsJSON = new SaveAsFilePlugin({
   dataKey: 'json',
   extension: '.json'
 });
+const saveAsArgdown = new SaveAsFilePlugin({
+  outputDir: './compiled',
+  dataKey: 'input',
+  extension: '.argdown'
+});
 const stdoutDot = new StdOutPlugin({dataKey:'dot'});
 const stdoutArgML = new StdOutPlugin({dataKey:'argml'});
 const stdoutJSON = new StdOutPlugin({dataKey:'json'});
 const stdoutHtml = new StdOutPlugin({dataKey:'html'});
+const stdoutArgdown = new StdOutPlugin({dataKey:'input'});
 
+app.addPlugin(includePlugin, 'preprocessor');
+app.addPlugin(parserPlugin, 'parse-input');
 app.addPlugin(modelPlugin, "build-model");
 app.addPlugin(tagPlugin, "build-model");
+
+app.addPlugin(stdoutArgdown, 'stdout-argdown');
+app.addPlugin(saveAsArgdown, 'save-as-argdown');
 
 app.addPlugin(htmlExport, "export-html");
 app.addPlugin(copyDefaultCss, "copy-default-css");
@@ -70,13 +84,20 @@ app.addPlugin(saveAsArgML, "save-as-argml");
 app.addPlugin(stdoutArgML, "stdout-argml");
 
 app.load = function(config){
-  if(!config.input){
-    config.input = "./*.argdown";
+  const inputGlob = config.input ||'./*.argdown';
+  const ignoreFiles = config.ignore ||[
+        '**/_*',        // Exclude files starting with '_'.
+        '**/_*/**'  // Exclude entire directories starting with '_'.
+    ];
+  const options = {};
+  if(ignoreFiles){
+    options.ignore = ignoreFiles;
   }
+    
   const $ = this;
-  let absoluteInputGlob = path.resolve(process.cwd(),config.input);
+  let absoluteInputGlob = path.resolve(process.cwd(),inputGlob);
   if(config.watch){
-    const watcher = chokidar.watch(absoluteInputGlob, {});
+    const watcher = chokidar.watch(absoluteInputGlob, options);
     const watcherConfig = _.cloneDeep(config);
     watcherConfig.watch = false;
     
@@ -101,7 +122,7 @@ app.load = function(config){
       }
     });    
   }else{
-    glob(absoluteInputGlob, function (er, files) {
+    glob(absoluteInputGlob, options, function (er, files) {
       if(er){
         console.log(er);
         return;
@@ -114,7 +135,7 @@ app.load = function(config){
             const input = fs.readFileSync(file, 'utf8');
             config.saveAs = config.saveAs ||{};
             config.saveAs.sourceFile = file;
-            $.run({input: input, config:config});            
+            $.run({input: input, inputFile: file, config:config});            
           }catch(e){
             console.log(e);
           }

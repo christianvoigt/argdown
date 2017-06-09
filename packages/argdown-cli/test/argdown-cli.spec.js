@@ -1,8 +1,9 @@
-var chai = require('chai');
+const chai = require('chai');
 chai.use(require('chai-fs'));
 import { expect } from 'chai';
 import path from 'path';
 import rimraf from 'rimraf';
+const fs = require('fs');
 
 describe("argdown-cli", function(){
   it('can create dot output', (done) => {
@@ -136,7 +137,23 @@ describe("argdown-cli", function(){
         });
         done();
     });
-  });  
+  });
+  it('can include files', (done) => {
+    let globPath = './test/include-test.argdown';
+    let expectedResult = fs.readFileSync(path.resolve(__dirname, './include-test-expected-result.txt'), 'utf8');
+
+    let filePathToCli = path.resolve(__dirname, '../lib/src/cli.js');
+    require('child_process').exec('node ' + filePathToCli + ' compile ' + globPath + ' --stdout', function(error, stdout, stderr) {
+        if (error !== null) {
+            console.log('exec error: ' + error);
+        }
+        expect(error).to.equal(null);
+        expect(stderr).to.equal('');
+        expect(stdout).to.not.equal(null);
+        expect(stdout).to.equal(expectedResult);
+        done();
+    });
+  });      
   it('can load glob input', (done) => {
     let jsonFolder = path.resolve(__dirname, './json');
     let globPath = './test/*.argdown';
@@ -146,15 +163,19 @@ describe("argdown-cli", function(){
         console.log(err);
       }
     });
-    let filePathToJson = path.resolve(__dirname, './json/test.json');    
+    let filePathToJson1 = path.resolve(__dirname, './json/test.json');
+    let filePathToJson2 = path.resolve(__dirname, './json/include-test.json');    
+    let filePathToJson3 = path.resolve(__dirname, './json/_partial1.json');    
     let filePathToCli = path.resolve(__dirname, '../lib/src/cli.js');
-    require('child_process').exec('node ' + filePathToCli + ' json ' + globPath + ' ' + jsonFolder + ' --verbose', function(error, stdout, stderr) {
+    require('child_process').exec('node ' + filePathToCli + ' json \'' + globPath + '\' ' + jsonFolder + ' --verbose', function(error, stdout, stderr) {
         if (error !== null) {
             console.log('exec error: ' + error);
         }
         expect(error).to.equal(null);
         expect(stderr).to.equal('');
-        expect(filePathToJson).to.be.a.file();
+        expect(filePathToJson1).to.be.a.file();
+        expect(filePathToJson2).to.be.a.file();
+        expect(filePathToJson3).to.not.be.a.path();
         rimraf(jsonFolder, {}, function(err){
           if(err){
             console.log(err);
@@ -162,5 +183,5 @@ describe("argdown-cli", function(){
         });
         done();
     });
-  });    
+  });  
 });

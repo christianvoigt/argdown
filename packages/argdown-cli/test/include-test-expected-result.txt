@@ -1,0 +1,15 @@
+First line of main file
+
+First line of partial1
+
+First line of partial2
+
+<!-- Include failed: File '/Users/cvoigt/Documents/workspace/argdown-cli/test/_partial1.argdown' already included. To avoid infinite loops, each file can only be included once. -->
+
+Second line pof partial2
+
+
+Second line of partial1
+
+
+Second line of main file
