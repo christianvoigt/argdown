@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {ArgdownApplication, ModelPlugin, TagPlugin, HtmlExport, JSONExport} from 'argdown-parser'
+import {ArgdownApplication, ParserPlugin, ModelPlugin, TagPlugin, HtmlExport, JSONExport} from 'argdown-parser'
 import {MapMaker, DotExport, ArgMLExport} from 'argdown-map-maker'
 
 const app = new ArgdownApplication()
+const parserPlugin = new ParserPlugin()
 const modelPlugin = new ModelPlugin()
 const tagPlugin = new TagPlugin()
 const htmlExport = new HtmlExport({
@@ -98,6 +99,7 @@ Some inference rule (Some additional info: 1,2)
   [Back to top](#heading-welcome-to-argdown) 
 `
 
+app.addPlugin(parserPlugin, 'parse-input')
 app.addPlugin(modelPlugin, 'build-model')
 app.addPlugin(tagPlugin, 'build-model')
 app.addPlugin(htmlExport, 'export-html')
@@ -156,8 +158,8 @@ export default new Vuex.Store({
   getters: {
     argdownData: (state, getters) => {
       let config = state.config
-      let data = app.parse(state.argdownInput, null, {config: config})
-      data = app.run('build-model', data)
+      let data = {input: state.argdownInput, config: config}
+      data = app.run(['parse-input', 'build-model'], data)
       return data
     },
     html: (state, getters) => {
