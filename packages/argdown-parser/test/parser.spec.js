@@ -38,7 +38,7 @@ describe("Parser", function() {
     parser.input = lexResult.tokens;
     let parseResult = parser.argdown();
     expect(lexResult.errors).to.be.empty;
-    expect(parser.errors).to.exit;
+    expect(parser.errors).to.exist;
   });
 });
 
