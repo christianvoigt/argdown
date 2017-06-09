@@ -10,7 +10,7 @@
     "unit": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run",
     "test": "npm run unit",
     "lint": "eslint --ext .js,.vue src test/unit/specs",
-    "deploy": "git subtree push --prefix dist origin gh-pages"
+    "deploy": "git push --tags origin HEAD:master && git subtree push --prefix dist origin gh-pages"
   },
   "dependencies": {
     "vue": "^2.2.2",
