@@ -56,18 +56,18 @@ export const handler = function(argv){
   
   config.verbose = argv.verbose ||config.verbose;
   config.watch = argv.watch ||config.watch;
-  config.process = ["build-model","export-html"];
+  config.process = ['preprocessor','parse-input','build-model','export-html'];
   if(!argv.stdout || argv.outputDir){
-    config.process.push("save-as-html");
+    config.process.push('save-as-html');
   }
   
   if(argv.css){
     config.html.css = argv.css;
   }else if(!argv.stdout || argv.outputDir){
-    config.process.push("copy-default-css");
+    config.process.push('copy-default-css');
   }
   if(argv.stdout){
-    config.process.push("stdout-html");
+    config.process.push('stdout-html');
   }
 
   app.load(config);  

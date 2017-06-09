@@ -123,13 +123,13 @@ var handler = exports.handler = function handler(argv) {
   }
   config.verbose = argv.verbose || config.verbose;
   config.watch = argv.watch || config.watch;
-  config.process = ["build-model", "export-dot"];
+  config.process = ['preprocessor', 'parse-input', 'build-model', 'export-dot'];
   if (!argv.stdout || argv.outputDir) {
-    config.process.push("save-as-dot");
+    config.process.push('save-as-dot');
   }
 
   if (argv.stdout) {
-    config.process.push("stdout-dot");
+    config.process.push('stdout-dot');
   }
   _index.app.load(config);
 };

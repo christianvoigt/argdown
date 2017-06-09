@@ -1,0 +1,5 @@
+First line of partial2
+
+@include(_partial1.argdown)
+
+Second line pof partial2

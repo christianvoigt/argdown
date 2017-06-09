@@ -1,0 +1,5 @@
+First line of partial1
+
+@include(_partial2.argdown)
+
+Second line of partial1
