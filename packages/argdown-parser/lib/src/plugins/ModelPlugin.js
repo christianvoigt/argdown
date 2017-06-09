@@ -33,95 +33,97 @@ var ModelPlugin = function () {
       if (data.config && data.config.model) {
         this.config = data.config.model;
       }
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
+      if (this.relations) {
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
 
-      try {
-        for (var _iterator = this.relations[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var relation = _step.value;
-
-          var fromType = this.getElementType(relation.from);
-          var toType = this.getElementType(relation.to);
-          if (fromType == RelationObjectTypes.SKETCHED_ARGUMENT || toType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT || toType == RelationObjectTypes.SKETCHED_ARGUMENT) {
-            relation.status = "sketched";
-          } else if (fromType == RelationObjectTypes.STATEMENT || fromType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT) {
-            relation.status = "reconstructed";
-
-            if (fromType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT) {
-              //change relation.from to point to the argument's conclusion
-              var argument = relation.from;
-
-              //remove from argument
-              var index = _.indexOf(argument.relations, relation);
-              argument.relations.splice(index, 1);
-
-              var conclusionStatement = argument.pcs[relation.from.pcs.length - 1];
-              var equivalenceClass = this.statements[conclusionStatement.title];
-
-              relation.from = equivalenceClass;
-
-              //check if this relation already exists
-              var relationExists = false;
-              var _iteratorNormalCompletion2 = true;
-              var _didIteratorError2 = false;
-              var _iteratorError2 = undefined;
-
-              try {
-                for (var _iterator2 = relation.from.relations[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                  var existingRelation = _step2.value;
-
-                  if (relation.to == existingRelation.to && relation.type == existingRelation.type) {
-                    relationExists = true;
-                    break;
-                  }
-                }
-              } catch (err) {
-                _didIteratorError2 = true;
-                _iteratorError2 = err;
-              } finally {
-                try {
-                  if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                    _iterator2.return();
-                  }
-                } finally {
-                  if (_didIteratorError2) {
-                    throw _iteratorError2;
-                  }
-                }
-              }
-
-              if (!relationExists) {
-                equivalenceClass.relations.push(relation);
-              } else {
-                //remove relation from target
-                var _index = _.indexOf(relation.to.relations, relation);
-                relation.to.relations.splice(_index, 1);
-                //remove relation from relations
-                _index = _.indexOf(this.relations, relation);
-                this.relations.splice(_index, 1);
-              }
-            }
-
-            //Change dialectical types of statement-to-statement relations to semantic types
-            if (relation.type == "support") {
-              relation.type = "entails";
-            } else if (relation.type == "attack") {
-              relation.type = "contrary";
-            }
-          }
-        }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
         try {
-          if (!_iteratorNormalCompletion && _iterator.return) {
-            _iterator.return();
+          for (var _iterator = this.relations[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var relation = _step.value;
+
+            var fromType = this.getElementType(relation.from);
+            var toType = this.getElementType(relation.to);
+            if (fromType == RelationObjectTypes.SKETCHED_ARGUMENT || toType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT || toType == RelationObjectTypes.SKETCHED_ARGUMENT) {
+              relation.status = "sketched";
+            } else if (fromType == RelationObjectTypes.STATEMENT || fromType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT) {
+              relation.status = "reconstructed";
+
+              if (fromType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT) {
+                //change relation.from to point to the argument's conclusion
+                var argument = relation.from;
+
+                //remove from argument
+                var index = _.indexOf(argument.relations, relation);
+                argument.relations.splice(index, 1);
+
+                var conclusionStatement = argument.pcs[relation.from.pcs.length - 1];
+                var equivalenceClass = this.statements[conclusionStatement.title];
+
+                relation.from = equivalenceClass;
+
+                //check if this relation already exists
+                var relationExists = false;
+                var _iteratorNormalCompletion2 = true;
+                var _didIteratorError2 = false;
+                var _iteratorError2 = undefined;
+
+                try {
+                  for (var _iterator2 = relation.from.relations[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                    var existingRelation = _step2.value;
+
+                    if (relation.to == existingRelation.to && relation.type == existingRelation.type) {
+                      relationExists = true;
+                      break;
+                    }
+                  }
+                } catch (err) {
+                  _didIteratorError2 = true;
+                  _iteratorError2 = err;
+                } finally {
+                  try {
+                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                      _iterator2.return();
+                    }
+                  } finally {
+                    if (_didIteratorError2) {
+                      throw _iteratorError2;
+                    }
+                  }
+                }
+
+                if (!relationExists) {
+                  equivalenceClass.relations.push(relation);
+                } else {
+                  //remove relation from target
+                  var _index = _.indexOf(relation.to.relations, relation);
+                  relation.to.relations.splice(_index, 1);
+                  //remove relation from relations
+                  _index = _.indexOf(this.relations, relation);
+                  this.relations.splice(_index, 1);
+                }
+              }
+
+              //Change dialectical types of statement-to-statement relations to semantic types
+              if (relation.type == "support") {
+                relation.type = "entails";
+              } else if (relation.type == "attack") {
+                relation.type = "contrary";
+              }
+            }
           }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
         } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
+          try {
+            if (!_iteratorNormalCompletion && _iterator.return) {
+              _iterator.return();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
           }
         }
       }

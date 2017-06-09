@@ -23,60 +23,61 @@ class ModelPlugin{
     if(data.config && data.config.model){
       this.config = data.config.model;
     }
-    for(let relation of this.relations){
-      let fromType = this.getElementType(relation.from);
-      let toType = this.getElementType(relation.to);
-      if(fromType == RelationObjectTypes.SKETCHED_ARGUMENT 
-        ||toType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT 
-        ||toType == RelationObjectTypes.SKETCHED_ARGUMENT){
-        relation.status = "sketched";
-      }else if(fromType == RelationObjectTypes.STATEMENT 
-        ||fromType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT){
-        relation.status = "reconstructed";
-        
-        if(fromType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT){
-          //change relation.from to point to the argument's conclusion
-          let argument = relation.from;
+    if(this.relations){
+      for(let relation of this.relations){
+        let fromType = this.getElementType(relation.from);
+        let toType = this.getElementType(relation.to);
+        if(fromType == RelationObjectTypes.SKETCHED_ARGUMENT 
+          ||toType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT 
+          ||toType == RelationObjectTypes.SKETCHED_ARGUMENT){
+          relation.status = "sketched";
+        }else if(fromType == RelationObjectTypes.STATEMENT 
+          ||fromType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT){
+          relation.status = "reconstructed";
           
-          //remove from argument
-          let index = _.indexOf(argument.relations, relation);
-          argument.relations.splice(index, 1);
-                    
-          let conclusionStatement = argument.pcs[relation.from.pcs.length - 1];
-          let equivalenceClass = this.statements[conclusionStatement.title];
-          
-          relation.from = equivalenceClass;
+          if(fromType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT){
+            //change relation.from to point to the argument's conclusion
+            let argument = relation.from;
+            
+            //remove from argument
+            let index = _.indexOf(argument.relations, relation);
+            argument.relations.splice(index, 1);
+                      
+            let conclusionStatement = argument.pcs[relation.from.pcs.length - 1];
+            let equivalenceClass = this.statements[conclusionStatement.title];
+            
+            relation.from = equivalenceClass;
 
-          //check if this relation already exists
-          let relationExists = false;
-          for(let existingRelation of relation.from.relations){
-            if(relation.to == existingRelation.to && relation.type == existingRelation.type){
-              relationExists = true;
-              break;
+            //check if this relation already exists
+            let relationExists = false;
+            for(let existingRelation of relation.from.relations){
+              if(relation.to == existingRelation.to && relation.type == existingRelation.type){
+                relationExists = true;
+                break;
+              }
+            }
+            if(!relationExists){
+              equivalenceClass.relations.push(relation);            
+            }else{
+              //remove relation from target
+              let index = _.indexOf(relation.to.relations, relation);
+              relation.to.relations.splice(index, 1);
+              //remove relation from relations
+              index = _.indexOf(this.relations, relation);
+              this.relations.splice(index, 1);
             }
           }
-          if(!relationExists){
-            equivalenceClass.relations.push(relation);            
-          }else{
-            //remove relation from target
-            let index = _.indexOf(relation.to.relations, relation);
-            relation.to.relations.splice(index, 1);
-            //remove relation from relations
-            index = _.indexOf(this.relations, relation);
-            this.relations.splice(index, 1);
+          
+          //Change dialectical types of statement-to-statement relations to semantic types
+          if(relation.type == "support"){
+            relation.type = "entails";
+          }else if(relation.type == "attack"){
+            relation.type = "contrary"
           }
+          
         }
-        
-        //Change dialectical types of statement-to-statement relations to semantic types
-        if(relation.type == "support"){
-          relation.type = "entails";
-        }else if(relation.type == "attack"){
-          relation.type = "contrary"
-        }
-        
-      }
+      }      
     }
-
 
     data.relations = this.relations;
     data.statements = this.statements;
@@ -129,7 +130,6 @@ class ModelPlugin{
       }
       return ec;
     }
-
 
     let currentStatement = null;
     let currentStatementOrArgument = null;

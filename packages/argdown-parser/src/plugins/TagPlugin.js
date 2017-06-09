@@ -17,7 +17,7 @@ class TagPlugin{
     this.config = config;
   }
   run(data){
-    if(!data.tags){
+    if(!data.tags || !data.statements || !data.arguments){
       return;
     }
     data.config = data.config ||{};

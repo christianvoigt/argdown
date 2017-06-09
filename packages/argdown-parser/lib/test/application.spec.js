@@ -5,6 +5,8 @@ var _chai = require('chai');
 var _index = require('../src/index.js');
 
 var app = new _index.ArgdownApplication();
+var parserPlugin = new _index.ParserPlugin();
+app.addPlugin(parserPlugin, 'parse-input');
 
 describe("Application", function () {
   it("can add, get, call and remove plugins", function () {
@@ -22,16 +24,14 @@ describe("Application", function () {
         return data;
       }
     };
-    app.addPlugin(plugin);
-    (0, _chai.expect)(app.getPlugin(plugin.name)).to.equal(plugin);
-    app.parse(source);
-    var result = app.run();
+    app.addPlugin(plugin, 'test');
+    (0, _chai.expect)(app.getPlugin(plugin.name, 'test')).to.equal(plugin);
+    var result = app.run(['parse-input', 'test'], { input: source });
     (0, _chai.expect)(statements).to.equal(1);
     (0, _chai.expect)(result.testRunCompleted).to.be.true;
     statements = 0;
-    app.removePlugin(plugin);
-    app.parse(source);
-    result = app.run();
+    app.removePlugin(plugin, 'test');
+    result = app.run(['parse-input', 'test'], { input: source });
     (0, _chai.expect)(statements).to.equal(0);
     (0, _chai.expect)(result.testRunCompleted).to.be.undefined;
   });

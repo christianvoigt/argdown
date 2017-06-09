@@ -10,6 +10,8 @@ var _ArgdownApplication = require("./ArgdownApplication.js");
 
 var _ModelPlugin = require("./plugins/ModelPlugin.js");
 
+var _ParserPlugin = require("./plugins/ParserPlugin.js");
+
 var _HtmlExport = require("./plugins/HtmlExport.js");
 
 var _TagPlugin = require("./plugins/TagPlugin.js");
@@ -31,6 +33,7 @@ module.exports = {
   ArgdownParser: _ArgdownParser.ArgdownParser,
   ArgdownLexer: _ArgdownLexer.ArgdownLexer,
   ArgdownApplication: _ArgdownApplication.ArgdownApplication,
+  ParserPlugin: _ParserPlugin.ParserPlugin,
   ModelPlugin: _ModelPlugin.ModelPlugin,
   HtmlExport: _HtmlExport.HtmlExport,
   Argument: _Argument.Argument,

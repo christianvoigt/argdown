@@ -1,7 +1,5 @@
 "use strict";
 
-import {ArgdownLexer} from './ArgdownLexer.js';
-import {ArgdownParser} from "./ArgdownParser.js";
 import {ArgdownTreeWalker} from "./ArgdownTreeWalker.js";
 import * as _ from 'lodash';
 
@@ -65,9 +63,11 @@ class ArgdownApplication{
   }
   getPlugin(name, processorId){
     let plugins = this.getPlugins(processorId);
-    for(let plugin of plugins){
-      if(plugin.name == name)
-        return plugin;
+    if(plugins){
+      for(let plugin of plugins){
+        if(plugin.name == name)
+          return plugin;
+      }      
     }
   }
   removeProcessor(processorId){
@@ -81,29 +81,6 @@ class ArgdownApplication{
   }
   init(){
     this.processors = {};
-    this.lexer = ArgdownLexer;
-    this.parser = ArgdownParser;
-  }
-  parse(inputText, verbose, data){
-      data = data ||{};
-      let lexResult = this.lexer.tokenize(inputText);
-      this.tokens = lexResult.tokens;
-      data.tokens = lexResult.tokens; 
-      this.lexerErrors = lexResult.errors;
-      data.lexerErrors = lexResult.errors;
-
-      this.parser.input = lexResult.tokens;
-      this.ast = this.parser.argdown();
-      data.ast = this.ast;
-      data.parserErrors = this.parser.errors;
-      this.parserErrors = this.parser.errors;
-      if(verbose && data.lexerErrors && data.lexerErrors.length > 0){
-        console.log(data.lexerErrors);
-      }
-      if(verbose && data.parserErrors && data.parserErrors.length > 0){
-        console.log(data.parserErrors);
-      }
-      return data;
   }
   run(param, previousData){
     let processorsToRun = null;
@@ -133,9 +110,6 @@ class ArgdownApplication{
         }
       }
     }
-    if(data.input){
-      this.parse(data.input, verbose, data);
-    }
     
     if(_.isEmpty(processorsToRun)){
       if(verbose){
@@ -144,16 +118,6 @@ class ArgdownApplication{
       return data;
     }
     
-    let ast = data.ast;
-    if(!ast){
-      ast = this.ast;
-    }
-    if(!ast){
-      if(verbose){
-        console.log("Ast not found.");
-      }
-      return data;
-    }
     for(let processorId of processorsToRun){
       let processor = this.processors[processorId];
       if(!processor){
@@ -166,8 +130,8 @@ class ArgdownApplication{
         console.log("Running processor: "+processorId);
       }
 
-      if(processor.walker){
-        processor.walker.walk(ast, data);
+      if(data.ast && processor.walker){
+        processor.walker.walk(data.ast, data);
       }
 
       for(let plugin of processor.plugins){
@@ -182,6 +146,7 @@ class ArgdownApplication{
         }
       }
     }
+    this.dataOfLastRun = data;
     return data;
   }
 }

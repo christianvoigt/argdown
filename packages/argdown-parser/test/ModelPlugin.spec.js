@@ -1,16 +1,17 @@
 import { expect } from 'chai';
-import {ArgdownApplication, ModelPlugin} from '../src/index.js';
+import {ArgdownApplication, ParserPlugin, ModelPlugin} from '../src/index.js';
 
 let app = new ArgdownApplication();
 
 describe("ModelPlugin", function() {
-  let plugin = new ModelPlugin();
-  app.addPlugin(plugin,'build-model');
+  const parserPlugin = new ParserPlugin();
+  let modelPlugin = new ModelPlugin();
+  app.addPlugin(parserPlugin, 'parse-input');
+  app.addPlugin(modelPlugin,'build-model');
 
   it("can create statements dictionary and save statement by title", function(){
     let source = "[Test]: Hello _World_!";
-    app.parse(source);
-    let result = app.run('build-model');
+    let result = app.run(['parse-input','build-model'], {input:source});
     expect(result.statements['Test']).to.exist;
     expect(result.statements['Test'].members[0].text).to.equal('Hello World!');
     expect(result.statements['Test'].getCanonicalStatement().text).to.equal('Hello World!');
@@ -22,8 +23,7 @@ describe("ModelPlugin", function() {
   });
   it("can create arguments dictionary and save argument by title", function(){
     let source = "<Test>: Hello _World_!";
-    app.parse(source);
-    let result = app.run('build-model');
+    let result = app.run(['parse-input','build-model'], {input:source});
     expect(result.arguments['Test']).to.exist;
     expect(result.arguments['Test'].descriptions.length).to.equal(1);
     let description = result.arguments['Test'].descriptions[0];
@@ -36,8 +36,7 @@ describe("ModelPlugin", function() {
   });
   it("can create statement relations and ignore duplicates", function(){
     let source = "[A]: The Beatles are the best!\n  +[B]: The Beatles made 'Rubber Soul'!\n  -><C>: The Rolling Stones were cooler!\n\n [A]\n  +[B]\n  -><C>";
-    app.parse(source);
-    let result = app.run('build-model');
+    let result = app.run(['parse-input','build-model'], {input:source});
     expect(Object.keys(result.statements).length).to.equal(2);
     expect(Object.keys(result.arguments).length).to.equal(1);
     expect(result.relations.length).to.equal(2);
@@ -45,16 +44,16 @@ describe("ModelPlugin", function() {
     expect(result.statements['A']).to.exist;
     expect(result.statements['A'].relations.length).to.equal(2);
     expect(result.statements['A'].relations[0].type).to.equal('entails');
-    expect(result.statements['A'].relations[0].to).to.equal(plugin.statements['A']);
-    expect(result.statements['A'].relations[0].from).to.equal(plugin.statements['B']);
+    expect(result.statements['A'].relations[0].to).to.equal(modelPlugin.statements['A']);
+    expect(result.statements['A'].relations[0].from).to.equal(modelPlugin.statements['B']);
     expect(result.statements['A'].relations[0].status).to.equal('reconstructed');
     expect(result.statements['B']).to.exist;
     expect(result.statements['B'].relations.length).to.equal(1);
     expect(result.arguments['C']).to.exist;
     expect(result.arguments['C'].relations.length).to.equal(1);
     expect(result.arguments['C'].relations[0].type).to.equal('attack');
-    expect(result.arguments['C'].relations[0].from).to.equal(plugin.statements['A']);
-    expect(result.arguments['C'].relations[0].to).to.equal(plugin.arguments['C']);
+    expect(result.arguments['C'].relations[0].from).to.equal(modelPlugin.statements['A']);
+    expect(result.arguments['C'].relations[0].to).to.equal(modelPlugin.arguments['C']);
     expect(result.arguments['C'].relations[0].status).to.equal('sketched');
   });
   it("can ignore duplicates of argument relations", function(){
@@ -70,37 +69,34 @@ describe("ModelPlugin", function() {
     (3) [B]: text
       +> [A]
     `;
-    app.parse(source);
-    let result = app.run('build-model');
+    let result = app.run(['parse-input','build-model'], {input:source});
     expect(Object.keys(result.statements).length).to.equal(4);
     expect(Object.keys(result.arguments).length).to.equal(1);
     expect(result.relations.length).to.equal(1);
   });  
   it("can create sketched argument relations", function(){
     let source = "<A>: The Beatles are the best!\n  +<B>: The Beatles made 'Rubber Soul'!\n  ->[C]: The Rolling Stones were cooler!";
-    app.parse(source);
-    let result = app.run('build-model');
+    let result = app.run(['parse-input','build-model'], {input:source});
     expect(result.arguments['A']).to.exist;
     expect(result.arguments['A'].relations.length).to.equal(2);
     expect(result.arguments['A'].relations[0].type).to.equal('support');
-    expect(result.arguments['A'].relations[0].to).to.equal(plugin.arguments['A']);
-    expect(result.arguments['A'].relations[0].from).to.equal(plugin.arguments['B']);
+    expect(result.arguments['A'].relations[0].to).to.equal(modelPlugin.arguments['A']);
+    expect(result.arguments['A'].relations[0].from).to.equal(modelPlugin.arguments['B']);
     expect(result.arguments['A'].relations[0].status).to.equal('sketched');
     expect(result.arguments['B']).to.exist;
     expect(result.arguments['B'].relations.length).to.equal(1);
     expect(result.statements['C']).to.exist;
     expect(result.statements['C'].relations.length).to.equal(1);
     expect(result.statements['C'].relations[0].type).to.equal('attack');
-    expect(result.statements['C'].relations[0].from).to.equal(plugin.arguments['A']);
-    expect(result.statements['C'].relations[0].to).to.equal(plugin.statements['C']);
+    expect(result.statements['C'].relations[0].from).to.equal(modelPlugin.arguments['A']);
+    expect(result.statements['C'].relations[0].to).to.equal(modelPlugin.statements['C']);
     expect(result.statements['C'].relations[0].status).to.equal('sketched');
   });
   it("does not add empty statements as members to equivalence class", function(){
     let source = `[A]: B
     
     [A]`;
-    app.parse(source);
-    let result = app.run('build-model');
+    let result = app.run(['parse-input','build-model'], {input:source});
     expect(result.statements['A']).to.exist;
     expect(result.statements['A'].members.length).to.equal(1);
   });  
@@ -110,16 +106,14 @@ describe("ModelPlugin", function() {
     
     [B]
       >< [A]`;
-    app.parse(source);
-    let result = app.run('build-model');
-    expect(app.parserErrors.length).to.equal(0);
+    let result = app.run(['parse-input','build-model'], {input:source});
+    expect(result.parserErrors.length).to.equal(0);
     expect(Object.keys(result.statements).length).to.equal(2);
     expect(Object.keys(result.relations).length).to.equal(1);
   });      
   it("can process a single argument", function(){
     let source = "(1) [s1]: A\n(2) [s2]: B\n----\n(3) [s3]: C";
-    app.parse(source);
-    let result = app.run('build-model');
+    let result = app.run(['parse-input','build-model'], {input:source});
     expect(result.arguments['Untitled 1']).to.exist;
     expect(result.statements['s1']).to.exist;
     expect(result.statements['s2']).to.exist;
@@ -143,8 +137,7 @@ describe("ModelPlugin", function() {
 <Reconstructed Argument>
   ->[F]: text
   +><Sketched Argument 2>`;
-  app.parse(source);
-  let result = app.run('build-model');
+  let result = app.run(['parse-input','build-model'], {input:source});
   expect(Object.keys(result.arguments).length).to.equal(3);
   expect(Object.keys(result.statements).length).to.equal(6);
 
@@ -253,8 +246,7 @@ it("can create the section hierarchy and set section property of statements and 
   ----
   (3) r
   `;
-  app.parse(source);
-  let result = app.run('build-model');
+  let result = app.run(['parse-input','build-model'], {input:source});
   //console.log(JSON.stringify(result.sections,null,2));
   expect(result.sections).to.exist;
   expect(result.sections.length).to.equal(1);
@@ -287,8 +279,7 @@ it("can create tags lists", function(){
   
   [Statement 1]: #tag-5 #tag-6 
   `;
-  app.parse(source);
-  let result = app.run('build-model');
+  let result = app.run(['parse-input','build-model'], {input:source});
   expect(result.tags).to.exist;
   expect(result.tags.length).to.equal(6);
   expect(result.statements["Statement 1"].tags.length).to.equal(3);
