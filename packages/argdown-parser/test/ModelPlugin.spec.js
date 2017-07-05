@@ -145,13 +145,7 @@ describe("ModelPlugin", function() {
   //console.log(util.inspect(argument));
   expect(argument).to.exist;
   expect(argument.pcs.length).to.equal(4);
-  expect(argument.relations.length).to.equal(1); //second relation gets transformed to relation of conclusion
-
-  expect(argument.relations[0].type).to.equal("support");
-  expect(argument.relations[0].from.title).to.equal("Reconstructed Argument");
-  expect(argument.relations[0].to.title).to.equal("Sketched Argument 2");
-  expect(argument.relations[0].status).to.equal("sketched");
-
+  expect(argument.relations.length).to.equal(0); //all relations get transformed to relations of conclusion
 
   expect(argument.pcs[0].role).to.equal('premise');
   expect(argument.pcs[1].role).to.equal('premise');
@@ -185,7 +179,7 @@ describe("ModelPlugin", function() {
   expect(conclusion.isUsedAsPremise).to.be.false;
   expect(conclusion.isUsedAsRootOfStatementTree).to.be.false;
   expect(conclusion.isUsedAsChildOfStatementTree).to.be.false;
-  expect(conclusion.relations.length).to.equal(3); //with transformed relation from the argument
+  expect(conclusion.relations.length).to.equal(4); //with transformed relations from the argument
 
   expect(conclusion.relations[0].status).to.equal('reconstructed');
   expect(conclusion.relations[0].from.title).to.equal('D');
@@ -202,6 +196,11 @@ describe("ModelPlugin", function() {
   expect(conclusion.relations[2].from.title).to.equal("D");
   expect(conclusion.relations[2].to.title).to.equal("F");
   expect(conclusion.relations[2].status).to.equal("reconstructed");
+
+  expect(conclusion.relations[3].type).to.equal("support");
+  expect(conclusion.relations[3].from.title).to.equal("D");
+  expect(conclusion.relations[3].to.title).to.equal("Sketched Argument 2");
+  expect(conclusion.relations[3].status).to.equal("sketched");
 
 
   let inference = argument.pcs[3].inference;
@@ -287,5 +286,20 @@ it("can create tags lists", function(){
   expect(result.statements["Statement 2"].tags.length).to.equal(2);
   expect(result.arguments["Argument 1"].tags.length).to.equal(3);
 });
+it("can identify duplicates in outgoing relations of reconstructed argument and main conclusion", function(){
+  let source = `<A1>: A1
+  - <A2>: A2
+    
+<A2>
 
+ (1) P
+ (2) P
+ ----
+ (3) C
+   -> <A1> 
+  `;
+  let result = app.run(['parse-input','build-model'], {input:source});
+  expect(result.relations).to.exist;
+  expect(result.relations.length).to.equal(1);
+});
 });

@@ -44,74 +44,73 @@ var ModelPlugin = function () {
 
             var fromType = this.getElementType(relation.from);
             var toType = this.getElementType(relation.to);
+
+            // For reconstructed arguments: change outgoing argument relations 
+            // to outgoing relations of the main conclusion, removing duplicates
+            if (fromType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT) {
+              //change relation.from to point to the argument's conclusion
+              var argument = relation.from;
+
+              //remove from argument
+              var index = _.indexOf(argument.relations, relation);
+              argument.relations.splice(index, 1);
+
+              var conclusionStatement = argument.pcs[relation.from.pcs.length - 1];
+              var equivalenceClass = this.statements[conclusionStatement.title];
+              //change to relation of main conclusion
+              relation.from = equivalenceClass;
+
+              //check if this relation already exists
+              var relationExists = false;
+              var _iteratorNormalCompletion3 = true;
+              var _didIteratorError3 = false;
+              var _iteratorError3 = undefined;
+
+              try {
+                for (var _iterator3 = equivalenceClass.relations[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                  var existingRelation = _step3.value;
+
+                  if (relation.to == existingRelation.to && relation.type == existingRelation.type) {
+                    relationExists = true;
+                    break;
+                  }
+                }
+              } catch (err) {
+                _didIteratorError3 = true;
+                _iteratorError3 = err;
+              } finally {
+                try {
+                  if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                    _iterator3.return();
+                  }
+                } finally {
+                  if (_didIteratorError3) {
+                    throw _iteratorError3;
+                  }
+                }
+              }
+
+              if (!relationExists) {
+                equivalenceClass.relations.push(relation);
+              } else {
+                //remove relation from target
+                var _index = _.indexOf(relation.to.relations, relation);
+                relation.to.relations.splice(_index, 1);
+                //remove relation from relations
+                _index = _.indexOf(this.relations, relation);
+                this.relations.splice(_index, 1);
+              }
+            }
+            //Add relation status: "Reconstructed" for statement-to-statement relations, "sketched" for all others
             if (fromType == RelationObjectTypes.SKETCHED_ARGUMENT || toType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT || toType == RelationObjectTypes.SKETCHED_ARGUMENT) {
               relation.status = "sketched";
             } else if (fromType == RelationObjectTypes.STATEMENT || fromType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT) {
               relation.status = "reconstructed";
-
-              if (fromType == RelationObjectTypes.RECONSTRUCTED_ARGUMENT) {
-                //change relation.from to point to the argument's conclusion
-                var argument = relation.from;
-
-                //remove from argument
-                var index = _.indexOf(argument.relations, relation);
-                argument.relations.splice(index, 1);
-
-                var conclusionStatement = argument.pcs[relation.from.pcs.length - 1];
-                var equivalenceClass = this.statements[conclusionStatement.title];
-
-                relation.from = equivalenceClass;
-
-                //check if this relation already exists
-                var relationExists = false;
-                var _iteratorNormalCompletion2 = true;
-                var _didIteratorError2 = false;
-                var _iteratorError2 = undefined;
-
-                try {
-                  for (var _iterator2 = relation.from.relations[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                    var existingRelation = _step2.value;
-
-                    if (relation.to == existingRelation.to && relation.type == existingRelation.type) {
-                      relationExists = true;
-                      break;
-                    }
-                  }
-                } catch (err) {
-                  _didIteratorError2 = true;
-                  _iteratorError2 = err;
-                } finally {
-                  try {
-                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                      _iterator2.return();
-                    }
-                  } finally {
-                    if (_didIteratorError2) {
-                      throw _iteratorError2;
-                    }
-                  }
-                }
-
-                if (!relationExists) {
-                  equivalenceClass.relations.push(relation);
-                } else {
-                  //remove relation from target
-                  var _index = _.indexOf(relation.to.relations, relation);
-                  relation.to.relations.splice(_index, 1);
-                  //remove relation from relations
-                  _index = _.indexOf(this.relations, relation);
-                  this.relations.splice(_index, 1);
-                }
-              }
-
-              //Change dialectical types of statement-to-statement relations to semantic types
-              if (relation.type == "support") {
-                relation.type = "entails";
-              } else if (relation.type == "attack") {
-                relation.type = "contrary";
-              }
             }
           }
+          //Change dialectical types of statement-to-statement relations to semantic types
+          //Doing this in a separate loop makes it easier to identify duplicates in the previous loop, 
+          //even though it is less efficient.
         } catch (err) {
           _didIteratorError = true;
           _iteratorError = err;
@@ -123,6 +122,38 @@ var ModelPlugin = function () {
           } finally {
             if (_didIteratorError) {
               throw _iteratorError;
+            }
+          }
+        }
+
+        var _iteratorNormalCompletion2 = true;
+        var _didIteratorError2 = false;
+        var _iteratorError2 = undefined;
+
+        try {
+          for (var _iterator2 = this.relations[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+            var _relation = _step2.value;
+
+            if (_relation.status == "sketched") {
+              continue;
+            }
+            if (_relation.type == "support") {
+              _relation.type = "entails";
+            } else if (_relation.type == "attack") {
+              _relation.type = "contrary";
+            }
+          }
+        } catch (err) {
+          _didIteratorError2 = true;
+          _iteratorError2 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+              _iterator2.return();
+            }
+          } finally {
+            if (_didIteratorError2) {
+              throw _iteratorError2;
             }
           }
         }
@@ -374,27 +405,27 @@ var ModelPlugin = function () {
     }
     function onFreestyleTextEntry(node) {
       node.text = "";
-      var _iteratorNormalCompletion3 = true;
-      var _didIteratorError3 = false;
-      var _iteratorError3 = undefined;
+      var _iteratorNormalCompletion4 = true;
+      var _didIteratorError4 = false;
+      var _iteratorError4 = undefined;
 
       try {
-        for (var _iterator3 = node.children[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-          var child = _step3.value;
+        for (var _iterator4 = node.children[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+          var child = _step4.value;
 
           node.text += child.image;
         }
       } catch (err) {
-        _didIteratorError3 = true;
-        _iteratorError3 = err;
+        _didIteratorError4 = true;
+        _iteratorError4 = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion3 && _iterator3.return) {
-            _iterator3.return();
+          if (!_iteratorNormalCompletion4 && _iterator4.return) {
+            _iterator4.return();
           }
         } finally {
-          if (_didIteratorError3) {
-            throw _iteratorError3;
+          if (_didIteratorError4) {
+            throw _iteratorError4;
           }
         }
       }
@@ -485,13 +516,13 @@ var ModelPlugin = function () {
           relation.from = target;
         }
         var relationExists = false;
-        var _iteratorNormalCompletion4 = true;
-        var _didIteratorError4 = false;
-        var _iteratorError4 = undefined;
+        var _iteratorNormalCompletion5 = true;
+        var _didIteratorError5 = false;
+        var _iteratorError5 = undefined;
 
         try {
-          for (var _iterator4 = relation.from.relations[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-            var existingRelation = _step4.value;
+          for (var _iterator5 = relation.from.relations[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+            var existingRelation = _step5.value;
 
             if (relation.to == existingRelation.to && relation.type == existingRelation.type) {
               relationExists = true;
@@ -502,16 +533,16 @@ var ModelPlugin = function () {
             }
           }
         } catch (err) {
-          _didIteratorError4 = true;
-          _iteratorError4 = err;
+          _didIteratorError5 = true;
+          _iteratorError5 = err;
         } finally {
           try {
-            if (!_iteratorNormalCompletion4 && _iterator4.return) {
-              _iterator4.return();
+            if (!_iteratorNormalCompletion5 && _iterator5.return) {
+              _iterator5.return();
             }
           } finally {
-            if (_didIteratorError4) {
-              throw _iteratorError4;
+            if (_didIteratorError5) {
+              throw _iteratorError5;
             }
           }
         }
@@ -630,29 +661,29 @@ var ModelPlugin = function () {
       node.inference = currentInference;
     }
     function onInferenceRulesExit(node) {
-      var _iteratorNormalCompletion5 = true;
-      var _didIteratorError5 = false;
-      var _iteratorError5 = undefined;
+      var _iteratorNormalCompletion6 = true;
+      var _didIteratorError6 = false;
+      var _iteratorError6 = undefined;
 
       try {
-        for (var _iterator5 = node.children[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-          var child = _step5.value;
+        for (var _iterator6 = node.children[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+          var child = _step6.value;
 
           if (child.name == 'freestyleText') {
             currentInference.inferenceRules.push(child.text.trim());
           }
         }
       } catch (err) {
-        _didIteratorError5 = true;
-        _iteratorError5 = err;
+        _didIteratorError6 = true;
+        _iteratorError6 = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion5 && _iterator5.return) {
-            _iterator5.return();
+          if (!_iteratorNormalCompletion6 && _iterator6.return) {
+            _iterator6.return();
           }
         } finally {
-          if (_didIteratorError5) {
-            throw _iteratorError5;
+          if (_didIteratorError6) {
+            throw _iteratorError6;
           }
         }
       }
@@ -735,76 +766,25 @@ var ModelPlugin = function () {
   _createClass(ModelPlugin, [{
     key: 'logRelations',
     value: function logRelations(data) {
-      var _iteratorNormalCompletion6 = true;
-      var _didIteratorError6 = false;
-      var _iteratorError6 = undefined;
-
-      try {
-        for (var _iterator6 = Object.keys(data.statements)[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-          var statementKey = _step6.value;
-
-          var statement = data.statements[statementKey];
-          var _iteratorNormalCompletion8 = true;
-          var _didIteratorError8 = false;
-          var _iteratorError8 = undefined;
-
-          try {
-            for (var _iterator8 = statement.relations[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
-              var relation = _step8.value;
-
-              if (relation.from == statement) {
-                console.log("Relation from: " + relation.from.title + " to: " + relation.to.title + " type: " + relation.type);
-              }
-            }
-          } catch (err) {
-            _didIteratorError8 = true;
-            _iteratorError8 = err;
-          } finally {
-            try {
-              if (!_iteratorNormalCompletion8 && _iterator8.return) {
-                _iterator8.return();
-              }
-            } finally {
-              if (_didIteratorError8) {
-                throw _iteratorError8;
-              }
-            }
-          }
-        }
-      } catch (err) {
-        _didIteratorError6 = true;
-        _iteratorError6 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion6 && _iterator6.return) {
-            _iterator6.return();
-          }
-        } finally {
-          if (_didIteratorError6) {
-            throw _iteratorError6;
-          }
-        }
-      }
-
       var _iteratorNormalCompletion7 = true;
       var _didIteratorError7 = false;
       var _iteratorError7 = undefined;
 
       try {
-        for (var _iterator7 = Object.keys(data.arguments)[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
-          var argumentKey = _step7.value;
+        for (var _iterator7 = Object.keys(data.statements)[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+          var statementKey = _step7.value;
 
-          var argument = data.arguments[argumentKey];
+          var statement = data.statements[statementKey];
           var _iteratorNormalCompletion9 = true;
           var _didIteratorError9 = false;
           var _iteratorError9 = undefined;
 
           try {
-            for (var _iterator9 = argument.relations[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
-              var _relation = _step9.value;
+            for (var _iterator9 = statement.relations[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
+              var relation = _step9.value;
 
-              if (_relation.from == argument) {
-                console.log("Relation from: " + _relation.from.title + " to: " + _relation.to.title + " type: " + _relation.type);
+              if (relation.from == statement) {
+                console.log("Relation from: " + relation.from.title + " to: " + relation.to.title + " type: " + relation.type);
               }
             }
           } catch (err) {
@@ -833,6 +813,57 @@ var ModelPlugin = function () {
         } finally {
           if (_didIteratorError7) {
             throw _iteratorError7;
+          }
+        }
+      }
+
+      var _iteratorNormalCompletion8 = true;
+      var _didIteratorError8 = false;
+      var _iteratorError8 = undefined;
+
+      try {
+        for (var _iterator8 = Object.keys(data.arguments)[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+          var argumentKey = _step8.value;
+
+          var argument = data.arguments[argumentKey];
+          var _iteratorNormalCompletion10 = true;
+          var _didIteratorError10 = false;
+          var _iteratorError10 = undefined;
+
+          try {
+            for (var _iterator10 = argument.relations[Symbol.iterator](), _step10; !(_iteratorNormalCompletion10 = (_step10 = _iterator10.next()).done); _iteratorNormalCompletion10 = true) {
+              var _relation2 = _step10.value;
+
+              if (_relation2.from == argument) {
+                console.log("Relation from: " + _relation2.from.title + " to: " + _relation2.to.title + " type: " + _relation2.type);
+              }
+            }
+          } catch (err) {
+            _didIteratorError10 = true;
+            _iteratorError10 = err;
+          } finally {
+            try {
+              if (!_iteratorNormalCompletion10 && _iterator10.return) {
+                _iterator10.return();
+              }
+            } finally {
+              if (_didIteratorError10) {
+                throw _iteratorError10;
+              }
+            }
+          }
+        }
+      } catch (err) {
+        _didIteratorError8 = true;
+        _iteratorError8 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion8 && _iterator8.return) {
+            _iterator8.return();
+          }
+        } finally {
+          if (_didIteratorError8) {
+            throw _iteratorError8;
           }
         }
       }

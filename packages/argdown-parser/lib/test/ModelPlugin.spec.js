@@ -116,12 +116,7 @@ describe("ModelPlugin", function () {
     //console.log(util.inspect(argument));
     (0, _chai.expect)(argument).to.exist;
     (0, _chai.expect)(argument.pcs.length).to.equal(4);
-    (0, _chai.expect)(argument.relations.length).to.equal(1); //second relation gets transformed to relation of conclusion
-
-    (0, _chai.expect)(argument.relations[0].type).to.equal("support");
-    (0, _chai.expect)(argument.relations[0].from.title).to.equal("Reconstructed Argument");
-    (0, _chai.expect)(argument.relations[0].to.title).to.equal("Sketched Argument 2");
-    (0, _chai.expect)(argument.relations[0].status).to.equal("sketched");
+    (0, _chai.expect)(argument.relations.length).to.equal(0); //all relations get transformed to relations of conclusion
 
     (0, _chai.expect)(argument.pcs[0].role).to.equal('premise');
     (0, _chai.expect)(argument.pcs[1].role).to.equal('premise');
@@ -155,7 +150,7 @@ describe("ModelPlugin", function () {
     (0, _chai.expect)(conclusion.isUsedAsPremise).to.be.false;
     (0, _chai.expect)(conclusion.isUsedAsRootOfStatementTree).to.be.false;
     (0, _chai.expect)(conclusion.isUsedAsChildOfStatementTree).to.be.false;
-    (0, _chai.expect)(conclusion.relations.length).to.equal(3); //with transformed relation from the argument
+    (0, _chai.expect)(conclusion.relations.length).to.equal(4); //with transformed relations from the argument
 
     (0, _chai.expect)(conclusion.relations[0].status).to.equal('reconstructed');
     (0, _chai.expect)(conclusion.relations[0].from.title).to.equal('D');
@@ -171,6 +166,11 @@ describe("ModelPlugin", function () {
     (0, _chai.expect)(conclusion.relations[2].from.title).to.equal("D");
     (0, _chai.expect)(conclusion.relations[2].to.title).to.equal("F");
     (0, _chai.expect)(conclusion.relations[2].status).to.equal("reconstructed");
+
+    (0, _chai.expect)(conclusion.relations[3].type).to.equal("support");
+    (0, _chai.expect)(conclusion.relations[3].from.title).to.equal("D");
+    (0, _chai.expect)(conclusion.relations[3].to.title).to.equal("Sketched Argument 2");
+    (0, _chai.expect)(conclusion.relations[3].status).to.equal("sketched");
 
     var inference = argument.pcs[3].inference;
     (0, _chai.expect)(inference).to.exist;
@@ -228,6 +228,12 @@ describe("ModelPlugin", function () {
     (0, _chai.expect)(result.statements["Statement 2"].members[result.statements["Statement 2"].members.length - 1].text).to.equal("text #tag-1 #(tag 2)");
     (0, _chai.expect)(result.statements["Statement 2"].tags.length).to.equal(2);
     (0, _chai.expect)(result.arguments["Argument 1"].tags.length).to.equal(3);
+  });
+  it("can identify duplicates in outgoing relations of reconstructed argument and main conclusion", function () {
+    var source = '<A1>: A1\n  - <A2>: A2\n    \n<A2>\n\n (1) P\n (2) P\n ----\n (3) C\n   -> <A1> \n  ';
+    var result = app.run(['parse-input', 'build-model'], { input: source });
+    (0, _chai.expect)(result.relations).to.exist;
+    (0, _chai.expect)(result.relations.length).to.equal(1);
   });
 });
 //# sourceMappingURL=ModelPlugin.spec.js.map
