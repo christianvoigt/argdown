@@ -148,6 +148,7 @@ class ModelPlugin{
     let parentsStack = [];
     let currentRelation = null;
     let inStatementTree = false;
+    let currentHeading = null;
     let currentSection = null;
     let sectionCounter = 0;
 
@@ -161,6 +162,7 @@ class ModelPlugin{
       $.relations = [];
       $.tags = [];
       uniqueTitleCounter = 0;
+      currentHeading = null;
       currentSection = null;
       currentStatementOrArgument = null;
       currentArgumentReconstruction = null;
@@ -224,6 +226,7 @@ class ModelPlugin{
       }
     }
     function onStatementMentionExit(node){
+      const target = (currentHeading)? currentHeading : currentStatement;
       let match = statementMentionPattern.exec(node.image);
       if(match){
         node.title = match[1];
@@ -232,11 +235,11 @@ class ModelPlugin{
         }else {
           node.trailingWhitespace = '';
         }
-        if(currentStatement){
-          let range = {type:'statement-mention',title:node.title, start:currentStatement.text.length};
-          currentStatement.text += node.image;
-          range.stop = currentStatement.text.length -1;
-          currentStatement.ranges.push(range);
+        if(target){
+          let range = {type:'statement-mention',title:node.title, start:target.text.length};
+          target.text += node.image;
+          range.stop = target.text.length -1;
+          target.ranges.push(range);
         }
       }
     }
@@ -299,6 +302,7 @@ class ModelPlugin{
       }
     }
     function onArgumentMentionExit(node){
+      const target = (currentHeading)? currentHeading : currentStatement;
       let match = argumentMentionPattern.exec(node.image);
       if(match){
         node.title = match[1];
@@ -307,53 +311,63 @@ class ModelPlugin{
         }else {
           node.trailingWhitespace = '';
         }
-        if(currentStatement){
-          let range = {type:'argument-mention',title:node.title, start:currentStatement.text.length};
-          currentStatement.text += node.image;
-          range.stop = currentStatement.text.length -1;
-          currentStatement.ranges.push(range);
+        if(target){
+          let range = {type:'argument-mention',title:node.title, start:target.text.length};
+          target.text += node.image;
+          range.stop = target.text.length -1;
+          target.ranges.push(range);
         }
       }
     }
     function onFreestyleTextEntry(node){
+      const target = (currentHeading)? currentHeading : currentStatement;
       node.text = "";
       for(let child of node.children){
         node.text += child.image;
       }
-      if(currentStatement)
-        currentStatement.text += node.text;
+      if(target){
+        target.text += node.text;        
+      }
     }
     function onLinkEntry(node){
+      const target = (currentHeading)? currentHeading : currentStatement;
+      if(!target){
+        return;
+      }
       let match = linkPattern.exec(node.image);
-      let linkRange = {type:'link', start: currentStatement.text.length};
+      let linkRange = {type:'link', start: target.text.length};
       node.url = match[2];
       node.text = match[1];
-      currentStatement.text += node.text;
-      linkRange.stop = currentStatement.text.length - 1;
+      target.text += node.text;
+      linkRange.stop = target.text.length - 1;
       linkRange.url = node.url;
-      currentStatement.ranges.push(linkRange);
+      target.ranges.push(linkRange);
       if(node.image[node.image.length - 1] == ' '){
-        currentStatement.text += ' ';
+        target.text += ' ';
         node.trailingWhitespace = ' ';
       }else{
         node.trailingWhitespace = '';
       }
     }
     function onTagEntry(node){
+      const target = (currentHeading)? currentHeading : currentStatement;
+      if(!target){
+        return;
+      }
       let match = tagPattern.exec(node.image);
       let tag = match[1] || match[2];
       node.tag = tag;
       if(!$.settings.removeTagsFromText){
-        let tagRange = {type:'tag', start: currentStatement.text.length};
+        let tagRange = {type:'tag', start: target.text.length};
         node.text = node.image;        
-        currentStatement.text += node.text;
-        tagRange.stop = currentStatement.text.length - 1;
+        target.text += node.text;
+        tagRange.stop = target.text.length - 1;
         tagRange.tag = node.tag;
-        currentStatement.ranges.push(tagRange);
+        target.ranges.push(tagRange);
       }
-      currentStatement.tags = currentStatement.tags ||[];
-      let tags = currentStatement.tags;
-      if(currentStatement.tags.indexOf(tag) == -1){
+      target.tags = target.tags ||[];
+      let tags = target.tags;
+      if(target.tags.indexOf(tag) == -1){
         tags.push(tag);
       }
       if($.tags.indexOf(tag) == -1){
@@ -361,37 +375,53 @@ class ModelPlugin{
       }
     }
     function onBoldEntry(){
-      let boldRange = {type:'bold', start: currentStatement.text.length};
+      const target = (currentHeading)? currentHeading : currentStatement;
+      if(!target){
+        return;
+      }
+      let boldRange = {type:'bold', start: target.text.length};
       rangesStack.push(boldRange);
-      currentStatement.ranges.push(boldRange);
+      target.ranges.push(boldRange);
     }
     function onBoldExit(node){
+      const target = (currentHeading)? currentHeading : currentStatement;
+      if(!target){
+        return;
+      }
       let boldEnd = _.last(node.children);
       if(boldEnd.image[boldEnd.image.length - 1] == ' '){
-        currentStatement.text += ' ';
+        target.text += ' ';
         node.trailingWhitespace = ' ';
       }else{
         node.trailingWhitespace = '';
       }
       let range = _.last(rangesStack);
-      range.stop = currentStatement.text.length - 1;
+      range.stop = target.text.length - 1;
       rangesStack.pop();
     }
     function onItalicEntry(){
-      let italicRange = {type:'italic', start: currentStatement.text.length};
+      const target = (currentHeading)? currentHeading : currentStatement;
+      if(!target){
+        return;
+      }
+      let italicRange = {type:'italic', start: target.text.length};
       rangesStack.push(italicRange);
-      currentStatement.ranges.push(italicRange);
+      target.ranges.push(italicRange);
     }
     function onItalicExit(node){
+      const target = (currentHeading)? currentHeading : currentStatement;
+      if(!target){
+        return;
+      }
       let italicEnd = _.last(node.children);
       if(italicEnd.image[italicEnd.image.length - 1] == ' '){
-        currentStatement.text += ' ';
+        target.text += ' ';
         node.trailingWhitespace = ' ';
       }else{
         node.trailingWhitespace = '';
       }
       let range = _.last(rangesStack);
-      range.stop = currentStatement.text.length - 1;
+      range.stop = target.text.length - 1;
       rangesStack.pop();
     }
 
@@ -550,13 +580,17 @@ class ModelPlugin{
       }
       currentInference.metaData[key] = value;
     }
+    function onHeadingEntry(node){
+      currentHeading = node;
+      currentHeading.text = '';
+      currentHeading.ranges = [];
+    }
     function onHeadingExit(node){
       let headingStart = node.children[0];
-      node.heading = headingStart.image.length;
-      node.text = node.children[1].text;
+      currentHeading.level = headingStart.image.length;
       sectionCounter++;
       let sectionId = 's'+sectionCounter;
-      let newSection = new Section(sectionId, node.text, node.heading);
+      let newSection = new Section(sectionId, currentHeading.level, currentHeading.text, currentHeading.ranges, currentHeading.tags);
       
       if(newSection.level > 1 && currentSection){
         let parentSection = currentSection;
@@ -569,10 +603,12 @@ class ModelPlugin{
         $.sections.push(newSection);
       }
       currentSection = newSection;
+      currentHeading = null;
     }
 
     this.argdownListeners = {
       argdownEntry : onArgdownEntry,
+      headingEntry : onHeadingEntry,
       headingExit : onHeadingExit,
       statementEntry : onStatementEntry,
       statementExit : onStatementExit,

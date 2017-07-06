@@ -236,6 +236,7 @@ var ModelPlugin = function () {
     var parentsStack = [];
     var currentRelation = null;
     var inStatementTree = false;
+    var currentHeading = null;
     var currentSection = null;
     var sectionCounter = 0;
 
@@ -249,6 +250,7 @@ var ModelPlugin = function () {
       $.relations = [];
       $.tags = [];
       uniqueTitleCounter = 0;
+      currentHeading = null;
       currentSection = null;
       currentStatementOrArgument = null;
       currentArgumentReconstruction = null;
@@ -312,6 +314,7 @@ var ModelPlugin = function () {
       }
     }
     function onStatementMentionExit(node) {
+      var target = currentHeading ? currentHeading : currentStatement;
       var match = statementMentionPattern.exec(node.image);
       if (match) {
         node.title = match[1];
@@ -320,11 +323,11 @@ var ModelPlugin = function () {
         } else {
           node.trailingWhitespace = '';
         }
-        if (currentStatement) {
-          var range = { type: 'statement-mention', title: node.title, start: currentStatement.text.length };
-          currentStatement.text += node.image;
-          range.stop = currentStatement.text.length - 1;
-          currentStatement.ranges.push(range);
+        if (target) {
+          var range = { type: 'statement-mention', title: node.title, start: target.text.length };
+          target.text += node.image;
+          range.stop = target.text.length - 1;
+          target.ranges.push(range);
         }
       }
     }
@@ -387,6 +390,7 @@ var ModelPlugin = function () {
       }
     }
     function onArgumentMentionExit(node) {
+      var target = currentHeading ? currentHeading : currentStatement;
       var match = argumentMentionPattern.exec(node.image);
       if (match) {
         node.title = match[1];
@@ -395,15 +399,16 @@ var ModelPlugin = function () {
         } else {
           node.trailingWhitespace = '';
         }
-        if (currentStatement) {
-          var range = { type: 'argument-mention', title: node.title, start: currentStatement.text.length };
-          currentStatement.text += node.image;
-          range.stop = currentStatement.text.length - 1;
-          currentStatement.ranges.push(range);
+        if (target) {
+          var range = { type: 'argument-mention', title: node.title, start: target.text.length };
+          target.text += node.image;
+          range.stop = target.text.length - 1;
+          target.ranges.push(range);
         }
       }
     }
     function onFreestyleTextEntry(node) {
+      var target = currentHeading ? currentHeading : currentStatement;
       node.text = "";
       var _iteratorNormalCompletion4 = true;
       var _didIteratorError4 = false;
@@ -430,39 +435,49 @@ var ModelPlugin = function () {
         }
       }
 
-      if (currentStatement) currentStatement.text += node.text;
+      if (target) {
+        target.text += node.text;
+      }
     }
     function onLinkEntry(node) {
+      var target = currentHeading ? currentHeading : currentStatement;
+      if (!target) {
+        return;
+      }
       var match = linkPattern.exec(node.image);
-      var linkRange = { type: 'link', start: currentStatement.text.length };
+      var linkRange = { type: 'link', start: target.text.length };
       node.url = match[2];
       node.text = match[1];
-      currentStatement.text += node.text;
-      linkRange.stop = currentStatement.text.length - 1;
+      target.text += node.text;
+      linkRange.stop = target.text.length - 1;
       linkRange.url = node.url;
-      currentStatement.ranges.push(linkRange);
+      target.ranges.push(linkRange);
       if (node.image[node.image.length - 1] == ' ') {
-        currentStatement.text += ' ';
+        target.text += ' ';
         node.trailingWhitespace = ' ';
       } else {
         node.trailingWhitespace = '';
       }
     }
     function onTagEntry(node) {
+      var target = currentHeading ? currentHeading : currentStatement;
+      if (!target) {
+        return;
+      }
       var match = tagPattern.exec(node.image);
       var tag = match[1] || match[2];
       node.tag = tag;
       if (!$.settings.removeTagsFromText) {
-        var tagRange = { type: 'tag', start: currentStatement.text.length };
+        var tagRange = { type: 'tag', start: target.text.length };
         node.text = node.image;
-        currentStatement.text += node.text;
-        tagRange.stop = currentStatement.text.length - 1;
+        target.text += node.text;
+        tagRange.stop = target.text.length - 1;
         tagRange.tag = node.tag;
-        currentStatement.ranges.push(tagRange);
+        target.ranges.push(tagRange);
       }
-      currentStatement.tags = currentStatement.tags || [];
-      var tags = currentStatement.tags;
-      if (currentStatement.tags.indexOf(tag) == -1) {
+      target.tags = target.tags || [];
+      var tags = target.tags;
+      if (target.tags.indexOf(tag) == -1) {
         tags.push(tag);
       }
       if ($.tags.indexOf(tag) == -1) {
@@ -470,37 +485,53 @@ var ModelPlugin = function () {
       }
     }
     function onBoldEntry() {
-      var boldRange = { type: 'bold', start: currentStatement.text.length };
+      var target = currentHeading ? currentHeading : currentStatement;
+      if (!target) {
+        return;
+      }
+      var boldRange = { type: 'bold', start: target.text.length };
       rangesStack.push(boldRange);
-      currentStatement.ranges.push(boldRange);
+      target.ranges.push(boldRange);
     }
     function onBoldExit(node) {
+      var target = currentHeading ? currentHeading : currentStatement;
+      if (!target) {
+        return;
+      }
       var boldEnd = _.last(node.children);
       if (boldEnd.image[boldEnd.image.length - 1] == ' ') {
-        currentStatement.text += ' ';
+        target.text += ' ';
         node.trailingWhitespace = ' ';
       } else {
         node.trailingWhitespace = '';
       }
       var range = _.last(rangesStack);
-      range.stop = currentStatement.text.length - 1;
+      range.stop = target.text.length - 1;
       rangesStack.pop();
     }
     function onItalicEntry() {
-      var italicRange = { type: 'italic', start: currentStatement.text.length };
+      var target = currentHeading ? currentHeading : currentStatement;
+      if (!target) {
+        return;
+      }
+      var italicRange = { type: 'italic', start: target.text.length };
       rangesStack.push(italicRange);
-      currentStatement.ranges.push(italicRange);
+      target.ranges.push(italicRange);
     }
     function onItalicExit(node) {
+      var target = currentHeading ? currentHeading : currentStatement;
+      if (!target) {
+        return;
+      }
       var italicEnd = _.last(node.children);
       if (italicEnd.image[italicEnd.image.length - 1] == ' ') {
-        currentStatement.text += ' ';
+        target.text += ' ';
         node.trailingWhitespace = ' ';
       } else {
         node.trailingWhitespace = '';
       }
       var range = _.last(rangesStack);
-      range.stop = currentStatement.text.length - 1;
+      range.stop = target.text.length - 1;
       rangesStack.pop();
     }
 
@@ -701,13 +732,17 @@ var ModelPlugin = function () {
       }
       currentInference.metaData[key] = value;
     }
+    function onHeadingEntry(node) {
+      currentHeading = node;
+      currentHeading.text = '';
+      currentHeading.ranges = [];
+    }
     function onHeadingExit(node) {
       var headingStart = node.children[0];
-      node.heading = headingStart.image.length;
-      node.text = node.children[1].text;
+      currentHeading.level = headingStart.image.length;
       sectionCounter++;
       var sectionId = 's' + sectionCounter;
-      var newSection = new _Section.Section(sectionId, node.text, node.heading);
+      var newSection = new _Section.Section(sectionId, currentHeading.level, currentHeading.text, currentHeading.ranges, currentHeading.tags);
 
       if (newSection.level > 1 && currentSection) {
         var parentSection = currentSection;
@@ -720,10 +755,12 @@ var ModelPlugin = function () {
         $.sections.push(newSection);
       }
       currentSection = newSection;
+      currentHeading = null;
     }
 
     this.argdownListeners = {
       argdownEntry: onArgdownEntry,
+      headingEntry: onHeadingEntry,
       headingExit: onHeadingExit,
       statementEntry: onStatementEntry,
       statementExit: onStatementExit,

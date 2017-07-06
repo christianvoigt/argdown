@@ -77,21 +77,7 @@ var ArgdownParser = function (_chevrotain$Parser) {
             children.push($.CONSUME(lexer.HeadingStart));
             $.AT_LEAST_ONE({
                 DEF: function DEF() {
-                    return $.OR({
-                        DEF: [{
-                            ALT: function ALT() {
-                                return children.push($.CONSUME(lexer.ArgumentMention));
-                            }
-                        }, {
-                            ALT: function ALT() {
-                                return children.push($.CONSUME(lexer.StatementMention));
-                            }
-                        }, {
-                            ALT: function ALT() {
-                                return children.push($.SUBRULE($.freestyleText));
-                            }
-                        }]
-                    });
+                    return children.push($.SUBRULE($.statementContent));
                 }
             });
 

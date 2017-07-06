@@ -19,7 +19,7 @@ describe("HtmlExport", function() {
     }
     let result = app.run(['parse-input','build-model','export-html'], data);
     //console.log(result.html);
-    expect(result.html).to.equal("<!doctype html>\n\n<html lang='en'>\n<head>\n<meta charset='utf8'>\n<title>Title</title>\n<link rel='stylesheet' href='./argdown.css'>\n</head><body><div class='argdown'><h1 id='heading-title'>Title</h1><div class='statement'><span id='statement-statement' class='definition statement-definition definiendum'>[<span class='title statement-title'>Statement</span>]: </span>Hello World!<div class='relations'><div class='outgoing support relation'><div class='outgoing support relation-symbol'><span>+</span></div><a href='#argument-argument' class='reference argument-reference'>&lt;<span class='title argument-title'>Argument</span>&gt; </a></div></div></div><div id='argument-argument' class='definition argument-definition'><span class='definiendum argument-definiendum'>&lt;<span class='title argument-title'>Argument</span>&gt;: </span><span class='argument-definiens definiens description'>Description</span></div></body></html>");
+    expect(result.html).to.equal("<!doctype html>\n\n<html lang='en'>\n<head>\n<meta charset='utf8'>\n<title>Title</title>\n<link rel='stylesheet' href='./argdown.css'>\n</head><body><div class='argdown'><h1 id='heading-title'>Title</h1><div class='statement'><span id='statement-statement' class='definition statement-definition definiendum'>[<span class='title statement-title'>Statement</span>]: </span>Hello World!<div class='relations'><div class='outgoing support relation'><div class='outgoing support relation-symbol'><span>+</span></div><a href='#argument-argument' class='reference argument-reference'>&lt;<span class='title argument-title'>Argument</span>&gt; </a></div></div></div><div id='argument-argument' class='definition argument-definition'><span class='definiendum argument-definiendum'>&lt;<span class='title argument-title'>Argument</span>&gt;: </span><span class='argument-definiens definiens description'>Description</span></div></div></body></html>");
   });
   it("can export the argdown intro", function(){
     let source = fs.readFileSync("./test/intro.argdown", 'utf8');
@@ -42,5 +42,10 @@ describe("HtmlExport", function() {
     expect(result.tagsDictionary["tag3"].index).to.be.equal(2);
     expect(result.statements["Statement 1"].sortedTags).to.exist;
     expect(result.statements["Statement 1"].sortedTags.length).to.equal(1);
+  });
+  it("can export titles with ranges", function(){
+    let source = `# title _italic_ **bold**`;
+    let result = app.run(['parse-input','build-model', 'export-html'],{input:source, config:{html:{headless:true}}});
+    expect(result.html).to.equal("<div class='argdown'><h1 id='heading-title-italic-bold'>title <i>italic</i> <b>bold</b></h1></div>");
   });
 });

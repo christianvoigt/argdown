@@ -302,4 +302,20 @@ it("can identify duplicates in outgoing relations of reconstructed argument and 
   expect(result.relations).to.exist;
   expect(result.relations.length).to.equal(1);
 });
+it("can create section titles from headings with mentions, tags and ranges", function(){
+  let source = `# @[A] @<B> #tag **bold** _italic_
+  
+  [A]
+  
+  <B>
+  `;
+  let result = app.run(['parse-input','build-model'], {input:source});
+  expect(result.sections).to.exist;
+  expect(result.sections.length).to.equal(1);
+  expect(result.sections[0].title).to.equal("@[A] @<B> #tag bold italic");
+  expect(result.sections[0].tags.length).to.equal(1);
+  expect(result.sections[0].ranges.length).to.equal(5);
+  expect(result.arguments['B']).to.exist;
+  expect(result.statements['A']).to.exist;
+});
 });

@@ -235,5 +235,16 @@ describe("ModelPlugin", function () {
     (0, _chai.expect)(result.relations).to.exist;
     (0, _chai.expect)(result.relations.length).to.equal(1);
   });
+  it("can create section titles from headings with mentions, tags and ranges", function () {
+    var source = '# @[A] @<B> #tag **bold** _italic_\n  \n  [A]\n  \n  <B>\n  ';
+    var result = app.run(['parse-input', 'build-model'], { input: source });
+    (0, _chai.expect)(result.sections).to.exist;
+    (0, _chai.expect)(result.sections.length).to.equal(1);
+    (0, _chai.expect)(result.sections[0].title).to.equal("@[A] @<B> #tag bold italic");
+    (0, _chai.expect)(result.sections[0].tags.length).to.equal(1);
+    (0, _chai.expect)(result.sections[0].ranges.length).to.equal(5);
+    (0, _chai.expect)(result.arguments['B']).to.exist;
+    (0, _chai.expect)(result.statements['A']).to.exist;
+  });
 });
 //# sourceMappingURL=ModelPlugin.spec.js.map

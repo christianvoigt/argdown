@@ -11,13 +11,15 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Section = function () {
-  function Section(id, title, level) {
+  function Section(id, level, title, ranges, tags) {
     _classCallCheck(this, Section);
 
     this.id = id;
     this.title = title;
+    this.ranges = ranges;
     this.level = level;
     this.children = [];
+    this.tags = tags;
   }
 
   _createClass(Section, [{
