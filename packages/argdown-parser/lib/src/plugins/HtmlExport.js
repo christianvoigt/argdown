@@ -81,6 +81,7 @@ var HtmlExport = function () {
         $.html += "<div class='argdown'>";
       },
       argdownExit: function argdownExit() {
+        $.html += "</div>";
         if (!$.settings.headless) {
           $.html += "</body></html>";
         }
@@ -211,17 +212,17 @@ var HtmlExport = function () {
         return $.html += "</li>";
       },
       headingEntry: function headingEntry(node) {
-        if (node.heading == 1) {
+        if (node.level == 1) {
           if ($.settings.title == 'Argdown Document') {
             $.html = $.html.replace('<title>Argdown Document</title>', '<title>' + node.text + '</title>');
           }
         }
         var htmlId = $.getHtmlId("heading", node.text);
         $.htmlIds[htmlId] = node;
-        $.html += "<h" + node.heading + " id='" + htmlId + "'>";
+        $.html += "<h" + node.level + " id='" + htmlId + "'>";
       },
       headingExit: function headingExit(node) {
-        return $.html += "</h" + node.heading + ">";
+        return $.html += "</h" + node.level + ">";
       },
       freestyleTextEntry: function freestyleTextEntry(node, parentNode) {
         if (parentNode.name != 'inferenceRules' && parentNode.name != 'metadataStatement') $.html += node.text;

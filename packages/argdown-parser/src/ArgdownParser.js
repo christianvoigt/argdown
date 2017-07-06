@@ -2,7 +2,6 @@
 
 import chevrotain, {
     Parser,
-    Token,
     getTokenConstructor
 } from 'chevrotain';
 import {ArgdownLexer} from './ArgdownLexer.js';
@@ -47,17 +46,7 @@ class ArgdownParser extends chevrotain.Parser {
             let children = [];
             children.push($.CONSUME(lexer.HeadingStart));
             $.AT_LEAST_ONE({
-              DEF:()=>$.OR({
-                DEF:[
-                  {
-                      ALT: () => children.push($.CONSUME(lexer.ArgumentMention))
-                  }, {
-                      ALT: () => children.push($.CONSUME(lexer.StatementMention))
-                  }, {
-                      ALT: () => children.push($.SUBRULE($.freestyleText))
-                  }
-                ]
-              })
+              DEF:()=>children.push($.SUBRULE($.statementContent))
             });
 
             return {

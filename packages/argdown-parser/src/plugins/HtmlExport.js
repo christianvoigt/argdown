@@ -62,6 +62,7 @@ class HtmlExport{
         $.html += "<div class='argdown'>";
       },
       argdownExit : ()=>{
+        $.html += "</div>";
         if(!$.settings.headless){
           $.html += "</body></html>";
         }
@@ -168,16 +169,16 @@ class HtmlExport{
       unorderedListItemEntry : ()=>$.html += "<li>",
       unorderedListItemExit : ()=>$.html += "</li>",
       headingEntry : (node)=>{
-        if(node.heading == 1){
+        if(node.level == 1){
           if($.settings.title == 'Argdown Document'){
             $.html = $.html.replace('<title>Argdown Document</title>','<title>'+node.text+'</title>')
           }
         }
         let htmlId = $.getHtmlId("heading",node.text);
         $.htmlIds[htmlId] = node;
-        $.html += "<h"+node.heading+" id='"+htmlId+"'>"
+        $.html += "<h"+node.level+" id='"+htmlId+"'>"
       },
-      headingExit : (node)=>$.html += "</h"+node.heading+">",
+      headingExit : (node)=>$.html += "</h"+node.level+">",
       freestyleTextEntry : (node, parentNode)=>{
         if(parentNode.name != 'inferenceRules' && parentNode.name != 'metadataStatement')
           $.html += node.text
