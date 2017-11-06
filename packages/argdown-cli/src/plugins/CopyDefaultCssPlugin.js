@@ -30,10 +30,10 @@ class CopyDefaultCssPlugin{
         console.log(err);
       }
       if(data && data.config && data.config.verbose){
-        console.log("Copying default argdown.css to folder: "+$.settings.outputDir);        
+        console.log("Copying default argdown.css to folder: " + absoluteOutputDir);        
       }
-      let pathToDefaultCssFile = path.resolve(__dirname, '/../../../node_modules/argdown-parser/lib/src/plugins/argdown.css');
-      $.copySync(pathToDefaultCssFile, absoluteOutputDir+"/argdown.css");
+      let pathToDefaultCssFile = path.resolve(__dirname, '../../../node_modules/argdown-parser/lib/src/plugins/argdown.css');
+      $.copySync(pathToDefaultCssFile, path.resolve(absoluteOutputDir,"argdown.css"));
     });    
   }
   copySync(src, dest) {

@@ -30,7 +30,7 @@
     "build": "npm run clean && npm run build:src",
     "build:src": "babel src/ -d lib/src --source-maps",
     "test": "mocha --compilers js:babel-core/register --colors ./test/*.spec.js",
-    "prepare": "npm build",
+    "prepare": "npm run-script build",
     "clean": "rimraf lib/*",
     "version:patch": "npm version patch"
   },
