@@ -1,25 +1,25 @@
 //import { before, after, describe, it } from 'mocha';
 import { expect } from 'chai';
 import fs from 'fs';
-import {ArgdownLexer} from '../src/ArgdownLexer.js';
-import {tokenMatcher} from 'chevrotain';
+import { ArgdownLexer } from '../src/ArgdownLexer.js';
+import { tokenMatcher } from 'chevrotain';
 
 let i = 0;
 let currentTokens = null;
-function expectToken(tokenType){
+function expectToken(tokenType) {
   //expect(currentTokens[i]).to.be.an.instanceof(tokenType);
-  expect(tokenMatcher(currentTokens[i],tokenType)).to.be.true;
+  expect(tokenMatcher(currentTokens[i], tokenType)).to.be.true;
   i++;
 }
-function startTest(tokens){
+function startTest(tokens) {
   currentTokens = tokens;
   i = 0;
 }
 const lexer = ArgdownLexer;
 
 
-describe("Lexer", function() {
-  it("recognizes incoming and outgoing relations", function(){
+describe("Lexer", function () {
+  it("recognizes incoming and outgoing relations", function () {
     let source = fs.readFileSync("./test/lexer-relations.argdown", 'utf8');
     const result = lexer.tokenize(source);
     startTest(result.tokens);
@@ -30,7 +30,7 @@ describe("Lexer", function() {
     expectToken(lexer.IncomingSupport);
     expectToken(lexer.IncomingAttack);
   });
-  it("can distinguish between Emptyline and Newline", function(){
+  it("can distinguish between Emptyline and Newline", function () {
     let source = fs.readFileSync("./test/lexer-emptyline.argdown", 'utf8');
     const result = lexer.tokenize(source);
     startTest(result.tokens);
@@ -41,7 +41,7 @@ describe("Lexer", function() {
     expectToken(lexer.Emptyline);
     expectToken(lexer.Freestyle);
   });
-  it("can lex mentions", function(){
+  it("can lex mentions", function () {
     let source = fs.readFileSync("./test/lexer-mentions.argdown", 'utf8');
     const result = lexer.tokenize(source);
     startTest(result.tokens);
@@ -55,7 +55,7 @@ describe("Lexer", function() {
     expectToken(lexer.ArgumentMention);
     expectToken(lexer.StatementMention);
   });
-    it("can lex headings", function(){
+  it("can lex headings", function () {
     let source = fs.readFileSync("./test/lexer-heading.argdown", 'utf8');
     const result = lexer.tokenize(source);
     startTest(result.tokens);
@@ -69,7 +69,7 @@ describe("Lexer", function() {
     expectToken(lexer.Emptyline);
     expectToken(lexer.Freestyle);
   });
-  it("can lex ordered and unordered lists", function(){
+  it("can lex ordered and unordered lists", function () {
     let source = fs.readFileSync("./test/lexer-lists.argdown", 'utf8');
     const result = lexer.tokenize(source);
     startTest(result.tokens);
@@ -105,7 +105,7 @@ describe("Lexer", function() {
     expectToken(lexer.Dedent);
     expectToken(lexer.Dedent);
   });
-    it("can lex an argument reconstruction", function(){
+  it("can lex an argument reconstruction", function () {
     let source = fs.readFileSync("./test/lexer-argument.argdown", 'utf8');
     const result = lexer.tokenize(source);
     startTest(result.tokens);
@@ -134,7 +134,7 @@ describe("Lexer", function() {
     expectToken(lexer.ArgumentStatementStart);
     expectToken(lexer.Freestyle);
   });
-    it("can dedent on Emptyline",function(){
+  it("can dedent on Emptyline", function () {
     let source = fs.readFileSync("./test/lexer-emptyline-dedent.argdown", 'utf8');
     const result = lexer.tokenize(source);
     startTest(result.tokens);
@@ -146,7 +146,7 @@ describe("Lexer", function() {
     expectToken(lexer.Emptyline);
     expectToken(lexer.Freestyle);
   });
-  it("can ignore Newlines in relations",function(){
+  it("can ignore Newlines in relations", function () {
     let source = fs.readFileSync("./test/lexer-linebreak.argdown", 'utf8');
     const result = lexer.tokenize(source);
     startTest(result.tokens);
@@ -163,7 +163,7 @@ describe("Lexer", function() {
     expectToken(lexer.Freestyle);
     expectToken(lexer.Dedent);
   });
-  it("can lex bold and italic text",function(){
+  it("can lex bold and italic text", function () {
     let source = fs.readFileSync("./test/lexer-italic-bold.argdown", 'utf8');
     const result = lexer.tokenize(source);
     startTest(result.tokens);
@@ -185,108 +185,121 @@ describe("Lexer", function() {
     expectToken(lexer.Freestyle);
     expectToken(lexer.AsteriskItalicEnd);
     expectToken(lexer.AsteriskBoldEnd);
-    
+
     expectToken(lexer.UnderscoreBoldStart);
     expectToken(lexer.UnderscoreItalicStart);
     expectToken(lexer.Freestyle);
     expectToken(lexer.UnderscoreItalicEnd);
     expectToken(lexer.UnderscoreBoldEnd);
-    
-    expectToken(lexer.UnderscoreBoldStart);
-    expectToken(lexer.Freestyle);
-    expectToken(lexer.AsteriskItalicStart);
-    expectToken(lexer.Freestyle);
-    expectToken(lexer.AsteriskItalicEnd);
-    expectToken(lexer.UnderscoreBoldEnd);
-    expectToken(lexer.AsteriskItalicStart);
-    expectToken(lexer.Freestyle);
-    expectToken(lexer.UnderscoreBoldStart);
-    expectToken(lexer.Freestyle);
-    expectToken(lexer.UnderscoreBoldEnd);
-    expectToken(lexer.AsteriskItalicEnd);
-    expectToken(lexer.AsteriskBoldStart);
-    expectToken(lexer.AsteriskBoldStart);
-    expectToken(lexer.Freestyle);
-    expectToken(lexer.AsteriskBoldEnd);
-    expectToken(lexer.AsteriskBoldEnd);
-    expectToken(lexer.UnusedControlChar);
-    expectToken(lexer.AsteriskItalicStart);
-    expectToken(lexer.Freestyle);
-    expectToken(lexer.AsteriskItalicEnd);
-    expectToken(lexer.UnusedControlChar);
-    expectToken(lexer.AsteriskItalicStart);
-    expectToken(lexer.Freestyle);
-    expectToken(lexer.AsteriskItalicEnd);
-    expectToken(lexer.Freestyle);    
-  });
-     it("can lex complex indentation", function() {
-     let source = fs.readFileSync("./test/lexer-indentation.argdown", 'utf8');
-     const result = lexer.tokenize(source);
-     startTest(result.tokens);
-     expectToken(lexer.Freestyle);
-     expectToken(lexer.Indent);
-     expectToken(lexer.OutgoingSupport);
-     expectToken(lexer.Freestyle);
-     expectToken(lexer.OutgoingAttack);
-     expectToken(lexer.Freestyle);
-     expectToken(lexer.Indent);
-     expectToken(lexer.OutgoingSupport);
-     expectToken(lexer.Freestyle);
-     expectToken(lexer.Indent);
-     expectToken(lexer.OutgoingAttack);
-     expectToken(lexer.Freestyle);
-     expectToken(lexer.Indent);
-     expectToken(lexer.IncomingSupport);
-     expectToken(lexer.Freestyle);
-     expectToken(lexer.Dedent);
-     expectToken(lexer.Dedent);
-     expectToken(lexer.Dedent);
-     expectToken(lexer.IncomingAttack);
-     expectToken(lexer.Freestyle);
-     expectToken(lexer.Dedent);
 
-   });
-   it("can recognize argument and statement references and definitions", function(){
-     let source = fs.readFileSync("./test/lexer-definitions-references.argdown", 'utf8');
-     const result = lexer.tokenize(source);
-     startTest(result.tokens);
-     expectToken(lexer.StatementReference);
-     expectToken(lexer.StatementDefinition);
-     expectToken(lexer.ArgumentReference);
-     expectToken(lexer.ArgumentDefinition);
-     expectToken(lexer.Freestyle);
-   });
-   it("can ignore comments", function(){
-     let source = fs.readFileSync("./test/lexer-comment.argdown", 'utf8');
-     const result = lexer.tokenize(source);
-     startTest(result.tokens);
-     expectToken(lexer.Freestyle);
-     expectToken(lexer.Emptyline);
-     expectToken(lexer.Freestyle);
-     expectToken(lexer.Freestyle);
-   });
-   it("can recognize links and tags", function(){
-     let source = fs.readFileSync("./test/lexer-links-and-tags.argdown", 'utf8');
-     const result = lexer.tokenize(source);
-     startTest(result.tokens);
-     //console.log(lexer.tokensToString(result.tokens));
-     expectToken(lexer.StatementDefinition);
-     expectToken(lexer.UnusedControlChar);
-     expectToken(lexer.Freestyle);
-     expectToken(lexer.UnusedControlChar);
-     expectToken(lexer.Link);
-     expectToken(lexer.Freestyle);
-     expectToken(lexer.Tag);
-     expectToken(lexer.Tag);
-     expectToken(lexer.Tag);     
-   });
-   it("can ignore trailing Emptyline before comment", function(){
-     let source = fs.readFileSync("./test/lexer-trailing-emptyline.argdown", 'utf8');
-     const result = lexer.tokenize(source);
-     startTest(result.tokens);
-     expect(result.tokens.length).to.equal(3);
-     expectToken(lexer.Emptyline);
-     expectToken(lexer.StatementDefinition);
-     expectToken(lexer.Freestyle);
-   });  
- });
+    expectToken(lexer.UnderscoreBoldStart);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.AsteriskItalicStart);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.AsteriskItalicEnd);
+    expectToken(lexer.UnderscoreBoldEnd);
+    expectToken(lexer.AsteriskItalicStart);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.UnderscoreBoldStart);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.UnderscoreBoldEnd);
+    expectToken(lexer.AsteriskItalicEnd);
+    expectToken(lexer.AsteriskBoldStart);
+    expectToken(lexer.AsteriskBoldStart);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.AsteriskBoldEnd);
+    expectToken(lexer.AsteriskBoldEnd);
+    expectToken(lexer.UnusedControlChar);
+    expectToken(lexer.AsteriskItalicStart);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.AsteriskItalicEnd);
+    expectToken(lexer.UnusedControlChar);
+    expectToken(lexer.AsteriskItalicStart);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.AsteriskItalicEnd);
+    expectToken(lexer.Freestyle);
+  });
+  it("can lex complex indentation", function () {
+    let source = fs.readFileSync("./test/lexer-indentation.argdown", 'utf8');
+    const result = lexer.tokenize(source);
+    startTest(result.tokens);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.Indent);
+    expectToken(lexer.OutgoingSupport);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.OutgoingAttack);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.Indent);
+    expectToken(lexer.OutgoingSupport);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.Indent);
+    expectToken(lexer.OutgoingAttack);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.Indent);
+    expectToken(lexer.IncomingSupport);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.Dedent);
+    expectToken(lexer.Dedent);
+    expectToken(lexer.Dedent);
+    expectToken(lexer.IncomingAttack);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.Dedent);
+
+  });
+  it("can recognize argument and statement references and definitions", function () {
+    let source = fs.readFileSync("./test/lexer-definitions-references.argdown", 'utf8');
+    const result = lexer.tokenize(source);
+    startTest(result.tokens);
+    expectToken(lexer.StatementReference);
+    expectToken(lexer.StatementDefinition);
+    expectToken(lexer.ArgumentReference);
+    expectToken(lexer.ArgumentDefinition);
+    expectToken(lexer.Freestyle);
+  });
+  it("can ignore comments", function () {
+    let source = fs.readFileSync("./test/lexer-comment.argdown", 'utf8');
+    const result = lexer.tokenize(source);
+    startTest(result.tokens);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.Emptyline);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.Freestyle);
+  });
+  it("can recognize links and tags", function () {
+    let source = fs.readFileSync("./test/lexer-links-and-tags.argdown", 'utf8');
+    const result = lexer.tokenize(source);
+    startTest(result.tokens);
+    //console.log(lexer.tokensToString(result.tokens));
+    expectToken(lexer.StatementDefinition);
+    expectToken(lexer.UnusedControlChar);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.UnusedControlChar);
+    expectToken(lexer.Link);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.Tag);
+    expectToken(lexer.Tag);
+    expectToken(lexer.Tag);
+  });
+  it("can ignore trailing Emptyline before comment", function () {
+    let source = fs.readFileSync("./test/lexer-trailing-emptyline.argdown", 'utf8');
+    const result = lexer.tokenize(source);
+    startTest(result.tokens);
+    expect(result.tokens.length).to.equal(3);
+    expectToken(lexer.Emptyline);
+    expectToken(lexer.StatementDefinition);
+    expectToken(lexer.Freestyle);
+  });
+  it("can parse Windows line endings", function () {
+    let source = fs.readFileSync("./test/lexer-windows-line-endings.argdown", 'utf8');
+    const result = lexer.tokenize(source);
+    startTest(result.tokens);
+    //console.log(lexer.tokensToString(result.tokens));
+    //expect(result.tokens.length).to.equal(5);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.Indent);
+    expectToken(lexer.OutgoingSupport);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.Dedent);
+  });
+
+});

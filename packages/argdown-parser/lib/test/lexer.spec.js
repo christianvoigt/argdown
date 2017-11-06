@@ -296,5 +296,17 @@ describe("Lexer", function () {
     expectToken(lexer.StatementDefinition);
     expectToken(lexer.Freestyle);
   });
+  it("can parse Windows line endings", function () {
+    var source = _fs2.default.readFileSync("./test/lexer-windows-line-endings.argdown", 'utf8');
+    var result = lexer.tokenize(source);
+    startTest(result.tokens);
+    //console.log(lexer.tokensToString(result.tokens));
+    //expect(result.tokens.length).to.equal(5);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.Indent);
+    expectToken(lexer.OutgoingSupport);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.Dedent);
+  });
 });
 //# sourceMappingURL=lexer.spec.js.map

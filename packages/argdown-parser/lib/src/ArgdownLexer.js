@@ -92,7 +92,7 @@ var ArgdownLexer = function () {
 
         function matchRelation(text, offset, matchedTokens, groups, pattern) {
             var remainingText = text.substr(offset);
-            var startsWithNewline = /^(?:\n\r|\n|\r)/.exec(remainingText) != null;
+            var startsWithNewline = /^(?:\r\n|\n|\r)/.exec(remainingText) != null;
             if (_.isEmpty(matchedTokens) || startsWithNewline) {
                 var match = pattern.exec(remainingText);
                 if (match !== null && match.length == 3) {
@@ -104,11 +104,11 @@ var ArgdownLexer = function () {
             return null;
         }
         //relations start at BOF or after a newline, optionally followed by indentation (spaces or tabs)
-        var matchIncomingSupport = _.partialRight(matchRelation, /^(?:\n\r|\n|\r)?([' '\t]*)(\+>)/);
-        var matchIncomingAttack = _.partialRight(matchRelation, /^(?:\n\r|\n|\r)?([' '\t]*)(->)/);
-        var matchOutgoingSupport = _.partialRight(matchRelation, /^(?:\n\r|\n|\r)?([' '\t]*)(<?\+)/);
-        var matchOutgoingAttack = _.partialRight(matchRelation, /^(?:\n\r|\n|\r)?([' '\t]*)(<?-)/);
-        var matchContradiction = _.partialRight(matchRelation, /^(?:\n\r|\n|\r)?([' '\t]*)(><)/);
+        var matchIncomingSupport = _.partialRight(matchRelation, /^(?:\r\n|\n|\r)?([' '\t]*)(\+>)/);
+        var matchIncomingAttack = _.partialRight(matchRelation, /^(?:\r\n|\n|\r)?([' '\t]*)(->)/);
+        var matchOutgoingSupport = _.partialRight(matchRelation, /^(?:\r\n|\n|\r)?([' '\t]*)(<?\+)/);
+        var matchOutgoingAttack = _.partialRight(matchRelation, /^(?:\r\n|\n|\r)?([' '\t]*)(<?-)/);
+        var matchContradiction = _.partialRight(matchRelation, /^(?:\r\n|\n|\r)?([' '\t]*)(><)/);
 
         $.IncomingSupport = createToken({
             name: "IncomingSupport",
@@ -140,11 +140,11 @@ var ArgdownLexer = function () {
         });
         $.tokens.push($.Contradiction);
 
-        var inferenceStartPattern = /^[\n\r|\n|\r]?[' '\t]*-{2}/;
+        var inferenceStartPattern = /^[\r\n|\n|\r]?[' '\t]*-{2}/;
 
         function matchInferenceStart(text, offset, matchedTokens) {
             var remainingText = text.substr(offset);
-            var startsWithNewline = /^[\n\r|\n|\r]/.exec(remainingText) != null;
+            var startsWithNewline = /^[\r\n|\n|\r]/.exec(remainingText) != null;
             if (_.isEmpty(matchedTokens) || startsWithNewline) {
                 var match = inferenceStartPattern.exec(remainingText);
                 if (match != null) {
@@ -196,7 +196,7 @@ var ArgdownLexer = function () {
 
         function matchListItem(text, offset, matchedTokens, groups, pattern) {
             var remainingText = text.substr(offset);
-            var startsWithNewline = /^[\n\r|\n|\r]/.exec(remainingText) != null;
+            var startsWithNewline = /^[\r\n|\n|\r]/.exec(remainingText) != null;
             var last = _.last(matchedTokens);
             var afterEmptyline = last && tokenMatcher(last, $.Emptyline);
             if (_.isEmpty(matchedTokens) || afterEmptyline || startsWithNewline) {
@@ -210,7 +210,7 @@ var ArgdownLexer = function () {
             return null;
         }
 
-        var orderedListItemPattern = /^(?:\n\r|\n|\r)?([' '\t]+)\d+\.(?=\s)/;
+        var orderedListItemPattern = /^(?:\r\n|\n|\r)?([' '\t]+)\d+\.(?=\s)/;
         var matchOrderedListItem = _.partialRight(matchListItem, orderedListItemPattern);
 
         $.OrderedListItem = createToken({
@@ -219,7 +219,7 @@ var ArgdownLexer = function () {
         });
         $.tokens.push($.OrderedListItem);
         //whitespace + * + whitespace (to distinguish list items from bold and italic ranges)
-        var unorderedListItemPattern = /^(?:\n\r|\n|\r)?([' '\t]+)\*(?=\s)/; //Newline +
+        var unorderedListItemPattern = /^(?:\r\n|\n|\r)?([' '\t]+)\*(?=\s)/; //Newline +
         var matchUnorderedListItem = _.partialRight(matchListItem, unorderedListItemPattern);
 
         $.UnorderedListItem = createToken({
@@ -228,11 +228,11 @@ var ArgdownLexer = function () {
         });
         $.tokens.push($.UnorderedListItem);
 
-        var argumentStatementStartPattern = /^(?:\n\r|\n|\r)?[' '\t]*\(\d+\)/;
+        var argumentStatementStartPattern = /^(?:\r\n|\n|\r)?[' '\t]*\(\d+\)/;
 
         function matchArgumentStatementStart(text, offset, matchedTokens) {
             var remainingText = text.substr(offset);
-            var startsWithNewline = /^(?:\n\r|\n|\r)/.exec(remainingText) != null;
+            var startsWithNewline = /^(?:\r\n|\n|\r)/.exec(remainingText) != null;
             var last = _.last(matchedTokens);
             var afterEmptyline = last && tokenMatcher(last, $.Emptyline);
             if (_.isEmpty(matchedTokens) || afterEmptyline || startsWithNewline) {
@@ -251,7 +251,9 @@ var ArgdownLexer = function () {
         });
         $.tokens.push($.ArgumentStatementStart);
 
-        var emptylinePattern = /^((?:\n\r|\n|\r)[ \t]*(?:\n\r|\n|\r)+)/; //two or more linebreaks
+        //This does not work with \r\n|\n||r as a simple CRLF linebreak will be interpreted as an Emptyline
+        //Instead we drop the last alternative (\r?\n would work as well)
+        var emptylinePattern = /^((?:\r\n|\n)[ \t]*(?:\r\n|\n)+)/; //two or more linebreaks
         function matchEmptyline(text, offset, matchedTokens) {
             var remainingText = text.substr(offset);
             var last = _.last(matchedTokens);
@@ -448,7 +450,7 @@ var ArgdownLexer = function () {
 
         $.Newline = createToken({
             name: "Newline",
-            pattern: /(?:\n\r|\n|\r)/,
+            pattern: /(?:\r\n|\n|\r)/,
             group: chevrotain.Lexer.SKIPPED
         });
         $.tokens.push($.Newline);
@@ -463,7 +465,7 @@ var ArgdownLexer = function () {
         //The rest of the text that is free of any Argdown syntax
         $.Freestyle = createToken({
             name: "Freestyle",
-            pattern: /[^\@\#\*\_\[\]\,\:\;\<\/\>\-\n\r\(\)]+/
+            pattern: /[^\@\#\*\_\[\]\,\:\;\<\/\>\-\r\n\(\)]+/
         });
         $.tokens.push($.Freestyle);
 

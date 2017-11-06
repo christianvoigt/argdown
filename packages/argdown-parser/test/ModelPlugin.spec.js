@@ -319,3 +319,4 @@ it("can create section titles from headings with mentions, tags and ranges", fun
   expect(result.statements['A']).to.exist;
 });
 });
+
