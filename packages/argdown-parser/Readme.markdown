@@ -19,7 +19,7 @@ This package contains the basic tools to build an Argdown application:
   - HtmlExport: plugin that exports Argdown code to html
   - JSONExport: plugin that exports Argdown code to JSON
   
-Both export plugins require that the ParserPlugin, ModelPlugin and TagPlugin are run before them (see below). For configuration options of these plugins take a look at (the Readme of argdown-cli)[https://github.com/christianvoigt/argdown-cli/blob/master/Readme.md].
+Both export plugins require that the ParserPlugin, ModelPlugin and TagPlugin are run before them (see below). For configuration options of these plugins take a look at [the Readme of argdown-cli](https://github.com/christianvoigt/argdown-cli/blob/master/Readme.md).
 
 Additional plugins that help build argument maps with the parser can be found in the [argdown-map-maker package](https://github.com/christianvoigt/argdown-map-maker).
 
@@ -33,17 +33,17 @@ import {ArgdownApplication, ParserPlugin, ModelPlugin, TagPlugin, HtmlExport, JS
 const app = new ArgdownApplication();
 
 const parserPlugin = new ParserPlugin();
-app.addPlugin(parserPlugin, 'parse-input');
+app.addPlugin(parserPlugin, 'parse-input'); // adds the parser plugin to the 'parse-input' processor
 const modelPlugin = new ModelPlugin();
-app.addPlugin(modelPlugin, 'build-model'); // adds model plugin to the 'build-model' processor
+app.addPlugin(modelPlugin, 'build-model'); // adds the model plugin to the 'build-model' processor
 const tagPlugin = new TagPlugin();
-app.addPlugin(tagPlugin, 'build-model'); // adds tag plugin to the 'build-model' processor
+app.addPlugin(tagPlugin, 'build-model'); // adds the tag plugin to the 'build-model' processor
 
 const htmlExport = new HtmlExport();
-app.addPlugin(htmlExport, 'export-html'); //adds htmlExport plugin to the 'export-html' processor
+app.addPlugin(htmlExport, 'export-html'); //adds the htmlExport plugin to the 'export-html' processor
 
 const jsonExport = new JSONExport();
-app.addPlugin(jsonExport, 'export-json'); //adds jsonExport plugin to the 'export-json' processor
+app.addPlugin(jsonExport, 'export-json'); //adds the jsonExport plugin to the 'export-json' processor
 
 let data = {input:'The Beatles are the best!\n- The Rolling Stones are better!'};
 data = app.run(['parse-input','build-model','export-html'], data); // runs the two processors one after another, returning a data object
@@ -124,7 +124,7 @@ The ArgdownTreeWalker will emit [node-name]Entry and [node-name]Exit events for 
 
 After parsing some Argdown text you can use `console.log(app.parser.astToString(app.ast);` to print the AST to the console and learn about the parser rule and token names in the AST. For each entry in the AST you can register listeners for your plugin.
 
-You can also use the online (Demo Editor)[christianvoigt.github.io/argdown] and use the "Debug/Parser & Lexer" view to inspect the AST structure.
+You can also use the online [Demo Editor](christianvoigt.github.io/argdown) and use the "Debug/Parser & Lexer" view to inspect the AST structure.
 
 ## Configuration
 
