@@ -128,6 +128,7 @@ describe("ModelPlugin", function() {
       <_ [D]`;
     let result = app.run(['parse-input', 'build-model'], { input: source });
     //console.log(parserPlugin.parser.astToString(result.ast));
+    console.log(result.parserErrors[0]);
     expect(result.parserErrors.length).to.equal(0);
     expect(Object.keys(result.statements).length).to.equal(2);
     expect(Object.keys(result.relations).length).to.equal(2);
