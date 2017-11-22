@@ -35,8 +35,17 @@ describe("ModelPlugin", function() {
     expect(description.ranges[0].stop).to.equal(10);
   });
   it("can create statement relations and ignore duplicates", function(){
-    let source = "[A]: The Beatles are the best!\n  +[B]: The Beatles made 'Rubber Soul'!\n  -><C>: The Rolling Stones were cooler!\n\n [A]\n  +[B]\n  -><C>";
+    let source = `
+    [A]: The Beatles are the best!
+      + [B]: The Beatles made 'Rubber Soul'!
+      -> <C>: The Rolling Stones were cooler!
+        
+    [A]
+      + [B]
+      -> <C>
+    `;
     let result = app.run(['parse-input','build-model'], {input:source});
+
     expect(Object.keys(result.statements).length).to.equal(2);
     expect(Object.keys(result.arguments).length).to.equal(1);
     expect(result.relations.length).to.equal(2);
@@ -110,6 +119,24 @@ describe("ModelPlugin", function() {
     expect(result.parserErrors.length).to.equal(0);
     expect(Object.keys(result.statements).length).to.equal(2);
     expect(Object.keys(result.relations).length).to.equal(1);
+  });
+  it("can parse undercuts", function () {
+    let source = `[A]: A
+      _> <B>
+    
+    <B>
+      <_ [D]`;
+    let result = app.run(['parse-input', 'build-model'], { input: source });
+    //console.log(parserPlugin.parser.astToString(result.ast));
+    expect(result.parserErrors.length).to.equal(0);
+    expect(Object.keys(result.statements).length).to.equal(2);
+    expect(Object.keys(result.relations).length).to.equal(2);
+    expect(result.relations[0].type).to.equal("undercut");
+    expect(result.relations[0].from.title).to.equal("A");
+    expect(result.relations[0].to.title).to.equal("B");
+    expect(result.relations[1].type).to.equal("undercut");
+    expect(result.relations[1].from.title).to.equal("D");
+    expect(result.relations[1].to.title).to.equal("B");
   });      
   it("can process a single argument", function(){
     let source = "(1) [s1]: A\n(2) [s2]: B\n----\n(3) [s3]: C";

@@ -92,6 +92,8 @@ class ArgdownLexer {
         let matchOutgoingSupport = _.partialRight(matchRelation, /^(?:\r\n|\n|\r)?([' '\t]*)(<?\+)/);
         let matchOutgoingAttack = _.partialRight(matchRelation, /^(?:\r\n|\n|\r)?([' '\t]*)(<?-)/);
         let matchContradiction = _.partialRight(matchRelation, /^(?:\r\n|\n|\r)?([' '\t]*)(><)/);
+        let matchIncomingUndercut = _.partialRight(matchRelation, /^(?:\r\n|\n|\r)?([' '\t]*)(_>)/);
+        let matchOutgoingUndercut = _.partialRight(matchRelation, /^(?:\r\n|\n|\r)?([' '\t]*)(<_)/);
 
         $.IncomingSupport = createToken({
             name: "IncomingSupport",
@@ -122,6 +124,16 @@ class ArgdownLexer {
             pattern: matchContradiction
         });
         $.tokens.push($.Contradiction);
+        $.IncomingUndercut = createToken({
+            name: "IncomingUndercut",
+            pattern: matchIncomingUndercut
+        });
+        $.tokens.push($.IncomingUndercut);
+        $.OutgoingUndercut = createToken({
+            name: "OutgoingUndercut",
+            pattern: matchOutgoingUndercut
+        });
+        $.tokens.push($.OutgoingUndercut);
 
         const inferenceStartPattern = /^[\r\n|\n|\r]?[' '\t]*-{2}/;
 
@@ -211,29 +223,6 @@ class ArgdownLexer {
         });
         $.tokens.push($.UnorderedListItem);
 
-        const argumentStatementStartPattern = /^(?:\r\n|\n|\r)?[' '\t]*\(\d+\)/;
-
-        function matchArgumentStatementStart(text, offset, matchedTokens) {
-            let remainingText = text.substr(offset);
-            let startsWithNewline = /^(?:\r\n|\n|\r)/.exec(remainingText) != null;
-            let last = _.last(matchedTokens);
-            let afterEmptyline = last && tokenMatcher(last, $.Emptyline);
-            if (_.isEmpty(matchedTokens) || afterEmptyline || startsWithNewline) {
-                let match = argumentStatementStartPattern.exec(remainingText);
-                if(match){
-                  $.emitRemainingDedentTokens(matchedTokens);
-                  return match;
-                }
-            }
-            return null;
-        }
-
-        $.ArgumentStatementStart = createToken({
-            name: "ArgumentStatementStart",
-            pattern: matchArgumentStatementStart
-        });
-        $.tokens.push($.ArgumentStatementStart);
-
         //This does not work with \r\n|\n||r as a simple CRLF linebreak will be interpreted as an Emptyline
         //Instead we drop the last alternative (\r?\n would work as well)
         const emptylinePattern = /^((?:\r\n|\n)[ \t]*(?:\r\n|\n)+)/; //two or more linebreaks
@@ -276,17 +265,59 @@ class ArgdownLexer {
         });
         $.tokens.push($.StatementDefinition);
 
+        // $.StatementDefinitionByNumber = createToken({
+        //     name: "StatementDefinitionByNumber",
+        //     pattern: /\<(.+?)\>\((\d+)\)\:/
+        // });
+        // $.tokens.push($.StatementDefinitionByNumber);
+
         $.StatementReference = createToken({
             name: "StatementReference",
             pattern: /\[.+?\]/
         });
         $.tokens.push($.StatementReference);
 
+        // $.StatementReferenceByNumber = createToken({
+        //     name: "StatementReferenceByNumber",
+        //     pattern: /\<(.+?)\>\(\d+\)/
+        // });
+        // $.tokens.push($.StatementReferenceByNumber);
+
+
         $.StatementMention = createToken({
           name: "StatementMention",
           pattern: /\@\[.+?\][ \t]?/
         });
         $.tokens.push($.StatementMention);
+
+        // $.StatementMentionByNumber = createToken({
+        //     name: "StatementMentionByNumber",
+        //     pattern: /\@\<(.+?)\>\(\d+\)/
+        // });
+        // $.tokens.push($.StatementMentionByNumber);
+
+        const statementNumberPattern = /^(?:\r\n|\n|\r)?[' '\t]*\(\d+\)/;
+        function matchStatementNumber(text, offset, matchedTokens) {
+            let remainingText = text.substr(offset);
+            var last = _.last(matchedTokens);
+            let startsWithNewline = /^(?:\r\n|\n|\r)/.exec(remainingText) != null;
+            let afterEmptyline = last && tokenMatcher(last, $.Emptyline);
+
+            //Statement in argument reconstruction:
+            if (_.isEmpty(matchedTokens) || afterEmptyline || startsWithNewline) {
+                let match = statementNumberPattern.exec(remainingText);
+                if (match !== null) {
+                    $.emitRemainingDedentTokens(matchedTokens);
+                    return match;
+                }
+            }
+            return null;
+        }
+        $.StatementNumber = createToken({
+            name: "StatementNumber",
+            pattern: matchStatementNumber
+        });
+        $.tokens.push($.StatementNumber);
 
         $.ArgumentDefinition = createToken({
             name: "ArgumentDefinition",
@@ -356,16 +387,16 @@ class ArgdownLexer {
             return match;
         }
         let matchAsteriskBoldStart = _.partialRight(matchBoldOrItalicStart, /^\*\*(?!\s)/, "AsteriskBold");
-        let matchAsteriskBoldEnd = _.partialRight(matchBoldOrItalicEnd, /^\*\*(?:[ \t]|(?=\n|\r|\)|\}|\_|\.|,|!|\?|;|\*|$))/, "AsteriskBold");
+        let matchAsteriskBoldEnd = _.partialRight(matchBoldOrItalicEnd, /^\*\*(?:[ \t]|(?=\n|\r|\)|\}|\_|\.|,|!|\?|;|:|-|\*|$))/, "AsteriskBold");
 
         let matchUnderscoreBoldStart = _.partialRight(matchBoldOrItalicStart, /^__(?!\s)/, "UnderscoreBold");
-        let matchUnderscoreBoldEnd = _.partialRight(matchBoldOrItalicEnd, /^__(?:[ \t]|(?=\n|\r|\)|\}|\_|\.|,|!|\?|;|\*|$))/, "UnderscoreBold");
+        let matchUnderscoreBoldEnd = _.partialRight(matchBoldOrItalicEnd, /^__(?:[ \t]|(?=\n|\r|\)|\}|\_|\.|,|!|\?|;|:|-|\*|$))/, "UnderscoreBold");
 
         let matchAsteriskItalicStart = _.partialRight(matchBoldOrItalicStart, /^\*(?!\s)/, "AsteriskItalic");
-        let matchAsteriskItalicEnd = _.partialRight(matchBoldOrItalicEnd, /^\*(?:[ \t]|(?=\n|\r|\)|\}|\_|\.|,|!|\?|;|\*|$))/, "AsteriskItalic");
+        let matchAsteriskItalicEnd = _.partialRight(matchBoldOrItalicEnd, /^\*(?:[ \t]|(?=\n|\r|\)|\}|\_|\.|,|!|\?|;|:|-|\*|$))/, "AsteriskItalic");
 
         let matchUnderscoreItalicStart = _.partialRight(matchBoldOrItalicStart, /^\_(?!\s)/, "UnderscoreItalic");
-        let matchUnderscoreItalicEnd = _.partialRight(matchBoldOrItalicEnd, /^\_(?:[ \t]|(?=\n|\r|\)|\}|\_|\.|,|!|\?|;|\*|$))/, "UnderscoreItalic");
+        let matchUnderscoreItalicEnd = _.partialRight(matchBoldOrItalicEnd, /^\_(?:[ \t]|(?=\n|\r|\)|\}|\_|\.|,|!|\?|;|:|-|\*|$))/, "UnderscoreItalic");
 
 
         $.AsteriskBoldStart = createToken({
@@ -481,8 +512,11 @@ class ArgdownLexer {
                     $.OutgoingSupport,
                     $.OutgoingAttack,
                     $.Contradiction,
+                    $.IncomingUndercut,
+                    $.OutgoingUndercut,
                     $.HeadingStart,
-                    $.ArgumentStatementStart,
+                    //$.ArgumentStatementStart,
+                    $.StatementNumber,
                     $.OrderedListItem,
                     $.UnorderedListItem,
                     //The ends of Bold and italic ranges need to be lexed before the starts
@@ -497,6 +531,9 @@ class ArgdownLexer {
                     $.UnderscoreItalicStart,
                     $.Link, //needs to be lexed before StatementReference
                     $.Tag,
+                    // $.StatementDefinitionByNumber, // needs to be lexed before ArgumentReference
+                    // $.StatementReferenceByNumber, // needs to be lexed before ArgumentReference
+                    // $.StatementMentionByNumber, // needs to be lexed before ArgumentReference
                     $.StatementDefinition,
                     $.StatementReference,
                     $.StatementMention,

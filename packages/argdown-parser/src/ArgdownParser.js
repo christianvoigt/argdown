@@ -83,7 +83,7 @@ class ArgdownParser extends chevrotain.Parser {
         });
         $.argumentStatement = $.RULE("argumentStatement", () => {
             let children = [];
-            children.push($.CONSUME(lexer.ArgumentStatementStart));
+            children.push($.CONSUME(lexer.StatementNumber));
             children.push($.SUBRULE($.statement));
             return {
                 name: "argumentStatement",
@@ -187,7 +187,7 @@ class ArgdownParser extends chevrotain.Parser {
           let children = [];
           children.push($.CONSUME(lexer.ArgumentReference));
           $.OPTION(() => {
-              children.push($.SUBRULE($.relations))
+              children.push($.SUBRULE($.argumentRelations))
           });
           return {
               name: 'argumentReference',
@@ -200,7 +200,7 @@ class ArgdownParser extends chevrotain.Parser {
           children.push($.CONSUME(lexer.ArgumentDefinition));
           children.push($.SUBRULE2($.statementContent));
           $.OPTION1(() => {
-              children.push($.SUBRULE($.relations))
+              children.push($.SUBRULE($.argumentRelations))
           });
           return {
               name: 'argumentDefinition',
@@ -218,15 +218,34 @@ class ArgdownParser extends chevrotain.Parser {
                 ALT: () => {
                     let children = [];
                     children.push($.CONSUME(lexer.StatementDefinition));
-                    children.push($.SUBRULE2($.statementContent));
+                    children.push($.SUBRULE3($.statementContent));
                     return {
                         name: "statementDefinition",
                         children: children
                     };
-                }
-              }]);
+                }}
+                // , {
+                // ALT: () => {
+                //     let children = [];
+                //     children.push($.CONSUME(lexer.StatementReferenceByNumber));
+                //     return {
+                //         name: "statementReferenceByNumber",
+                //         children: children
+                //     };
+                // }},{
+                // ALT: () => {
+                //     let children = [];
+                //     children.push($.CONSUME(lexer.StatementDefinitionByNumber));
+                //     children.push($.SUBRULE2($.statementContent));
+                //     return {
+                //         name: "statementDefinitionByNumber",
+                //         children: children
+                //     };
+                // }
+              //}
+            ]);
             $.OPTION(() => {
-                children.push($.SUBRULE($.relations))
+                children.push($.SUBRULE($.statementRelations))
             });
             return {
                 name: 'statement',
@@ -234,7 +253,7 @@ class ArgdownParser extends chevrotain.Parser {
             };
         });
 
-        $.relations = $.RULE("relations", () => {
+        $.statementRelations = $.RULE("statementRelations", () => {
             let children = [];
             children.push($.CONSUME(lexer.Indent));
             let atLeastOne = $.AT_LEAST_ONE(() => $.OR([{
@@ -247,6 +266,8 @@ class ArgdownParser extends chevrotain.Parser {
                 ALT: () => $.SUBRULE($.outgoingAttack)
             },{
                 ALT: () => $.SUBRULE($.contradiction)
+            },{
+                ALT: () => $.SUBRULE($.incomingUndercut)
             }]));
             children = children.concat(atLeastOne);
             children.push($.CONSUME(lexer.Dedent));
@@ -255,7 +276,29 @@ class ArgdownParser extends chevrotain.Parser {
                 children: children
             };
         });
-
+        $.argumentRelations = $.RULE("argumentRelations", () => {
+            let children = [];
+            children.push($.CONSUME(lexer.Indent));
+            let atLeastOne = $.AT_LEAST_ONE(() => $.OR([{
+                ALT: () => $.SUBRULE($.incomingSupport)
+            }, {
+                ALT: () => $.SUBRULE($.incomingAttack)
+            }, {
+                ALT: () => $.SUBRULE($.outgoingSupport)
+            }, {
+                ALT: () => $.SUBRULE($.outgoingAttack)
+            }, {
+                ALT: () => $.SUBRULE($.incomingUndercut)
+            }, {
+                ALT: () => $.SUBRULE($.outgoingUndercut)
+            }]));
+            children = children.concat(atLeastOne);
+            children.push($.CONSUME(lexer.Dedent));
+            return {
+                name: 'relations',
+                children: children
+            };
+        });
         $.incomingSupport = $.RULE("incomingSupport", () => {
             let children = [];
             children.push($.CONSUME(lexer.IncomingSupport));
@@ -287,6 +330,36 @@ class ArgdownParser extends chevrotain.Parser {
                 children: children
             };
         });
+        $.incomingUndercut = $.RULE("incomingUndercut", () => {
+            let children = [];
+            children.push($.CONSUME(lexer.IncomingUndercut));
+            $.OR({
+                DEF: [
+                    { ALT: () => children.push($.SUBRULE($.argumentDefinition)) },
+                    { ALT: () => children.push($.SUBRULE($.argumentReference)) }
+                ]
+            });
+            return {
+                name: 'incomingUndercut',
+                children: children
+            };
+        });
+        $.outgoingUndercut = $.RULE("outgoingUndercut", () => {
+            let children = [];
+            children.push($.CONSUME(lexer.OutgoingUndercut));
+            $.OR({
+                DEF: [
+                    { ALT: () => children.push($.SUBRULE($.statement)) },
+                    { ALT: () => children.push($.SUBRULE($.argumentDefinition)) },
+                    { ALT: () => children.push($.SUBRULE($.argumentReference)) }
+                ]
+            });
+            return {
+                name: 'outgoingUndercut',
+                children: children
+            };
+        });
+
         $.outgoingSupport = $.RULE("outgoingSupport", () => {
             let children = [];
             children.push($.CONSUME(lexer.OutgoingSupport));
@@ -377,7 +450,11 @@ class ArgdownParser extends chevrotain.Parser {
                 ALT: () => children.push($.CONSUME(lexer.ArgumentMention))
             }, {
                 ALT: () => children.push($.CONSUME(lexer.StatementMention))
-            }]));
+            }
+            // , {
+            //     ALT: () => children.push($.CONSUME(lexer.StatementMentionByNumber))
+            // }
+        ]));
             return {
                 name: 'statementContent',
                 children: children
