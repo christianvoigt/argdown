@@ -136,6 +136,10 @@ class HtmlExport{
         $.html += "<div class='incoming attack relation'><div class='incoming attack relation-symbol'><span>-&gt;</span></div>"
       },
       incomingAttackExit : ()=>$.html += "</div>",
+      incomingUndercutEntry: () => {
+        $.html += "<div class='incoming undercut relation'><div class='incoming undercut relation-symbol'><span>_&gt;</span></div>"
+      },
+      incomingUndercutExit: () => $.html += "</div>",
       outgoingSupportEntry : ()=>{
         $.html += "<div class='outgoing support relation'><div class='outgoing support relation-symbol'><span>+</span></div>"
       },
@@ -146,6 +150,12 @@ class HtmlExport{
         $.html += "<div class='outgoing attack relation'><div class='outgoing attack relation-symbol'><span>-</span></div>"
       },
       outgoingAttackExit : ()=>{
+        $.html += "</div>"
+      },
+      outgoingUndercutEntry: () => {
+        $.html += "<div class='outgoing undercut relation'><div class='outgoing undercut relation-symbol'><span>&lt;_</span></div>"
+      },
+      outgoingUndercutExit: () => {
         $.html += "</div>"
       },
       contradictionEntry : ()=>{

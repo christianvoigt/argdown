@@ -29,6 +29,9 @@ describe("Lexer", function () {
     expectToken(lexer.OutgoingAttack);
     expectToken(lexer.IncomingSupport);
     expectToken(lexer.IncomingAttack);
+    expectToken(lexer.Contradiction);
+    expectToken(lexer.IncomingUndercut);
+    expectToken(lexer.OutgoingUndercut);
   });
   it("can distinguish between Emptyline and Newline", function () {
     let source = fs.readFileSync("./test/lexer-emptyline.argdown", 'utf8');
@@ -109,9 +112,9 @@ describe("Lexer", function () {
     let source = fs.readFileSync("./test/lexer-argument.argdown", 'utf8');
     const result = lexer.tokenize(source);
     startTest(result.tokens);
-    expectToken(lexer.ArgumentStatementStart);
+    expectToken(lexer.StatementNumber);
     expectToken(lexer.Freestyle);
-    expectToken(lexer.ArgumentStatementStart);
+    expectToken(lexer.StatementNumber);
     expectToken(lexer.Freestyle);
     expectToken(lexer.InferenceStart);
     expectToken(lexer.Freestyle);
@@ -131,7 +134,7 @@ describe("Lexer", function () {
     expectToken(lexer.Freestyle);
     expectToken(lexer.MetadataEnd);
     expectToken(lexer.InferenceEnd);
-    expectToken(lexer.ArgumentStatementStart);
+    expectToken(lexer.StatementNumber);
     expectToken(lexer.Freestyle);
   });
   it("can dedent on Emptyline", function () {
@@ -167,6 +170,7 @@ describe("Lexer", function () {
     let source = fs.readFileSync("./test/lexer-italic-bold.argdown", 'utf8');
     const result = lexer.tokenize(source);
     startTest(result.tokens);
+    console.log(lexer.tokensToString(result.tokens));
     expectToken(lexer.Freestyle);
     expectToken(lexer.UnderscoreBoldStart);
     expectToken(lexer.Freestyle);
@@ -218,6 +222,38 @@ describe("Lexer", function () {
     expectToken(lexer.Freestyle);
     expectToken(lexer.AsteriskItalicEnd);
     expectToken(lexer.Freestyle);
+    expectToken(lexer.AsteriskItalicStart);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.AsteriskItalicEnd);
+    expectToken(lexer.UnusedControlChar);
+    expectToken(lexer.UnderscoreItalicStart);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.UnderscoreItalicEnd);
+    expectToken(lexer.UnusedControlChar);
+    expectToken(lexer.AsteriskBoldStart);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.AsteriskBoldEnd);
+    expectToken(lexer.UnusedControlChar);
+    expectToken(lexer.UnderscoreBoldStart);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.UnderscoreBoldEnd);
+    expectToken(lexer.UnusedControlChar);
+    expectToken(lexer.AsteriskItalicStart);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.AsteriskItalicEnd);
+    expectToken(lexer.UnusedControlChar);
+    expectToken(lexer.UnderscoreItalicStart);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.UnderscoreItalicEnd);
+    expectToken(lexer.UnusedControlChar);
+    expectToken(lexer.AsteriskBoldStart);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.AsteriskBoldEnd);
+    expectToken(lexer.UnusedControlChar);
+    expectToken(lexer.UnderscoreBoldStart);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.UnderscoreBoldEnd);
+    expectToken(lexer.UnusedControlChar);    
   });
   it("can lex complex indentation", function () {
     let source = fs.readFileSync("./test/lexer-indentation.argdown", 'utf8');
@@ -301,5 +337,17 @@ describe("Lexer", function () {
     expectToken(lexer.Freestyle);
     expectToken(lexer.Dedent);
   });
+  // it("can lex statement references, definitions and mentions by number", function () {
+  //   let source = fs.readFileSync("./test/lexer-statements-by-number.argdown", 'utf8');
+  //   const result = lexer.tokenize(source);
+  //   startTest(result.tokens);
+  //   console.log(lexer.tokensToString(result.tokens));
+  //   //expect(result.tokens.length).to.equal(5);
+  //   expectToken(lexer.StatementDefinitionByNumber);
+  //   expectToken(lexer.Freestyle);
+  //   expectToken(lexer.StatementReferenceByNumber);
+  //   expectToken(lexer.StatementMentionByNumber);
+  //   // expectToken(lexer.Dedent);
+  // });
 
 });
