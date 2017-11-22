@@ -170,7 +170,7 @@ describe("Lexer", function () {
     let source = fs.readFileSync("./test/lexer-italic-bold.argdown", 'utf8');
     const result = lexer.tokenize(source);
     startTest(result.tokens);
-    console.log(lexer.tokensToString(result.tokens));
+    // console.log(lexer.tokensToString(result.tokens));
     expectToken(lexer.Freestyle);
     expectToken(lexer.UnderscoreBoldStart);
     expectToken(lexer.Freestyle);
