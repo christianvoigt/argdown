@@ -61,7 +61,11 @@ For further technical details, please visit these repositories.
 
 ## Documentation
 
-Currently, the project is still in its beta phase, so please excuse the lack of documentation. It is next on our list.
+Currently, the project is still in its beta phase, so please excuse the lack of documentation. We are working
+on it and our first tutorial will be published soon.
+
+For now, we started a  [FAQ](https://github.com/christianvoigt/argdown/wiki/Argdown-FAQ). If you have any questions
+open a Github issue and we will try to answer as soon as possible.
 
 ## Build Setup for Argdown Browser Demo
 
