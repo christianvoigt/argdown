@@ -1,11 +1,11 @@
 {
   "name": "argdown-cli",
-  "version": "0.1.1",
+  "version": "0.2.1",
   "license": "MIT",
   "main": "lib/src/index.js",
   "dependencies": {
-    "argdown-map-maker": "git+https://github.com/christianvoigt/argdown-map-maker.git#develop",
-    "argdown-parser": "git+https://github.com/christianvoigt/argdown-parser.git#develop",
+    "argdown-map-maker": "git+https://github.com/christianvoigt/argdown-map-maker.git",
+    "argdown-parser": "git+https://github.com/christianvoigt/argdown-parser.git",
     "chokidar": "^1.7.0",
     "glob": "^7.1.2",
     "lodash": "^4.17.4",

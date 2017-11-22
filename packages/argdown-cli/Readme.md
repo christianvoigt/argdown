@@ -32,11 +32,33 @@ Available commands:
   
 All commands can be used with the `-w` option: The cli will then watch your .argdown files continuously for changes and export them instantly.
 
-The input files can specified with wildcards (e.g. `./**/*.argdown`).
+The input files can specified with wildcards if they are put in quotes (e.g. `argdown html './**/*.argdown'`).
 
 If used without input and output arguments these commands will export any .argdown files in the current folder.
 
 For more information use the `--help` option with each command.
+
+## Includes
+
+You can include 'partial' Argdown files in other Argdown files by using the following syntax:
+
+````
+Some Argdown content ...
+
+@include(_my-argdown-partial.argdown)
+
+Some more Argdown content ...
+````
+
+This will even work recursively as long as you don't try to include an Argdown file that has already been included before.
+
+Argdown-Cli will then compile the different Argdown files into one before starting the parsing process. You can also save the result of this compilation by using the `argdown compile` command.
+
+## Partials
+
+You can include any Argdown file in another Argdown file. However, it is recommended to only include 'partials' in other files. An Argdown file is treated as a partial if its name starts with an underscore. Except in @import statements partials are ignored by argdown-cli. 
+
+This naming convention makes it possible to have a main .argdown file and several partials in the same folder without having to specify which files should be processed or ignored by the commands of argdown-cli.
 
 ## Config options
 
@@ -57,12 +79,11 @@ Currently you can use the following options (hint: you can try out the effects o
 ```JavaScript
 module.exports = {
   config: {
-    inputFile: './*.argdown',
+    input: './*.argdown',
     ignoreFiles: [ // by default 'partial' argdown files and folders that start with an underscore are ignored
           '**/_*',        // Exclude files starting with '_'.
           '**/_*/**'  // Exclude entire directories starting with '_'.
       ],
-    input: 'Some Argdown source', // if not set, the content of the input file (or input files) will be used as input
     watch: false, // should the input be continually watched for changes?
     verbose: false,
     process: ["build-model", "export-html", "save-as-html", "export-dot", "save-as-dot",], //just as an example, this will export to html and dot at the same time. If a process is defined, the config file can be run without a command (by entering `argdown`)
