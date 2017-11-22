@@ -127,7 +127,7 @@ export default new Vuex.Store({
       dot: {
         graphVizSettings: {
           rankdir: 'BT',
-          concentrate: 'true',
+          concentrate: 'false',
           ratio: 'auto',
           size: '10,10'
         }

@@ -236,6 +236,14 @@ export default {
       fill: green;
     }
   }
+  .edgePath.undercut {
+    path{
+      stroke: purple;
+    }
+    marker{
+      fill: purple;
+    }
+  }  
   .node{
   cursor:pointer;
   display:block;
