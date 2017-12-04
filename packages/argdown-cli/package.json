@@ -1,6 +1,6 @@
 {
   "name": "argdown-cli",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "license": "MIT",
   "main": "lib/src/index.js",
   "dependencies": {
