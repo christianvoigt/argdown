@@ -115,7 +115,7 @@ var ArgdownParser = function (_chevrotain$Parser) {
         });
         $.argumentStatement = $.RULE("argumentStatement", function () {
             var children = [];
-            children.push($.CONSUME(lexer.ArgumentStatementStart));
+            children.push($.CONSUME(lexer.StatementNumber));
             children.push($.SUBRULE($.statement));
             return {
                 name: "argumentStatement",
@@ -229,7 +229,7 @@ var ArgdownParser = function (_chevrotain$Parser) {
             var children = [];
             children.push($.CONSUME(lexer.ArgumentReference));
             $.OPTION(function () {
-                children.push($.SUBRULE($.relations));
+                children.push($.SUBRULE($.argumentRelations));
             });
             return {
                 name: 'argumentReference',
@@ -242,7 +242,7 @@ var ArgdownParser = function (_chevrotain$Parser) {
             children.push($.CONSUME(lexer.ArgumentDefinition));
             children.push($.SUBRULE2($.statementContent));
             $.OPTION1(function () {
-                children.push($.SUBRULE($.relations));
+                children.push($.SUBRULE($.argumentRelations));
             });
             return {
                 name: 'argumentDefinition',
@@ -264,15 +264,34 @@ var ArgdownParser = function (_chevrotain$Parser) {
                 ALT: function ALT() {
                     var children = [];
                     children.push($.CONSUME(lexer.StatementDefinition));
-                    children.push($.SUBRULE2($.statementContent));
+                    children.push($.SUBRULE3($.statementContent));
                     return {
                         name: "statementDefinition",
                         children: children
                     };
                 }
+                // , {
+                // ALT: () => {
+                //     let children = [];
+                //     children.push($.CONSUME(lexer.StatementReferenceByNumber));
+                //     return {
+                //         name: "statementReferenceByNumber",
+                //         children: children
+                //     };
+                // }},{
+                // ALT: () => {
+                //     let children = [];
+                //     children.push($.CONSUME(lexer.StatementDefinitionByNumber));
+                //     children.push($.SUBRULE2($.statementContent));
+                //     return {
+                //         name: "statementDefinitionByNumber",
+                //         children: children
+                //     };
+                // }
+                //}
             }]);
             $.OPTION(function () {
-                children.push($.SUBRULE($.relations));
+                children.push($.SUBRULE($.statementRelations));
             });
             return {
                 name: 'statement',
@@ -280,7 +299,7 @@ var ArgdownParser = function (_chevrotain$Parser) {
             };
         });
 
-        $.relations = $.RULE("relations", function () {
+        $.statementRelations = $.RULE("statementRelations", function () {
             var children = [];
             children.push($.CONSUME(lexer.Indent));
             var atLeastOne = $.AT_LEAST_ONE(function () {
@@ -304,6 +323,10 @@ var ArgdownParser = function (_chevrotain$Parser) {
                     ALT: function ALT() {
                         return $.SUBRULE($.contradiction);
                     }
+                }, {
+                    ALT: function ALT() {
+                        return $.SUBRULE($.incomingUndercut);
+                    }
                 }]);
             });
             children = children.concat(atLeastOne);
@@ -313,7 +336,43 @@ var ArgdownParser = function (_chevrotain$Parser) {
                 children: children
             };
         });
-
+        $.argumentRelations = $.RULE("argumentRelations", function () {
+            var children = [];
+            children.push($.CONSUME(lexer.Indent));
+            var atLeastOne = $.AT_LEAST_ONE(function () {
+                return $.OR([{
+                    ALT: function ALT() {
+                        return $.SUBRULE($.incomingSupport);
+                    }
+                }, {
+                    ALT: function ALT() {
+                        return $.SUBRULE($.incomingAttack);
+                    }
+                }, {
+                    ALT: function ALT() {
+                        return $.SUBRULE($.outgoingSupport);
+                    }
+                }, {
+                    ALT: function ALT() {
+                        return $.SUBRULE($.outgoingAttack);
+                    }
+                }, {
+                    ALT: function ALT() {
+                        return $.SUBRULE($.incomingUndercut);
+                    }
+                }, {
+                    ALT: function ALT() {
+                        return $.SUBRULE($.outgoingUndercut);
+                    }
+                }]);
+            });
+            children = children.concat(atLeastOne);
+            children.push($.CONSUME(lexer.Dedent));
+            return {
+                name: 'relations',
+                children: children
+            };
+        });
         $.incomingSupport = $.RULE("incomingSupport", function () {
             var children = [];
             children.push($.CONSUME(lexer.IncomingSupport));
@@ -349,6 +408,39 @@ var ArgdownParser = function (_chevrotain$Parser) {
                 children: children
             };
         });
+        $.incomingUndercut = $.RULE("incomingUndercut", function () {
+            var children = [];
+            children.push($.CONSUME(lexer.IncomingUndercut));
+            $.OR({
+                DEF: [{ ALT: function ALT() {
+                        return children.push($.SUBRULE($.argumentDefinition));
+                    } }, { ALT: function ALT() {
+                        return children.push($.SUBRULE($.argumentReference));
+                    } }]
+            });
+            return {
+                name: 'incomingUndercut',
+                children: children
+            };
+        });
+        $.outgoingUndercut = $.RULE("outgoingUndercut", function () {
+            var children = [];
+            children.push($.CONSUME(lexer.OutgoingUndercut));
+            $.OR({
+                DEF: [{ ALT: function ALT() {
+                        return children.push($.SUBRULE($.statement));
+                    } }, { ALT: function ALT() {
+                        return children.push($.SUBRULE($.argumentDefinition));
+                    } }, { ALT: function ALT() {
+                        return children.push($.SUBRULE($.argumentReference));
+                    } }]
+            });
+            return {
+                name: 'outgoingUndercut',
+                children: children
+            };
+        });
+
         $.outgoingSupport = $.RULE("outgoingSupport", function () {
             var children = [];
             children.push($.CONSUME(lexer.OutgoingSupport));
@@ -458,6 +550,9 @@ var ArgdownParser = function (_chevrotain$Parser) {
                     ALT: function ALT() {
                         return children.push($.CONSUME(lexer.StatementMention));
                     }
+                    // , {
+                    //     ALT: () => children.push($.CONSUME(lexer.StatementMentionByNumber))
+                    // }
                 }]);
             });
             return {

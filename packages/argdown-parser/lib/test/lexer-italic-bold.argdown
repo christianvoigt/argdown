@@ -10,3 +10,11 @@ __This text is bold and *this one is also italic.*__
 ****This text is sourrounded by eight stars.****
 (*This text is italic and in brackets.*)
 *This text is italic and followed by a full stop*.
+*This italic text is followed by a colon*:
+_This italic text is followed by a colon_:
+**This bold text is followed by a colon**:
+__This bold text is followed by a colon__:
+*This italic text is followed by a hyphen*-
+_This italic text is followed by a hyphen_-
+**This bold text is followed by a hyphen**-
+__This bold text is followed by a hyphen__-

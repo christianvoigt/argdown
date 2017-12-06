@@ -45,6 +45,7 @@ describe("Parser", function () {
     var lexResult = lexer.tokenize(source);
     parser.input = lexResult.tokens;
     var parseResult = parser.argdown();
+    //console.log(parser.errors[0]);
     (0, _chai.expect)(lexResult.errors).to.be.empty;
     (0, _chai.expect)(parser.errors).to.exist;
   });

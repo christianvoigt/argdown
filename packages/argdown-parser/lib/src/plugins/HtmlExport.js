@@ -163,6 +163,12 @@ var HtmlExport = function () {
       incomingAttackExit: function incomingAttackExit() {
         return $.html += "</div>";
       },
+      incomingUndercutEntry: function incomingUndercutEntry() {
+        $.html += "<div class='incoming undercut relation'><div class='incoming undercut relation-symbol'><span>_&gt;</span></div>";
+      },
+      incomingUndercutExit: function incomingUndercutExit() {
+        return $.html += "</div>";
+      },
       outgoingSupportEntry: function outgoingSupportEntry() {
         $.html += "<div class='outgoing support relation'><div class='outgoing support relation-symbol'><span>+</span></div>";
       },
@@ -173,6 +179,12 @@ var HtmlExport = function () {
         $.html += "<div class='outgoing attack relation'><div class='outgoing attack relation-symbol'><span>-</span></div>";
       },
       outgoingAttackExit: function outgoingAttackExit() {
+        $.html += "</div>";
+      },
+      outgoingUndercutEntry: function outgoingUndercutEntry() {
+        $.html += "<div class='outgoing undercut relation'><div class='outgoing undercut relation-symbol'><span>&lt;_</span></div>";
+      },
+      outgoingUndercutExit: function outgoingUndercutExit() {
         $.html += "</div>";
       },
       contradictionEntry: function contradictionEntry() {
