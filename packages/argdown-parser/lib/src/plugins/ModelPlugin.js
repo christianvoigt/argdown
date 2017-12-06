@@ -33,6 +33,7 @@ var ModelPlugin = function () {
       if (data.config && data.config.model) {
         this.config = data.config.model;
       }
+
       if (this.relations) {
         var _iteratorNormalCompletion = true;
         var _didIteratorError = false;
@@ -207,6 +208,9 @@ var ModelPlugin = function () {
     var argumentReferencePattern = /\<(.+)\>/;
     var argumentDefinitionPattern = /\<(.+)\>\:/;
     var argumentMentionPattern = /\@\<(.+)\>(\s?)/;
+    // const statementReferenceByNumberPattern = /\<(.+)\>\((.+)\)/;
+    // const statementDefinitionByNumberPattern = /\<(.+)\>\((.+)\)\:/;
+    // const statementMentionByNumberPattern = /\@\<(.+)\>\((.+)\)/;
     var linkPattern = /\[(.+)\]\((.+)\)/;
     var tagPattern = /#(?:\(([^\)]+)\)|([a-zA-z0-9-\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+))/;
 
@@ -216,9 +220,11 @@ var ModelPlugin = function () {
       return "Untitled " + uniqueTitleCounter;
     }
     function getEquivalenceClass(title) {
-      if (!title) return null;
-
-      var ec = $.statements[title];
+      if (!title) {
+        return null;
+      }
+      var ec = null;
+      ec = $.statements[title];
       if (!ec) {
         ec = new _EquivalenceClass.EquivalenceClass();
         ec.title = title;
@@ -281,6 +287,13 @@ var ModelPlugin = function () {
       if (statement.isRootOfStatementTree) {
         inStatementTree = false;
       }
+      // //If we are in an argument reconstruction, we have to get argument title and statement number
+      // //getEquivalenceClass will look for equivalenceClasses that were already defined by using a reference to this argumentStatement
+
+      // if (currentArgumentReconstruction && !currentRelation) {
+      //   node.argumentTitle = currentArgumentReconstruction.title;
+      //   node.statementNumber = currentArgumentReconstruction.pcs.length + 1;
+      // }
       var equivalenceClass = getEquivalenceClass(statement.title);
       node.equivalenceClass = equivalenceClass;
       if (statement.tags) {
@@ -306,6 +319,14 @@ var ModelPlugin = function () {
         node.statement = currentStatement;
       }
     }
+    // function onStatementDefinitionByNumberEntry(node){
+    //   let match = statementDefinitionByNumberPattern.exec(node.image);
+    //   if (match != null) {
+    //     node.statementUsedInArgument = match[1];
+    //     node.statementNumber = match[2];
+    //     node.statement = currentStatement;
+    //   }      
+    // }
     function onStatementReferenceEntry(node) {
       var match = statementReferencePattern.exec(node.image);
       if (match != null) {
@@ -313,6 +334,14 @@ var ModelPlugin = function () {
         node.statement = currentStatement;
       }
     }
+    // function onStatementReferenceByNumberEntry(node) {
+    //   let match = statementReferenceByNumberPattern.exec(node.image);
+    //   if (match != null) {
+    //     node.statementUsedInArgument = match[1];
+    //     node.statementNumber = match[2];
+    //     node.statement = currentStatement;
+    //   }
+    // }
     function onStatementMentionExit(node) {
       var target = currentHeading ? currentHeading : currentStatement;
       var match = statementMentionPattern.exec(node.image);
@@ -331,6 +360,25 @@ var ModelPlugin = function () {
         }
       }
     }
+    // function onStatementMentionByNumberExit(node) {
+    //   const target = (currentHeading) ? currentHeading : currentStatement;
+    //   let match = statementMentionByNumberPattern.exec(node.image);
+    //   if (match) {
+    //     node.argumentTitle = match[1];
+    //     node.statementNumber = match[2];
+    //     if (node.image[node.image.length - 1] == " ") {
+    //       node.trailingWhitespace = ' ';
+    //     } else {
+    //       node.trailingWhitespace = '';
+    //     }
+    //     if (target) {
+    //       let range = { type: 'statement-mention-by-number', argumentTitle: node.title, statementNumber: node.statementNumber, start: target.text.length };
+    //       target.text += node.image;
+    //       range.stop = target.text.length - 1;
+    //       target.ranges.push(range);
+    //     }
+    //   }
+    // }
     function updateArgument(title) {
       if (title) {
         currentArgument = $.arguments[title];
@@ -615,6 +663,18 @@ var ModelPlugin = function () {
       currentRelation.from = target;
       node.relation = currentRelation;
     }
+    function onIncomingUndercutEntry(node) {
+      var target = _.last(parentsStack);
+      currentRelation = new _Relation.Relation("undercut");
+      currentRelation.from = target;
+      node.relation = currentRelation;
+    }
+    function onOutgoingUndercutEntry(node) {
+      var target = _.last(parentsStack);
+      currentRelation = new _Relation.Relation("undercut");
+      currentRelation.to = target;
+      node.relation = currentRelation;
+    }
 
     function onRelationsEntry() {
       parentsStack.push(getRelationTarget(currentStatementOrArgument));
@@ -771,8 +831,11 @@ var ModelPlugin = function () {
       inferenceRulesExit: onInferenceRulesExit,
       metadataStatementExit: onMetadataStatementExit,
       StatementDefinitionEntry: onStatementDefinitionEntry,
+      // StatementDefinitionByNumberEntry : onStatementDefinitionByNumberEntry,
       StatementReferenceEntry: onStatementReferenceEntry,
+      // StatementReferenceByNumberEntry : onStatementReferenceByNumberEntry,
       StatementMentionExit: onStatementMentionExit,
+      // StatementMentionByNumberExit : onStatementMentionByNumberExit,
       ArgumentDefinitionEntry: onArgumentDefinitionEntry,
       ArgumentReferenceEntry: onArgumentReferenceEntry,
       ArgumentMentionExit: onArgumentMentionExit,
@@ -788,6 +851,10 @@ var ModelPlugin = function () {
       outgoingAttackExit: onRelationExit,
       contradictionEntry: onContradictionEntry,
       contradictionExit: onRelationExit,
+      outgoingUndercutEntry: onOutgoingUndercutEntry,
+      outgoingUndercutExit: onRelationExit,
+      incomingUndercutEntry: onIncomingUndercutEntry,
+      incomingUndercutExit: onRelationExit,
       relationsEntry: onRelationsEntry,
       relationsExit: onRelationsExit,
       freestyleTextEntry: onFreestyleTextEntry,

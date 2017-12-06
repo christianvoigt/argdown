@@ -38,8 +38,9 @@ describe("ModelPlugin", function () {
     (0, _chai.expect)(description.ranges[0].stop).to.equal(10);
   });
   it("can create statement relations and ignore duplicates", function () {
-    var source = "[A]: The Beatles are the best!\n  +[B]: The Beatles made 'Rubber Soul'!\n  -><C>: The Rolling Stones were cooler!\n\n [A]\n  +[B]\n  -><C>";
+    var source = '\n    [A]: The Beatles are the best!\n      + [B]: The Beatles made \'Rubber Soul\'!\n      -> <C>: The Rolling Stones were cooler!\n        \n    [A]\n      + [B]\n      -> <C>\n    ';
     var result = app.run(['parse-input', 'build-model'], { input: source });
+
     (0, _chai.expect)(Object.keys(result.statements).length).to.equal(2);
     (0, _chai.expect)(Object.keys(result.arguments).length).to.equal(1);
     (0, _chai.expect)(result.relations.length).to.equal(2);
@@ -96,6 +97,21 @@ describe("ModelPlugin", function () {
     (0, _chai.expect)(result.parserErrors.length).to.equal(0);
     (0, _chai.expect)(Object.keys(result.statements).length).to.equal(2);
     (0, _chai.expect)(Object.keys(result.relations).length).to.equal(1);
+  });
+  it("can parse undercuts", function () {
+    var source = '[A]: A\n      _> <B>\n    \n    <B>\n      <_ [D]';
+    var result = app.run(['parse-input', 'build-model'], { input: source });
+    //console.log(parserPlugin.parser.astToString(result.ast));
+    console.log(result.parserErrors[0]);
+    (0, _chai.expect)(result.parserErrors.length).to.equal(0);
+    (0, _chai.expect)(Object.keys(result.statements).length).to.equal(2);
+    (0, _chai.expect)(Object.keys(result.relations).length).to.equal(2);
+    (0, _chai.expect)(result.relations[0].type).to.equal("undercut");
+    (0, _chai.expect)(result.relations[0].from.title).to.equal("A");
+    (0, _chai.expect)(result.relations[0].to.title).to.equal("B");
+    (0, _chai.expect)(result.relations[1].type).to.equal("undercut");
+    (0, _chai.expect)(result.relations[1].from.title).to.equal("D");
+    (0, _chai.expect)(result.relations[1].to.title).to.equal("B");
   });
   it("can process a single argument", function () {
     var source = "(1) [s1]: A\n(2) [s2]: B\n----\n(3) [s3]: C";
