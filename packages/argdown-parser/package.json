@@ -1,11 +1,11 @@
 {
   "name": "argdown-parser",
-  "version": "0.2.1",
+  "version": "0.5.0",
   "license": "MIT",
   "main": "lib/src/index.js",
   "dependencies": {
-    "chevrotain": "^0.27.0",
-    "eventemitter3": "^2.0.2",
+    "chevrotain": "^0.35.0",
+    "eventemitter3": "^3.0.0",
     "lodash": "^4.17.4"
   },
   "repository": {
@@ -32,7 +32,7 @@
     "test:lib": "mocha --require source-map-support/register --colors ./lib/test/*.spec.js",
     "test:watch": "mocha --require source-map-support/register --compilers --colors -w ./lib/test/*.spec.js",
     "clean": "rimraf lib/*",
-    "prepare": "npm build",
+    "prepare": "npm run-script build",
     "version:patch": "npm version patch",
     "version:minor": "npm version minor",
     "version:major": "npm version major",
@@ -41,19 +41,19 @@
   "readmeFilename": "Readme.md",
   "preferGlobal": true,
   "devDependencies": {
-    "babel-cli": "^6.24.1",
-    "babel-core": "^6.25.0",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
     "babel-eslint": "^7.2.3",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-es2016": "^6.24.1",
-    "chai": "^4.0.2",
+    "chai": "^4.1.2",
     "cpx": "^1.5.0",
     "eslint": "^3.19.0",
-    "mocha": "^3.4.2",
-    "rimraf": "^2.6.1",
-    "sinon": "^1.17.7",
-    "source-map-support": "^0.4.11",
+    "glob": "^7.1.1",
     "mkdirp": "^0.5.1",
-    "glob": "^7.1.1"
+    "mocha": "^3.5.3",
+    "rimraf": "^2.6.2",
+    "sinon": "^1.17.7",
+    "source-map-support": "^0.4.18"
   }
 }

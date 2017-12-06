@@ -103,7 +103,7 @@ var HtmlExport = function () {
         if (parentNode.equivalenceClass && parentNode.equivalenceClass.sortedTags) {
           classes += " " + $.getCssClassesFromTags(parentNode.equivalenceClass.sortedTags, data);
         }
-        $.html += "<span id='" + htmlId + "' class='" + classes + "'>[<span class='title statement-title'>" + node.statement.title + "</span>]: </span>";
+        $.html += "<span id='" + htmlId + "' class='" + classes + "'>[<span class='title statement-title'>" + $.escapeHtml(node.statement.title) + "</span>]: </span>";
       },
       StatementReferenceEntry: function StatementReferenceEntry(node, parentNode, childIndex, data) {
         var htmlId = $.getHtmlId("statement", node.statement.title, true);
@@ -111,7 +111,7 @@ var HtmlExport = function () {
         if (parentNode.equivalenceClass && parentNode.equivalenceClass.sortedTags) {
           classes += " " + $.getCssClassesFromTags(parentNode.equivalenceClass.sortedTags, data);
         }
-        $.html += "<a href='#" + htmlId + "' class='" + classes + "'>[<span class='title statement-title'>" + node.statement.title + "</span>] </a>";
+        $.html += "<a href='#" + htmlId + "' class='" + classes + "'>[<span class='title statement-title'>" + $.escapeHtml(node.statement.title) + "</span>] </a>";
       },
       StatementMentionEntry: function StatementMentionEntry(node, parentNode, childIndex, data) {
         var equivalenceClass = data.statements[node.title];
@@ -120,7 +120,7 @@ var HtmlExport = function () {
           classes += " " + $.getCssClassesFromTags(equivalenceClass.sortedTags, data);
         }
         var htmlId = $.getHtmlId("statement", node.title, true);
-        $.html += "<a href='#" + htmlId + "' class='" + classes + "'>@[<span class='title statement-title'>" + node.title + "</span>]</a>" + node.trailingWhitespace;
+        $.html += "<a href='#" + htmlId + "' class='" + classes + "'>@[<span class='title statement-title'>" + $.escapeHtml(node.title) + "</span>]</a>" + node.trailingWhitespace;
       },
       argumentReferenceEntry: function argumentReferenceEntry(node, parentNode, childIndex, data) {
         var htmlId = $.getHtmlId("argument", node.argument.title, true);
@@ -128,7 +128,7 @@ var HtmlExport = function () {
         if (node.argument.tags) {
           classes += " " + $.getCssClassesFromTags(node.argument.sortedTags, data);
         }
-        $.html += "<a href='#" + htmlId + "' class='" + classes + "'>&lt;<span class='title argument-title'>" + node.argument.title + "</span>&gt; </a>";
+        $.html += "<a href='#" + htmlId + "' class='" + classes + "'>&lt;<span class='title argument-title'>" + $.escapeHtml(node.argument.title) + "</span>&gt; </a>";
       },
       argumentDefinitionEntry: function argumentDefinitionEntry(node, parentNode, childIndex, data) {
         var htmlId = $.getHtmlId("argument", node.argument.title);
@@ -137,7 +137,7 @@ var HtmlExport = function () {
         if (node.argument.tags) {
           classes += " " + $.getCssClassesFromTags(node.argument.sortedTags, data);
         }
-        $.html += "<div id='" + htmlId + "' class='" + classes + "'><span class='definiendum argument-definiendum'>&lt;<span class='title argument-title'>" + node.argument.title + "</span>&gt;: </span><span class='argument-definiens definiens description'>";
+        $.html += "<div id='" + htmlId + "' class='" + classes + "'><span class='definiendum argument-definiendum'>&lt;<span class='title argument-title'>" + $.escapeHtml(node.argument.title) + "</span>&gt;: </span><span class='argument-definiens definiens description'>";
       },
       ArgumentMentionEntry: function ArgumentMentionEntry(node, parentNode, childIndex, data) {
         var htmlId = $.getHtmlId("argument", node.title, true);
@@ -146,7 +146,7 @@ var HtmlExport = function () {
         if (argument.tags) {
           classes += " " + $.getCssClassesFromTags(argument.sortedTags, data);
         }
-        $.html += "<a href='#" + htmlId + "' class='" + classes + "'>@&lt;<span class='title argument-title'>" + node.title + "</span>&gt;</a>" + node.trailingWhitespace;
+        $.html += "<a href='#" + htmlId + "' class='" + classes + "'>@&lt;<span class='title argument-title'>" + $.escapeHtml(node.title) + "</span>&gt;</a>" + node.trailingWhitespace;
       },
       argumentDefinitionExit: function argumentDefinitionExit() {
         return $.html += "</span></div>";
@@ -226,7 +226,7 @@ var HtmlExport = function () {
       headingEntry: function headingEntry(node) {
         if (node.level == 1) {
           if ($.settings.title == 'Argdown Document') {
-            $.html = $.html.replace('<title>Argdown Document</title>', '<title>' + node.text + '</title>');
+            $.html = $.html.replace('<title>Argdown Document</title>', '<title>' + $.escapeHtml(node.text) + '</title>');
           }
         }
         var htmlId = $.getHtmlId("heading", node.text);
@@ -237,7 +237,9 @@ var HtmlExport = function () {
         return $.html += "</h" + node.level + ">";
       },
       freestyleTextEntry: function freestyleTextEntry(node, parentNode) {
-        if (parentNode.name != 'inferenceRules' && parentNode.name != 'metadataStatement') $.html += node.text;
+        if (parentNode.name != 'inferenceRules' && parentNode.name != 'metadataStatement') {
+          $.html += $.escapeHtml(node.text);
+        }
       },
       boldEntry: function boldEntry() {
         return $.html += "<b>";
@@ -256,7 +258,7 @@ var HtmlExport = function () {
       },
       TagEntry: function TagEntry(node, parentNode, childIndex, data) {
         if (node.text) {
-          $.html += "<span class='tag " + $.getCssClassesFromTags([node.tag], data) + "'>" + node.text + "</span>";
+          $.html += "<span class='tag " + $.getCssClassesFromTags([node.tag], data) + "'>" + $.escapeHtml(node.text) + "</span>";
         }
       },
       argumentEntry: function argumentEntry(node, parentNode, childIndex, data) {
@@ -318,7 +320,7 @@ var HtmlExport = function () {
               $.html += "<span class='meta-data-statement'>";
               $.html += "<span class='meta-data-key'>" + key + ": </span>";
               if (_.isString(inference.metaData[key])) {
-                $.html += "<span class='meta-data-value'>" + inference.metaData[key] + "</span>";
+                $.html += "<span class='meta-data-value'>" + $.escapeHtml(inference.metaData[key]) + "</span>";
               } else {
                 var j = 0;
                 var _iteratorNormalCompletion2 = true;
@@ -330,7 +332,7 @@ var HtmlExport = function () {
                     var value = _step2.value;
 
                     if (j > 0) $.html += ", ";
-                    $.html += "<span class='meta-data-value'>" + value + "</span>";
+                    $.html += "<span class='meta-data-value'>" + $.escapeHtml(value) + "</span>";
                     j++;
                   }
                 } catch (err) {
@@ -423,6 +425,11 @@ var HtmlExport = function () {
     key: 'replaceAll',
     value: function replaceAll(str, find, replace) {
       return str.replace(new RegExp(find, 'g'), replace);
+    }
+  }, {
+    key: 'escapeHtml',
+    value: function escapeHtml(unsafe) {
+      return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
   }, {
     key: 'escapeRegExp',

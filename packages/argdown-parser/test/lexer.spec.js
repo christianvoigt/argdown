@@ -11,6 +11,16 @@ function expectToken(tokenType) {
   expect(tokenMatcher(currentTokens[i], tokenType)).to.be.true;
   i++;
 }
+function expectTokenLocation(startOffset, endOffset, startLine, endLine, startColumn, endColumn){
+  var token = currentTokens[i];
+  expect(token.startOffset).to.equal(startOffset);
+  expect(token.endOffset).to.equal(endOffset);
+  expect(token.startLine).to.equal(startLine);
+  expect(token.endLine).to.equal(endLine);
+  expect(token.startColumn).to.equal(startColumn);
+  expect(token.endColumn).to.equal(endColumn);
+  i++;
+}
 function startTest(tokens) {
   currentTokens = tokens;
   i = 0;
@@ -325,7 +335,7 @@ describe("Lexer", function () {
     expectToken(lexer.StatementDefinition);
     expectToken(lexer.Freestyle);
   });
-  it("can parse Windows line endings", function () {
+  it("can lex Windows line endings", function () {
     let source = fs.readFileSync("./test/lexer-windows-line-endings.argdown", 'utf8');
     const result = lexer.tokenize(source);
     startTest(result.tokens);

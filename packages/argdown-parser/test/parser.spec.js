@@ -41,6 +41,22 @@ describe("Parser", function() {
     expect(lexResult.errors).to.be.empty;
     expect(parser.errors).to.exist;
   });
+  it("can escape characters", function () {
+    let source = "<Title>: text \\[text\\]";
+    let lexResult = lexer.tokenize(source);
+    parser.input = lexResult.tokens;
+    let parseResult = parser.argdown();
+    expect(lexResult.errors).to.be.empty;
+    expect(parser.errors).to.be.empty;
+  });
+  // it("can return custom NoViableAltMessage", function () {
+  //   let source = `asdda
+  // + adas [sdsd] sadd`;
+  //   let lexResult = lexer.tokenize(source);
+  //   parser.input = lexResult.tokens;
+  //   let parseResult = parser.argdown();
+  //   console.log(parser.errors[0]);
+  // });
 });
 
 describe("ArgdownTreeWalker", function() {

@@ -5,11 +5,14 @@ import chevrotain, {
     getTokenConstructor
 } from 'chevrotain';
 import {ArgdownLexer} from './ArgdownLexer.js';
+import {ArgdownErrorMessageProvider} from './ArgdownErrorMessageProvider.js';
 
 class ArgdownParser extends chevrotain.Parser {
 
     constructor(input, lexer) {
-        super(input, lexer.tokens);
+        super(input, lexer.tokens, {
+            errorMessageProvider: ArgdownErrorMessageProvider            
+        });
         let $ = this;
         $.lexer = lexer;        
 
@@ -451,6 +454,7 @@ class ArgdownParser extends chevrotain.Parser {
             }, {
                 ALT: () => children.push($.CONSUME(lexer.StatementMention))
             }
+
             // , {
             //     ALT: () => children.push($.CONSUME(lexer.StatementMentionByNumber))
             // }
@@ -467,6 +471,8 @@ class ArgdownParser extends chevrotain.Parser {
                 ALT: () => children.push($.CONSUME(lexer.Freestyle))
             }, {
                 ALT: () => children.push($.CONSUME(lexer.UnusedControlChar))
+            },{
+                ALT: () => children.push($.CONSUME(lexer.EscapedChar))
             }]));
             return {
                 name: "freestyleText",
@@ -508,5 +514,5 @@ class ArgdownParser extends chevrotain.Parser {
 }
 
 module.exports = {
-    ArgdownParser: new ArgdownParser(null, ArgdownLexer)
+    ArgdownParser: new ArgdownParser("", ArgdownLexer)
 }

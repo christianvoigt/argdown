@@ -32,10 +32,10 @@ var ArgdownLexer = function () {
         key: 'getCurrentLine',
         value: function getCurrentLine(matchedTokens) {
             var matchedTokensIsEmpty = _.isEmpty(matchedTokens);
-            if (matchedTokensIsEmpty) return 0;
+            if (matchedTokensIsEmpty) return 1;
 
             var last = _.last(matchedTokens);
-            var currentLine = last ? last.endLine : 0;
+            var currentLine = last ? last.endLine : 1;
             if (last && chevrotain.tokenMatcher(last, this.Emptyline)) currentLine++;
             return currentLine;
         }
@@ -43,12 +43,12 @@ var ArgdownLexer = function () {
         key: 'emitRemainingDedentTokens',
         value: function emitRemainingDedentTokens(matchedTokens) {
             if (this.indentStack.length <= 1) return;
-            var lastToken = _.last(matchedTokens.tokens);
-            var startOffset = lastToken ? lastToken.endOffset : 0;
+            var lastToken = _.last(matchedTokens);
+            var startOffset = lastToken ? lastToken.endOffset + 1 : 0;
             var endOffset = startOffset;
-            var startLine = lastToken ? lastToken.endLine : 0;
+            var startLine = lastToken ? lastToken.endLine + 1 : 1; //+1 because of linebreak before indentation
             var endLine = startLine;
-            var startColumn = lastToken ? lastToken.endColumn : 0;
+            var startColumn = 1;
             var endColumn = startColumn;
 
             //add remaining Dedents
@@ -64,12 +64,12 @@ var ArgdownLexer = function () {
             var lastIndentLevel = _.last(this.indentStack);
             var image = "";
             var last = _.last(matchedTokens);
-            var startOffset = last ? last.endOffset + 1 : 0;
-            var endOffset = startOffset;
-            var startLine = this.getCurrentLine(matchedTokens, groups.nl);
+            var startOffset = last ? last.endOffset + 2 : 0; //+2 because of linebreak before indentation
+            var endOffset = startOffset + indentStr.length - 1;
+            var startLine = this.getCurrentLine(matchedTokens, groups.nl) + 1; //relation includes linebreak
             var endLine = startLine;
-            var startColumn = last ? last.endColumn + 1 : 0;
-            var endColumn = startColumn;
+            var startColumn = 1;
+            var endColumn = startColumn + indentStr.length - 1;
             if (currIndentLevel > lastIndentLevel) {
                 this.indentStack.push(currIndentLevel);
                 var indentToken = createTokenInstance(this.Indent, image, startOffset, endOffset, startLine, endLine, startColumn, endColumn);
@@ -394,7 +394,7 @@ var ArgdownLexer = function () {
         });
         $.tokens.push($.ArgumentMention);
 
-        var headingPattern = /^(#+)/;
+        var headingPattern = /^(#+)(?: )/;
         function matchHeadingStart(text, offset, matchedTokens) {
             var remainingText = text.substr(offset);
             var last = _.last(matchedTokens);
@@ -577,7 +577,8 @@ var ArgdownLexer = function () {
 
         var lexerConfig = {
             modes: {
-                "default_mode": [$.Comment, $.Emptyline,
+                "default_mode": [$.Comment, $.EscapedChar, //must come first after $.Comment
+                $.Emptyline,
                 // Relation tokens must appear before Spaces, otherwise all indentation will always be consumed as spaces.
                 // Dedent must appear before Indent for handling zero spaces dedents.
                 $.Dedent, $.Indent, $.InferenceStart, //needs to be lexed before OutgoingAttack (- vs --)
@@ -631,6 +632,38 @@ var ArgdownLexer = function () {
                 } finally {
                     if (_didIteratorError) {
                         throw _iteratorError;
+                    }
+                }
+            }
+
+            return str;
+        }
+    }, {
+        key: 'tokenLocationsToString',
+        value: function tokenLocationsToString(tokens) {
+            var str = "";
+            var _iteratorNormalCompletion2 = true;
+            var _didIteratorError2 = false;
+            var _iteratorError2 = undefined;
+
+            try {
+                for (var _iterator2 = tokens[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                    var token = _step2.value;
+
+                    str += getTokenConstructor(token).tokenName + " " + token.image + "\n";
+                    str += "startOffset: " + token.startOffset + " endOffset: " + token.endOffset + " startLine: " + token.startLine + " endLine: " + token.endLine + " startColumn: " + token.startColumn + " endColumn: " + token.endColumn + "\n\n";
+                }
+            } catch (err) {
+                _didIteratorError2 = true;
+                _iteratorError2 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                        _iterator2.return();
+                    }
+                } finally {
+                    if (_didIteratorError2) {
+                        throw _iteratorError2;
                     }
                 }
             }

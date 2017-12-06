@@ -8,6 +8,8 @@ var _chevrotain2 = _interopRequireDefault(_chevrotain);
 
 var _ArgdownLexer = require('./ArgdownLexer.js');
 
+var _ArgdownErrorMessageProvider = require('./ArgdownErrorMessageProvider.js');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -22,7 +24,9 @@ var ArgdownParser = function (_chevrotain$Parser) {
     function ArgdownParser(input, lexer) {
         _classCallCheck(this, ArgdownParser);
 
-        var _this = _possibleConstructorReturn(this, (ArgdownParser.__proto__ || Object.getPrototypeOf(ArgdownParser)).call(this, input, lexer.tokens));
+        var _this = _possibleConstructorReturn(this, (ArgdownParser.__proto__ || Object.getPrototypeOf(ArgdownParser)).call(this, input, lexer.tokens, {
+            errorMessageProvider: _ArgdownErrorMessageProvider.ArgdownErrorMessageProvider
+        }));
 
         var $ = _this;
         $.lexer = lexer;
@@ -550,6 +554,7 @@ var ArgdownParser = function (_chevrotain$Parser) {
                     ALT: function ALT() {
                         return children.push($.CONSUME(lexer.StatementMention));
                     }
+
                     // , {
                     //     ALT: () => children.push($.CONSUME(lexer.StatementMentionByNumber))
                     // }
@@ -571,6 +576,10 @@ var ArgdownParser = function (_chevrotain$Parser) {
                 }, {
                     ALT: function ALT() {
                         return children.push($.CONSUME(lexer.UnusedControlChar));
+                    }
+                }, {
+                    ALT: function ALT() {
+                        return children.push($.CONSUME(lexer.EscapedChar));
                     }
                 }]);
             });
@@ -645,6 +654,6 @@ var ArgdownParser = function (_chevrotain$Parser) {
 }(_chevrotain2.default.Parser);
 
 module.exports = {
-    ArgdownParser: new ArgdownParser(null, _ArgdownLexer.ArgdownLexer)
+    ArgdownParser: new ArgdownParser("", _ArgdownLexer.ArgdownLexer)
 };
 //# sourceMappingURL=ArgdownParser.js.map
