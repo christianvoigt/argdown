@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import {ArgdownApplication, ParserPlugin, ModelPlugin} from '../src/index.js';
+import fs from 'fs';
 
 let app = new ArgdownApplication();
 
@@ -346,5 +347,13 @@ it("can create section titles from headings with mentions, tags and ranges", fun
   expect(result.arguments['B']).to.exist;
   expect(result.statements['A']).to.exist;
 });
+  it("can parse escaped chars", function () {
+    let source = fs.readFileSync("./test/model-escaped-chars.argdown", 'utf8');
+    
+    //let source = `[A]: \\[text\\] text`;
+    let result = app.run(['parse-input', 'build-model'], { input: source });
+    expect(result.statements['A']).to.exist;
+    expect(result.statements['A'].getCanonicalText()).to.equal('[text] text');
+  });
 });
 

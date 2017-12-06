@@ -13,3 +13,7 @@ with some Argdown-Syntax
 -->
 
 Another <!-- **Comment** --> Statement <!-- [Comment] -->
+
+// Another comment
+
+/* And another comment */

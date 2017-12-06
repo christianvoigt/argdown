@@ -48,6 +48,10 @@
     color: red;
     background-color: lightpink;
 }
+.argdown .undercut.relation-symbol {
+    color: purple;
+    background-color: lightcoral;
+}
 
 .argdown .argument {
     margin-top: 1em;

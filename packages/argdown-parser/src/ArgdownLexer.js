@@ -18,10 +18,10 @@ class ArgdownLexer {
     getCurrentLine(matchedTokens) {
         const matchedTokensIsEmpty = _.isEmpty(matchedTokens);
         if (matchedTokensIsEmpty)
-            return 0;
+            return 1;
 
         let last = _.last(matchedTokens);
-        let currentLine = (last)? last.endLine : 0;
+        let currentLine = (last)? last.endLine : 1;
         if (last && chevrotain.tokenMatcher(last, this.Emptyline))
             currentLine++;
         return currentLine;
@@ -30,12 +30,12 @@ class ArgdownLexer {
     emitRemainingDedentTokens(matchedTokens) {
         if (this.indentStack.length <= 1)
             return;
-        const lastToken = _.last(matchedTokens.tokens);
-        const startOffset = (lastToken) ? lastToken.endOffset : 0;
+        const lastToken = _.last(matchedTokens);
+        const startOffset = (lastToken) ? lastToken.endOffset + 1 : 0; 
         const endOffset = startOffset;
-        const startLine = (lastToken) ? lastToken.endLine : 0;
+        const startLine = (lastToken) ? lastToken.endLine + 1 : 1; //+1 because of linebreak before indentation
         const endLine = startLine;
-        const startColumn = (lastToken) ? lastToken.endColumn : 0;
+        const startColumn = 1;
         const endColumn = startColumn;
 
         //add remaining Dedents
@@ -50,12 +50,12 @@ class ArgdownLexer {
         const lastIndentLevel = _.last(this.indentStack);
         const image = "";
         const last = _.last(matchedTokens);
-        const startOffset = (last) ? last.endOffset + 1 : 0;
-        const endOffset = startOffset;
-        const startLine = this.getCurrentLine(matchedTokens, groups.nl);
-        const endLine = startLine;
-        const startColumn = (last) ? last.endColumn + 1 : 0;
-        const endColumn = startColumn;
+        const startOffset = (last) ? last.endOffset + 2 : 0; //+2 because of linebreak before indentation
+        const endOffset = startOffset + indentStr.length - 1;
+        const startLine = this.getCurrentLine(matchedTokens, groups.nl) + 1;//relation includes linebreak
+        const endLine = startLine; 
+        const startColumn = 1;
+        const endColumn = startColumn + indentStr.length - 1;
         if (currIndentLevel > lastIndentLevel) {
             this.indentStack.push(currIndentLevel);
             let indentToken = createTokenInstance(this.Indent, image, startOffset, endOffset, startLine, endLine, startColumn, endColumn);
@@ -376,7 +376,7 @@ class ArgdownLexer {
         });
         $.tokens.push($.ArgumentMention);
 
-        const headingPattern = /^(#+)/;
+        const headingPattern = /^(#+)(?: )/;
         function matchHeadingStart(text, offset, matchedTokens) {
             let remainingText = text.substr(offset);
             let last = _.last(matchedTokens);
@@ -565,6 +565,7 @@ class ArgdownLexer {
             modes: {
                 "default_mode": [
                     $.Comment,
+                    $.EscapedChar, //must come first after $.Comment
                     $.Emptyline,
                     // Relation tokens must appear before Spaces, otherwise all indentation will always be consumed as spaces.
                     // Dedent must appear before Indent for handling zero spaces dedents.
@@ -636,6 +637,14 @@ class ArgdownLexer {
           str += getTokenConstructor(token).tokenName + " " + token.image +"\n";
       }
       return str;
+    }
+    tokenLocationsToString(tokens){
+        let str = "";
+        for (let token of tokens) {
+            str += getTokenConstructor(token).tokenName + " " + token.image + "\n";
+            str += "startOffset: " + token.startOffset + " endOffset: " + token.endOffset +" startLine: "+token.startLine+" endLine: "+token.endLine+" startColumn: "+token.startColumn+" endColumn: "+token.endColumn+"\n\n";
+        }
+        return str;        
     }
     tokenize(text) {
         this.init();

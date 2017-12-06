@@ -82,7 +82,7 @@ class HtmlExport{
         if(parentNode.equivalenceClass && parentNode.equivalenceClass.sortedTags){
           classes += " " + $.getCssClassesFromTags(parentNode.equivalenceClass.sortedTags, data);          
         }
-        $.html += "<span id='"+htmlId+"' class='"+classes+"'>[<span class='title statement-title'>"+node.statement.title+"</span>]: </span>"
+        $.html += "<span id='"+htmlId+"' class='"+classes+"'>[<span class='title statement-title'>"+$.escapeHtml(node.statement.title)+"</span>]: </span>"
       },
       StatementReferenceEntry : (node, parentNode, childIndex, data)=>{
         let htmlId = $.getHtmlId("statement", node.statement.title, true);
@@ -90,7 +90,7 @@ class HtmlExport{
         if(parentNode.equivalenceClass && parentNode.equivalenceClass.sortedTags){
           classes += " " + $.getCssClassesFromTags(parentNode.equivalenceClass.sortedTags, data);          
         }
-        $.html += "<a href='#"+htmlId+"' class='"+classes+"'>[<span class='title statement-title'>"+node.statement.title+"</span>] </a>"
+        $.html += "<a href='#"+htmlId+"' class='"+classes+"'>[<span class='title statement-title'>"+$.escapeHtml(node.statement.title)+"</span>] </a>"
       },
       StatementMentionEntry : (node, parentNode, childIndex, data)=>{
         const equivalenceClass = data.statements[node.title];
@@ -99,7 +99,7 @@ class HtmlExport{
           classes += " " + $.getCssClassesFromTags(equivalenceClass.sortedTags, data);
         }
         let htmlId = $.getHtmlId("statement", node.title, true);
-        $.html += "<a href='#"+htmlId+"' class='"+classes+"'>@[<span class='title statement-title'>"+node.title+"</span>]</a>"+node.trailingWhitespace
+        $.html += "<a href='#"+htmlId+"' class='"+classes+"'>@[<span class='title statement-title'>"+$.escapeHtml(node.title)+"</span>]</a>"+node.trailingWhitespace
       },
       argumentReferenceEntry : (node, parentNode, childIndex, data)=>{
         let htmlId = $.getHtmlId("argument", node.argument.title, true);
@@ -107,7 +107,7 @@ class HtmlExport{
         if(node.argument.tags){
           classes += " " + $.getCssClassesFromTags(node.argument.sortedTags, data);
         }
-        $.html += "<a href='#"+htmlId+"' class='"+classes+"'>&lt;<span class='title argument-title'>"+node.argument.title+"</span>&gt; </a>"
+        $.html += "<a href='#"+htmlId+"' class='"+classes+"'>&lt;<span class='title argument-title'>"+$.escapeHtml(node.argument.title)+"</span>&gt; </a>"
       },
       argumentDefinitionEntry : (node, parentNode, childIndex, data)=>{
         let htmlId = $.getHtmlId("argument", node.argument.title);
@@ -116,7 +116,7 @@ class HtmlExport{
         if(node.argument.tags){
           classes += " " + $.getCssClassesFromTags(node.argument.sortedTags, data);
         }
-        $.html += "<div id='"+htmlId+"' class='"+classes+"'><span class='definiendum argument-definiendum'>&lt;<span class='title argument-title'>"+node.argument.title+"</span>&gt;: </span><span class='argument-definiens definiens description'>"
+        $.html += "<div id='"+htmlId+"' class='"+classes+"'><span class='definiendum argument-definiendum'>&lt;<span class='title argument-title'>"+$.escapeHtml(node.argument.title)+"</span>&gt;: </span><span class='argument-definiens definiens description'>"
       },
       ArgumentMentionEntry : (node, parentNode, childIndex, data)=>{
         let htmlId = $.getHtmlId("argument", node.title, true);
@@ -125,7 +125,7 @@ class HtmlExport{
         if(argument.tags){
           classes += " " + $.getCssClassesFromTags(argument.sortedTags, data);
         }
-        $.html += "<a href='#"+htmlId+"' class='"+classes+"'>@&lt;<span class='title argument-title'>"+node.title+"</span>&gt;</a>"+node.trailingWhitespace
+        $.html += "<a href='#"+htmlId+"' class='"+classes+"'>@&lt;<span class='title argument-title'>"+$.escapeHtml(node.title)+"</span>&gt;</a>"+node.trailingWhitespace
       },
       argumentDefinitionExit : ()=>$.html+="</span></div>",
       incomingSupportEntry : ()=>{
@@ -181,7 +181,7 @@ class HtmlExport{
       headingEntry : (node)=>{
         if(node.level == 1){
           if($.settings.title == 'Argdown Document'){
-            $.html = $.html.replace('<title>Argdown Document</title>','<title>'+node.text+'</title>')
+            $.html = $.html.replace('<title>Argdown Document</title>','<title>'+$.escapeHtml(node.text)+'</title>')
           }
         }
         let htmlId = $.getHtmlId("heading",node.text);
@@ -190,15 +190,16 @@ class HtmlExport{
       },
       headingExit : (node)=>$.html += "</h"+node.level+">",
       freestyleTextEntry : (node, parentNode)=>{
-        if(parentNode.name != 'inferenceRules' && parentNode.name != 'metadataStatement')
-          $.html += node.text
+        if(parentNode.name != 'inferenceRules' && parentNode.name != 'metadataStatement'){
+          $.html += $.escapeHtml(node.text);
+        }
       },
       boldEntry : ()=>$.html += "<b>",
       boldExit : (node)=>$.html += "</b>"+node.trailingWhitespace,
       italicEntry : ()=>$.html += "<i>",
       italicExit : (node)=>$.html += "</i>"+node.trailingWhitespace,
       LinkEntry : (node)=>$.html += "<a href='"+node.url+"'>"+node.text+"</a>"+node.trailingWhitespace,
-      TagEntry : (node, parentNode, childIndex, data)=>{if(node.text){$.html += "<span class='tag "+$.getCssClassesFromTags([node.tag], data)+"'>"+node.text+"</span>"}},
+      TagEntry : (node, parentNode, childIndex, data)=>{if(node.text){$.html += "<span class='tag "+$.getCssClassesFromTags([node.tag], data)+"'>"+$.escapeHtml(node.text)+"</span>"}},
       argumentEntry : (node, parentNode, childIndex, data)=>{
         let classes = "argument";
         if(node.argument.tags){
@@ -235,13 +236,13 @@ class HtmlExport{
               $.html += "<span class='meta-data-statement'>";
               $.html += "<span class='meta-data-key'>"+key+": </span>";
               if(_.isString(inference.metaData[key])){
-                $.html += "<span class='meta-data-value'>"+inference.metaData[key]+"</span>";
+                $.html += "<span class='meta-data-value'>"+$.escapeHtml(inference.metaData[key])+"</span>";
               }else{
                 let j = 0;
                 for(let value of inference.metaData[key]){
                   if(j > 0)
                     $.html += ", ";
-                  $.html += "<span class='meta-data-value'>"+value+"</span>";
+                  $.html += "<span class='meta-data-value'>"+$.escapeHtml(value)+"</span>";
                   j++;
                 }
               }
@@ -291,6 +292,14 @@ class HtmlExport{
   replaceAll(str, find, replace) {
     return str.replace(new RegExp(find, 'g'), replace);
   }  
+  escapeHtml(unsafe) {
+    return unsafe
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
   escapeRegExp(str) {
       return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
   }  

@@ -466,7 +466,11 @@ var ModelPlugin = function () {
         for (var _iterator4 = node.children[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
           var child = _step4.value;
 
-          node.text += child.image;
+          if ((0, _chevrotain.tokenMatcher)(child, _ArgdownLexer.ArgdownLexer.EscapedChar)) {
+            node.text += child.image.substring(1, child.image.length);
+          } else {
+            node.text += child.image;
+          }
         }
       } catch (err) {
         _didIteratorError4 = true;
@@ -799,7 +803,7 @@ var ModelPlugin = function () {
     }
     function onHeadingExit(node) {
       var headingStart = node.children[0];
-      currentHeading.level = headingStart.image.length;
+      currentHeading.level = headingStart.image.length - 1; //number of # - whitespace
       sectionCounter++;
       var sectionId = 's' + sectionCounter;
       var newSection = new _Section.Section(sectionId, currentHeading.level, currentHeading.text, currentHeading.ranges, currentHeading.tags);

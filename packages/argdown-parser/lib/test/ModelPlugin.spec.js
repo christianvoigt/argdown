@@ -4,6 +4,12 @@ var _chai = require('chai');
 
 var _index = require('../src/index.js');
 
+var _fs = require('fs');
+
+var _fs2 = _interopRequireDefault(_fs);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 var app = new _index.ArgdownApplication();
 
 describe("ModelPlugin", function () {
@@ -261,6 +267,14 @@ describe("ModelPlugin", function () {
     (0, _chai.expect)(result.sections[0].ranges.length).to.equal(5);
     (0, _chai.expect)(result.arguments['B']).to.exist;
     (0, _chai.expect)(result.statements['A']).to.exist;
+  });
+  it("can parse escaped chars", function () {
+    var source = _fs2.default.readFileSync("./test/model-escaped-chars.argdown", 'utf8');
+
+    //let source = `[A]: \\[text\\] text`;
+    var result = app.run(['parse-input', 'build-model'], { input: source });
+    (0, _chai.expect)(result.statements['A']).to.exist;
+    (0, _chai.expect)(result.statements['A'].getCanonicalText()).to.equal('[text] text');
   });
 });
 //# sourceMappingURL=ModelPlugin.spec.js.map

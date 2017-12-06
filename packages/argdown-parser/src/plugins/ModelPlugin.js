@@ -370,7 +370,11 @@ class ModelPlugin{
       const target = (currentHeading)? currentHeading : currentStatement;
       node.text = "";
       for(let child of node.children){
-        node.text += child.image;
+        if (tokenMatcher(child, ArgdownLexer.EscapedChar)) {
+          node.text += child.image.substring(1, child.image.length);
+        }else{
+          node.text += child.image;
+        }
       }
       if(target){
         target.text += node.text;        
@@ -646,7 +650,7 @@ class ModelPlugin{
     }
     function onHeadingExit(node){
       let headingStart = node.children[0];
-      currentHeading.level = headingStart.image.length;
+      currentHeading.level = headingStart.image.length - 1; //number of # - whitespace
       sectionCounter++;
       let sectionId = 's'+sectionCounter;
       let newSection = new Section(sectionId, currentHeading.level, currentHeading.text, currentHeading.ranges, currentHeading.tags);
