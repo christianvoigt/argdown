@@ -13,6 +13,8 @@ var _SaveAsFilePlugin = require('./plugins/SaveAsFilePlugin.js');
 
 var _CopyDefaultCssPlugin = require('./plugins/CopyDefaultCssPlugin.js');
 
+var _LogParserErrorsPlugin = require('./plugins/LogParserErrorsPlugin.js');
+
 var _StdOutPlugin = require('./plugins/StdOutPlugin.js');
 
 var _IncludePlugin = require('./plugins/IncludePlugin.js');
@@ -32,6 +34,7 @@ var requireUncached = require("require-uncached");
 var app = new _argdownParser.ArgdownApplication();
 var includePlugin = new _IncludePlugin.IncludePlugin();
 var parserPlugin = new _argdownParser.ParserPlugin();
+var logParserErrorsPlugin = new _LogParserErrorsPlugin.LogParserErrorsPlugin();
 var modelPlugin = new _argdownParser.ModelPlugin();
 var htmlExport = new _argdownParser.HtmlExport();
 var tagPlugin = new _argdownParser.TagPlugin();
@@ -74,6 +77,7 @@ var stdoutArgdown = new _StdOutPlugin.StdOutPlugin({ dataKey: 'input' });
 
 app.addPlugin(includePlugin, 'preprocessor');
 app.addPlugin(parserPlugin, 'parse-input');
+app.addPlugin(logParserErrorsPlugin, "log-parser-errors");
 app.addPlugin(modelPlugin, "build-model");
 app.addPlugin(tagPlugin, "build-model");
 

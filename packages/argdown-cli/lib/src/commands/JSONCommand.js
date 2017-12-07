@@ -10,6 +10,12 @@ var _index = require('../index.js');
 var command = exports.command = 'json [inputGlob] [outputDir]';
 var desc = exports.desc = 'export Argdown input as JSON files';
 var builder = exports.builder = {
+  logParserErrors: {
+    alias: 'e',
+    describe: 'Log parser errors to console',
+    type: 'boolean',
+    default: true
+  },
   spaces: {
     alias: 's',
     describe: 'Spaces used for indentation',
@@ -49,7 +55,14 @@ var handler = exports.handler = function handler(argv) {
 
   config.verbose = argv.verbose || config.verbose;
   config.watch = argv.watch || config.watch;
-  config.process = ['preprocessor', 'parse-input', 'build-model', 'export-json'];
+  config.process = ['preprocessor', 'parse-input'];
+  config.logParserErrors = argv.logParserErrors || config.logParserErrors;
+  if (config.logParserErrors) {
+    config.process.push("log-parser-errors");
+  }
+  config.process.push('build-model');
+  config.process.push('export-json');
+
   if (!argv.stdout || argv.outputDir) {
     config.process.push('save-as-json');
   }

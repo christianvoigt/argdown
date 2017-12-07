@@ -2,6 +2,7 @@ import {ArgdownApplication, ParserPlugin, ModelPlugin, HtmlExport, JSONExport, T
 import {MapMaker, DotExport, ArgMLExport} from 'argdown-map-maker';
 import {SaveAsFilePlugin} from './plugins/SaveAsFilePlugin.js';
 import {CopyDefaultCssPlugin} from './plugins/CopyDefaultCssPlugin.js';
+import { LogParserErrorsPlugin } from './plugins/LogParserErrorsPlugin.js';
 import {StdOutPlugin} from './plugins/StdOutPlugin.js';
 import {IncludePlugin} from './plugins/IncludePlugin.js';
 import * as _ from 'lodash';
@@ -15,6 +16,7 @@ let requireUncached = require("require-uncached");
 const app = new ArgdownApplication();
 const includePlugin = new IncludePlugin();
 const parserPlugin = new ParserPlugin();
+const logParserErrorsPlugin = new LogParserErrorsPlugin();
 const modelPlugin = new ModelPlugin();
 const htmlExport = new HtmlExport();
 const tagPlugin = new TagPlugin();
@@ -57,6 +59,7 @@ const stdoutArgdown = new StdOutPlugin({dataKey:'input'});
 
 app.addPlugin(includePlugin, 'preprocessor');
 app.addPlugin(parserPlugin, 'parse-input');
+app.addPlugin(logParserErrorsPlugin, "log-parser-errors");
 app.addPlugin(modelPlugin, "build-model");
 app.addPlugin(tagPlugin, "build-model");
 
@@ -135,7 +138,7 @@ app.load = function(config){
             const input = fs.readFileSync(file, 'utf8');
             config.saveAs = config.saveAs ||{};
             config.saveAs.sourceFile = file;
-            $.run({input: input, inputFile: file, config:config});            
+            $.run({input: input, inputFile: file, config:config});
           }catch(e){
             console.log(e);
           }
