@@ -375,8 +375,7 @@ describe("Lexer", function () {
     var source = _fs2.default.readFileSync("./test/lexer-token-locations.argdown", 'utf8');
     var result = lexer.tokenize(source);
     startTest(result.tokens);
-    //console.log(lexer.tokenLocationsToString(result.tokens));
-    //expect(result.tokens.length).to.equal(5);
+    console.log(lexer.tokenLocationsToString(result.tokens));
     expectTokenLocation(0, 0, 1, 1, 1, 1);
     expectTokenLocation(2, 2, 2, 2, 1, 1); //offset = 2 because of ignored line break
     expectTokenLocation(4, 5, 3, 3, 1, 2);

@@ -1,6 +1,9 @@
 import * as _ from 'lodash';
 import {ArgdownLexer} from '../ArgdownLexer.js';
 import {ArgdownParser} from "../ArgdownParser.js";
+import * as chevrotain from 'chevrotain';
+
+const tokenMatcher = chevrotain.tokenMatcher;
 
 class ParserPlugin{
   set config(config){
@@ -34,8 +37,24 @@ class ParserPlugin{
     if(verbose && data.lexerErrors && data.lexerErrors.length > 0){
       console.log(data.lexerErrors);
     }
-    if(verbose && data.parserErrors && data.parserErrors.length > 0){
-      console.log(data.parserErrors);
+    if(data.parserErrors && data.parserErrors.length > 0){
+      //add location if token is EOF
+      var lastToken = _.last(data.tokens);
+      for(let error of data.parserErrors){
+        if(error.token && tokenMatcher(error.token, chevrotain.EOF)){
+          const startLine = lastToken.endLine;
+          const endLine = startLine;
+          const startOffset = lastToken.endOffset;
+          const endOffset = startOffset;
+          const startColumn = lastToken.endColumn;
+          const endColumn = startColumn;
+          const newToken = chevrotain.createTokenInstance(chevrotain.EOF, "", startOffset, endOffset, startLine, endLine, startColumn, endColumn);
+          error.token = newToken;
+        }
+      }
+      if (verbose){
+        console.log(data.parserErrors);
+      }
     }
     return data;    
   }
