@@ -355,5 +355,14 @@ it("can create section titles from headings with mentions, tags and ranges", fun
     expect(result.statements['A']).to.exist;
     expect(result.statements['A'].getCanonicalText()).to.equal('[text] text');
   });
+  it("can return error with token location for incomplete reconstruction", function () {
+    let source = `sdsadad
+
+(1) adasdasd`;
+    let result = app.run(['parse-input'], { input: source });
+    //console.log(result.parserErrors[0]);
+    expect(result.parserErrors[0].token.startLine).to.equal(3);
+    expect(result.parserErrors[0].token.startColumn).to.equal(12);
+  });
 });
 

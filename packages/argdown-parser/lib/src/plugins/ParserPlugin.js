@@ -10,9 +10,15 @@ var _ArgdownLexer = require('../ArgdownLexer.js');
 
 var _ArgdownParser = require('../ArgdownParser.js');
 
+var _chevrotain = require('chevrotain');
+
+var chevrotain = _interopRequireWildcard(_chevrotain);
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var tokenMatcher = chevrotain.tokenMatcher;
 
 var ParserPlugin = function () {
   _createClass(ParserPlugin, [{
@@ -54,8 +60,22 @@ var ParserPlugin = function () {
       if (verbose && data.lexerErrors && data.lexerErrors.length > 0) {
         console.log(data.lexerErrors);
       }
-      if (verbose && data.parserErrors && data.parserErrors.length > 0) {
-        console.log(data.parserErrors);
+      if (data.parserErrors && data.parserErrors.length > 0) {
+        //add location if token is EOF
+        var lastToken = _.last(data.tokens);
+        for (var error in data.parserErrors) {
+          if (error.token && tokenMatcher(error.token, chevrotain.EOF)) {
+            error.token.startLine = lastToken.endLine;
+            error.token.endLine = error.token.startLine;
+            error.token.startOffset = lastToken.endOffset;
+            error.token.endOffset = error.token.startOffset;
+            error.token.startColumn = lastToken.endColumn;
+            error.token.endColumn = error.token.startColumn;
+          }
+        }
+        if (verbose) {
+          console.log(data.parserErrors);
+        }
       }
       return data;
     }

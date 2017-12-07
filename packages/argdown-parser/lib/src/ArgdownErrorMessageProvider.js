@@ -19,8 +19,15 @@ var MISSING_TEXT_CONTENT_ERROR = "Missing text content. " + "Please add a line o
 var INVALID_INFERENCE_ERROR = "Invalid inference. Inferences can either be marked by four hyphens (----) or have the following format: " + "--Inference Rule 1, Inference Rule 2 (my meta data property 1: 1, 2, 3; my meta data property 2: value) --";
 var INVALID_METADATA_ERROR = "Invalid metadata statement. Metadata has the following format: (my meta data property 1: 1, 2, 3; my meta data property 2: value)";
 var INVALID_RELATION_ERROR = "Invalid relation syntax. This may either be caused by a) an invalid relation parent or b) invalid indentation. a) Invalid relation parent: Only statements and arguments can have relations as child elements. b) Invalid Indentation tree: Please check that if there are preceding relations in this paragraph, there is at least one with equal or less indentation.";
+var MISSING_RELATION_CONTENT_ERROR = "Missing relation content. Please define or refer to a statement or argument (you can define a statement by simply adding a line of text).";
 var MISSING_INFERENCE_END_ERROR = "Invalid inference syntax. Please end your inference with two hyphens (--)";
 var INVALID_INFERENCE_POSITION_ERROR = "Invalid inference position. An inference may only occur within an argument reconstruction, in which it is preceded by a premise and followed by a conclusion (both of which have to be numbered statements: '(1) Statement').";
+var MISSING_INFERENCE_ERROR = "Missing inference. Use four hyphens (----) between two numbered statements to insert an inference in your reconstruction and mark the latter statement as a conclusion.";
+var MISSING_CONCLUSION_ERROR = "Missing conclusion. Please add a numbered statement after the inference.";
+var ARGUMENT_RECONSTRUCTION_POSITION_ERROR = "Invalid position of argument reconstruction. Make sure the argument reconstruction is preceded by an empty line.";
+var INVALID_ARGUMENT_STATEMENT_CONTENT_ERROR = "Invalid statement content. An argument reference (<Argument Title>) or definition (<Argument Title>:) can not be used as premise or conclusion within an argument reconstruction. Use statement references ([Statement Title]) or definitions ([Statement Title]:) instead.";
+var INCOMPLETE_ARGUMENT_RECONSTRUCTION_ERROR = "Incomplete argument reconstruction. An argument reconstruction has to consist of at least one premise (a numbered statement: '(1) Statement Text'), one inference (marked by four hyphens ----) and one conclusion (a numbered statement after an inference). There may no be any empty lines between these elements.";
+
 function GetParagraphStartTokenDescription(token) {
     if (tokenMatcher(token, _ArgdownLexer.ArgdownLexer.OutgoingSupport)) {
         return "an outgoing support relation (+ or <+)";
@@ -48,7 +55,7 @@ var argdownErrorMessageProvider = {
     buildMismatchTokenMessage: function buildMismatchTokenMessage(options) {
         if (options.ruleName == "inference") {
             if (options.expected == _ArgdownLexer.ArgdownLexer.InferenceStart) {
-                return "Argument reconstruction with missing inference. Use four hyphens (----) between two numbered statements to insert an inference in your reconstruction and mark the latter statement as a conclusion.";
+                return MISSING_INFERENCE_ERROR;
             } else if (options.expected == _ArgdownLexer.ArgdownLexer.InferenceEnd) {
                 return MISSING_INFERENCE_END_ERROR;
             }
@@ -68,7 +75,7 @@ var argdownErrorMessageProvider = {
             }
         } else if (options.ruleName == "argumentStatement") {
             if (options.expected == _ArgdownLexer.ArgdownLexer.StatementNumber) {
-                return "Argument reconstruction with missing conclusion. Please add a numbered statement after the inference.";
+                return MISSING_CONCLUSION_ERROR;
             }
         }
         return defaultErrorProvider.buildMismatchTokenMessage(options);
@@ -80,7 +87,7 @@ var argdownErrorMessageProvider = {
         } else if (tokenMatcher(options.firstRedundant, _ArgdownLexer.ArgdownLexer.InferenceStart)) {
             return INVALID_INFERENCE_POSITION_ERROR;
         } else if (tokenMatcher(options.firstRedundant, _ArgdownLexer.ArgdownLexer.StatementNumber)) {
-            return "Invalid position of argument reconstruction. Make sure the argument reconstruction is preceded by an empty line.";
+            return ARGUMENT_RECONSTRUCTION_POSITION_ERROR;
         } else if (tokenMatcher(options.firstRedundant, _ArgdownLexer.ArgdownLexer.ArgumentReference)) {
             tokenDescription = "An argument reference (<Argument Title>)";
         } else if (tokenMatcher(options.firstRedundant, _ArgdownLexer.ArgdownLexer.ArgumentDefinition)) {
@@ -106,19 +113,19 @@ var argdownErrorMessageProvider = {
             } else if (tokens.length > 0) {
                 tokenDescription = GetParagraphStartTokenDescription(tokens[0]);
             }
-            return 'Argdown paragraphs may not start with ' + tokenDescription + '. If you do not want to start a new paragraph, remove any empty lines above this one. If you do want to start a new paragraph, try starting with normal text, a statement title, argument title or a list item (using * for unordered or 1. for ordered lists).';
+            return 'Invalid paragraph. Argdown paragraphs may not start with ' + tokenDescription + '. If you do not want to start a new paragraph, remove any empty lines above this one. If you do want to start a new paragraph, try starting with normal text, a statement title, argument title or a list item (using * for unordered or 1. for ordered lists).';
         } else if (isRelationRule(options.ruleName)) {
-            return "Missing relation content. Please define or refer to a statement or argument (you can define a statement by simply adding a line of text).";
+            return MISSING_RELATION_CONTENT_ERROR;
         } else if (options.ruleName == "statement") {
             if (tokens.length > 0 && (tokenMatcher(tokens[0], _ArgdownLexer.ArgdownLexer.ArgumentReference) || tokenMatcher(tokens[0], _ArgdownLexer.ArgdownLexer.ArgumentDefinition))) {
-                return "An argument reference (<Argument Title>) or definition (<Argument Title>:) can not be used as premise or conclusion within an argument reconstruction. Use statement references ([Statement Title]) or definitions ([Statement Title]:) instead.";
+                return INVALID_ARGUMENT_STATEMENT_CONTENT_ERROR;
             }
             return MISSING_TEXT_CONTENT_ERROR;
         }
         return defaultErrorProvider.buildNoViableAltMessage(options);
     },
     buildEarlyExitMessage: function buildEarlyExitMessage(options) {
-        var firstToken = options.actual[0] ? null : options.actual[0];
+        var firstToken = options.actual[0] ? options.actual[0] : null;
         if (options.ruleName == "argdown") {
             if (firstToken && isRelationToken(firstToken)) {
                 return INVALID_RELATION_ERROR;
@@ -131,16 +138,15 @@ var argdownErrorMessageProvider = {
             if (firstToken && isRelationToken(firstToken)) {
                 return INVALID_INDENTATION_ERROR;
             }
-            return "Incomplete argument reconstruction. An argument reconstruction has to consist of at least one premise (a numbered statement: '(1) Statement Text'), one inference (marked by four hyphens ----) and one conclusion (a numbered statement after an inference). There may no be any empty lines between these elements.";
+            return INCOMPLETE_ARGUMENT_RECONSTRUCTION_ERROR;
         } else if (options.ruleName == "metadata") {
             return INVALID_INFERENCE_ERROR;
         } else if (firstToken && tokenMatcher(firstToken, _ArgdownLexer.ArgdownLexer.MetadataEnd)) {
             return INVALID_METADATA_ERROR;
         } else if (firstToken && tokenMatcher(firstToken, _ArgdownLexer.ArgdownLexer.InferenceEnd)) {
             return INVALID_INFERENCE_ERROR;
-        } else {
-            return defaultErrorProvider.buildEarlyExitMessage(options);
         }
+        return defaultErrorProvider.buildEarlyExitMessage(options);
     }
 };
 

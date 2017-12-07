@@ -369,7 +369,6 @@ describe("Lexer", function () {
     const result = lexer.tokenize(source);
     startTest(result.tokens);
     //console.log(lexer.tokenLocationsToString(result.tokens));
-    //expect(result.tokens.length).to.equal(5);
     expectTokenLocation(0, 0, 1, 1, 1, 1);
     expectTokenLocation(2, 2, 2, 2, 1, 1); //offset = 2 because of ignored line break
     expectTokenLocation(4, 5, 3, 3, 1, 2);
@@ -398,7 +397,7 @@ describe("Lexer", function () {
     //expect(result.tokens.length).to.equal(5);
     expectTokenLocation(1, 1, 2, 2, 1, 1); //First newline skipped
     expectTokenLocation(3, 3, 3, 3, 1, 1); //Second newline skipped
-  });  
+  });   
   it("can lex relation after empty line", function () {
     let source = fs.readFileSync("./test/lexer-relation-after-emptyline.argdown", 'utf8');
     const result = lexer.tokenize(source);
