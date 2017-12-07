@@ -6,5 +6,6 @@ export const handler = function(argv){
   let config = app.loadConfig(argv.config);
   config.verbose = argv.verbose ||config.verbose;
   config.watch = argv.watch ||config.watch;
+  config.logParserErrors = argv.logParserErrors ||config.logParserErrors;
   app.load(config);
 }

@@ -3,6 +3,12 @@ import {app} from '../index.js';
 export const command = 'html [inputGlob] [outputDir]';
 export const desc = 'export Argdown input as HTML files';
 export const builder = {
+  logParserErrors: {
+    alias: 'e',
+    describe: 'Log parser errors to console',
+    type: 'boolean',
+    default: true
+  },
   headless: {
     alias: 'hl',
     describe: 'Export without Html, Head and Body elements',
@@ -56,7 +62,14 @@ export const handler = function(argv){
   
   config.verbose = argv.verbose ||config.verbose;
   config.watch = argv.watch ||config.watch;
-  config.process = ['preprocessor','parse-input','build-model','export-html'];
+  config.process = ['preprocessor', 'parse-input'];
+  config.logParserErrors = argv.logParserErrors || config.logParserErrors;
+  if (config.logParserErrors) {
+    config.process.push("log-parser-errors");
+  }
+  config.process.push('build-model')
+  config.process.push('export-html');
+
   if(!argv.stdout || argv.outputDir){
     config.process.push('save-as-html');
   }

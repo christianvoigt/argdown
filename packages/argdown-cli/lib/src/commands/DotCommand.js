@@ -10,6 +10,12 @@ var _index = require('../index.js');
 var command = exports.command = 'dot [inputGlob] [outputDir]';
 var desc = exports.desc = 'export Argdown input as DOT files';
 var builder = exports.builder = {
+  logParserErrors: {
+    alias: 'e',
+    describe: 'Log parser errors to console',
+    type: 'boolean',
+    default: true
+  },
   useHtmlLabels: {
     alias: 'html-labels',
     describe: 'Use HTML node labels',
@@ -123,7 +129,13 @@ var handler = exports.handler = function handler(argv) {
   }
   config.verbose = argv.verbose || config.verbose;
   config.watch = argv.watch || config.watch;
-  config.process = ['preprocessor', 'parse-input', 'build-model', 'export-dot'];
+  config.process = ['preprocessor', 'parse-input'];
+  config.logParserErrors = argv.logParserErrors || config.logParserErrors;
+  if (config.logParserErrors) {
+    config.process.push("log-parser-errors");
+  }
+  config.process.push('build-model');
+  config.process.push('export-dot');
   if (!argv.stdout || argv.outputDir) {
     config.process.push('save-as-dot');
   }

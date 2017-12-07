@@ -3,6 +3,12 @@ import {app} from '../index.js';
 export const command = 'dot [inputGlob] [outputDir]';
 export const desc = 'export Argdown input as DOT files';
 export const builder = {
+  logParserErrors: {
+    alias: 'e',
+    describe: 'Log parser errors to console',
+    type: 'boolean',
+    default: true
+  },
   useHtmlLabels: {
     alias: 'html-labels',
     describe: 'Use HTML node labels',
@@ -117,7 +123,13 @@ export const handler = function(argv){
   }
   config.verbose = argv.verbose ||config.verbose;  
   config.watch = argv.watch ||config.watch;
-  config.process = ['preprocessor','parse-input','build-model','export-dot'];
+  config.process = ['preprocessor','parse-input'];
+  config.logParserErrors = argv.logParserErrors || config.logParserErrors;
+  if (config.logParserErrors) {
+    config.process.push("log-parser-errors");
+  }  
+  config.process.push('build-model')
+  config.process.push('export-dot');
   if(!argv.stdout || argv.outputDir){
     config.process.push('save-as-dot');
   }

@@ -13,6 +13,7 @@ var handler = exports.handler = function handler(argv) {
   var config = _index.app.loadConfig(argv.config);
   config.verbose = argv.verbose || config.verbose;
   config.watch = argv.watch || config.watch;
+  config.logParserErrors = argv.logParserErrors || config.logParserErrors;
   _index.app.load(config);
 };
 //# sourceMappingURL=DefaultCommand.js.map
