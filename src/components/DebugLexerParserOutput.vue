@@ -5,7 +5,8 @@
       <h2>Parser Errors ({{$store.getters.lexerErrors.length}})</h2>
           <table class='lexer-error error' v-for="error in $store.getters.lexerErrors">
           <tr class="error-property" v-for="key in Object.keys(error)">
-            <td class="property-name">{{key}}:</td><td class="property-value">{{error[key]}}</td>
+            <td class="property-name">{{key}}:</td>
+            <td class="property-value">{{error[key]}}</td>
           </tr>
         </table>
     </div>
@@ -13,7 +14,10 @@
       <h2>Parser Errors ({{$store.getters.parserErrors.length}})</h2>
           <table class='parser-error error' v-for="error in $store.getters.parserErrors">
           <tr class="error-property" v-for="key in Object.keys(error)">
-            <td class="property-name">{{key}}:</td><td class="property-value">{{error[key]}}</td>
+            <td class="property-name">{{key}}:</td>
+            <td v-if="key == 'resyncedTokens' || key == 'context'" class="property-value">{{JSON.stringify(error[key])}}</td>
+            <td v-else-if="key == 'token'" class="property-value">{{error[key] | tokenName}}</td>
+            <td v-else class="property-value">{{JSON.stringify(error[key])}}</td>
           </tr>
         </table>
     </div>

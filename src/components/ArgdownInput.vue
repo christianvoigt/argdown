@@ -10,11 +10,11 @@
 
 <script>
 import * as _ from 'lodash'
-import { codemirror, CodeMirror } from 'vue-codemirror'
+import { CodeMirror, codemirror } from 'vue-codemirror'
 import * as argdownMode from 'argdown-codemirror-mode'
 
 require('codemirror/addon/mode/simple.js')
-require('../../node_modules/argdown-codemirror-mode/codemirror-argdown.css')
+require('codemirror/addon/lint/lint.js')
 
 CodeMirror.defineSimpleMode('argdown', argdownMode)
 
@@ -28,6 +28,8 @@ export default {
         foldGutter: true,
         styleActiveLine: true,
         lineNumbers: true,
+        lint: true,
+        gutters: ['CodeMirror-lint-markers'],
         line: true,
         extraKeys: {
           Tab: function (cm) {
@@ -39,6 +41,28 @@ export default {
     }
   },
   props: ['value'],
+  created: function () {
+    const store = this.$store
+    CodeMirror.registerHelper('lint', 'argdown', function (text, options) {
+      const found = []
+      const errors = store.getters.parserErrors
+      for (let i = 0; i < errors.length; i++) {
+        let error = errors[i]
+        let startLine = error.token.startLine - 1
+        let endLine = error.token.endLine - 1
+        let startCol = error.token.startColumn - 1
+        let endCol = error.token.endColumn
+        found.push({
+          from: CodeMirror.Pos(startLine, startCol),
+          to: CodeMirror.Pos(endLine, endCol),
+          message: error.message,
+          severity: 'error'
+        })
+      }
+      console.log(found)
+      return found
+    })
+  },
   methods: {
     updateValue: function (value) {
       this.debouncedChangeEmission(value, this)
@@ -54,6 +78,9 @@ export default {
 </script>
 
 <style lang="scss">
+@import '../../node_modules/codemirror/addon/lint/lint.css';
+@import '../../node_modules/argdown-codemirror-mode/codemirror-argdown.css';
+
 .input-maximized{
   .argdown-input{
     max-width:60em;

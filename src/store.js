@@ -194,10 +194,10 @@ export default new Vuex.Store({
       return getters.argdownData.relations
     },
     ast: (state, getters) => {
-      return getters.argdownData.ast
+      return parserPlugin.parser.astToString(getters.argdownData.ast)
     },
     tokens: (state, getters) => {
-      return getters.argdownData.tokens
+      return parserPlugin.lexer.tokensToString(getters.argdownData.tokens)
     },
     map: (state, getters) => {
       let data = app.run('make-map', getters.argdownData)
