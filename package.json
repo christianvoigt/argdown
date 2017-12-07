@@ -1,6 +1,6 @@
 {
   "name": "argdown-browser",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "A simple Argdown editor for the browser",
   "author": "Christian Voigt <1pxsolidblack@googlemail.com>",
   "private": true,
