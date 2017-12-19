@@ -11,7 +11,7 @@ var command = exports.command = '*';
 var desc = exports.desc = 'load config file, parse argdown input and run argdown processors';
 var handler = exports.handler = function handler(argv) {
   var config = _index.app.loadConfig(argv.config);
-  config.verbose = argv.verbose || config.verbose;
+  config.logLevel = argv.verbose ? "verbose" : config.logLevel;
   config.watch = argv.watch || config.watch;
   config.logParserErrors = argv.logParserErrors || config.logParserErrors;
   _index.app.load(config);

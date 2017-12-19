@@ -20,15 +20,13 @@ class SaveAsFilePlugin{
     this.name = "SaveAsFilePlugin";
     this.config = config;
   }
-  run(data){
-    let verbose = false;
+  run(data, logger){
     if(data.config){
       if(data.config.saveAs){
         this.config = data.config.saveAs;
       }else if(data.config.SaveAsFilePlugin){
         this.config = data.config.SaveAsFilePlugin;
       }
-      verbose = data.config.verbose;
     }
     
     let fileContent = data[this.settings.dataKey];
@@ -43,26 +41,24 @@ class SaveAsFilePlugin{
       }else if(data.config && data.config.input){
         fileName = this.getFileName(data.config.input);
       }
-      this.saveAsFile(fileContent, this.settings.outputDir, fileName, this.settings.extension, verbose);
+      this.saveAsFile(fileContent, this.settings.outputDir, fileName, this.settings.extension, logger);
     }
   }
   getFileName(file){
     let extension = path.extname(file);
     return path.basename(file,extension);
   }
-  saveAsFile(data, outputDir, fileName, extension, verbose){
+  saveAsFile(data, outputDir, fileName, extension, logger){
     let absoluteOutputDir = path.resolve(process.cwd(), outputDir);
     mkdirp(absoluteOutputDir, function (err) {
       if (err){
-        console.log(err);
+        logger.log("error", err);
       }else{
         fs.writeFile(absoluteOutputDir +'/'+fileName+extension, data, function(err) {
             if(err) {
-                return console.log(err);
+                logger.log("error", err);
             }
-            if(verbose){
-              console.log("Saved "+absoluteOutputDir+"/"+fileName+extension);          
-            }
+            logger.log("verbose", "Saved " + absoluteOutputDir + "/" + fileName + extension);
         });        
       }
     });

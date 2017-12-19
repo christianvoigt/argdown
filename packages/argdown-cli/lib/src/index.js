@@ -113,35 +113,32 @@ app.load = function (config) {
   if (ignoreFiles) {
     options.ignore = ignoreFiles;
   }
+  if (!config.rootPath) {
+    config.rootPath = process.cwd();
+  }
 
   var $ = this;
-  var absoluteInputGlob = path.resolve(process.cwd(), inputGlob);
+  var absoluteInputGlob = path.resolve(config.rootPath, inputGlob);
   if (config.watch) {
     var watcher = chokidar.watch(absoluteInputGlob, options);
     var watcherConfig = _.cloneDeep(config);
     watcherConfig.watch = false;
 
     watcher.on('add', function (path) {
-      if (config.verbose) {
-        console.log('File ' + path + ' has been added.');
-      }
+      app.logger.log("verbose", 'File ' + path + ' has been added.');
       watcherConfig.input = path;
       $.load(watcherConfig);
     }).on('change', function (path) {
-      if (config.verbose) {
-        console.log('File ' + path + ' has been changed.');
-      }
+      app.logger.log("verbose", 'File ' + path + ' has been changed.');
       watcherConfig.input = path;
       $.load(watcherConfig);
     }).on('unlink', function (path) {
-      if (config.verbose) {
-        console.log('File ' + path + ' has been removed.');
-      }
+      app.logger.log("verbose", 'File ' + path + ' has been removed.');
     });
   } else {
     glob(absoluteInputGlob, options, function (er, files) {
       if (er) {
-        console.log(er);
+        app.logger.log("error", er);
         return;
       } else {
         var _iteratorNormalCompletion = true;
@@ -152,16 +149,14 @@ app.load = function (config) {
           for (var _iterator = files[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
             var file = _step.value;
 
-            if (config.verbose) {
-              console.log("Processing file: " + file);
-            }
+            app.logger.log("verbose", "Processing file: " + file);
             try {
               var input = fs.readFileSync(file, 'utf8');
               config.saveAs = config.saveAs || {};
               config.saveAs.sourceFile = file;
               $.run({ input: input, inputFile: file, config: config });
             } catch (e) {
-              console.log(e);
+              app.logger.log("error", e);
             }
           }
         } catch (err) {
@@ -213,7 +208,7 @@ app.loadConfig = function (filePath) {
       config = jsModuleExports;
     }
   } catch (e) {
-    // console.log(e);
+    app.logger.log("verbose", "No config found: " + e);
   }
   return config;
 };

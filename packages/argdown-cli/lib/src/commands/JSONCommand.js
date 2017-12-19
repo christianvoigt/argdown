@@ -53,7 +53,7 @@ var handler = exports.handler = function handler(argv) {
     config.saveAs.outputDir = argv.outputDir;
   }
 
-  config.verbose = argv.verbose || config.verbose;
+  config.logLevel = argv.verbose ? "verbose" : config.logLevel;
   config.watch = argv.watch || config.watch;
   config.process = ['preprocessor', 'parse-input'];
   config.logParserErrors = argv.logParserErrors || config.logParserErrors;
