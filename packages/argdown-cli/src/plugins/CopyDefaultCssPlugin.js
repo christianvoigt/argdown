@@ -17,22 +17,21 @@ class CopyDefaultCssPlugin{
     this.name = "CopyDefaultCssPlugin";
     this.config = config;
   }
-  run(data){
+  run(data, logger){
     if(data.config && data.config.saveAs && data.config.saveAs.outputDir){
       this.config = {
         outputDir: data.config.saveAs.outputDir
       }
     }
     const $ = this;
-    let absoluteOutputDir = path.resolve(process.cwd(), $.settings.outputDir);
+    let rootPath = $.settings.rootPath || process.cwd();
+    let absoluteOutputDir = path.resolve(rootPath, $.settings.outputDir);
     mkdirp(absoluteOutputDir, function (err) {
       if (err){
-        console.log(err);
+        logger.log("error", err);
       }
-      if(data && data.config && data.config.verbose){
-        console.log("Copying default argdown.css to folder: " + absoluteOutputDir);        
-      }
-      let pathToDefaultCssFile = path.resolve(__dirname, '../../../node_modules/argdown-parser/lib/src/plugins/argdown.css');
+      logger.log("verbose", "Copying default argdown.css to folder: " + absoluteOutputDir);        
+      let pathToDefaultCssFile = require.resolve('argdown-parser/lib/src/plugins/argdown.css');
       $.copySync(pathToDefaultCssFile, path.resolve(absoluteOutputDir,"argdown.css"));
     });    
   }

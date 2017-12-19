@@ -75,14 +75,14 @@ describe("argdown-cli", function(){
     let filePathToCss = path.resolve(__dirname, './html/argdown.css');    
     let filePathToCli = path.resolve(__dirname, '../lib/src/cli.js');
     require('child_process').exec('node ' + filePathToCli + ' html ' + filePath + ' ' + htmlFolder, function(error, stdout, stderr) {
+        if (error !== null) {
+          console.log('exec error: ' + error);
+        }
+        //console.log(stdout);
         expect(error).to.equal(null);
         expect(stderr).to.equal('');
         expect(filePathToHtml).to.be.a.file();
-        //Copying Css from node_modules folder will only work from /lib/src folder
-        //expect(filePathToCss).to.be.a.file();
-        if (error !== null) {
-            console.log('exec error: ' + error);
-        }
+        expect(filePathToCss).to.be.a.file();
         rimraf(htmlFolder, {}, function(err){
           if(err){
             console.log(err);

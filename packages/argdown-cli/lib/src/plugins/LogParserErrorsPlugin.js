@@ -31,14 +31,14 @@ var LogParserErrorsPlugin = function () {
 
     _createClass(LogParserErrorsPlugin, [{
         key: "run",
-        value: function run(data) {
+        value: function run(data, logger) {
             if (data.parserErrors && data.parserErrors.length > 0) {
                 var inputFile = data.inputFile;
                 var nrOfErrors = data.parserErrors.length;
                 if (inputFile) {
-                    console.log("\x1B[31m\x1B[1mArgdown syntax errors in " + inputFile + ": " + nrOfErrors + "\x1B[0m\n");
+                    logger.log("error", "\x1B[31m\x1B[1mArgdown syntax errors in " + inputFile + ": " + nrOfErrors + "\x1B[0m\n");
                 } else {
-                    console.log("\x1B[31m\x1B[1mArgdown syntax errors in input: " + nrOfErrors + "\x1B[0m\n");
+                    logger.log("error", "\x1B[31m\x1B[1mArgdown syntax errors in input: " + nrOfErrors + "\x1B[0m\n");
                 }
                 var _iteratorNormalCompletion = true;
                 var _didIteratorError = false;
@@ -51,7 +51,7 @@ var LogParserErrorsPlugin = function () {
                         var startLine = error.token.startLine;
                         var startColumn = error.token.startColumn;
                         var message = error.message;
-                        console.log("\x1B[31mAt " + startLine + ":" + startColumn + "\x1B[0m\n" + message + "\n");
+                        logger.log("error", "\x1B[31mAt " + startLine + ":" + startColumn + "\x1B[0m\n" + message + "\n");
                     }
                 } catch (err) {
                     _didIteratorError = true;

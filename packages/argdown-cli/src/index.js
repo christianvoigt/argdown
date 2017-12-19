@@ -96,9 +96,12 @@ app.load = function(config){
   if(ignoreFiles){
     options.ignore = ignoreFiles;
   }
+  if(!config.rootPath){
+    config.rootPath = process.cwd();
+  }
     
   const $ = this;
-  let absoluteInputGlob = path.resolve(process.cwd(),inputGlob);
+  let absoluteInputGlob = path.resolve(config.rootPath, inputGlob);
   if(config.watch){
     const watcher = chokidar.watch(absoluteInputGlob, options);
     const watcherConfig = _.cloneDeep(config);
@@ -106,41 +109,33 @@ app.load = function(config){
     
     watcher
     .on('add', path => {
-      if(config.verbose){
-        console.log(`File ${path} has been added.`);        
-      }
+      app.logger.log("verbose", `File ${path} has been added.`);        
       watcherConfig.input = path;
       $.load(watcherConfig);
     })
     .on('change', path => {
-      if(config.verbose){
-        console.log(`File ${path} has been changed.`);        
-      }
+      app.logger.log("verbose", `File ${path} has been changed.`);        
       watcherConfig.input = path;
       $.load(watcherConfig);
     })
     .on('unlink', path => {
-      if(config.verbose){
-        console.log(`File ${path} has been removed.`);        
-      }
+      app.logger.log("verbose", `File ${path} has been removed.`);        
     });    
   }else{
     glob(absoluteInputGlob, options, function (er, files) {
       if(er){
-        console.log(er);
+        app.logger.log("error", er);
         return;
       }else{
         for(let file of files){
-          if(config.verbose){
-            console.log("Processing file: "+file);
-          }
+          app.logger.log("verbose", "Processing file: " + file);
           try{
             const input = fs.readFileSync(file, 'utf8');
             config.saveAs = config.saveAs ||{};
             config.saveAs.sourceFile = file;
             $.run({input: input, inputFile: file, config:config});
           }catch(e){
-            console.log(e);
+            app.logger.log("error", e);
           }
         }
       }
@@ -177,7 +172,7 @@ app.loadConfig = function(filePath){
       config = jsModuleExports;
     }
   }catch(e){
-    // console.log(e);
+    app.logger.log("verbose", "No config found: "+e);
   }
   return config;
 }

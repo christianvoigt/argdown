@@ -40,15 +40,13 @@ var SaveAsFilePlugin = function () {
 
   _createClass(SaveAsFilePlugin, [{
     key: 'run',
-    value: function run(data) {
-      var verbose = false;
+    value: function run(data, logger) {
       if (data.config) {
         if (data.config.saveAs) {
           this.config = data.config.saveAs;
         } else if (data.config.SaveAsFilePlugin) {
           this.config = data.config.SaveAsFilePlugin;
         }
-        verbose = data.config.verbose;
       }
 
       var fileContent = data[this.settings.dataKey];
@@ -63,7 +61,7 @@ var SaveAsFilePlugin = function () {
         } else if (data.config && data.config.input) {
           fileName = this.getFileName(data.config.input);
         }
-        this.saveAsFile(fileContent, this.settings.outputDir, fileName, this.settings.extension, verbose);
+        this.saveAsFile(fileContent, this.settings.outputDir, fileName, this.settings.extension, logger);
       }
     }
   }, {
@@ -74,19 +72,17 @@ var SaveAsFilePlugin = function () {
     }
   }, {
     key: 'saveAsFile',
-    value: function saveAsFile(data, outputDir, fileName, extension, verbose) {
+    value: function saveAsFile(data, outputDir, fileName, extension, logger) {
       var absoluteOutputDir = path.resolve(process.cwd(), outputDir);
       mkdirp(absoluteOutputDir, function (err) {
         if (err) {
-          console.log(err);
+          logger.log("error", err);
         } else {
           fs.writeFile(absoluteOutputDir + '/' + fileName + extension, data, function (err) {
             if (err) {
-              return console.log(err);
+              logger.log("error", err);
             }
-            if (verbose) {
-              console.log("Saved " + absoluteOutputDir + "/" + fileName + extension);
-            }
+            logger.log("verbose", "Saved " + absoluteOutputDir + "/" + fileName + extension);
           });
         }
       });
