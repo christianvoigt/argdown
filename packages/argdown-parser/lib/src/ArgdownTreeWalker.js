@@ -23,7 +23,7 @@ var ArgdownTreeWalker = function (_EventEmitter) {
 
   _createClass(ArgdownTreeWalker, [{
     key: "walk",
-    value: function walk(tree, data) {
+    value: function walk(tree, data, logger) {
       this.visitNode(tree, null, null, data);
     }
   }, {
@@ -34,24 +34,24 @@ var ArgdownTreeWalker = function (_EventEmitter) {
     }
   }, {
     key: "visitNode",
-    value: function visitNode(node, parentNode, childIndex, data) {
+    value: function visitNode(node, parentNode, childIndex, data, logger) {
       if (node.name) {
-        this.emit(node.name + 'Entry', node, parentNode, childIndex, data);
+        this.emit(node.name + 'Entry', node, parentNode, childIndex, data, logger);
       } else {
-        this.emit(this.getTokenName(node) + 'Entry', node, parentNode, childIndex, data);
+        this.emit(this.getTokenName(node) + 'Entry', node, parentNode, childIndex, data, logger);
       }
 
       if (node.children && node.children.length > 0) {
         for (var i = 0; i < node.children.length; i++) {
           var child = node.children[i];
-          this.visitNode(child, node, i, data);
+          this.visitNode(child, node, i, data, logger);
         }
       }
 
       if (node.name) {
-        this.emit(node.name + 'Exit', node, parentNode, childIndex, data);
+        this.emit(node.name + 'Exit', node, parentNode, childIndex, data, logger);
       } else {
-        this.emit(this.getTokenName(node) + 'Exit', node, parentNode, childIndex, data);
+        this.emit(this.getTokenName(node) + 'Exit', node, parentNode, childIndex, data, logger);
       }
     }
   }, {

@@ -13,10 +13,10 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var ArgdownApplication = function () {
-  function ArgdownApplication() {
+  function ArgdownApplication(logger) {
     _classCallCheck(this, ArgdownApplication);
 
-    this.init();
+    this.init(logger);
   }
 
   _createClass(ArgdownApplication, [{
@@ -184,14 +184,32 @@ var ArgdownApplication = function () {
     }
   }, {
     key: "init",
-    value: function init() {
+    value: function init(logger) {
       this.processors = {};
+      if (logger && _.isFunction(logger.log) && _.isFunction(logger.setLevel)) {
+        this.logger = logger;
+      } else {
+        this.logger = {
+          setLevel: function setLevel(level) {
+            this.logLevel = level;
+          },
+          log: function log(level, message) {
+            if (level == "verbose") {
+              if (this.logLevel == "verbose") {
+                console.log(message);
+              }
+            } else {
+              console.log(message);
+            }
+          }
+        };
+      }
     }
   }, {
     key: "run",
     value: function run(param, previousData) {
       var processorsToRun = null;
-      var verbose = false;
+      this.logger.setLevel("error");
       var data = {};
 
       if (param == null) {
@@ -210,7 +228,9 @@ var ArgdownApplication = function () {
         data = param;
       }
       if (data.config) {
-        verbose = data.config.verbose;
+        if (data.config.logLevel) {
+          this.logger.setLevel(data.config.logLevel);
+        }
         if (data.config.process) {
           if (_.isArray(data.config.process)) {
             processorsToRun = data.config.process;
@@ -219,9 +239,7 @@ var ArgdownApplication = function () {
       }
 
       if (_.isEmpty(processorsToRun)) {
-        if (verbose) {
-          console.log("No processors to run.");
-        }
+        this.logger.log("verbose", "No processors to run.");
         return data;
       }
 
@@ -235,17 +253,13 @@ var ArgdownApplication = function () {
 
           var processor = this.processors[processorId];
           if (!processor) {
-            if (verbose) {
-              console.log("Processor not found: " + processorId);
-            }
+            this.logger.log("verbose", "Processor not found: " + processorId);
             continue;
           }
-          if (verbose) {
-            console.log("Running processor: " + processorId);
-          }
+          this.logger.log("verbose", "Running processor: " + processorId);
 
           if (data.ast && processor.walker) {
-            processor.walker.walk(data.ast, data);
+            processor.walker.walk(data.ast, data, this.logger);
           }
 
           var _iteratorNormalCompletion6 = true;
@@ -256,11 +270,9 @@ var ArgdownApplication = function () {
             for (var _iterator6 = processor.plugins[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
               var plugin = _step6.value;
 
-              if (verbose) {
-                console.log("Running plugin: " + plugin.name);
-              }
+              this.logger.log("verbose", "Running plugin: " + plugin.name);
               if (_.isFunction(plugin.run)) {
-                var newData = plugin.run(data);
+                var newData = plugin.run(data, this.logger);
                 if (_.isObject(newData)) {
                   data = newData;
                 }

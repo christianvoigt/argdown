@@ -17,7 +17,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var JSONExport = function () {
   _createClass(JSONExport, [{
     key: 'run',
-    value: function run(data) {
+    value: function run(data, logger) {
       if (data.config) {
         if (data.config.json) {
           this.config = data.config.json;

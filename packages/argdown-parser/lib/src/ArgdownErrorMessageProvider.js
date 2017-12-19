@@ -101,7 +101,7 @@ var argdownErrorMessageProvider = {
         } else {
             return defaultErrorProvider.buildNotAllInputParsedMessage(options);
         }
-        return tokenDescription + ' may only occur at the beginning of a line or after a relation symbol.';
+        return 'Invalid element position. ' + tokenDescription + ' may only occur at the beginning of a line or after a relation symbol.';
     },
     buildNoViableAltMessage: function buildNoViableAltMessage(options) {
         var tokens = options.actual;
@@ -113,7 +113,7 @@ var argdownErrorMessageProvider = {
             } else if (tokens.length > 0) {
                 tokenDescription = GetParagraphStartTokenDescription(tokens[0]);
             }
-            return 'Invalid paragraph. Argdown paragraphs may not start with ' + tokenDescription + '. If you do not want to start a new paragraph, remove any empty lines above this one. If you do want to start a new paragraph, try starting with normal text, a statement title, argument title or a list item (using * for unordered or 1. for ordered lists).';
+            return 'Invalid paragraph start. Argdown paragraphs may not start with ' + tokenDescription + '. If you do not want to start a new paragraph, remove any empty lines above this one. If you do want to start a new paragraph, try starting with normal text, a statement title, argument title or a list item (using * for unordered or 1. for ordered lists).';
         } else if (isRelationRule(options.ruleName)) {
             return MISSING_RELATION_CONTENT_ERROR;
         } else if (options.ruleName == "statement") {

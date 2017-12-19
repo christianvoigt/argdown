@@ -43,7 +43,7 @@ var ParserPlugin = function () {
 
   _createClass(ParserPlugin, [{
     key: 'run',
-    value: function run(data) {
+    value: function run(data, logger) {
       if (!data.input) {
         return data;
       }
@@ -57,25 +57,47 @@ var ParserPlugin = function () {
       data.ast = this.parser.argdown();
       data.parserErrors = this.parser.errors;
 
-      if (verbose && data.lexerErrors && data.lexerErrors.length > 0) {
-        console.log(data.lexerErrors);
+      if (data.lexerErrors && data.lexerErrors.length > 0) {
+        logger.log("verbose", data.lexerErrors);
       }
       if (data.parserErrors && data.parserErrors.length > 0) {
         //add location if token is EOF
         var lastToken = _.last(data.tokens);
-        for (var error in data.parserErrors) {
-          if (error.token && tokenMatcher(error.token, chevrotain.EOF)) {
-            error.token.startLine = lastToken.endLine;
-            error.token.endLine = error.token.startLine;
-            error.token.startOffset = lastToken.endOffset;
-            error.token.endOffset = error.token.startOffset;
-            error.token.startColumn = lastToken.endColumn;
-            error.token.endColumn = error.token.startColumn;
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+          for (var _iterator = data.parserErrors[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var error = _step.value;
+
+            if (error.token && tokenMatcher(error.token, chevrotain.EOF)) {
+              var startLine = lastToken.endLine;
+              var endLine = startLine;
+              var startOffset = lastToken.endOffset;
+              var endOffset = startOffset;
+              var startColumn = lastToken.endColumn;
+              var endColumn = startColumn;
+              var newToken = chevrotain.createTokenInstance(chevrotain.EOF, "", startOffset, endOffset, startLine, endLine, startColumn, endColumn);
+              error.token = newToken;
+            }
+          }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion && _iterator.return) {
+              _iterator.return();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
           }
         }
-        if (verbose) {
-          console.log(data.parserErrors);
-        }
+
+        logger.log("verbose", data.parserErrors);
       }
       return data;
     }

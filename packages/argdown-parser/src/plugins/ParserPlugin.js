@@ -20,7 +20,7 @@ class ParserPlugin{
     this.lexer = ArgdownLexer;
     this.parser = ArgdownParser;    
   }
-  run(data){
+  run(data, logger){
     if(!data.input){
       return data;
     }
@@ -34,8 +34,8 @@ class ParserPlugin{
     data.ast = this.parser.argdown();
     data.parserErrors = this.parser.errors;
 
-    if(verbose && data.lexerErrors && data.lexerErrors.length > 0){
-      console.log(data.lexerErrors);
+    if(data.lexerErrors && data.lexerErrors.length > 0){
+      logger.log("verbose", data.lexerErrors);
     }
     if(data.parserErrors && data.parserErrors.length > 0){
       //add location if token is EOF
@@ -52,9 +52,7 @@ class ParserPlugin{
           error.token = newToken;
         }
       }
-      if (verbose){
-        console.log(data.parserErrors);
-      }
+      logger.log("verbose", data.parserErrors);
     }
     return data;    
   }

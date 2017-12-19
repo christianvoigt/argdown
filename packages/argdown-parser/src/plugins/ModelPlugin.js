@@ -19,7 +19,7 @@ class ModelPlugin{
     }
     this.settings = _.defaultsDeep({}, config, previousSettings);
   }
-  run(data){
+  run(data, logger){
     if(data.config && data.config.model){
       this.config = data.config.model;
     }

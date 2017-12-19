@@ -17,7 +17,7 @@ class JSONExport{
     this.settings = _.defaultsDeep({}, config, previousSettings);
   }
   
-  run(data){
+  run(data, logger){
     if(data.config){
       if(data.config.json){
         this.config = data.config.json;
