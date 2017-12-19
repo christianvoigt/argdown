@@ -49,13 +49,6 @@ describe("Parser", function () {
     (0, _chai.expect)(lexResult.errors).to.be.empty;
     (0, _chai.expect)(parser.errors).to.exist;
   });
-  it("can return error for incomplete reconstruction", function () {
-    var source = 'sdsadad\n\n(1) adasdasd';
-    var lexResult = lexer.tokenize(source);
-    parser.input = lexResult.tokens;
-    var parseResult = parser.argdown();
-    console.log(parser.errors[0]);
-  });
   it("can escape characters", function () {
     var source = "<Title>: text \\[text\\]";
     var lexResult = lexer.tokenize(source);

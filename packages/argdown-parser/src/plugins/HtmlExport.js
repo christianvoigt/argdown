@@ -15,7 +15,7 @@ class HtmlExport{
     }
     this.settings = _.defaultsDeep({}, config, previousSettings);
   }
-  run(data){
+  run(data, logger){
     if(data.config){
       if(data.config.html){
         this.config = data.config.html;

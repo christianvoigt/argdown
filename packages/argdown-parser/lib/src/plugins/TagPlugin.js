@@ -40,7 +40,7 @@ var TagPlugin = function () {
 
   _createClass(TagPlugin, [{
     key: 'run',
-    value: function run(data) {
+    value: function run(data, logger) {
       if (!data.tags || !data.statements || !data.arguments) {
         return;
       }

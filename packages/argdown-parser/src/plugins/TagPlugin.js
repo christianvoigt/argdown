@@ -16,7 +16,7 @@ class TagPlugin{
     this.name = "TagPlugin";
     this.config = config;
   }
-  run(data){
+  run(data, logger){
     if(!data.tags || !data.statements || !data.arguments){
       return;
     }

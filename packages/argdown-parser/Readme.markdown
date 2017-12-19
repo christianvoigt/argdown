@@ -85,7 +85,7 @@ A plugin is an object with
 
   - a name property
   - a run method
-  - or an argdownListener property
+  - or an argdownListeners property
 
 Example:
   
@@ -94,29 +94,28 @@ import {ArgdownApplication} from 'argdown-parser';
 
 const plugin = {
   name: 'TestPlugin',
-  run(data){
-      console.log('TestPlugin.run has been called!');
+  run(data, logger){
+      logger.log('verbose', 'TestPlugin.run has been called!');
       data.test = "some new data";
       return data;
   },
   argdownListeners{
-    argdownEntry: function(){
-      console.log("Tree traversal started.");
+    argdownEntry: function(node, parentNode, childIndex, data, logger){
+      logger.log('logger', 'Tree traversal started.');
     },
-    statementEntry: function(node, parentNode){
-      console.log('TestPlugin event listener has been called on statement entry!');
-      console.log(node.statement.text);
+    statementEntry: function(node, parentNode, childIndex, data, logger){
+      logger.log('verbose', 'TestPlugin event listener has been called on statement entry!');
+      logger.log('verbose', node.statement.text);
     }
     argdownExit: function(){
-      console.log("Tree traversal finished.");
+      logger.log('verbose', 'Tree traversal finished.');
     }
   }
 };
 
 const app = new ArgdownApplication();
 app.addPlugin(plugin); // omitting a processor name will add the plugin to the default processor
-app.parse("Hallo World!");
-app.run(); // omitting a processor name will run the default processor
+app.run({input: "Hallo World!", config: {logLevel: "verbose"}}); // omitting a processor name will run the default processor
 
 ```
 
@@ -175,4 +174,33 @@ class MyNewPlugin{
 const myNewPlugin = new MyNewPlugin({
   configOption: true
 });
+```
+
+## Logging
+
+Instead of directly logging to the console, plugins should use the logger provided as parameter by the ArgdownApplication in the run methods and argdownListeners (see above):
+
+```
+logger.log(logLevel, logMessage);
+```
+
+This allows you to implement your own logging mechanism (e.g. using the Winston logging library). Simply initialize the ArgdownApplication with your own logger. The logger object has to have two methods: `setLogLevel(level)` and `log(level, message)`. Here is an example:
+
+```Javascript
+var myCustomLogger = {
+  setLevel(level){
+    this.logLevel = level;
+  },
+  log(level, message){
+    if(level == "verbose"){
+      if(this.logLevel == "verbose"){
+        console.log(message);
+      }
+    }else{
+      console.log(message);
+    }
+  }
+};
+
+var app = new ArgdownApplication(myCustomLogger);
 ```

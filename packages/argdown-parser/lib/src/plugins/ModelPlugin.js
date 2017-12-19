@@ -29,7 +29,7 @@ var RelationObjectTypes = Object.freeze({ STATEMENT: Symbol("STATEMENT"), RECONS
 var ModelPlugin = function () {
   _createClass(ModelPlugin, [{
     key: 'run',
-    value: function run(data) {
+    value: function run(data, logger) {
       if (data.config && data.config.model) {
         this.config = data.config.model;
       }

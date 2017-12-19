@@ -276,5 +276,12 @@ describe("ModelPlugin", function () {
     (0, _chai.expect)(result.statements['A']).to.exist;
     (0, _chai.expect)(result.statements['A'].getCanonicalText()).to.equal('[text] text');
   });
+  it("can return error with token location for incomplete reconstruction", function () {
+    var source = 'sdsadad\n\n(1) adasdasd';
+    var result = app.run(['parse-input'], { input: source });
+    //console.log(result.parserErrors[0]);
+    (0, _chai.expect)(result.parserErrors[0].token.startLine).to.equal(3);
+    (0, _chai.expect)(result.parserErrors[0].token.startColumn).to.equal(12);
+  });
 });
 //# sourceMappingURL=ModelPlugin.spec.js.map

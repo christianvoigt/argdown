@@ -19,7 +19,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var HtmlExport = function () {
   _createClass(HtmlExport, [{
     key: 'run',
-    value: function run(data) {
+    value: function run(data, logger) {
       if (data.config) {
         if (data.config.html) {
           this.config = data.config.html;

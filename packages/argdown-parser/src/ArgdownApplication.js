@@ -4,8 +4,8 @@ import {ArgdownTreeWalker} from "./ArgdownTreeWalker.js";
 import * as _ from 'lodash';
 
 class ArgdownApplication{
-  constructor(){
-    this.init();
+  constructor(logger){
+    this.init(logger);
   }
   addPlugin(plugin, processorId){
     if(!processorId){
@@ -79,12 +79,30 @@ class ArgdownApplication{
     }
     delete this.processors[processorId];
   }
-  init(){
+  init(logger){
     this.processors = {};
+    if(logger && _.isFunction(logger.log) && _.isFunction(logger.setLevel)){
+      this.logger = logger;
+    }else{
+      this.logger = {
+        setLevel(level){
+          this.logLevel = level;
+        },
+        log(level, message){
+          if(level == "verbose"){
+            if(this.logLevel == "verbose"){
+              console.log(message);
+            }
+          }else{
+            console.log(message);
+          }
+        }
+      };
+    }
   }
   run(param, previousData){
     let processorsToRun = null;
-    let verbose = false;
+    this.logger.setLevel("error");
     let data = {};
     
     if(param == null){
@@ -103,7 +121,9 @@ class ArgdownApplication{
       data = param;
     }
     if(data.config){
-      verbose = data.config.verbose;
+      if(data.config.logLevel){
+        this.logger.setLevel(data.config.logLevel);        
+      }
       if(data.config.process){
         if(_.isArray(data.config.process)){
           processorsToRun = data.config.process;
@@ -112,34 +132,26 @@ class ArgdownApplication{
     }
     
     if(_.isEmpty(processorsToRun)){
-      if(verbose){
-        console.log("No processors to run.");
-      }
+      this.logger.log("verbose", "No processors to run.");
       return data;
     }
     
     for(let processorId of processorsToRun){
       let processor = this.processors[processorId];
       if(!processor){
-        if(verbose){
-          console.log("Processor not found: "+processorId);
-        }
+        this.logger.log("verbose", "Processor not found: " + processorId);
         continue;
       }
-      if(verbose){
-        console.log("Running processor: "+processorId);
-      }
+      this.logger.log("verbose", "Running processor: " + processorId);
 
       if(data.ast && processor.walker){
-        processor.walker.walk(data.ast, data);
+        processor.walker.walk(data.ast, data, this.logger);
       }
 
       for(let plugin of processor.plugins){
-        if(verbose){
-          console.log("Running plugin: "+plugin.name);
-        }
+        this.logger.log("verbose", "Running plugin: " + plugin.name);
         if(_.isFunction(plugin.run)){
-          let newData = plugin.run(data);
+          let newData = plugin.run(data, this.logger);
           if(_.isObject(newData)){
             data = newData;
           }
