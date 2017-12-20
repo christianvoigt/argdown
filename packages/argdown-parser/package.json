@@ -1,6 +1,15 @@
 {
   "name": "argdown-parser",
-  "version": "0.6.0",
+  "description": "A parser for the Argdown argumentation syntax",
+  "keywords": [
+    "argumentation",
+    "parser",
+    "argument mapping",
+    "Argdown",
+    "Markdown",
+    "Chevrotain"
+  ],
+  "version": "0.6.1",
   "license": "MIT",
   "main": "lib/src/index.js",
   "dependencies": {
