@@ -1,10 +1,10 @@
 # Argdown Parser
 
-![Argdown](https://cdn.rawgit.com/christianvoigt/argdown-parser/master/argdown-mark.svg)
-
-Parser for the Argdown Syntax, using the [Chevrotain DSL](https://github.com/SAP/chevrotain).
+A parser for the Argdown argumentation syntax, using the [Chevrotain DSL](https://github.com/SAP/chevrotain).
 
 See the parser in action in the [Argdown Demo](http://christianvoigt.github.io/argdown).
+
+![Argdown](https://cdn.rawgit.com/christianvoigt/argdown-parser/master/argdown-mark.svg)
 
 For more information on the Argdown argumentation syntax visit the [Argdown repository](https://github.com/christianvoigt/argdown).
 
