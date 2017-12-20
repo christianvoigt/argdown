@@ -1,12 +1,18 @@
 {
   "name": "argdown-cli",
   "description": "A command line interface for exporting Argdown files to html, dot or json.",
+  "keywords": [
+    "argumentation",
+    "argument mapping",
+    "Argdown",
+    "Markdown"
+  ],
   "version": "0.6.1",
   "license": "MIT",
   "main": "lib/src/index.js",
   "dependencies": {
-    "argdown-map-maker": "git+https://github.com/christianvoigt/argdown-map-maker.git",
-    "argdown-parser": "git+https://github.com/christianvoigt/argdown-parser.git",
+    "argdown-map-maker": "^0.2.5",
+    "argdown-parser": "^0.6.1",
     "chokidar": "^1.7.0",
     "glob": "^7.1.2",
     "lodash": "^4.17.4",

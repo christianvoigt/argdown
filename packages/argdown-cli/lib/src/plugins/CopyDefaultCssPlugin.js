@@ -44,7 +44,7 @@ var CopyDefaultCssPlugin = function () {
         };
       }
       var $ = this;
-      var rootPath = $.settings.rootPath || process.cwd();
+      var rootPath = data.config.rootPath || process.cwd();
       var absoluteOutputDir = path.resolve(rootPath, $.settings.outputDir);
       mkdirp(absoluteOutputDir, function (err) {
         if (err) {
