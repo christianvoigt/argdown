@@ -24,7 +24,7 @@ class CopyDefaultCssPlugin{
       }
     }
     const $ = this;
-    let rootPath = $.settings.rootPath || process.cwd();
+    let rootPath = data.config.rootPath || process.cwd();
     let absoluteOutputDir = path.resolve(rootPath, $.settings.outputDir);
     mkdirp(absoluteOutputDir, function (err) {
       if (err){
