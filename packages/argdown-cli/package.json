@@ -1,5 +1,6 @@
 {
   "name": "argdown-cli",
+  "description": "A command line interface for exporting Argdown files to html, dot or json.",
   "version": "0.6.0",
   "license": "MIT",
   "main": "lib/src/index.js",

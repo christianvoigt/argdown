@@ -1,10 +1,10 @@
 # Argdown CLI
 
-![Argdown](https://cdn.rawgit.com/christianvoigt/argdown-cli/master/argdown-mark.svg)
-
 A commandline interface to process Argdown data.
 
 For more information about the Argdown argumentation syntax, visit the [Argdown repository](https://github.com/christianvoigt/argdown).
+
+![Argdown](https://cdn.rawgit.com/christianvoigt/argdown-cli/master/argdown-mark.svg)
 
 Current features of argdown-cli:
 
