@@ -1,7 +1,5 @@
 # Argdown
 
-![Argdown](https://cdn.rawgit.com/christianvoigt/argdown/master/argdown-mark.svg)
-
 Try out Argdown in the Browser: [Demo Editor](http://christianvoigt.github.io/argdown).
 
 Argdown is a simple syntax for defining argumentative 
@@ -17,6 +15,12 @@ structures, inspired by Markdown.
     **argument maps** of whole debates.
     
 Argdown can currently be exported to __.html__, __.dot__ and __.json__ files.
+
+![Argdown](https://cdn.rawgit.com/christianvoigt/argdown/master/argdown-mark.svg)
+
+## Getting Started
+
+The easiest way to get started is to install [the Argdown extension for Visual Studio Code](http://christianvoigt.github.io/argdown/client). You can learn [here](https://code.visualstudio.com/docs/editor/extension-gallery) how to install extensions in VS Code.
 
 ## Example
     
@@ -46,12 +50,13 @@ Now we are reconstructing the logical structure of @<argument 1>:
 
 To see the resulting graph, paste this code into the [online editor](http://christianvoigt.github.io/argdown) and select "Map" in the menu on the right.
     
-## Getting Started
+## Additional Argdown tools
 
-Argdown tools currently available:
+Other Argdown tools currently available:
 
   - A browser based [Editor](http://christianvoigt.github.io/argdown) (this repository contains its source code)
   - A [commandline tool](https://github.com/christianvoigt/argdown-cli) that exports Argdown files to html, json, dot and graphml files
+  - [Syntax Highlighting of Argdown code blocks for Pandoc](https://github.com/xylomorph/argdown-pandoc-highlighting)
   - [Atom Editor Syntax Highlighting](https://github.com/christianvoigt/language-argdown)
   - [CodeMirror Syntax Highlighting](https://github.com/christianvoigt/argdown-codemirror-mode) 
   - [Argdown Parser](https://github.com/christianvoigt/argdown-parser), the basic tools for building Argdown applications

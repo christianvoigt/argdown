@@ -10,7 +10,7 @@
     "unit": "cross-env BABEL_ENV=test karma start test/unit/karma.conf.js --single-run",
     "test": "npm run unit",
     "lint": "eslint --ext .js,.vue src test/unit/specs",
-    "deploy": "git push --tags origin HEAD:master && git subtree push --prefix dist origin gh-pages"
+    "deploy": "git push origin --tags HEAD:master && git subtree push --prefix dist origin gh-pages"
   },
   "dependencies": {
     "vue": "^2.2.2",
@@ -18,8 +18,8 @@
   },
   "devDependencies": {
     "argdown-codemirror-mode": "git+https://github.com/christianvoigt/argdown-codemirror-mode.git",
-    "argdown-map-maker": "git+https://github.com/christianvoigt/argdown-map-maker.git",
-    "argdown-parser": "git+https://github.com/christianvoigt/argdown-parser.git",
+    "argdown-map-maker": "^0.2.5",
+    "argdown-parser": "^0.6.1",
     "autoprefixer": "^6.7.2",
     "babel-core": "^6.25.0",
     "babel-eslint": "^7.2.3",
