@@ -20,7 +20,7 @@ Argdown can currently be exported to __.html__, __.dot__ and __.json__ files.
 
 ## Getting Started
 
-The easiest way to get started is to install [the Argdown extension for Visual Studio Code](http://christianvoigt.github.io/argdown/client). You can learn [here](https://code.visualstudio.com/docs/editor/extension-gallery) how to install extensions in VS Code.
+The easiest way to get started is to install [the Argdown extension for Visual Studio Code](https://github.com/christianvoigt/argdown-vscode/tree/master/client). You can learn [here](https://code.visualstudio.com/docs/editor/extension-gallery) how to install extensions in VS Code.
 
 ## Example
     
