@@ -18,7 +18,7 @@ Current features of argdown-cli:
 If you have not already done so, please [install node.js and npm](https://docs.npmjs.com/getting-started/installing-node) on your system before installing argdown-cli. To install argdown-cli run the following npm command:
 
 ```bash
-npm install -g https://github.com/christianvoigt/argdown-cli
+npm install -g argdown-cli
 ```
 
 ## Available commands
@@ -64,72 +64,4 @@ This naming convention makes it possible to have a main .argdown file and severa
 
 The cli can be configured with a config file. It will automatically look for a `argdown.config.js`. If you want to use a different name you can use `argdown --config [name-of-my-config-file].js`.
 
-The config file is a javascript file that exports a config object: 
-
-```JavaScript
-module.exports = {
-  config: {
-    ... your config settings ...
-  }
-}
-```
-
-Currently you can use the following options (hint: you can try out the effects of some of these in the online [Demo Editor](http://christianvoigt.github.io/argdown)):
-
-```JavaScript
-module.exports = {
-  config: {
-    input: './*.argdown',
-    ignoreFiles: [ // by default 'partial' argdown files and folders that start with an underscore are ignored
-          '**/_*',        // Exclude files starting with '_'.
-          '**/_*/**'  // Exclude entire directories starting with '_'.
-      ],
-    watch: false, // should the input be continually watched for changes?
-    verbose: false,
-    process: ["build-model", "export-html", "save-as-html", "export-dot", "save-as-dot",], //just as an example, this will export to html and dot at the same time. If a process is defined, the config file can be run without a command (by entering `argdown`)
-    model: {
-      removeTagsFromText: false // omit all tags in statement texts sand argument descriptions
-    },
-    tags: [
-      {tag: 'my-first-tag', color: '#ff0000'}, // this will overwrite tagColorScheme[0]
-      {tag: 'my-second-tag'}, // the color of 'my-second-tag' will be tagColorScheme[1]
-    ],
-    tagColorScheme: ['#00ff00', '#0000ff'], // if config.tags is not existing, tag colors will be applied in the order of occurrence in the Argdown file, otherwise the order in config tags determines tag colors
-    map: {
-      statementSelectionMode: 'statement-trees', // options: all | titled | roots | statement-trees | with-relations
-      statementLabelMode: 'hide-untitled', // options: hide-untitled | title | description
-      argumentLabelMode: 'hide-untitled', // options: hide-untitled | title | text
-      excludeDisconnected: true,
-      groupDepth: 2,
-      addTags: true
-    },
-    dot: {
-      useHtmlLabels : true,
-      graphname: 'Argument Map',
-      lineLength: 25, // after how many characters should a line break be inserted?
-      groupColors: ["#DADADA","#BABABA","#AAAAAA"], // groups of level 0 will be colored with groupColors[0]
-      graphVizSettings: { //can contain all possible Graphviz graph settings
-        rankdir: 'BT', //BT | TB | LR | RL
-        concentrate: 'true',
-        ratio: 'auto',
-        size: '10,10'
-      },
-      colorNodesByTag: true      
-    },
-    html: {
-      headless: false,
-      cssFile: './argdown.css',
-      title: 'Argdown Document', // if not set, the first h1 element's content will be taken
-      lang: 'en',
-      charset: 'utf8',
-      head: null // you can use this to add a custom head section, including doctype and opening html tag 
-    },
-    json: {
-      spaces: 2,
-      removeEmbeddedRelations: false,
-      exportMap : true,
-      exportSections : true
-    }
-  }
-}
-```
+[Visit the config documentation](https://github.com/christianvoigt/argdown/docs/Configuration.md) at the central Argdown repository to learn more about the format of the config file.
