@@ -64,4 +64,4 @@ This naming convention makes it possible to have a main .argdown file and severa
 
 The cli can be configured with a config file. It will automatically look for a `argdown.config.js`. If you want to use a different name you can use `argdown --config [name-of-my-config-file].js`.
 
-[Visit the config documentation](https://github.com/christianvoigt/argdown/docs/Configuration.md) at the central Argdown repository to learn more about the format of the config file.
+[Visit the config documentation](https://github.com/christianvoigt/argdown/tree/master/docs/Configuration.md) at the central Argdown repository to learn more about the format of the config file.
