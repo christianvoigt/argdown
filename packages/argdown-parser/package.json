@@ -9,7 +9,7 @@
     "Markdown",
     "Chevrotain"
   ],
-  "version": "0.7.1",
+  "version": "0.7.2",
   "license": "MIT",
   "main": "lib/src/index.js",
   "dependencies": {
