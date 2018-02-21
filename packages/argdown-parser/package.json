@@ -9,11 +9,11 @@
     "Markdown",
     "Chevrotain"
   ],
-  "version": "0.6.1",
+  "version": "0.7.0",
   "license": "MIT",
   "main": "lib/src/index.js",
   "dependencies": {
-    "chevrotain": "^0.35.0",
+    "chevrotain": "^2.0.2",
     "eventemitter3": "^3.0.0",
     "lodash": "^4.17.4"
   },
@@ -33,6 +33,7 @@
     "copy:argdown": "cpx \"test/**/*.{ad,argdown}\" lib/test --verbose",
     "copy:css": "cpx \"src/**/*.css\" lib/src --verbose",
     "test": "mocha --compilers js:babel-core/register --colors ./test/*.spec.js",
+    "test:issue668": "mocha --compilers js:babel-core/register --colors ./test/issue-668.spec.js",
     "test:lexer": "mocha --compilers js:babel-core/register --colors ./test/lexer.spec.js",
     "test:map-maker": "mocha --compilers js:babel-core/register --colors ./test/map-maker.spec.js",
     "test:argml-export": "mocha --compilers js:babel-core/register --colors ./test/argml-export.spec.js",

@@ -108,7 +108,7 @@ describe("ModelPlugin", function () {
     var source = '[A]: A\n      _> <B>\n    \n    <B>\n      <_ [D]';
     var result = app.run(['parse-input', 'build-model'], { input: source });
     //console.log(parserPlugin.parser.astToString(result.ast));
-    console.log(result.parserErrors[0]);
+    //console.log(result.parserErrors[0]);
     (0, _chai.expect)(result.parserErrors.length).to.equal(0);
     (0, _chai.expect)(Object.keys(result.statements).length).to.equal(2);
     (0, _chai.expect)(Object.keys(result.relations).length).to.equal(2);
@@ -280,8 +280,8 @@ describe("ModelPlugin", function () {
     var source = 'sdsadad\n\n(1) adasdasd';
     var result = app.run(['parse-input'], { input: source });
     //console.log(result.parserErrors[0]);
-    (0, _chai.expect)(result.parserErrors[0].token.startLine).to.equal(3);
-    (0, _chai.expect)(result.parserErrors[0].token.startColumn).to.equal(12);
+    (0, _chai.expect)(result.parserErrors[0].previousToken.startLine).to.equal(3);
+    (0, _chai.expect)(result.parserErrors[0].previousToken.startColumn).to.equal(5);
   });
 });
 //# sourceMappingURL=ModelPlugin.spec.js.map

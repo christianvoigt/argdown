@@ -561,6 +561,8 @@ class ArgdownLexer {
         });
         $.tokens.push($.UnusedControlChar);
 
+        $.EOF = chevrotain.EOF;
+
         let lexerConfig = {
             modes: {
                 "default_mode": [

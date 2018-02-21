@@ -25,7 +25,8 @@ var ArgdownParser = function (_chevrotain$Parser) {
         _classCallCheck(this, ArgdownParser);
 
         var _this = _possibleConstructorReturn(this, (ArgdownParser.__proto__ || Object.getPrototypeOf(ArgdownParser)).call(this, input, lexer.tokens, {
-            errorMessageProvider: _ArgdownErrorMessageProvider.ArgdownErrorMessageProvider
+            errorMessageProvider: _ArgdownErrorMessageProvider.ArgdownErrorMessageProvider,
+            recoveryEnabled: true
         }));
 
         var $ = _this;

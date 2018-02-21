@@ -1,10 +1,10 @@
 import * as chevrotain from 'chevrotain';
 import { ArgdownLexer } from './ArgdownLexer.js';
-import * as _ from 'lodash';
+//import * as _ from 'lodash';
 
-const defaultErrorProvider = chevrotain.defaultErrorProvider
+const defaultParserErrorProvider = chevrotain.defaultParserErrorProvider
 const tokenMatcher = chevrotain.tokenMatcher;
-const EOF = chevrotain.EOF;
+//const EOF = chevrotain.EOF;
 const MISSING_TEXT_CONTENT_ERROR = "Missing text content. "
     + "Please add a line of text or refer to an existing statement or argument instead by replacing the content in this line with [Statement Title] or <Argument Title> (without a colon). "
     + "If you want to define a statement ([Statement Title]:) or argument (<Argument Title>:), the defining text content has to follow the defined element title without any empty lines in between.";
@@ -83,7 +83,7 @@ const argdownErrorMessageProvider = {
                 return MISSING_CONCLUSION_ERROR;
             }
         }
-        return defaultErrorProvider.buildMismatchTokenMessage(options)
+        return defaultParserErrorProvider.buildMismatchTokenMessage(options)
     },
     buildNotAllInputParsedMessage: function (options) {
         var tokenDescription = "";
@@ -100,7 +100,7 @@ const argdownErrorMessageProvider = {
             tokenDescription = "An argument reference (<Argument Title>)";
         }
         else if (tokenMatcher(options.firstRedundant, ArgdownLexer.ArgumentDefinition)) {
-            tokenDescription = "An argument definition (<Argument TItle>:)";
+            tokenDescription = "An argument definition (<Argument Title>:)";
         }
         else if (tokenMatcher(options.firstRedundant, ArgdownLexer.StatementReference)) {
             tokenDescription = "A statement reference ([Statement Title])";
@@ -112,7 +112,7 @@ const argdownErrorMessageProvider = {
             tokenDescription = "Invalid position of text content. Make sure it is not preceded by a statement reference ([Statement Title]) or argument reference (<Argument Title>).";
         } 
         else {
-            return defaultErrorProvider.buildNotAllInputParsedMessage(options);
+            return defaultParserErrorProvider.buildNotAllInputParsedMessage(options);
         }
         return `Invalid element position. ${tokenDescription} may only occur at the beginning of a line or after a relation symbol.`;
     },
@@ -135,10 +135,10 @@ const argdownErrorMessageProvider = {
             }
             return MISSING_TEXT_CONTENT_ERROR;
         }
-        return defaultErrorProvider.buildNoViableAltMessage(options);
+        return defaultParserErrorProvider.buildNoViableAltMessage(options);
     },
     buildEarlyExitMessage: function (options) {
-        var firstToken = options.actual[0] ? options.actual[0] : null;
+        var firstToken = options.actual.length > 0 ? options.actual[0] : null;
         if(options.ruleName == "argdown"){
             if(firstToken && isRelationToken(firstToken)){
                 return INVALID_RELATION_ERROR;
@@ -164,7 +164,7 @@ const argdownErrorMessageProvider = {
         else if (firstToken && tokenMatcher(firstToken, ArgdownLexer.InferenceEnd)) {
             return INVALID_INFERENCE_ERROR;
         }
-        return defaultErrorProvider.buildEarlyExitMessage(options);
+        return defaultParserErrorProvider.buildEarlyExitMessage(options);
     }
 }
 

@@ -575,6 +575,8 @@ var ArgdownLexer = function () {
         });
         $.tokens.push($.UnusedControlChar);
 
+        $.EOF = chevrotain.EOF;
+
         var lexerConfig = {
             modes: {
                 "default_mode": [$.Comment, $.EscapedChar, //must come first after $.Comment

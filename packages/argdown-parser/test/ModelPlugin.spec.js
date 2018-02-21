@@ -129,7 +129,7 @@ describe("ModelPlugin", function() {
       <_ [D]`;
     let result = app.run(['parse-input', 'build-model'], { input: source });
     //console.log(parserPlugin.parser.astToString(result.ast));
-    console.log(result.parserErrors[0]);
+    //console.log(result.parserErrors[0]);
     expect(result.parserErrors.length).to.equal(0);
     expect(Object.keys(result.statements).length).to.equal(2);
     expect(Object.keys(result.relations).length).to.equal(2);
@@ -361,8 +361,8 @@ it("can create section titles from headings with mentions, tags and ranges", fun
 (1) adasdasd`;
     let result = app.run(['parse-input'], { input: source });
     //console.log(result.parserErrors[0]);
-    expect(result.parserErrors[0].token.startLine).to.equal(3);
-    expect(result.parserErrors[0].token.startColumn).to.equal(12);
+    expect(result.parserErrors[0].previousToken.startLine).to.equal(3);
+    expect(result.parserErrors[0].previousToken.startColumn).to.equal(5);
   });
 });
 
