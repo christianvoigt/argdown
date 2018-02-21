@@ -103,6 +103,11 @@ export default {
     height: 100%;
     width:100%;
     font-size:1.25em;
+    pre{
+      padding:0.1em 0.5em;
+      overflow:visible;
+      background-color:transparent;
+    }
   }
 }
 </style>
