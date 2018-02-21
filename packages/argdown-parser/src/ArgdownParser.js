@@ -11,7 +11,8 @@ class ArgdownParser extends chevrotain.Parser {
 
     constructor(input, lexer) {
         super(input, lexer.tokens, {
-            errorMessageProvider: ArgdownErrorMessageProvider            
+            errorMessageProvider: ArgdownErrorMessageProvider,
+            recoveryEnabled: true            
         });
         let $ = this;
         $.lexer = lexer;        

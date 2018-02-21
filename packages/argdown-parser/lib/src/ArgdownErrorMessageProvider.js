@@ -6,15 +6,13 @@ var chevrotain = _interopRequireWildcard(_chevrotain);
 
 var _ArgdownLexer = require('./ArgdownLexer.js');
 
-var _lodash = require('lodash');
-
-var _ = _interopRequireWildcard(_lodash);
-
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-var defaultErrorProvider = chevrotain.defaultErrorProvider;
+//import * as _ from 'lodash';
+
+var defaultParserErrorProvider = chevrotain.defaultParserErrorProvider;
 var tokenMatcher = chevrotain.tokenMatcher;
-var EOF = chevrotain.EOF;
+//const EOF = chevrotain.EOF;
 var MISSING_TEXT_CONTENT_ERROR = "Missing text content. " + "Please add a line of text or refer to an existing statement or argument instead by replacing the content in this line with [Statement Title] or <Argument Title> (without a colon). " + "If you want to define a statement ([Statement Title]:) or argument (<Argument Title>:), the defining text content has to follow the defined element title without any empty lines in between.";
 var INVALID_INFERENCE_ERROR = "Invalid inference. Inferences can either be marked by four hyphens (----) or have the following format: " + "--Inference Rule 1, Inference Rule 2 (my meta data property 1: 1, 2, 3; my meta data property 2: value) --";
 var INVALID_METADATA_ERROR = "Invalid metadata statement. Metadata has the following format: (my meta data property 1: 1, 2, 3; my meta data property 2: value)";
@@ -78,7 +76,7 @@ var argdownErrorMessageProvider = {
                 return MISSING_CONCLUSION_ERROR;
             }
         }
-        return defaultErrorProvider.buildMismatchTokenMessage(options);
+        return defaultParserErrorProvider.buildMismatchTokenMessage(options);
     },
     buildNotAllInputParsedMessage: function buildNotAllInputParsedMessage(options) {
         var tokenDescription = "";
@@ -91,7 +89,7 @@ var argdownErrorMessageProvider = {
         } else if (tokenMatcher(options.firstRedundant, _ArgdownLexer.ArgdownLexer.ArgumentReference)) {
             tokenDescription = "An argument reference (<Argument Title>)";
         } else if (tokenMatcher(options.firstRedundant, _ArgdownLexer.ArgdownLexer.ArgumentDefinition)) {
-            tokenDescription = "An argument definition (<Argument TItle>:)";
+            tokenDescription = "An argument definition (<Argument Title>:)";
         } else if (tokenMatcher(options.firstRedundant, _ArgdownLexer.ArgdownLexer.StatementReference)) {
             tokenDescription = "A statement reference ([Statement Title])";
         } else if (tokenMatcher(options.firstRedundant, _ArgdownLexer.ArgdownLexer.StatementDefinition)) {
@@ -99,7 +97,7 @@ var argdownErrorMessageProvider = {
         } else if (tokenMatcher(options.firstRedundant, _ArgdownLexer.ArgdownLexer.Freestyle)) {
             tokenDescription = "Invalid position of text content. Make sure it is not preceded by a statement reference ([Statement Title]) or argument reference (<Argument Title>).";
         } else {
-            return defaultErrorProvider.buildNotAllInputParsedMessage(options);
+            return defaultParserErrorProvider.buildNotAllInputParsedMessage(options);
         }
         return 'Invalid element position. ' + tokenDescription + ' may only occur at the beginning of a line or after a relation symbol.';
     },
@@ -122,10 +120,10 @@ var argdownErrorMessageProvider = {
             }
             return MISSING_TEXT_CONTENT_ERROR;
         }
-        return defaultErrorProvider.buildNoViableAltMessage(options);
+        return defaultParserErrorProvider.buildNoViableAltMessage(options);
     },
     buildEarlyExitMessage: function buildEarlyExitMessage(options) {
-        var firstToken = options.actual[0] ? options.actual[0] : null;
+        var firstToken = options.actual.length > 0 ? options.actual[0] : null;
         if (options.ruleName == "argdown") {
             if (firstToken && isRelationToken(firstToken)) {
                 return INVALID_RELATION_ERROR;
@@ -146,7 +144,7 @@ var argdownErrorMessageProvider = {
         } else if (firstToken && tokenMatcher(firstToken, _ArgdownLexer.ArgdownLexer.InferenceEnd)) {
             return INVALID_INFERENCE_ERROR;
         }
-        return defaultErrorProvider.buildEarlyExitMessage(options);
+        return defaultParserErrorProvider.buildEarlyExitMessage(options);
     }
 };
 

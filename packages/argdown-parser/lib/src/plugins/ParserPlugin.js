@@ -47,7 +47,6 @@ var ParserPlugin = function () {
       if (!data.input) {
         return data;
       }
-      var verbose = data.config && data.config.verbose;
 
       var lexResult = this.lexer.tokenize(data.input);
       data.tokens = lexResult.tokens;
@@ -61,7 +60,7 @@ var ParserPlugin = function () {
         logger.log("verbose", data.lexerErrors);
       }
       if (data.parserErrors && data.parserErrors.length > 0) {
-        //add location if token is EOF
+        // //add location if token is EOF
         var lastToken = _.last(data.tokens);
         var _iteratorNormalCompletion = true;
         var _didIteratorError = false;
@@ -82,6 +81,7 @@ var ParserPlugin = function () {
               error.token = newToken;
             }
           }
+          // logger.log("verbose", data.parserErrors);
         } catch (err) {
           _didIteratorError = true;
           _iteratorError = err;
@@ -96,8 +96,6 @@ var ParserPlugin = function () {
             }
           }
         }
-
-        logger.log("verbose", data.parserErrors);
       }
       return data;
     }
