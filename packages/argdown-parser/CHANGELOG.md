@@ -1,3 +1,9 @@
+## 0.7.2 (02-21-2018)
+
+#### Bug fixes
+
+ - fixed typo in logAstRecursively
+
 ## 0.7.1 (02-21-2018)
 
 #### Bug fixes

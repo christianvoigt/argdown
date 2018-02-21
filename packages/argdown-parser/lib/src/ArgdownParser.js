@@ -613,7 +613,7 @@ var ArgdownParser = function (_chevrotain$Parser) {
                 str += "undefined";
                 return str;
             } else if (value.tokenType) {
-                str += tokenType.tokenName;
+                str += value.tokenType.tokenName;
                 return str;
             }
             str += value.name;

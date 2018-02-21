@@ -6,7 +6,7 @@ See the parser in action in the [Argdown Demo](http://christianvoigt.github.io/a
 
 ![Argdown](https://cdn.rawgit.com/christianvoigt/argdown-parser/master/argdown-mark.svg)
 
-For more information on the Argdown argumentation syntax visit the [Argdown repository](https://github.com/christianvoigt/argdown).
+To learn more about the Argdown argumentation syntax visit the central [Argdown repository](https://github.com/christianvoigt/argdown).
 
 This package contains the basic tools to build an Argdown application:
 
