@@ -1,6 +1,7 @@
 import {ArgdownApplication, ParserPlugin, ModelPlugin, HtmlExport, JSONExport, TagPlugin} from 'argdown-parser';
-import {MapMaker, DotExport, ArgMLExport} from 'argdown-map-maker';
+import {MapMaker, DotExport, ArgMLExport, DotToSvgExport} from 'argdown-map-maker';
 import {SaveAsFilePlugin} from './plugins/SaveAsFilePlugin.js';
+import {SvgToPdfExport} from './plugins/SvgToPdfExport.js';
 import {CopyDefaultCssPlugin} from './plugins/CopyDefaultCssPlugin.js';
 import { LogParserErrorsPlugin } from './plugins/LogParserErrorsPlugin.js';
 import {StdOutPlugin} from './plugins/StdOutPlugin.js';
@@ -30,6 +31,13 @@ const saveAsHtml = new SaveAsFilePlugin({
   extension: '.html'
 });
 const copyDefaultCss = new CopyDefaultCssPlugin();
+const dotToSvgExport = new DotToSvgExport();
+const saveSvgAsSvg = new SaveAsFilePlugin({
+  outputDir: './svg',
+  dataKey: 'svg',
+  extension: '.svg'
+});
+const saveSvgAsPdf = new SvgToPdfExport();
 
 const saveAsDot = new SaveAsFilePlugin({
   outputDir: './dot',
@@ -52,6 +60,7 @@ const saveAsArgdown = new SaveAsFilePlugin({
   extension: '.argdown'
 });
 const stdoutDot = new StdOutPlugin({dataKey:'dot'});
+const stdoutSvg = new StdOutPlugin({ dataKey: 'svg' });
 const stdoutArgML = new StdOutPlugin({dataKey:'argml'});
 const stdoutJSON = new StdOutPlugin({dataKey:'json'});
 const stdoutHtml = new StdOutPlugin({dataKey:'html'});
@@ -80,6 +89,10 @@ app.addPlugin(mapMaker, "export-dot");
 app.addPlugin(dotExport, "export-dot");
 app.addPlugin(saveAsDot, "save-as-dot");
 app.addPlugin(stdoutDot, "stdout-dot");
+app.addPlugin(dotToSvgExport, 'export-svg');
+app.addPlugin(saveSvgAsSvg, 'save-svg-as-svg');
+app.addPlugin(stdoutSvg, 'stdout-svg');
+app.addPlugin(saveSvgAsPdf, 'save-svg-as-pdf');
 
 app.addPlugin(mapMaker, "export-argml");
 app.addPlugin(argmlExport, "export-argml");
