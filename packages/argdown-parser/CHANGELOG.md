@@ -1,3 +1,9 @@
+## 0.7.1 (02-21-2018)
+
+#### Bug fixes
+
+ - removed occurences of chevrotain.getTokenConstructor
+
 ## 0.7.0 (02-21-2018)
 
 #### Major Changes
