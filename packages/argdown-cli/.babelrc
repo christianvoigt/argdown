@@ -1,3 +1,4 @@
 {
-  "presets": ["es2016", "es2015"]
+  "presets": ["es2016", "es2015"],
+  "ignore": ["src/pdfkit.js"]
 }

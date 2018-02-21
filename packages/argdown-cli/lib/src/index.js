@@ -11,6 +11,8 @@ var _argdownMapMaker = require('argdown-map-maker');
 
 var _SaveAsFilePlugin = require('./plugins/SaveAsFilePlugin.js');
 
+var _SvgToPdfExport = require('./plugins/SvgToPdfExport.js');
+
 var _CopyDefaultCssPlugin = require('./plugins/CopyDefaultCssPlugin.js');
 
 var _LogParserErrorsPlugin = require('./plugins/LogParserErrorsPlugin.js');
@@ -48,6 +50,13 @@ var saveAsHtml = new _SaveAsFilePlugin.SaveAsFilePlugin({
   extension: '.html'
 });
 var copyDefaultCss = new _CopyDefaultCssPlugin.CopyDefaultCssPlugin();
+var dotToSvgExport = new _argdownMapMaker.DotToSvgExport();
+var saveSvgAsSvg = new _SaveAsFilePlugin.SaveAsFilePlugin({
+  outputDir: './svg',
+  dataKey: 'svg',
+  extension: '.svg'
+});
+var saveSvgAsPdf = new _SvgToPdfExport.SvgToPdfExport();
 
 var saveAsDot = new _SaveAsFilePlugin.SaveAsFilePlugin({
   outputDir: './dot',
@@ -70,6 +79,7 @@ var saveAsArgdown = new _SaveAsFilePlugin.SaveAsFilePlugin({
   extension: '.argdown'
 });
 var stdoutDot = new _StdOutPlugin.StdOutPlugin({ dataKey: 'dot' });
+var stdoutSvg = new _StdOutPlugin.StdOutPlugin({ dataKey: 'svg' });
 var stdoutArgML = new _StdOutPlugin.StdOutPlugin({ dataKey: 'argml' });
 var stdoutJSON = new _StdOutPlugin.StdOutPlugin({ dataKey: 'json' });
 var stdoutHtml = new _StdOutPlugin.StdOutPlugin({ dataKey: 'html' });
@@ -98,6 +108,10 @@ app.addPlugin(mapMaker, "export-dot");
 app.addPlugin(dotExport, "export-dot");
 app.addPlugin(saveAsDot, "save-as-dot");
 app.addPlugin(stdoutDot, "stdout-dot");
+app.addPlugin(dotToSvgExport, 'export-svg');
+app.addPlugin(saveSvgAsSvg, 'save-svg-as-svg');
+app.addPlugin(stdoutSvg, 'stdout-svg');
+app.addPlugin(saveSvgAsPdf, 'save-svg-as-pdf');
 
 app.addPlugin(mapMaker, "export-argml");
 app.addPlugin(argmlExport, "export-argml");

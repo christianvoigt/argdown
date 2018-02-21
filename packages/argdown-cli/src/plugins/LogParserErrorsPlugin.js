@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import {ArgdownLexer} from 'argdown-parser';
 
 class LogParserErrorsPlugin {
     set config(config) {
@@ -23,9 +24,18 @@ class LogParserErrorsPlugin {
                 logger.log("error", `\u001b[31m\u001b[1mArgdown syntax errors in input: ${nrOfErrors}\u001b[0m\n`);
             }
             for (let error of data.parserErrors) {
-                const startLine = error.token.startLine;
-                const startColumn = error.token.startColumn;
                 const message = error.message;
+                var startLine, startColumn;
+                if(error.token.tokenType === ArgdownLexer.EOF){ // This is an EarlyExitError. EOF does not have a token location, but EarlyExitErrors save the previousToken parsed
+                    //console.log(error);
+                    if(error.previousToken){
+                        startLine = error.previousToken.startLine;
+                        startColumn = error.previousToken.startColumn;
+                    }
+                }else{
+                    startLine = error.token.startLine;
+                    startColumn = error.token.startColumn;
+                }
                 logger.log("error", `\u001b[31mAt ${startLine}:${startColumn}\u001b[0m\n${message}\n`);
             }
         }

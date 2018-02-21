@@ -64,6 +64,12 @@ export const builder = {
   size: {
     type: 'string',
     describe: 'Graphviz size setting'
+  },
+  format: {
+    alias: 'f',
+    type: 'string',
+    describe: 'the file format (.dot, .svg, .pdf)',
+    default: 'pdf'
   }
 };
 export const handler = function(argv){
@@ -71,6 +77,12 @@ export const handler = function(argv){
   
   config.dot = config.dot || config.DotExport ||{};
   config.map = config.map ||config.MapMaker ||{};
+  const format = argv.format || 'pdf';
+  if(format === 'pdf'){
+    config.svgToPdf = config.svgToPdf ||config.SvgToPdfExport ||{};
+  }else{
+    config.saveAs = config.saveAs ||config.SaveAsFilePlugin ||{};
+  }
 
   if(argv.useHtmlLabels){
     config.dot.useHtmlLabels = true;        
@@ -117,9 +129,12 @@ export const handler = function(argv){
   if(argv.inputGlob){
     config.input = argv.inputGlob;
   }
-  config.saveAs = config.saveAs ||config.SaveAsFilePlugin ||{};
   if(argv.outputDir){
-    config.saveAs.outputDir = argv.outputDir;
+    if(format === 'pdf'){
+      config.svgToPdf.outputDir = argv.outputDir;
+    }else{
+      config.saveAs.outputDir = argv.outputDir;
+    }
   }
   config.logLevel = argv.verbose ? "verbose" : config.logLevel;
   config.watch = argv.watch ||config.watch;
@@ -130,12 +145,25 @@ export const handler = function(argv){
   }  
   config.process.push('build-model')
   config.process.push('export-dot');
+  if(format !== 'dot'){
+    config.process.push('export-svg');
+  }
   if(!argv.stdout || argv.outputDir){
-    config.process.push('save-as-dot');
+    if(format === 'dot'){
+      config.process.push('save-as-dot');
+    }else if(format === 'svg'){
+      config.process.push('save-svg-as-svg');
+    }else{
+      config.process.push('save-svg-as-pdf');
+    }
   }
   
   if(argv.stdout){
-    config.process.push('stdout-dot');
+    if(format === 'dot'){
+      config.process.push('stdout-dot');
+    }else{ // pdf to stdout is currently not supported
+      config.process.push('stdout-svg');
+    }
   }
   app.load(config);  
 } 

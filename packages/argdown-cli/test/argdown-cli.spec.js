@@ -6,7 +6,9 @@ import rimraf from 'rimraf';
 const fs = require('fs');
 
 describe("argdown-cli", function(){
+  this.timeout(15000);
   it('can create dot output', (done) => {
+    
     let filePath = path.resolve(__dirname, './test.argdown');
     let filePathToCli = path.resolve(__dirname, '../lib/src/cli.js');
     require('child_process').exec('node ' + filePathToCli + ' dot '+filePath+' --stdout', function(error, stdout, stderr) {
@@ -21,6 +23,7 @@ describe("argdown-cli", function(){
     });
   });
   it('can create html output', (done) => {
+    
     let filePath = path.resolve(__dirname, './test.argdown');
     let filePathToCli = path.resolve(__dirname, '../lib/src/cli.js');
     require('child_process').exec('node ' + filePathToCli + ' html '+filePath+' --stdout', function(error, stdout, stderr) {
@@ -36,6 +39,7 @@ describe("argdown-cli", function(){
     });
   });  
   it('can create json output', (done) => {
+    
     let filePath = path.resolve(__dirname, './test.argdown');
     let filePathToCli = path.resolve(__dirname, '../lib/src/cli.js');
     require('child_process').exec('node ' + filePathToCli + ' json '+filePath+' --stdout', function(error, stdout, stderr) {
@@ -50,6 +54,7 @@ describe("argdown-cli", function(){
     });
   });
   it('can load config and run process', (done) => {
+    
     let filePathToCli = path.resolve(__dirname, '../lib/src/cli.js');
     let filePathToConfig = path.resolve(__dirname, './argdown.config.js');
     require('child_process').exec('node ' + filePathToCli + ' --stdout --verbose --config ' + filePathToConfig, function(error, stdout, stderr) {
@@ -64,6 +69,7 @@ describe("argdown-cli", function(){
     });
   });
   it('can create html file', (done) => {
+    
     let htmlFolder = path.resolve(__dirname, './html/');
     rimraf(htmlFolder, {}, function(err){
       if(err){
@@ -88,10 +94,11 @@ describe("argdown-cli", function(){
             console.log(err);
           }
         });
-        done();
+      done();
     });
   });  
   it('can create dot file', (done) => {
+    
     let dotFolder = path.resolve(__dirname, './dot/');
     rimraf(dotFolder, {}, function(err){
       if(err){
@@ -101,7 +108,7 @@ describe("argdown-cli", function(){
     let filePath = path.resolve(__dirname, './test.argdown');
     let filePathToDot = path.resolve(__dirname, './dot/test.dot');    
     let filePathToCli = path.resolve(__dirname, '../lib/src/cli.js');
-    require('child_process').exec('node ' + filePathToCli + ' dot ' + filePath + ' ' + dotFolder, function(error, stdout, stderr) {
+    require('child_process').exec('node ' + filePathToCli + ' dot -f dot ' + filePath + ' ' + dotFolder, function(error, stdout, stderr) {
         expect(error).to.equal(null);
         expect(stderr).to.equal('');
         expect(filePathToDot).to.be.a.file();
@@ -113,10 +120,64 @@ describe("argdown-cli", function(){
             console.log(err);
           }
         });
-        done();
+      done();
+    });
+  });
+  it('can create svg file from dot export', (done) => {
+    
+    let svgFolder = path.resolve(__dirname, './svg/');
+    rimraf(svgFolder, {}, function (err) {
+      if (err) {
+        console.log(err);
+      }
+    });
+    let filePath = path.resolve(__dirname, './test.argdown');
+    let filePathToSvg = path.resolve(__dirname, './svg/test.svg');
+    let filePathToCli = path.resolve(__dirname, '../lib/src/cli.js');
+    require('child_process').exec('node ' + filePathToCli + ' dot -f svg ' + filePath + ' ' + svgFolder, function (error, stdout, stderr) {
+      if (error !== null) {
+        console.log('exec error: ' + error);
+      }
+      expect(error).to.equal(null);
+      expect(stderr).to.equal('');
+      expect(filePathToSvg).to.be.a.file();
+      rimraf(svgFolder, {}, function (err) {
+        if (err) {
+          console.log(err);
+        }
+      });
+      done();
+    });
+  });
+  it('can create pdf file from dot export', (done) => {
+
+    let pdfFolder = path.resolve(__dirname, './pdf/');
+    rimraf(pdfFolder, {}, function (err) {
+      if (err) {
+        console.log(err);
+      }
+    });
+    let filePath = path.resolve(__dirname, './test.argdown');
+    let filePathToPdf = path.resolve(__dirname, './pdf/test.pdf');
+    let filePathToCli = path.resolve(__dirname, '../lib/src/cli.js');
+    require('child_process').exec('node ' + filePathToCli + ' dot ' + filePath + ' ' + pdfFolder, function (error, stdout, stderr) {
+      if (error !== null) {
+        console.log('exec error: ' + error);
+      }
+      //console.log(stdout);
+      expect(error).to.equal(null);
+      expect(stderr).to.equal('');
+      expect(filePathToPdf).to.be.a.file();
+      rimraf(pdfFolder, {}, function (err) {
+        if (err) {
+          console.log(err);
+        }
+      });
+      done();
     });
   });
   it('can create json file', (done) => {
+    
     let jsonFolder = path.resolve(__dirname, './json');
     rimraf(jsonFolder, {}, function(err){
       if(err){
@@ -142,6 +203,7 @@ describe("argdown-cli", function(){
     });
   });
   it('can include files', (done) => {
+    
     let globPath = './test/include-test.argdown';
     let expectedResult = fs.readFileSync(path.resolve(__dirname, './include-test-expected-result.txt'), 'utf8');
 
@@ -158,6 +220,7 @@ describe("argdown-cli", function(){
     });
   });      
   it('can load glob input', (done) => {
+    
     let jsonFolder = path.resolve(__dirname, './json');
     let globPath = './test/*.argdown';
     
