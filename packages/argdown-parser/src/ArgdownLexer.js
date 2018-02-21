@@ -6,7 +6,6 @@ import * as _ from 'lodash';
 const createToken = chevrotain.createToken;
 const createTokenInstance = chevrotain.createTokenInstance;
 const tokenMatcher = chevrotain.tokenMatcher;
-const getTokenConstructor = chevrotain.getTokenConstructor;
 
 class ArgdownLexer {
     init() {
@@ -636,14 +635,14 @@ class ArgdownLexer {
     tokensToString(tokens) {
       let str = "";
       for (let token of tokens) {
-          str += getTokenConstructor(token).tokenName + " " + token.image +"\n";
+          str += token.tokenType.tokenName + " " + token.image +"\n";
       }
       return str;
     }
     tokenLocationsToString(tokens){
         let str = "";
         for (let token of tokens) {
-            str += getTokenConstructor(token).tokenName + " " + token.image + "\n";
+            str += token.tokenType.tokenName + " " + token.image + "\n";
             str += "startOffset: " + token.startOffset + " endOffset: " + token.endOffset +" startLine: "+token.startLine+" endLine: "+token.endLine+" startColumn: "+token.startColumn+" endColumn: "+token.endColumn+"\n\n";
         }
         return str;        

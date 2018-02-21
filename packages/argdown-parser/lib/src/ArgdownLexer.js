@@ -17,7 +17,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var createToken = chevrotain.createToken;
 var createTokenInstance = chevrotain.createTokenInstance;
 var tokenMatcher = chevrotain.tokenMatcher;
-var getTokenConstructor = chevrotain.getTokenConstructor;
 
 var ArgdownLexer = function () {
     _createClass(ArgdownLexer, [{
@@ -621,7 +620,7 @@ var ArgdownLexer = function () {
                 for (var _iterator = tokens[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                     var token = _step.value;
 
-                    str += getTokenConstructor(token).tokenName + " " + token.image + "\n";
+                    str += token.tokenType.tokenName + " " + token.image + "\n";
                 }
             } catch (err) {
                 _didIteratorError = true;
@@ -652,7 +651,7 @@ var ArgdownLexer = function () {
                 for (var _iterator2 = tokens[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
                     var token = _step2.value;
 
-                    str += getTokenConstructor(token).tokenName + " " + token.image + "\n";
+                    str += token.tokenType.tokenName + " " + token.image + "\n";
                     str += "startOffset: " + token.startOffset + " endOffset: " + token.endOffset + " startLine: " + token.startLine + " endLine: " + token.endLine + " startColumn: " + token.startColumn + " endColumn: " + token.endColumn + "\n\n";
                 }
             } catch (err) {

@@ -1,8 +1,7 @@
 'use strict';
 
 import chevrotain, {
-    Parser,
-    getTokenConstructor
+    Parser
 } from 'chevrotain';
 import {ArgdownLexer} from './ArgdownLexer.js';
 import {ArgdownErrorMessageProvider} from './ArgdownErrorMessageProvider.js';
@@ -497,7 +496,7 @@ class ArgdownParser extends chevrotain.Parser {
             str += "undefined";
             return str;
         } else if (value.tokenType) {
-            str += getTokenConstructor(value).tokenName;
+            str += tokenType.tokenName;
             return str;
         }
         str += value.name;
