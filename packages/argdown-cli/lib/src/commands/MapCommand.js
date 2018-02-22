@@ -7,7 +7,7 @@ exports.handler = exports.builder = exports.desc = exports.command = undefined;
 
 var _index = require('../index.js');
 
-var command = exports.command = 'dot [inputGlob] [outputDir]';
+var command = exports.command = 'map [inputGlob] [outputDir]';
 var desc = exports.desc = 'export Argdown input as DOT files';
 var builder = exports.builder = {
   logParserErrors: {
@@ -75,8 +75,18 @@ var builder = exports.builder = {
   format: {
     alias: 'f',
     type: 'string',
-    describe: 'the file format (.dot, .svg, .pdf)',
+    describe: 'the file format (dot, svg, pdf, png)',
     default: 'pdf'
+  },
+  width: {
+    alias: 'w',
+    type: 'number',
+    describe: 'the width of the png image (only used if format is png)'
+  },
+  height: {
+    alias: 'h',
+    type: 'number',
+    describe: 'the height of the png image (only used if format is png)'
   }
 };
 var handler = exports.handler = function handler(argv) {
@@ -86,7 +96,15 @@ var handler = exports.handler = function handler(argv) {
   config.map = config.map || config.MapMaker || {};
   var format = argv.format || 'pdf';
   if (format === 'pdf') {
-    config.svgToPdf = config.svgToPdf || config.SvgToPdfExport || {};
+    config.svgToPdf = config.svgToPdf || config.SvgToPdfExportPlugin || {};
+  } else if (format === 'png') {
+    config.svgToPng = config.svgToPng || config.SvgToPngExportPlugin || {};
+    if (argv.width) {
+      config.svgToPng.width = argv.width;
+    }
+    if (argv.height) {
+      config.svgToPng.height = argv.height;
+    }
   } else {
     config.saveAs = config.saveAs || config.SaveAsFilePlugin || {};
   }
@@ -138,6 +156,8 @@ var handler = exports.handler = function handler(argv) {
   if (argv.outputDir) {
     if (format === 'pdf') {
       config.svgToPdf.outputDir = argv.outputDir;
+    } else if (format === 'png') {
+      config.svgToPng.outputDir = argv.outputDir;
     } else {
       config.saveAs.outputDir = argv.outputDir;
     }
@@ -159,6 +179,8 @@ var handler = exports.handler = function handler(argv) {
       config.process.push('save-as-dot');
     } else if (format === 'svg') {
       config.process.push('save-svg-as-svg');
+    } else if (format === 'png') {
+      config.process.push('save-svg-as-png');
     } else {
       config.process.push('save-svg-as-pdf');
     }
@@ -168,10 +190,10 @@ var handler = exports.handler = function handler(argv) {
     if (format === 'dot') {
       config.process.push('stdout-dot');
     } else {
-      // pdf to stdout is currently not supported
+      // pdf and png to stdout is currently not supported
       config.process.push('stdout-svg');
     }
   }
   _index.app.load(config);
 };
-//# sourceMappingURL=DotCommand.js.map
+//# sourceMappingURL=MapCommand.js.map

@@ -1,7 +1,8 @@
 import {ArgdownApplication, ParserPlugin, ModelPlugin, HtmlExport, JSONExport, TagPlugin} from 'argdown-parser';
 import {MapMaker, DotExport, ArgMLExport, DotToSvgExport} from 'argdown-map-maker';
 import {SaveAsFilePlugin} from './plugins/SaveAsFilePlugin.js';
-import {SvgToPdfExport} from './plugins/SvgToPdfExport.js';
+import {SvgToPdfExportPlugin} from './plugins/SvgToPdfExportPlugin.js';
+import { SvgToPngExportPlugin } from './plugins/SvgToPngExportPlugin.js';
 import {CopyDefaultCssPlugin} from './plugins/CopyDefaultCssPlugin.js';
 import { LogParserErrorsPlugin } from './plugins/LogParserErrorsPlugin.js';
 import {StdOutPlugin} from './plugins/StdOutPlugin.js';
@@ -37,7 +38,8 @@ const saveSvgAsSvg = new SaveAsFilePlugin({
   dataKey: 'svg',
   extension: '.svg'
 });
-const saveSvgAsPdf = new SvgToPdfExport();
+const saveSvgAsPdf = new SvgToPdfExportPlugin();
+const saveSvgAsPng = new SvgToPngExportPlugin();
 
 const saveAsDot = new SaveAsFilePlugin({
   outputDir: './dot',
@@ -93,6 +95,7 @@ app.addPlugin(dotToSvgExport, 'export-svg');
 app.addPlugin(saveSvgAsSvg, 'save-svg-as-svg');
 app.addPlugin(stdoutSvg, 'stdout-svg');
 app.addPlugin(saveSvgAsPdf, 'save-svg-as-pdf');
+app.addPlugin(saveSvgAsPng, 'save-svg-as-png');
 
 app.addPlugin(mapMaker, "export-argml");
 app.addPlugin(argmlExport, "export-argml");
@@ -191,5 +194,5 @@ app.loadConfig = function(filePath){
 }
 
 export {
-  app, CopyDefaultCssPlugin, SaveAsFilePlugin
+  app, CopyDefaultCssPlugin, SaveAsFilePlugin, SvgToPdfExportPlugin, SvgToPngExportPlugin, LogParserErrorsPlugin
 };

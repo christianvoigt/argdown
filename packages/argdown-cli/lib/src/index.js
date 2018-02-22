@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.SaveAsFilePlugin = exports.CopyDefaultCssPlugin = exports.app = undefined;
+exports.LogParserErrorsPlugin = exports.SvgToPngExportPlugin = exports.SvgToPdfExportPlugin = exports.SaveAsFilePlugin = exports.CopyDefaultCssPlugin = exports.app = undefined;
 
 var _argdownParser = require('argdown-parser');
 
@@ -11,7 +11,9 @@ var _argdownMapMaker = require('argdown-map-maker');
 
 var _SaveAsFilePlugin = require('./plugins/SaveAsFilePlugin.js');
 
-var _SvgToPdfExport = require('./plugins/SvgToPdfExport.js');
+var _SvgToPdfExportPlugin = require('./plugins/SvgToPdfExportPlugin.js');
+
+var _SvgToPngExportPlugin = require('./plugins/SvgToPngExportPlugin.js');
 
 var _CopyDefaultCssPlugin = require('./plugins/CopyDefaultCssPlugin.js');
 
@@ -56,7 +58,8 @@ var saveSvgAsSvg = new _SaveAsFilePlugin.SaveAsFilePlugin({
   dataKey: 'svg',
   extension: '.svg'
 });
-var saveSvgAsPdf = new _SvgToPdfExport.SvgToPdfExport();
+var saveSvgAsPdf = new _SvgToPdfExportPlugin.SvgToPdfExportPlugin();
+var saveSvgAsPng = new _SvgToPngExportPlugin.SvgToPngExportPlugin();
 
 var saveAsDot = new _SaveAsFilePlugin.SaveAsFilePlugin({
   outputDir: './dot',
@@ -112,6 +115,7 @@ app.addPlugin(dotToSvgExport, 'export-svg');
 app.addPlugin(saveSvgAsSvg, 'save-svg-as-svg');
 app.addPlugin(stdoutSvg, 'stdout-svg');
 app.addPlugin(saveSvgAsPdf, 'save-svg-as-pdf');
+app.addPlugin(saveSvgAsPng, 'save-svg-as-png');
 
 app.addPlugin(mapMaker, "export-argml");
 app.addPlugin(argmlExport, "export-argml");
@@ -230,4 +234,7 @@ app.loadConfig = function (filePath) {
 exports.app = app;
 exports.CopyDefaultCssPlugin = _CopyDefaultCssPlugin.CopyDefaultCssPlugin;
 exports.SaveAsFilePlugin = _SaveAsFilePlugin.SaveAsFilePlugin;
+exports.SvgToPdfExportPlugin = _SvgToPdfExportPlugin.SvgToPdfExportPlugin;
+exports.SvgToPngExportPlugin = _SvgToPngExportPlugin.SvgToPngExportPlugin;
+exports.LogParserErrorsPlugin = _LogParserErrorsPlugin.LogParserErrorsPlugin;
 //# sourceMappingURL=index.js.map

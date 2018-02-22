@@ -11,8 +11,8 @@
   "license": "MIT",
   "main": "lib/src/index.js",
   "dependencies": {
-    "argdown-map-maker": "^0.3.0",
-    "argdown-parser": "^0.7.0",
+    "argdown-map-maker": "^0.3.1",
+    "argdown-parser": "^0.7.2",
     "chokidar": "^1.7.0",
     "glob": "^7.1.2",
     "lodash": "^4.17.4",
@@ -20,6 +20,7 @@
     "mocha": "^3.4.2",
     "require-uncached": "^1.0.3",
     "svg-to-pdfkit": "^0.1.7",
+    "svg2png": "^4.1.1",
     "yargs": "^8.0.1"
   },
   "bin": {
