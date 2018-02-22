@@ -8,9 +8,9 @@ For more information about the Argdown argumentation syntax, visit the [Argdown 
 
 Current features of argdown-cli:
 
-  - export to html with `argdown html`
-  - export to pdf, svg or dot  with `argdown dot`
-  - export to json with `argdown json`
+  - export text document to html with `argdown html`
+  - export argument map to pdf, png, svg or dot  with `argdown map`
+  - export data to json with `argdown json`
   - use `argdown` with an `argdown.config.json` file for more complex operations
 
 ## Installation
@@ -26,7 +26,7 @@ npm install -g argdown-cli
 Available commands:
 
   - `argdown html [input glob] [output folder]`: exports the input files as html files into the output folder.
-  - `argdown dot [input glob] [output folder]`: exports argument maps layouted with Graphviz. By default the maps are saved as pdf files. Use `--format svg` to save svg files and `--format dot` to save dot files.
+  - `argdown map [input glob] [output folder]`: exports argument maps layouted with Graphviz. By default the maps are saved as pdf files. Use `--format png` to png files, `--format svg` to save svg files and `--format dot` to save dot files. If you export a png image, you can specify its dimensions by using `argdown map -f png --width=1000 --height=800`. Pngs are created by using the PhantomJS virtual browser, so this might take a while.
   - `argdown json [input glob] [output folder]`: exports the input files as .json files into the output folder.
   - `argdown compile [input glob] [output folder]`: compiles the input files with included files into new .argdown files.
   
@@ -53,6 +53,8 @@ Some more Argdown content ...
 This will even work recursively as long as you don't try to include an Argdown file that has already been included before.
 
 Argdown-Cli will then compile the different Argdown files into one before starting the parsing process. You can also save the result of this compilation by using the `argdown compile` command.
+
+Please note that the line numbers of error messages will always refer to lines in the compiled argdown document, not to lines in the original files. 
 
 ## Partials
 

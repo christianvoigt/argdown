@@ -6,7 +6,7 @@ let mkdirp = require('mkdirp');
 import SVGtoPDF from 'svg-to-pdfkit';
 import * as _ from 'lodash';
 
-class SvgToPdfExport {
+class SvgToPdfExportPlugin {
     set config(config) {
         let previousSettings = this.settings;
         if (!previousSettings) {
@@ -19,29 +19,27 @@ class SvgToPdfExport {
         this.settings.format = 'svg';
     }
     constructor(config) {
-        this.name = "SvgToPdfExport";
+        this.name = "SvgToPdfExportPlugin";
         this.config = config;
     }
     run(data, logger) {
         if (data.config) {
             if (data.config.svgToPdf) {
                 this.config = data.config.svgToPdf;
-            } else if (data.config.SvgToPdfExport) {
-                this.config = data.config.SvgToPdfExport;
+            } else if (data.config.SvgToPdfExportPlugin) {
+                this.config = data.config.SvgToPdfExportPlugin;
             }
         }
         if (!data.svg) {
             return data;
         }
         let fileName = 'default';
-        if(!_.isEmpty(this.settings.sourceFile) && _.isString(this.settings.sourceFile)){
-            fileName = this.getFileName(this.settings.sourceFile);
-        }else if(_.isFunction(this.settings.fileName)){
+        if (_.isFunction(this.settings.fileName)) {
             fileName = this.settings.fileName.call(this, data);
-        }else if(_.isString(this.settings.fileName)){
+        } else if (_.isString(this.settings.fileName)) {
             fileName = this.settings.fileName;
-        }else if(data.config && data.config.input){
-            fileName = this.getFileName(data.config.input);
+        } else if (data.inputFile) {
+            fileName = this.getFileName(data.inputFile);
         }
         const absoluteOutputDir = path.resolve(process.cwd(), this.settings.outputDir);
         const filePath = absoluteOutputDir + '/' + fileName + '.pdf';
@@ -64,5 +62,5 @@ class SvgToPdfExport {
     }
 }
 module.exports = {
-    SvgToPdfExport: SvgToPdfExport
+    SvgToPdfExportPlugin: SvgToPdfExportPlugin
 }

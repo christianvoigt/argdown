@@ -11,7 +11,7 @@ describe("argdown-cli", function(){
     
     let filePath = path.resolve(__dirname, './test.argdown');
     let filePathToCli = path.resolve(__dirname, '../lib/src/cli.js');
-    require('child_process').exec('node ' + filePathToCli + ' dot '+filePath+' --stdout', function(error, stdout, stderr) {
+    require('child_process').exec('node ' + filePathToCli + ' map -f dot '+filePath+' --stdout', function(error, stdout, stderr) {
         expect(error).to.equal(null);
         expect(stderr).to.equal('');
         expect(stdout).to.not.equal('');
@@ -97,7 +97,7 @@ describe("argdown-cli", function(){
       done();
     });
   });  
-  it('can create dot file', (done) => {
+  it('can create dot file from map', (done) => {
     
     let dotFolder = path.resolve(__dirname, './dot/');
     rimraf(dotFolder, {}, function(err){
@@ -108,7 +108,7 @@ describe("argdown-cli", function(){
     let filePath = path.resolve(__dirname, './test.argdown');
     let filePathToDot = path.resolve(__dirname, './dot/test.dot');    
     let filePathToCli = path.resolve(__dirname, '../lib/src/cli.js');
-    require('child_process').exec('node ' + filePathToCli + ' dot -f dot ' + filePath + ' ' + dotFolder, function(error, stdout, stderr) {
+    require('child_process').exec('node ' + filePathToCli + ' map -f dot ' + filePath + ' ' + dotFolder, function(error, stdout, stderr) {
         expect(error).to.equal(null);
         expect(stderr).to.equal('');
         expect(filePathToDot).to.be.a.file();
@@ -123,7 +123,7 @@ describe("argdown-cli", function(){
       done();
     });
   });
-  it('can create svg file from dot export', (done) => {
+  it('can create svg file from map', (done) => {
     
     let svgFolder = path.resolve(__dirname, './svg/');
     rimraf(svgFolder, {}, function (err) {
@@ -134,7 +134,7 @@ describe("argdown-cli", function(){
     let filePath = path.resolve(__dirname, './test.argdown');
     let filePathToSvg = path.resolve(__dirname, './svg/test.svg');
     let filePathToCli = path.resolve(__dirname, '../lib/src/cli.js');
-    require('child_process').exec('node ' + filePathToCli + ' dot -f svg ' + filePath + ' ' + svgFolder, function (error, stdout, stderr) {
+    require('child_process').exec('node ' + filePathToCli + ' map -f svg ' + filePath + ' ' + svgFolder, function (error, stdout, stderr) {
       if (error !== null) {
         console.log('exec error: ' + error);
       }
@@ -149,7 +149,7 @@ describe("argdown-cli", function(){
       done();
     });
   });
-  it('can create pdf file from dot export', (done) => {
+  it('can create pdf file from map', (done) => {
 
     let pdfFolder = path.resolve(__dirname, './pdf/');
     rimraf(pdfFolder, {}, function (err) {
@@ -160,7 +160,7 @@ describe("argdown-cli", function(){
     let filePath = path.resolve(__dirname, './test.argdown');
     let filePathToPdf = path.resolve(__dirname, './pdf/test.pdf');
     let filePathToCli = path.resolve(__dirname, '../lib/src/cli.js');
-    require('child_process').exec('node ' + filePathToCli + ' dot ' + filePath + ' ' + pdfFolder, function (error, stdout, stderr) {
+    require('child_process').exec('node ' + filePathToCli + ' map ' + filePath + ' ' + pdfFolder, function (error, stdout, stderr) {
       if (error !== null) {
         console.log('exec error: ' + error);
       }
@@ -169,6 +169,33 @@ describe("argdown-cli", function(){
       expect(stderr).to.equal('');
       expect(filePathToPdf).to.be.a.file();
       rimraf(pdfFolder, {}, function (err) {
+        if (err) {
+          console.log(err);
+        }
+      });
+      done();
+    });
+  });
+  it('can create png file from map', (done) => {
+
+    let pngFolder = path.resolve(__dirname, './png/');
+    rimraf(pngFolder, {}, function (err) {
+      if (err) {
+        console.log(err);
+      }
+    });
+    let filePath = path.resolve(__dirname, './test.argdown');
+    let filePathToPng = path.resolve(__dirname, './png/test.png');
+    let filePathToCli = path.resolve(__dirname, '../lib/src/cli.js');
+    require('child_process').exec('node ' + filePathToCli + ' map -f png ' + filePath + ' ' + pngFolder, function (error, stdout, stderr) {
+      if (error !== null) {
+        console.log('exec error: ' + error);
+      }
+      //console.log(stdout);
+      expect(error).to.equal(null);
+      expect(stderr).to.equal('');
+      expect(filePathToPng).to.be.a.file();
+      rimraf(pngFolder, {}, function (err) {
         if (err) {
           console.log(err);
         }

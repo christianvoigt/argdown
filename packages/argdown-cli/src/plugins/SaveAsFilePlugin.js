@@ -38,8 +38,8 @@ class SaveAsFilePlugin{
         fileName = this.settings.fileName.call(this, data);
       }else if(_.isString(this.settings.fileName)){
         fileName = this.settings.fileName;
-      }else if(data.config && data.config.input){
-        fileName = this.getFileName(data.config.input);
+      }else if(data.inputFile){
+        fileName = this.getFileName(data.inputFile);
       }
       this.saveAsFile(fileContent, this.settings.outputDir, fileName, this.settings.extension, logger);
     }

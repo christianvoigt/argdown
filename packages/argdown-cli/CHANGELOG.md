@@ -1,3 +1,17 @@
+## 0.8.0
+
+### Breaking Changes
+
+ - Renamed the `argdown dot` command to `argdown map`
+
+#### Major Changes
+
+ - Png export of Graphviz maps (using PhantomJs)
+
+#### Bug fixes
+
+ - Fixes pdf filenames if input globs are used
+
 ## 0.7.0 (02-21-2018)
 
 #### Breaking Changes

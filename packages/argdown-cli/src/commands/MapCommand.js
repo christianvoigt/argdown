@@ -1,6 +1,6 @@
 import {app} from '../index.js';
 
-export const command = 'dot [inputGlob] [outputDir]';
+export const command = 'map [inputGlob] [outputDir]';
 export const desc = 'export Argdown input as DOT files';
 export const builder = {
   logParserErrors: {
@@ -68,8 +68,18 @@ export const builder = {
   format: {
     alias: 'f',
     type: 'string',
-    describe: 'the file format (.dot, .svg, .pdf)',
+    describe: 'the file format (dot, svg, pdf, png)',
     default: 'pdf'
+  },
+  width: {
+      alias: 'w',
+      type: 'number',
+      describe: 'the width of the png image (only used if format is png)'
+  },
+  height: {
+    alias: 'h',
+    type: 'number',
+    describe: 'the height of the png image (only used if format is png)'
   }
 };
 export const handler = function(argv){
@@ -79,7 +89,15 @@ export const handler = function(argv){
   config.map = config.map ||config.MapMaker ||{};
   const format = argv.format || 'pdf';
   if(format === 'pdf'){
-    config.svgToPdf = config.svgToPdf ||config.SvgToPdfExport ||{};
+    config.svgToPdf = config.svgToPdf ||config.SvgToPdfExportPlugin ||{};
+  }else if(format === 'png'){
+      config.svgToPng = config.svgToPng || config.SvgToPngExportPlugin || {};
+      if(argv.width){
+          config.svgToPng.width = argv.width;
+      }
+      if(argv.height){
+          config.svgToPng.height = argv.height;
+      }
   }else{
     config.saveAs = config.saveAs ||config.SaveAsFilePlugin ||{};
   }
@@ -132,6 +150,8 @@ export const handler = function(argv){
   if(argv.outputDir){
     if(format === 'pdf'){
       config.svgToPdf.outputDir = argv.outputDir;
+    }else if(format === 'png'){
+        config.svgToPng.outputDir = argv.outputDir;        
     }else{
       config.saveAs.outputDir = argv.outputDir;
     }
@@ -151,8 +171,10 @@ export const handler = function(argv){
   if(!argv.stdout || argv.outputDir){
     if(format === 'dot'){
       config.process.push('save-as-dot');
-    }else if(format === 'svg'){
-      config.process.push('save-svg-as-svg');
+    } else if (format === 'svg') {
+        config.process.push('save-svg-as-svg');
+    } else if (format === 'png') {
+        config.process.push('save-svg-as-png');
     }else{
       config.process.push('save-svg-as-pdf');
     }
@@ -161,7 +183,7 @@ export const handler = function(argv){
   if(argv.stdout){
     if(format === 'dot'){
       config.process.push('stdout-dot');
-    }else{ // pdf to stdout is currently not supported
+    }else{ // pdf and png to stdout is currently not supported
       config.process.push('stdout-svg');
     }
   }
