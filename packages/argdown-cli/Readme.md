@@ -8,10 +8,10 @@ For more information about the Argdown argumentation syntax, visit the [Argdown 
 
 Current features of argdown-cli:
 
-  - export text document to html with `argdown html`
-  - export argument map to pdf, png, svg or dot  with `argdown map`
-  - export data to json with `argdown json`
-  - use `argdown` with an `argdown.config.json` file for more complex operations
+*   export text document to html with `argdown html`
+*   export argument map to pdf, png, svg or dot with `argdown map`
+*   export data to json with `argdown json`
+*   use `argdown` with an `argdown.config.json` file for more complex operations
 
 ## Installation
 
@@ -21,15 +21,17 @@ If you have not already done so, please [install node.js and npm](https://docs.n
 npm install -g argdown-cli
 ```
 
+This library requires a node version of 7.6.0 or newer.
+
 ## Available commands
 
 Available commands:
 
-  - `argdown html [input glob] [output folder]`: exports the input files as html files into the output folder.
-  - `argdown map [input glob] [output folder]`: exports argument maps layouted with Graphviz. By default the maps are saved as pdf files. Use `--format png` to png files, `--format svg` to save svg files and `--format dot` to save dot files. If you export a png image, you can specify its dimensions by using `argdown map -f png --width=1000 --height=800`. Pngs are created by using the PhantomJS virtual browser, so this might take a while.
-  - `argdown json [input glob] [output folder]`: exports the input files as .json files into the output folder.
-  - `argdown compile [input glob] [output folder]`: compiles the input files with included files into new .argdown files.
-  
+*   `argdown html [input glob] [output folder]`: exports the input files as html files into the output folder.
+*   `argdown map [input glob] [output folder]`: exports argument maps layouted with Graphviz. By default the maps are saved as pdf files. Use `--format png` to png files, `--format svg` to save svg files and `--format dot` to save dot files. If you export a png image, you can specify its dimensions by using `argdown map -f png --width=1000 --height=800`. Pngs are created by using the PhantomJS virtual browser, so this might take a while.
+*   `argdown json [input glob] [output folder]`: exports the input files as .json files into the output folder.
+*   `argdown compile [input glob] [output folder]`: compiles the input files with included files into new .argdown files.
+
 All commands can be used with the `-w` option: The cli will then watch your .argdown files continuously for changes and export them instantly.
 
 The input files can specified with wildcards if they are put in quotes (e.g. `argdown html './**/*.argdown'`).
@@ -42,23 +44,23 @@ For more information use the `--help` option with each command.
 
 You can include 'partial' Argdown files in other Argdown files by using the following syntax:
 
-````
+```
 Some Argdown content ...
 
 @include(_my-argdown-partial.argdown)
 
 Some more Argdown content ...
-````
+```
 
 This will even work recursively as long as you don't try to include an Argdown file that has already been included before.
 
 Argdown-Cli will then compile the different Argdown files into one before starting the parsing process. You can also save the result of this compilation by using the `argdown compile` command.
 
-Please note that the line numbers of error messages will always refer to lines in the compiled argdown document, not to lines in the original files. 
+Please note that the line numbers of error messages will always refer to lines in the compiled argdown document, not to lines in the original files.
 
 ## Partials
 
-You can include any Argdown file in another Argdown file. However, it is recommended to only include 'partials' in other files. An Argdown file is treated as a partial if its name starts with an underscore. Except in @import statements partials are ignored by argdown-cli. 
+You can include any Argdown file in another Argdown file. However, it is recommended to only include 'partials' in other files. An Argdown file is treated as a partial if its name starts with an underscore. Except in @import statements partials are ignored by argdown-cli.
 
 This naming convention makes it possible to have a main .argdown file and several partials in the same folder without having to specify which files should be processed or ignored by the commands of argdown-cli.
 

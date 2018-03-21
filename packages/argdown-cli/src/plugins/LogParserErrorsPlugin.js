@@ -14,16 +14,16 @@ class LogParserErrorsPlugin {
         this.name = "LogParserErrorsPlugin";
         this.config = config;
     }
-    run(data, logger) {
-        if (data.parserErrors && data.parserErrors.length > 0) {
-            const inputFile = data.inputFile;
-            const nrOfErrors = data.parserErrors.length;
+    run(request, response, logger) {
+        if (response.parserErrors && response.parserErrors.length > 0) {
+            const inputFile = request.inputFile;
+            const nrOfErrors = response.parserErrors.length;
             if(inputFile){
                 logger.log("error", `\u001b[31m\u001b[1mArgdown syntax errors in ${inputFile}: ${nrOfErrors}\u001b[0m\n`);
             }else{
                 logger.log("error", `\u001b[31m\u001b[1mArgdown syntax errors in input: ${nrOfErrors}\u001b[0m\n`);
             }
-            for (let error of data.parserErrors) {
+            for (let error of response.parserErrors) {
                 const message = error.message;
                 var startLine, startColumn;
                 if(error.token.tokenType === ArgdownLexer.EOF){ // This is an EarlyExitError. EOF does not have a token location, but EarlyExitErrors save the previousToken parsed
@@ -39,7 +39,7 @@ class LogParserErrorsPlugin {
                 logger.log("error", `\u001b[31mAt ${startLine}:${startColumn}\u001b[0m\n${message}\n`);
             }
         }
-        return data;
+        return response;
     }
 }
 module.exports = {

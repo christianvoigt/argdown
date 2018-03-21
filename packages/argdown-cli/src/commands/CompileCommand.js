@@ -8,7 +8,7 @@ export const handler = function(argv){
   let config = app.loadConfig(argv.config);
   
   if(argv.inputGlob){
-    config.input = argv.inputGlob;
+    config.inputPath = argv.inputGlob;
   }
   config.saveAs = config.saveAs ||config.SaveAsFilePlugin ||{};
   if(argv.outputDir){
@@ -24,6 +24,5 @@ export const handler = function(argv){
   if(argv.stdout){
     config.process.push('stdout-argdown');
   }
-  
-  app.load(config);  
+  app.load(config).catch(e => console.log(e));  
 } 

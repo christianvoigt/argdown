@@ -1,4 +1,13 @@
 {
-  "presets": ["es2016", "es2015"],
-  "ignore": ["src/pdfkit.js"]
+    "presets": [
+        [
+            "env",
+            {
+                "targets": {
+                    "node": "current"
+                }
+            }
+        ]
+    ],
+    "ignore": ["src/pdfkit.js"]
 }
