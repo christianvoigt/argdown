@@ -7,9 +7,9 @@ exports.handler = exports.builder = exports.desc = exports.command = undefined;
 
 var _index = require('../index.js');
 
-var command = exports.command = 'map [inputGlob] [outputDir]';
-var desc = exports.desc = 'export Argdown input as DOT files';
-var builder = exports.builder = {
+const command = exports.command = 'map [inputGlob] [outputDir]';
+const desc = exports.desc = 'export Argdown input as DOT files';
+const builder = exports.builder = {
   logParserErrors: {
     alias: 'e',
     describe: 'Log parser errors to console',
@@ -89,12 +89,12 @@ var builder = exports.builder = {
     describe: 'the height of the png image (only used if format is png)'
   }
 };
-var handler = exports.handler = function handler(argv) {
-  var config = _index.app.loadConfig(argv.config);
+const handler = exports.handler = function (argv) {
+  let config = _index.app.loadConfig(argv.config);
 
   config.dot = config.dot || config.DotExport || {};
   config.map = config.map || config.MapMaker || {};
-  var format = argv.format || 'pdf';
+  const format = argv.format || 'pdf';
   if (format === 'pdf') {
     config.svgToPdf = config.svgToPdf || config.SvgToPdfExportPlugin || {};
   } else if (format === 'png') {
@@ -151,7 +151,7 @@ var handler = exports.handler = function handler(argv) {
   }
 
   if (argv.inputGlob) {
-    config.input = argv.inputGlob;
+    config.inputPath = argv.inputGlob;
   }
   if (argv.outputDir) {
     if (format === 'pdf') {
@@ -194,6 +194,6 @@ var handler = exports.handler = function handler(argv) {
       config.process.push('stdout-svg');
     }
   }
-  _index.app.load(config);
+  _index.app.load(config).catch(e => console.log(e));
 };
 //# sourceMappingURL=MapCommand.js.map

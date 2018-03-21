@@ -145,7 +145,7 @@ export const handler = function(argv){
 
   
   if(argv.inputGlob){
-    config.input = argv.inputGlob;
+    config.inputPath = argv.inputGlob;
   }
   if(argv.outputDir){
     if(format === 'pdf'){
@@ -187,5 +187,5 @@ export const handler = function(argv){
       config.process.push('stdout-svg');
     }
   }
-  app.load(config);  
+  app.load(config).catch(e => console.log(e));  
 } 

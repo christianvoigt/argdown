@@ -7,14 +7,14 @@ exports.handler = exports.builder = exports.desc = exports.command = undefined;
 
 var _index = require('../index.js');
 
-var command = exports.command = 'compile [inputGlob] [outputDir]';
-var desc = exports.desc = 'compile included Argdown files into main file';
-var builder = exports.builder = {};
-var handler = exports.handler = function handler(argv) {
-  var config = _index.app.loadConfig(argv.config);
+const command = exports.command = 'compile [inputGlob] [outputDir]';
+const desc = exports.desc = 'compile included Argdown files into main file';
+const builder = exports.builder = {};
+const handler = exports.handler = function (argv) {
+  let config = _index.app.loadConfig(argv.config);
 
   if (argv.inputGlob) {
-    config.input = argv.inputGlob;
+    config.inputPath = argv.inputGlob;
   }
   config.saveAs = config.saveAs || config.SaveAsFilePlugin || {};
   if (argv.outputDir) {
@@ -30,7 +30,6 @@ var handler = exports.handler = function handler(argv) {
   if (argv.stdout) {
     config.process.push('stdout-argdown');
   }
-
-  _index.app.load(config);
+  _index.app.load(config).catch(e => console.log(e));
 };
 //# sourceMappingURL=CompileCommand.js.map

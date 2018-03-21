@@ -21,49 +21,52 @@ class SvgToPngExportPlugin {
         this.name = "SvgToPngExportPlugin";
         this.config = config;
     }
-    run(data, logger) {
-        if (data.config) {
-            if (data.config.svgToPng) {
-                this.config = data.config.svgToPng;
-            } else if (data.config.SvgToPngExportPlugin) {
-                this.config = data.config.SvgToPngExportPlugin;
-            }
+    async runAsync(request, response, logger) {
+        if (request.svgToPng) {
+            this.config = request.svgToPng;
+        } else if (request.SvgToPngExportPlugin) {
+            this.config = request.SvgToPngExportPlugin;
         }
-        if (!data.svg) {
-            return data;
+        if (!response.svg) {
+            return response;
         }
         let fileName = 'default';
         if (_.isFunction(this.settings.fileName)) {
-            fileName = this.settings.fileName.call(this, data);
+            fileName = this.settings.fileName.call(this, request, response);
         } else if (_.isString(this.settings.fileName)) {
             fileName = this.settings.fileName;
-        } else if (data.inputFile) {
-            fileName = this.getFileName(data.inputFile);
+        } else if (request.inputPath) {
+            fileName = this.getFileName(request.inputPath);
         }
         const absoluteOutputDir = path.resolve(process.cwd(), this.settings.outputDir);
         const filePath = absoluteOutputDir + '/' + fileName + '.png';
         const settings = this.settings;
-        mkdirp(absoluteOutputDir, function (err) {
-            if (err) {
-                logger.log("error", err);
-            } else {
-                const options = {};
-                if(settings.width){
-                    options.width = settings.width;
+        await new Promise((resolve, reject)=>{
+            mkdirp(absoluteOutputDir, function (err) {
+                if (err) {
+                    reject(err);
                 }
-                if(settings.height){
-                    options.height = settings.height;
-                }
-                const outputBuffer = svg2png.sync(data.svg, options);
-                fs.writeFile(filePath, outputBuffer, function (err) {
-                    if (err) {
-                        logger.log("error", err);
-                    }
-                    logger.log("verbose", "Saved " + filePath);
-                });
-            }
+                resolve();
+            });
         });
-        return data;
+        const options = {};
+        if (settings.width) {
+            options.width = settings.width;
+        }
+        if (settings.height) {
+            options.height = settings.height;
+        }
+        const outputBuffer = await svg2png(response.svg, options);
+        await new Promise((resolve, reject)=>{
+            fs.writeFile(filePath, outputBuffer, function (err) {
+                if (err) {
+                    reject(err);
+                }
+                logger.log("verbose", "Saved " + filePath);
+                resolve();
+            });
+        });
+        return response;
     }
     getFileName(file) {
         let extension = path.extname(file);

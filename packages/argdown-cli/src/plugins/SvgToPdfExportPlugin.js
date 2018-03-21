@@ -22,39 +22,65 @@ class SvgToPdfExportPlugin {
         this.name = "SvgToPdfExportPlugin";
         this.config = config;
     }
-    run(data, logger) {
-        if (data.config) {
-            if (data.config.svgToPdf) {
-                this.config = data.config.svgToPdf;
-            } else if (data.config.SvgToPdfExportPlugin) {
-                this.config = data.config.SvgToPdfExportPlugin;
-            }
+    async runAsync(request, response) {
+        if (request.svgToPdf) {
+            this.config = request.svgToPdf;
+        } else if (request.SvgToPdfExportPlugin) {
+            this.config = request.SvgToPdfExportPlugin;
         }
-        if (!data.svg) {
-            return data;
+        if (!response.svg) {
+            return response;
         }
         let fileName = 'default';
         if (_.isFunction(this.settings.fileName)) {
-            fileName = this.settings.fileName.call(this, data);
+            fileName = this.settings.fileName.call(this, request, response);
         } else if (_.isString(this.settings.fileName)) {
             fileName = this.settings.fileName;
-        } else if (data.inputFile) {
-            fileName = this.getFileName(data.inputFile);
+        } else if (request.inputPath) {
+            fileName = this.getFileName(request.inputPath);
         }
         const absoluteOutputDir = path.resolve(process.cwd(), this.settings.outputDir);
         const filePath = absoluteOutputDir + '/' + fileName + '.pdf';
         const settings = this.settings;
-        mkdirp(absoluteOutputDir, function (err) {
-            if (err) {
-                logger.log("error", err);
-            } else {
-                var doc = new PDFDocument(settings);
-                doc.pipe(fs.createWriteStream(filePath));
-                SVGtoPDF(doc, data.svg, 0, 0, settings);
-                doc.end();
-            }
+        await new Promise((resolve, reject)=>{
+            mkdirp(absoluteOutputDir, function (err) {
+                if (err) {
+                    reject(err);
+                }
+                resolve();
+            });
         });
-        return data;
+        var doc = new PDFDocument(settings);
+        SVGtoPDF(doc, response.svg, 0, 0, settings);
+        await this.savePdfToFile(doc, filePath);
+        return response;
+    }
+    // https://github.com/devongovett/pdfkit/issues/265
+    async savePdfToFile(pdf, fileName) {
+        return new Promise((resolve) => {
+
+            // To determine when the PDF has finished being written successfully 
+            // we need to confirm the following 2 conditions:
+            //
+            //   1. The write stream has been closed
+            //   2. PDFDocument.end() was called syncronously without an error being thrown
+
+            let pendingStepCount = 2;
+
+            const stepFinished = () => {
+                if (--pendingStepCount == 0) {
+                    resolve();
+                }
+            };
+
+            const writeStream = fs.createWriteStream(fileName);
+            writeStream.on('close', stepFinished);
+            pdf.pipe(writeStream);
+
+            pdf.end();
+
+            stepFinished();
+        });
     }
     getFileName(file) {
         let extension = path.extname(file);

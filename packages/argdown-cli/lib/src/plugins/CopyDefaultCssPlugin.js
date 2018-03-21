@@ -1,75 +1,64 @@
-'use strict';
+"use strict";
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _lodash = require('lodash');
+var _lodash = require("lodash");
 
 var _ = _interopRequireWildcard(_lodash);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+let fs = require("fs");
+let path = require("path");
+let mkdirp = require("mkdirp");
 
-var fs = require('fs');
-var path = require('path');
-var mkdirp = require('mkdirp');
 
-var CopyDefaultCssPlugin = function () {
-  _createClass(CopyDefaultCssPlugin, [{
-    key: 'config',
-    set: function set(config) {
-      var previousSettings = this.settings;
-      if (!previousSettings) {
-        previousSettings = {
-          outputDir: "./html"
-        };
-      }
-      this.settings = _.defaultsDeep({}, config, previousSettings);
+class CopyDefaultCssPlugin {
+  set config(config) {
+    let previousSettings = this.settings;
+    if (!previousSettings) {
+      previousSettings = {
+        outputDir: "./html"
+      };
     }
-  }]);
-
-  function CopyDefaultCssPlugin(config) {
-    _classCallCheck(this, CopyDefaultCssPlugin);
-
+    this.settings = _.defaultsDeep({}, config, previousSettings);
+  }
+  constructor(config) {
     this.name = "CopyDefaultCssPlugin";
     this.config = config;
   }
-
-  _createClass(CopyDefaultCssPlugin, [{
-    key: 'run',
-    value: function run(data, logger) {
-      if (data.config && data.config.saveAs && data.config.saveAs.outputDir) {
-        this.config = {
-          outputDir: data.config.saveAs.outputDir
-        };
-      }
-      var $ = this;
-      var rootPath = data.config.rootPath || process.cwd();
-      var absoluteOutputDir = path.resolve(rootPath, $.settings.outputDir);
+  async runAsync(request, response, logger) {
+    if (request.html && request.html.outputDir) {
+      this.config = {
+        outputDir: request.html.outputDir
+      };
+    } else if (request.saveAs && request.saveAs.outputDir) {
+      this.config = {
+        outputDir: request.saveAs.outputDir
+      };
+    }
+    const $ = this;
+    let rootPath = request.rootPath || process.cwd();
+    let absoluteOutputDir = path.resolve(rootPath, $.settings.outputDir);
+    await new Promise((resolve, reject) => {
       mkdirp(absoluteOutputDir, function (err) {
         if (err) {
-          logger.log("error", err);
+          reject(err);
         }
-        logger.log("verbose", "Copying default argdown.css to folder: " + absoluteOutputDir);
-        var pathToDefaultCssFile = require.resolve('argdown-parser/lib/src/plugins/argdown.css');
-        $.copySync(pathToDefaultCssFile, path.resolve(absoluteOutputDir, "argdown.css"));
+        resolve();
       });
-    }
-  }, {
-    key: 'copySync',
-    value: function copySync(src, dest) {
-      if (!fs.existsSync(src)) {
-        return false;
-      }
-
-      var data = fs.readFileSync(src, 'utf-8');
-      fs.writeFileSync(dest, data);
-    }
-  }]);
-
-  return CopyDefaultCssPlugin;
-}();
-
+    });
+    let pathToDefaultCssFile = require.resolve("argdown-parser/lib/src/plugins/argdown.css");
+    logger.log("verbose", "Copying default argdown.css to folder: " + absoluteOutputDir);
+    const { COPYFILE_EXCL } = fs.constants;
+    await new Promise((resolve, reject) => {
+      fs.copyFile(pathToDefaultCssFile, path.resolve(absoluteOutputDir, "argdown.css"), COPYFILE_EXCL, err => {
+        if (err) {
+          reject(err);
+        }
+        resolve();
+      });
+    });
+  }
+}
 module.exports = {
   CopyDefaultCssPlugin: CopyDefaultCssPlugin
 };

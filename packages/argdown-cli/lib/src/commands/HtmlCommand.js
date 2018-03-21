@@ -7,9 +7,9 @@ exports.handler = exports.builder = exports.desc = exports.command = undefined;
 
 var _index = require('../index.js');
 
-var command = exports.command = 'html [inputGlob] [outputDir]';
-var desc = exports.desc = 'export Argdown input as HTML files';
-var builder = exports.builder = {
+const command = exports.command = 'html [inputGlob] [outputDir]';
+const desc = exports.desc = 'export Argdown input as HTML files';
+const builder = exports.builder = {
   logParserErrors: {
     alias: 'e',
     describe: 'Log parser errors to console',
@@ -47,8 +47,8 @@ var builder = exports.builder = {
     type: 'string'
   }
 };
-var handler = exports.handler = function handler(argv) {
-  var config = _index.app.loadConfig(argv.config);
+const handler = exports.handler = function (argv) {
+  let config = _index.app.loadConfig(argv.config);
 
   config.html = config.html || config.HtmlExport || {};
 
@@ -60,7 +60,7 @@ var handler = exports.handler = function handler(argv) {
   }
 
   if (argv.inputGlob) {
-    config.input = argv.inputGlob;
+    config.inputPath = argv.inputGlob;
   }
   config.saveAs = config.saveAs || config.SaveAsFilePlugin || {};
   if (argv.outputDir) {
@@ -90,6 +90,6 @@ var handler = exports.handler = function handler(argv) {
     config.process.push('stdout-html');
   }
 
-  _index.app.load(config);
+  _index.app.load(config).catch(e => console.log(e));
 };
 //# sourceMappingURL=HtmlCommand.js.map

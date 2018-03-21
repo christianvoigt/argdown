@@ -39,7 +39,7 @@ export const handler = function(argv){
   }
   
   if(argv.inputGlob){
-    config.input = argv.inputGlob;
+    config.inputPath = argv.inputGlob;
   }
   config.saveAs = config.saveAs ||config.SaveAsFilePlugin ||{};
   if(argv.outputDir){
@@ -63,5 +63,5 @@ export const handler = function(argv){
     config.process.push('stdout-json');
   }
   
-  app.load(config);  
+  app.load(config).catch(e => console.log(e));
 } 

@@ -1,101 +1,109 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
-exports.LogParserErrorsPlugin = exports.SvgToPngExportPlugin = exports.SvgToPdfExportPlugin = exports.SaveAsFilePlugin = exports.CopyDefaultCssPlugin = exports.app = undefined;
+exports.LogParserErrorsPlugin = exports.SvgToPngExportPlugin = exports.SvgToPdfExportPlugin = exports.SaveAsFilePlugin = exports.CopyDefaultCssPlugin = exports.app = exports.AsyncArgdownApplication = undefined;
 
-var _argdownParser = require('argdown-parser');
+var _AsyncArgdownApplication = require("./AsyncArgdownApplication.js");
 
-var _argdownMapMaker = require('argdown-map-maker');
+var _argdownParser = require("argdown-parser");
 
-var _SaveAsFilePlugin = require('./plugins/SaveAsFilePlugin.js');
+var _argdownMapMaker = require("argdown-map-maker");
 
-var _SvgToPdfExportPlugin = require('./plugins/SvgToPdfExportPlugin.js');
+var _SaveAsFilePlugin = require("./plugins/SaveAsFilePlugin.js");
 
-var _SvgToPngExportPlugin = require('./plugins/SvgToPngExportPlugin.js');
+var _SvgToPdfExportPlugin = require("./plugins/SvgToPdfExportPlugin.js");
 
-var _CopyDefaultCssPlugin = require('./plugins/CopyDefaultCssPlugin.js');
+var _SvgToPngExportPlugin = require("./plugins/SvgToPngExportPlugin.js");
 
-var _LogParserErrorsPlugin = require('./plugins/LogParserErrorsPlugin.js');
+var _CopyDefaultCssPlugin = require("./plugins/CopyDefaultCssPlugin.js");
 
-var _StdOutPlugin = require('./plugins/StdOutPlugin.js');
+var _LogParserErrorsPlugin = require("./plugins/LogParserErrorsPlugin.js");
 
-var _IncludePlugin = require('./plugins/IncludePlugin.js');
+var _StdOutPlugin = require("./plugins/StdOutPlugin.js");
 
-var _lodash = require('lodash');
+var _IncludePlugin = require("./plugins/IncludePlugin.js");
+
+var _lodash = require("lodash");
 
 var _ = _interopRequireWildcard(_lodash);
 
+var _fs = require("fs");
+
+var _fs2 = _interopRequireDefault(_fs);
+
+var _util = require("util");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-var glob = require('glob');
-var fs = require('fs');
-var path = require('path');
-var chokidar = require('chokidar');
-var requireUncached = require("require-uncached");
+const readFile = (0, _util.promisify)(_fs2.default.readFile);
 
-var app = new _argdownParser.ArgdownApplication();
-var includePlugin = new _IncludePlugin.IncludePlugin();
-var parserPlugin = new _argdownParser.ParserPlugin();
-var logParserErrorsPlugin = new _LogParserErrorsPlugin.LogParserErrorsPlugin();
-var modelPlugin = new _argdownParser.ModelPlugin();
-var htmlExport = new _argdownParser.HtmlExport();
-var tagPlugin = new _argdownParser.TagPlugin();
-var mapMaker = new _argdownMapMaker.MapMaker();
-var dotExport = new _argdownMapMaker.DotExport();
-var argmlExport = new _argdownMapMaker.ArgMLExport();
-var jsonExport = new _argdownParser.JSONExport();
-var saveAsHtml = new _SaveAsFilePlugin.SaveAsFilePlugin({
-  outputDir: './html',
-  dataKey: 'html',
-  extension: '.html'
-});
-var copyDefaultCss = new _CopyDefaultCssPlugin.CopyDefaultCssPlugin();
-var dotToSvgExport = new _argdownMapMaker.DotToSvgExport();
-var saveSvgAsSvg = new _SaveAsFilePlugin.SaveAsFilePlugin({
-  outputDir: './svg',
-  dataKey: 'svg',
-  extension: '.svg'
-});
-var saveSvgAsPdf = new _SvgToPdfExportPlugin.SvgToPdfExportPlugin();
-var saveSvgAsPng = new _SvgToPngExportPlugin.SvgToPngExportPlugin();
+let glob = require("glob");
+let path = require("path");
+let chokidar = require("chokidar");
+let requireUncached = require("require-uncached");
 
-var saveAsDot = new _SaveAsFilePlugin.SaveAsFilePlugin({
-  outputDir: './dot',
-  dataKey: 'dot',
-  extension: '.dot'
+const app = new _AsyncArgdownApplication.AsyncArgdownApplication();
+const includePlugin = new _IncludePlugin.IncludePlugin();
+const parserPlugin = new _argdownParser.ParserPlugin();
+const logParserErrorsPlugin = new _LogParserErrorsPlugin.LogParserErrorsPlugin();
+const modelPlugin = new _argdownParser.ModelPlugin();
+const htmlExport = new _argdownParser.HtmlExport();
+const tagPlugin = new _argdownParser.TagPlugin();
+const mapMaker = new _argdownMapMaker.MapMaker();
+const dotExport = new _argdownMapMaker.DotExport();
+const jsonExport = new _argdownParser.JSONExport();
+const saveAsHtml = new _SaveAsFilePlugin.SaveAsFilePlugin({
+    outputDir: "./html",
+    dataKey: "html",
+    extension: ".html"
 });
-var saveAsArgML = new _SaveAsFilePlugin.SaveAsFilePlugin({
-  outputDir: './graphml',
-  dataKey: 'argml',
-  extension: '.graphml'
+const copyDefaultCss = new _CopyDefaultCssPlugin.CopyDefaultCssPlugin();
+const dotToSvgExport = new _argdownMapMaker.DotToSvgExport();
+const saveSvgAsSvg = new _SaveAsFilePlugin.SaveAsFilePlugin({
+    outputDir: "./svg",
+    dataKey: "svg",
+    extension: ".svg"
 });
-var saveAsJSON = new _SaveAsFilePlugin.SaveAsFilePlugin({
-  outputDir: './json',
-  dataKey: 'json',
-  extension: '.json'
-});
-var saveAsArgdown = new _SaveAsFilePlugin.SaveAsFilePlugin({
-  outputDir: './compiled',
-  dataKey: 'input',
-  extension: '.argdown'
-});
-var stdoutDot = new _StdOutPlugin.StdOutPlugin({ dataKey: 'dot' });
-var stdoutSvg = new _StdOutPlugin.StdOutPlugin({ dataKey: 'svg' });
-var stdoutArgML = new _StdOutPlugin.StdOutPlugin({ dataKey: 'argml' });
-var stdoutJSON = new _StdOutPlugin.StdOutPlugin({ dataKey: 'json' });
-var stdoutHtml = new _StdOutPlugin.StdOutPlugin({ dataKey: 'html' });
-var stdoutArgdown = new _StdOutPlugin.StdOutPlugin({ dataKey: 'input' });
+const saveSvgAsPdf = new _SvgToPdfExportPlugin.SvgToPdfExportPlugin();
+const saveSvgAsPng = new _SvgToPngExportPlugin.SvgToPngExportPlugin();
 
-app.addPlugin(includePlugin, 'preprocessor');
-app.addPlugin(parserPlugin, 'parse-input');
+const saveAsDot = new _SaveAsFilePlugin.SaveAsFilePlugin({
+    outputDir: "./dot",
+    dataKey: "dot",
+    extension: ".dot"
+});
+const saveAsJSON = new _SaveAsFilePlugin.SaveAsFilePlugin({
+    outputDir: "./json",
+    dataKey: "json",
+    extension: ".json"
+});
+const saveAsArgdown = new _SaveAsFilePlugin.SaveAsFilePlugin({
+    outputDir: "./compiled",
+    dataKey: "input",
+    extension: ".argdown",
+    isRequestData: true
+});
+const stdoutDot = new _StdOutPlugin.StdOutPlugin({ dataKey: "dot" });
+const stdoutSvg = new _StdOutPlugin.StdOutPlugin({ dataKey: "svg" });
+const stdoutJSON = new _StdOutPlugin.StdOutPlugin({ dataKey: "json" });
+const stdoutHtml = new _StdOutPlugin.StdOutPlugin({ dataKey: "html" });
+const stdoutArgdown = new _StdOutPlugin.StdOutPlugin({
+    dataKey: "input",
+    isRequestData: true
+});
+
+app.addPlugin(includePlugin, "preprocessor");
+app.addPlugin(parserPlugin, "parse-input");
 app.addPlugin(logParserErrorsPlugin, "log-parser-errors");
 app.addPlugin(modelPlugin, "build-model");
 app.addPlugin(tagPlugin, "build-model");
 
-app.addPlugin(stdoutArgdown, 'stdout-argdown');
-app.addPlugin(saveAsArgdown, 'save-as-argdown');
+app.addPlugin(stdoutArgdown, "stdout-argdown");
+app.addPlugin(saveAsArgdown, "save-as-argdown");
 
 app.addPlugin(htmlExport, "export-html");
 app.addPlugin(copyDefaultCss, "copy-default-css");
@@ -111,89 +119,69 @@ app.addPlugin(mapMaker, "export-dot");
 app.addPlugin(dotExport, "export-dot");
 app.addPlugin(saveAsDot, "save-as-dot");
 app.addPlugin(stdoutDot, "stdout-dot");
-app.addPlugin(dotToSvgExport, 'export-svg');
-app.addPlugin(saveSvgAsSvg, 'save-svg-as-svg');
-app.addPlugin(stdoutSvg, 'stdout-svg');
-app.addPlugin(saveSvgAsPdf, 'save-svg-as-pdf');
-app.addPlugin(saveSvgAsPng, 'save-svg-as-png');
+app.addPlugin(dotToSvgExport, "export-svg");
+app.addPlugin(saveSvgAsSvg, "save-svg-as-svg");
+app.addPlugin(stdoutSvg, "stdout-svg");
+app.addPlugin(saveSvgAsPdf, "save-svg-as-pdf");
+app.addPlugin(saveSvgAsPng, "save-svg-as-png");
 
-app.addPlugin(mapMaker, "export-argml");
-app.addPlugin(argmlExport, "export-argml");
-app.addPlugin(saveAsArgML, "save-as-argml");
-app.addPlugin(stdoutArgML, "stdout-argml");
+app.load = async function (config) {
+    const request = _.defaults({}, config);
+    const inputGlob = request.inputPath || "./*.argdown";
+    const ignoreFiles = request.ignore || ["**/_*", // Exclude files starting with '_'.
+    "**/_*/**" // Exclude entire directories starting with '_'.
+    ];
+    if (!request.rootPath) {
+        request.rootPath = process.cwd();
+    }
+    if (request.logLevel) {
+        app.logger.setLevel(request.logLevel);
+    }
 
-app.load = function (config) {
-  var inputGlob = config.input || './*.argdown';
-  var ignoreFiles = config.ignore || ['**/_*', // Exclude files starting with '_'.
-  '**/_*/**' // Exclude entire directories starting with '_'.
-  ];
-  var options = {};
-  if (ignoreFiles) {
-    options.ignore = ignoreFiles;
-  }
-  if (!config.rootPath) {
-    config.rootPath = process.cwd();
-  }
+    const $ = this;
+    let absoluteInputGlob = path.resolve(request.rootPath, inputGlob);
+    const loadOptions = {};
+    if (ignoreFiles) {
+        loadOptions.ignore = ignoreFiles;
+    }
+    if (request.watch) {
+        const watcher = chokidar.watch(absoluteInputGlob, loadOptions);
+        const watcherRequest = _.cloneDeep(request);
+        watcherRequest.watch = false;
 
-  var $ = this;
-  var absoluteInputGlob = path.resolve(config.rootPath, inputGlob);
-  if (config.watch) {
-    var watcher = chokidar.watch(absoluteInputGlob, options);
-    var watcherConfig = _.cloneDeep(config);
-    watcherConfig.watch = false;
-
-    watcher.on('add', function (path) {
-      app.logger.log("verbose", 'File ' + path + ' has been added.');
-      watcherConfig.input = path;
-      $.load(watcherConfig);
-    }).on('change', function (path) {
-      app.logger.log("verbose", 'File ' + path + ' has been changed.');
-      watcherConfig.input = path;
-      $.load(watcherConfig);
-    }).on('unlink', function (path) {
-      app.logger.log("verbose", 'File ' + path + ' has been removed.');
-    });
-  } else {
-    glob(absoluteInputGlob, options, function (er, files) {
-      if (er) {
-        app.logger.log("error", er);
-        return;
-      } else {
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-          for (var _iterator = files[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var file = _step.value;
-
-            app.logger.log("verbose", "Processing file: " + file);
-            try {
-              var input = fs.readFileSync(file, 'utf8');
-              config.saveAs = config.saveAs || {};
-              config.saveAs.sourceFile = file;
-              $.run({ input: input, inputFile: file, config: config });
-            } catch (e) {
-              app.logger.log("error", e);
-            }
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
-              _iterator.return();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
+        watcher.on("add", path => {
+            app.logger.log("verbose", `File ${path} has been added.`);
+            watcherRequest.inputPath = path;
+            $.load(loadOptions);
+        }).on("change", path => {
+            app.logger.log("verbose", `File ${path} has been changed.`);
+            watcherRequest.inputPath = path;
+            $.load(loadOptions);
+        }).on("unlink", path => {
+            app.logger.log("verbose", `File ${path} has been removed.`);
+        });
+    } else {
+        let files = await new Promise((resolve, reject) => {
+            glob(absoluteInputGlob, loadOptions, function (er, files) {
+                if (er) {
+                    reject(er);
+                }
+                resolve(files);
+            });
+        });
+        const promises = [];
+        for (let file of files) {
+            app.logger.log("verbose", "Reading file: " + file);
+            promises.push(readFile(file, "utf8").then(input => {
+                app.logger.log("verbose", "Reading file completed, starting processing: " + file);
+                const requestForFile = _.clone(request);
+                requestForFile.input = input;
+                requestForFile.inputPath = file;
+                return $.runAsync(requestForFile);
+            }));
         }
-      }
-    });
-  }
+        await Promise.all(promises);
+    }
 };
 
 /**
@@ -205,32 +193,33 @@ app.load = function (config) {
  * @private
  */
 app.loadJSFile = function loadJSFile(filePath) {
-  var absoluteFilePath = path.resolve(process.cwd(), filePath);
-  try {
-    return requireUncached(absoluteFilePath);
-  } catch (e) {
-    e.message = 'Cannot read file: ' + absoluteFilePath + '\nError: ' + e.message;
-    throw e;
-  }
+    let absoluteFilePath = path.resolve(process.cwd(), filePath);
+    try {
+        return requireUncached(absoluteFilePath);
+    } catch (e) {
+        e.message = `Cannot read file: ${absoluteFilePath}\nError: ${e.message}`;
+        throw e;
+    }
 };
 
 app.loadConfig = function (filePath) {
-  filePath = filePath || './argdown.config.js';
-  var config = {};
-  try {
-    var jsModuleExports = this.loadJSFile(filePath);
-    if (jsModuleExports.config) {
-      config = jsModuleExports.config;
-    } else {
-      // let's try the default export
-      config = jsModuleExports;
+    filePath = filePath || "./argdown.config.js";
+    let config = {};
+    try {
+        let jsModuleExports = this.loadJSFile(filePath);
+        if (jsModuleExports.config) {
+            config = jsModuleExports.config;
+        } else {
+            // let's try the default export
+            config = jsModuleExports;
+        }
+    } catch (e) {
+        app.logger.log("verbose", "No config found: " + e);
     }
-  } catch (e) {
-    app.logger.log("verbose", "No config found: " + e);
-  }
-  return config;
+    return config;
 };
 
+exports.AsyncArgdownApplication = _AsyncArgdownApplication.AsyncArgdownApplication;
 exports.app = app;
 exports.CopyDefaultCssPlugin = _CopyDefaultCssPlugin.CopyDefaultCssPlugin;
 exports.SaveAsFilePlugin = _SaveAsFilePlugin.SaveAsFilePlugin;

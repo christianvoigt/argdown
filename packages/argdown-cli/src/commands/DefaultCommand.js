@@ -7,5 +7,5 @@ export const handler = function(argv){
   config.logLevel = argv.verbose ? "verbose" : config.logLevel;
   config.watch = argv.watch ||config.watch;
   config.logParserErrors = argv.logParserErrors ||config.logParserErrors;
-  app.load(config);
+  app.load(config).catch(e => console.log(e));  
 }
