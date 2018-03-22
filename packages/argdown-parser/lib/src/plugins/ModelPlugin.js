@@ -29,18 +29,18 @@ var RelationObjectTypes = Object.freeze({ STATEMENT: Symbol("STATEMENT"), RECONS
 var ModelPlugin = function () {
   _createClass(ModelPlugin, [{
     key: 'run',
-    value: function run(data, logger) {
-      if (data.config && data.config.model) {
-        this.config = data.config.model;
+    value: function run(request, response) {
+      if (request.model) {
+        this.config = request.model;
       }
 
-      if (this.relations) {
+      if (response.relations) {
         var _iteratorNormalCompletion = true;
         var _didIteratorError = false;
         var _iteratorError = undefined;
 
         try {
-          for (var _iterator = this.relations[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          for (var _iterator = response.relations[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
             var relation = _step.value;
 
             var fromType = this.getElementType(relation.from);
@@ -57,7 +57,7 @@ var ModelPlugin = function () {
               argument.relations.splice(index, 1);
 
               var conclusionStatement = argument.pcs[relation.from.pcs.length - 1];
-              var equivalenceClass = this.statements[conclusionStatement.title];
+              var equivalenceClass = response.statements[conclusionStatement.title];
               //change to relation of main conclusion
               relation.from = equivalenceClass;
 
@@ -98,8 +98,8 @@ var ModelPlugin = function () {
                 var _index = _.indexOf(relation.to.relations, relation);
                 relation.to.relations.splice(_index, 1);
                 //remove relation from relations
-                _index = _.indexOf(this.relations, relation);
-                this.relations.splice(_index, 1);
+                _index = _.indexOf(response.relations, relation);
+                response.relations.splice(_index, 1);
               }
             }
             //Add relation status: "Reconstructed" for statement-to-statement relations, "sketched" for all others
@@ -132,7 +132,7 @@ var ModelPlugin = function () {
         var _iteratorError2 = undefined;
 
         try {
-          for (var _iterator2 = this.relations[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          for (var _iterator2 = response.relations[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
             var _relation = _step2.value;
 
             if (_relation.status == "sketched") {
@@ -160,12 +160,7 @@ var ModelPlugin = function () {
         }
       }
 
-      data.relations = this.relations;
-      data.statements = this.statements;
-      data.arguments = this.arguments;
-      data.sections = this.sections;
-      data.tags = this.tags;
-      return data;
+      return response;
     }
   }, {
     key: 'getElementType',
@@ -219,16 +214,16 @@ var ModelPlugin = function () {
       uniqueTitleCounter++;
       return "Untitled " + uniqueTitleCounter;
     }
-    function getEquivalenceClass(title) {
+    function getEquivalenceClass(response, title) {
       if (!title) {
         return null;
       }
       var ec = null;
-      ec = $.statements[title];
+      ec = response.statements[title];
       if (!ec) {
         ec = new _EquivalenceClass.EquivalenceClass();
         ec.title = title;
-        $.statements[title] = ec;
+        response.statements[title] = ec;
       }
       return ec;
     }
@@ -246,15 +241,15 @@ var ModelPlugin = function () {
     var currentSection = null;
     var sectionCounter = 0;
 
-    function onArgdownEntry(node, parentNode, childIndex, data) {
-      if (data.config && data.config.model) {
-        $.config = data.config.model;
+    function onArgdownEntry(request, response) {
+      if (request.model) {
+        $.config = request.model;
       }
-      $.statements = {};
-      $.arguments = {};
-      $.sections = [];
-      $.relations = [];
-      $.tags = [];
+      response.statements = {};
+      response.arguments = {};
+      response.sections = [];
+      response.relations = [];
+      response.tags = [];
       uniqueTitleCounter = 0;
       currentHeading = null;
       currentSection = null;
@@ -268,7 +263,7 @@ var ModelPlugin = function () {
       inStatementTree = false;
       sectionCounter = 0;
     }
-    function onStatementEntry(node, parentNode) {
+    function onStatementEntry(request, response, node, parentNode) {
       currentStatement = new _Statement.Statement();
       if (parentNode.name == 'argdown') {
         currentStatement.isRootOfStatementTree = true;
@@ -279,7 +274,7 @@ var ModelPlugin = function () {
       currentStatementOrArgument = currentStatement;
       node.statement = currentStatement;
     }
-    function onStatementExit(node) {
+    function onStatementExit(request, response, node) {
       var statement = node.statement;
       if (!statement.title || statement.title == '') {
         statement.title = getUniqueTitle();
@@ -294,7 +289,7 @@ var ModelPlugin = function () {
       //   node.argumentTitle = currentArgumentReconstruction.title;
       //   node.statementNumber = currentArgumentReconstruction.pcs.length + 1;
       // }
-      var equivalenceClass = getEquivalenceClass(statement.title);
+      var equivalenceClass = getEquivalenceClass(response, statement.title);
       node.equivalenceClass = equivalenceClass;
       if (statement.tags) {
         addTags(statement.tags, equivalenceClass);
@@ -312,7 +307,7 @@ var ModelPlugin = function () {
       }
       currentStatement = null;
     }
-    function onStatementDefinitionEntry(node) {
+    function onStatementDefinitionEntry(request, response, node) {
       var match = statementDefinitionPattern.exec(node.image);
       if (match != null) {
         currentStatement.title = match[1];
@@ -327,7 +322,7 @@ var ModelPlugin = function () {
     //     node.statement = currentStatement;
     //   }      
     // }
-    function onStatementReferenceEntry(node) {
+    function onStatementReferenceEntry(request, response, node) {
       var match = statementReferencePattern.exec(node.image);
       if (match != null) {
         currentStatement.title = match[1];
@@ -342,7 +337,7 @@ var ModelPlugin = function () {
     //     node.statement = currentStatement;
     //   }
     // }
-    function onStatementMentionExit(node) {
+    function onStatementMentionExit(request, response, node) {
       var target = currentHeading ? currentHeading : currentStatement;
       var match = statementMentionPattern.exec(node.image);
       if (match) {
@@ -379,9 +374,9 @@ var ModelPlugin = function () {
     //     }
     //   }
     // }
-    function updateArgument(title) {
+    function updateArgument(response, title) {
       if (title) {
-        currentArgument = $.arguments[title];
+        currentArgument = response.arguments[title];
       }
       if (!title || !currentArgument) {
         currentArgument = new _Argument.Argument();
@@ -390,7 +385,7 @@ var ModelPlugin = function () {
         } else {
           currentArgument.title = title;
         }
-        $.arguments[currentArgument.title] = currentArgument;
+        response.arguments[currentArgument.title] = currentArgument;
       }
       currentStatementOrArgument = currentArgument;
       return currentArgument;
@@ -401,11 +396,11 @@ var ModelPlugin = function () {
       }
       object.tags = _.union(object.tags, tags);
     }
-    function onArgumentDefinitionEntry(node, parentNode) {
+    function onArgumentDefinitionEntry(request, response, node, parentNode) {
       var match = argumentDefinitionPattern.exec(node.image);
       if (match != null) {
         var title = match[1];
-        updateArgument(title);
+        updateArgument(response, title);
         currentStatement = new _Statement.Statement();
         currentStatement.role = "argument-description";
         if (currentSection) {
@@ -415,7 +410,7 @@ var ModelPlugin = function () {
         parentNode.argument = currentArgument;
       }
     }
-    function onArgumentDefinitionExit(node) {
+    function onArgumentDefinitionExit(request, response, node) {
       if (node.argument) {
         var description = _.last(node.argument.descriptions);
         if (description.tags) {
@@ -429,15 +424,15 @@ var ModelPlugin = function () {
       currentStatement = null;
       currentArgument = null;
     }
-    function onArgumentReferenceEntry(node, parentNode) {
+    function onArgumentReferenceEntry(request, response, node, parentNode) {
       var match = argumentReferencePattern.exec(node.image);
       if (match != null) {
         var title = match[1];
-        updateArgument(title);
+        updateArgument(response, title);
         parentNode.argument = currentArgument;
       }
     }
-    function onArgumentMentionExit(node) {
+    function onArgumentMentionExit(request, response, node) {
       var target = currentHeading ? currentHeading : currentStatement;
       var match = argumentMentionPattern.exec(node.image);
       if (match) {
@@ -455,7 +450,7 @@ var ModelPlugin = function () {
         }
       }
     }
-    function onFreestyleTextEntry(node) {
+    function onFreestyleTextEntry(request, response, node) {
       var target = currentHeading ? currentHeading : currentStatement;
       node.text = "";
       var _iteratorNormalCompletion4 = true;
@@ -491,7 +486,7 @@ var ModelPlugin = function () {
         target.text += node.text;
       }
     }
-    function onLinkEntry(node) {
+    function onLinkEntry(request, response, node) {
       var target = currentHeading ? currentHeading : currentStatement;
       if (!target) {
         return;
@@ -511,7 +506,7 @@ var ModelPlugin = function () {
         node.trailingWhitespace = '';
       }
     }
-    function onTagEntry(node) {
+    function onTagEntry(request, response, node) {
       var target = currentHeading ? currentHeading : currentStatement;
       if (!target) {
         return;
@@ -532,8 +527,8 @@ var ModelPlugin = function () {
       if (target.tags.indexOf(tag) == -1) {
         tags.push(tag);
       }
-      if ($.tags.indexOf(tag) == -1) {
-        $.tags.push(tag);
+      if (response.tags.indexOf(tag) == -1) {
+        response.tags.push(tag);
       }
     }
     function onBoldEntry() {
@@ -545,7 +540,7 @@ var ModelPlugin = function () {
       rangesStack.push(boldRange);
       target.ranges.push(boldRange);
     }
-    function onBoldExit(node) {
+    function onBoldExit(request, response, node) {
       var target = currentHeading ? currentHeading : currentStatement;
       if (!target) {
         return;
@@ -570,7 +565,7 @@ var ModelPlugin = function () {
       rangesStack.push(italicRange);
       target.ranges.push(italicRange);
     }
-    function onItalicExit(node) {
+    function onItalicExit(request, response, node) {
       var target = currentHeading ? currentHeading : currentStatement;
       if (!target) {
         return;
@@ -587,11 +582,11 @@ var ModelPlugin = function () {
       rangesStack.pop();
     }
 
-    function onRelationExit(node) {
+    function onRelationExit(request, response, node) {
       var relation = node.relation;
       var contentNode = node.children[1];
       var content = contentNode.argument || contentNode.statement;
-      var target = getRelationTarget(content);
+      var target = getRelationTarget(response, content);
       if (relation) {
         if (relation.from) {
           relation.to = target;
@@ -631,63 +626,63 @@ var ModelPlugin = function () {
         }
 
         if (!relationExists) {
-          $.relations.push(relation);
+          response.relations.push(relation);
           relation.from.relations.push(relation);
           relation.to.relations.push(relation);
         }
       }
     }
-    function onIncomingSupportEntry(node) {
+    function onIncomingSupportEntry(request, response, node) {
       var target = _.last(parentsStack);
       currentRelation = new _Relation.Relation("support");
       currentRelation.from = target;
       node.relation = currentRelation;
     }
-    function onIncomingAttackEntry(node) {
+    function onIncomingAttackEntry(request, response, node) {
       var target = _.last(parentsStack);
       currentRelation = new _Relation.Relation("attack");
       currentRelation.from = target;
       node.relation = currentRelation;
     }
-    function onOutgoingSupportEntry(node) {
+    function onOutgoingSupportEntry(request, response, node) {
       var target = _.last(parentsStack);
       currentRelation = new _Relation.Relation("support");
       currentRelation.to = target;
       node.relation = currentRelation;
     }
-    function onOutgoingAttackEntry(node) {
+    function onOutgoingAttackEntry(request, response, node) {
       var target = _.last(parentsStack);
       currentRelation = new _Relation.Relation("attack");
       currentRelation.to = target;
       node.relation = currentRelation;
     }
-    function onContradictionEntry(node) {
+    function onContradictionEntry(request, response, node) {
       var target = _.last(parentsStack);
       currentRelation = new _Relation.Relation("contradictory");
       currentRelation.from = target;
       node.relation = currentRelation;
     }
-    function onIncomingUndercutEntry(node) {
+    function onIncomingUndercutEntry(request, response, node) {
       var target = _.last(parentsStack);
       currentRelation = new _Relation.Relation("undercut");
       currentRelation.from = target;
       node.relation = currentRelation;
     }
-    function onOutgoingUndercutEntry(node) {
+    function onOutgoingUndercutEntry(request, response, node) {
       var target = _.last(parentsStack);
       currentRelation = new _Relation.Relation("undercut");
       currentRelation.to = target;
       node.relation = currentRelation;
     }
 
-    function onRelationsEntry() {
-      parentsStack.push(getRelationTarget(currentStatementOrArgument));
+    function onRelationsEntry(request, response) {
+      parentsStack.push(getRelationTarget(response, currentStatementOrArgument));
     }
-    function getRelationTarget(statementOrArgument) {
+    function getRelationTarget(response, statementOrArgument) {
       var target = statementOrArgument;
       if (statementOrArgument instanceof _Statement.Statement) {
         if (!statementOrArgument.title) statementOrArgument.title = getUniqueTitle();
-        target = getEquivalenceClass(statementOrArgument.title);
+        target = getEquivalenceClass(response, statementOrArgument.title);
       }
       return target;
     }
@@ -696,7 +691,7 @@ var ModelPlugin = function () {
       parentsStack.pop();
     }
 
-    function onArgumentEntry(node, parentNode, childIndex) {
+    function onArgumentEntry(request, response, node, parentNode, childIndex) {
       var argument = null;
       if (childIndex > 0) {
         var precedingSibling = parentNode.children[childIndex - 1];
@@ -710,7 +705,7 @@ var ModelPlugin = function () {
         }
       }
       if (!argument) {
-        argument = updateArgument();
+        argument = updateArgument(response);
       }
       if (currentSection) {
         argument.section = currentSection;
@@ -728,12 +723,12 @@ var ModelPlugin = function () {
       currentArgument = null;
       currentArgumentReconstruction = null;
     }
-    function onArgumentStatementExit(node, parentNode, childIndex) {
+    function onArgumentStatementExit(request, response, node, parentNode, childIndex) {
       if (node.children.length > 1) {
         //first node is ArgdownLexer.ArgumentStatementStart
         var statementNode = node.children[1];
         var statement = statementNode.statement;
-        var ec = getEquivalenceClass(statement.title);
+        var ec = getEquivalenceClass(response, statement.title);
         statement.role = "premise";
         if (childIndex > 0) {
           var precedingSibling = parentNode.children[childIndex - 1];
@@ -751,11 +746,11 @@ var ModelPlugin = function () {
         node.statementNr = currentArgumentReconstruction.pcs.length;
       }
     }
-    function onInferenceEntry(node) {
+    function onInferenceEntry(request, response, node) {
       currentInference = { inferenceRules: [], metaData: {} };
       node.inference = currentInference;
     }
-    function onInferenceRulesExit(node) {
+    function onInferenceRulesExit(request, response, node) {
       var _iteratorNormalCompletion6 = true;
       var _didIteratorError6 = false;
       var _iteratorError6 = undefined;
@@ -783,7 +778,7 @@ var ModelPlugin = function () {
         }
       }
     }
-    function onMetadataStatementExit(node) {
+    function onMetadataStatementExit(request, response, node) {
       var key = node.children[0].text;
       var value = null;
       if (node.children.length == 2) {
@@ -796,12 +791,12 @@ var ModelPlugin = function () {
       }
       currentInference.metaData[key] = value;
     }
-    function onHeadingEntry(node) {
+    function onHeadingEntry(request, response, node) {
       currentHeading = node;
       currentHeading.text = '';
       currentHeading.ranges = [];
     }
-    function onHeadingExit(node) {
+    function onHeadingExit(request, response, node) {
       var headingStart = node.children[0];
       currentHeading.level = headingStart.image.length - 1; //number of # - whitespace
       sectionCounter++;
@@ -816,7 +811,7 @@ var ModelPlugin = function () {
         parentSection.children.push(newSection);
         newSection.parent = parentSection;
       } else {
-        $.sections.push(newSection);
+        response.sections.push(newSection);
       }
       currentSection = newSection;
       currentHeading = null;
@@ -873,16 +868,16 @@ var ModelPlugin = function () {
 
   _createClass(ModelPlugin, [{
     key: 'logRelations',
-    value: function logRelations(data) {
+    value: function logRelations(response) {
       var _iteratorNormalCompletion7 = true;
       var _didIteratorError7 = false;
       var _iteratorError7 = undefined;
 
       try {
-        for (var _iterator7 = Object.keys(data.statements)[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+        for (var _iterator7 = Object.keys(response.statements)[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
           var statementKey = _step7.value;
 
-          var statement = data.statements[statementKey];
+          var statement = response.statements[statementKey];
           var _iteratorNormalCompletion9 = true;
           var _didIteratorError9 = false;
           var _iteratorError9 = undefined;
@@ -930,10 +925,10 @@ var ModelPlugin = function () {
       var _iteratorError8 = undefined;
 
       try {
-        for (var _iterator8 = Object.keys(data.arguments)[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+        for (var _iterator8 = Object.keys(response.arguments)[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
           var argumentKey = _step8.value;
 
-          var argument = data.arguments[argumentKey];
+          var argument = response.arguments[argumentKey];
           var _iteratorNormalCompletion10 = true;
           var _didIteratorError10 = false;
           var _iteratorError10 = undefined;

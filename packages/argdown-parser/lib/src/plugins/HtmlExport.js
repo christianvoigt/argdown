@@ -19,15 +19,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var HtmlExport = function () {
   _createClass(HtmlExport, [{
     key: 'run',
-    value: function run(data, logger) {
-      if (data.config) {
-        if (data.config.html) {
-          this.config = data.config.html;
+    value: function run(request, response) {
+      if (request) {
+        if (request.html) {
+          this.config = request.html;
         }
       }
-
-      data.html = this.html;
-      return data;
+      return response;
     }
   }, {
     key: 'config',
@@ -53,19 +51,14 @@ var HtmlExport = function () {
     this.html = "";
     var $ = this;
     this.config = config;
-    this.htmlIds = {};
-
     this.argdownListeners = {
-      argdownEntry: function argdownEntry(node, parentNode, childIndex, data) {
-        if (data && data.config) {
-          if (data.config.html) {
-            $.config = data.config.html;
-          }
+      argdownEntry: function argdownEntry(request, response) {
+        if (request.html) {
+          $.config = request.html;
         }
-        data.config = data.config || {};
 
-        $.html = "";
-        $.htmlIds = {};
+        response.html = "";
+        response.htmlIds = {};
         if (!$.settings.headless) {
           var head = $.settings.head;
           if (!head) {
@@ -75,213 +68,213 @@ var HtmlExport = function () {
             }
             head += "</head>";
           }
-          $.html += head;
-          $.html += "<body>";
+          response.html += head;
+          response.html += "<body>";
         }
-        $.html += "<div class='argdown'>";
+        response.html += "<div class='argdown'>";
       },
-      argdownExit: function argdownExit() {
-        $.html += "</div>";
+      argdownExit: function argdownExit(request, response) {
+        response.html += "</div>";
         if (!$.settings.headless) {
-          $.html += "</body></html>";
+          response.html += "</body></html>";
         }
       },
-      statementEntry: function statementEntry(node, parentNode, childIndex, data) {
+      statementEntry: function statementEntry(request, response, node) {
         var classes = "statement";
         if (node.equivalenceClass.tags) {
-          classes += " " + $.getCssClassesFromTags(node.equivalenceClass.sortedTags, data);
+          classes += " " + $.getCssClassesFromTags(response, node.equivalenceClass.sortedTags);
         }
-        $.html += "<div class='" + classes + "'>";
+        response.html += "<div class='" + classes + "'>";
       },
-      statementExit: function statementExit() {
-        return $.html += "</div>";
+      statementExit: function statementExit(request, response) {
+        return response.html += "</div>";
       },
-      StatementDefinitionEntry: function StatementDefinitionEntry(node, parentNode, childIndex, data) {
-        var htmlId = $.getHtmlId("statement", node.statement.title);
-        $.htmlIds[htmlId] = node.statement;
+      StatementDefinitionEntry: function StatementDefinitionEntry(request, response, node, parentNode) {
+        var htmlId = $.getHtmlId(response, "statement", node.statement.title);
+        response.htmlIds[htmlId] = node.statement;
         var classes = "definition statement-definition definiendum";
         if (parentNode.equivalenceClass && parentNode.equivalenceClass.sortedTags) {
-          classes += " " + $.getCssClassesFromTags(parentNode.equivalenceClass.sortedTags, data);
+          classes += " " + $.getCssClassesFromTags(response, parentNode.equivalenceClass.sortedTags);
         }
-        $.html += "<span id='" + htmlId + "' class='" + classes + "'>[<span class='title statement-title'>" + $.escapeHtml(node.statement.title) + "</span>]: </span>";
+        response.html += "<span id='" + htmlId + "' class='" + classes + "'>[<span class='title statement-title'>" + $.escapeHtml(node.statement.title) + "</span>]: </span>";
       },
-      StatementReferenceEntry: function StatementReferenceEntry(node, parentNode, childIndex, data) {
-        var htmlId = $.getHtmlId("statement", node.statement.title, true);
+      StatementReferenceEntry: function StatementReferenceEntry(request, response, node, parentNode) {
+        var htmlId = $.getHtmlId(response, "statement", node.statement.title, true);
         var classes = "reference statement-reference";
         if (parentNode.equivalenceClass && parentNode.equivalenceClass.sortedTags) {
-          classes += " " + $.getCssClassesFromTags(parentNode.equivalenceClass.sortedTags, data);
+          classes += " " + $.getCssClassesFromTags(response, parentNode.equivalenceClass.sortedTags);
         }
-        $.html += "<a href='#" + htmlId + "' class='" + classes + "'>[<span class='title statement-title'>" + $.escapeHtml(node.statement.title) + "</span>] </a>";
+        response.html += "<a href='#" + htmlId + "' class='" + classes + "'>[<span class='title statement-title'>" + $.escapeHtml(node.statement.title) + "</span>] </a>";
       },
-      StatementMentionEntry: function StatementMentionEntry(node, parentNode, childIndex, data) {
-        var equivalenceClass = data.statements[node.title];
+      StatementMentionEntry: function StatementMentionEntry(request, response, node) {
+        var equivalenceClass = response.statements[node.title];
         var classes = "mention statement-mention";
         if (equivalenceClass.sortedTags) {
-          classes += " " + $.getCssClassesFromTags(equivalenceClass.sortedTags, data);
+          classes += " " + $.getCssClassesFromTags(response, equivalenceClass.sortedTags);
         }
-        var htmlId = $.getHtmlId("statement", node.title, true);
-        $.html += "<a href='#" + htmlId + "' class='" + classes + "'>@[<span class='title statement-title'>" + $.escapeHtml(node.title) + "</span>]</a>" + node.trailingWhitespace;
+        var htmlId = $.getHtmlId(response, "statement", node.title, true);
+        response.html += "<a href='#" + htmlId + "' class='" + classes + "'>@[<span class='title statement-title'>" + $.escapeHtml(node.title) + "</span>]</a>" + node.trailingWhitespace;
       },
-      argumentReferenceEntry: function argumentReferenceEntry(node, parentNode, childIndex, data) {
-        var htmlId = $.getHtmlId("argument", node.argument.title, true);
+      argumentReferenceEntry: function argumentReferenceEntry(request, response, node) {
+        var htmlId = $.getHtmlId(response, "argument", node.argument.title, true);
         var classes = "reference argument-reference";
         if (node.argument.tags) {
-          classes += " " + $.getCssClassesFromTags(node.argument.sortedTags, data);
+          classes += " " + $.getCssClassesFromTags(response, node.argument.sortedTags);
         }
-        $.html += "<a href='#" + htmlId + "' class='" + classes + "'>&lt;<span class='title argument-title'>" + $.escapeHtml(node.argument.title) + "</span>&gt; </a>";
+        response.html += "<a href='#" + htmlId + "' class='" + classes + "'>&lt;<span class='title argument-title'>" + $.escapeHtml(node.argument.title) + "</span>&gt; </a>";
       },
-      argumentDefinitionEntry: function argumentDefinitionEntry(node, parentNode, childIndex, data) {
-        var htmlId = $.getHtmlId("argument", node.argument.title);
-        $.htmlIds[htmlId] = node.argument;
+      argumentDefinitionEntry: function argumentDefinitionEntry(request, response, node) {
+        var htmlId = $.getHtmlId(response, "argument", node.argument.title);
+        response.htmlIds[htmlId] = node.argument;
         var classes = "definition argument-definition";
         if (node.argument.tags) {
-          classes += " " + $.getCssClassesFromTags(node.argument.sortedTags, data);
+          classes += " " + $.getCssClassesFromTags(response, node.argument.sortedTags);
         }
-        $.html += "<div id='" + htmlId + "' class='" + classes + "'><span class='definiendum argument-definiendum'>&lt;<span class='title argument-title'>" + $.escapeHtml(node.argument.title) + "</span>&gt;: </span><span class='argument-definiens definiens description'>";
+        response.html += "<div id='" + htmlId + "' class='" + classes + "'><span class='definiendum argument-definiendum'>&lt;<span class='title argument-title'>" + $.escapeHtml(node.argument.title) + "</span>&gt;: </span><span class='argument-definiens definiens description'>";
       },
-      ArgumentMentionEntry: function ArgumentMentionEntry(node, parentNode, childIndex, data) {
-        var htmlId = $.getHtmlId("argument", node.title, true);
+      ArgumentMentionEntry: function ArgumentMentionEntry(request, response, node) {
+        var htmlId = $.getHtmlId(response, "argument", node.title, true);
         var classes = "mention argument-mention";
-        var argument = data.arguments[node.title];
+        var argument = response.arguments[node.title];
         if (argument.tags) {
-          classes += " " + $.getCssClassesFromTags(argument.sortedTags, data);
+          classes += " " + $.getCssClassesFromTags(response, argument.sortedTags);
         }
-        $.html += "<a href='#" + htmlId + "' class='" + classes + "'>@&lt;<span class='title argument-title'>" + $.escapeHtml(node.title) + "</span>&gt;</a>" + node.trailingWhitespace;
+        response.html += "<a href='#" + htmlId + "' class='" + classes + "'>@&lt;<span class='title argument-title'>" + $.escapeHtml(node.title) + "</span>&gt;</a>" + node.trailingWhitespace;
       },
-      argumentDefinitionExit: function argumentDefinitionExit() {
-        return $.html += "</span></div>";
+      argumentDefinitionExit: function argumentDefinitionExit(request, response) {
+        return response.html += "</span></div>";
       },
-      incomingSupportEntry: function incomingSupportEntry() {
-        $.html += "<div class='incoming support relation'><div class='incoming support relation-symbol'><span>+&gt;</span></div>";
+      incomingSupportEntry: function incomingSupportEntry(request, response) {
+        response.html += "<div class='incoming support relation'><div class='incoming support relation-symbol'><span>+&gt;</span></div>";
       },
-      incomingSupportExit: function incomingSupportExit() {
-        return $.html += "</div>";
+      incomingSupportExit: function incomingSupportExit(request, response) {
+        return response.html += "</div>";
       },
-      incomingAttackEntry: function incomingAttackEntry() {
-        $.html += "<div class='incoming attack relation'><div class='incoming attack relation-symbol'><span>-&gt;</span></div>";
+      incomingAttackEntry: function incomingAttackEntry(request, response) {
+        response.html += "<div class='incoming attack relation'><div class='incoming attack relation-symbol'><span>-&gt;</span></div>";
       },
-      incomingAttackExit: function incomingAttackExit() {
-        return $.html += "</div>";
+      incomingAttackExit: function incomingAttackExit(request, response) {
+        return response.html += "</div>";
       },
-      incomingUndercutEntry: function incomingUndercutEntry() {
-        $.html += "<div class='incoming undercut relation'><div class='incoming undercut relation-symbol'><span>_&gt;</span></div>";
+      incomingUndercutEntry: function incomingUndercutEntry(request, response) {
+        response.html += "<div class='incoming undercut relation'><div class='incoming undercut relation-symbol'><span>_&gt;</span></div>";
       },
-      incomingUndercutExit: function incomingUndercutExit() {
-        return $.html += "</div>";
+      incomingUndercutExit: function incomingUndercutExit(request, response) {
+        return response.html += "</div>";
       },
-      outgoingSupportEntry: function outgoingSupportEntry() {
-        $.html += "<div class='outgoing support relation'><div class='outgoing support relation-symbol'><span>+</span></div>";
+      outgoingSupportEntry: function outgoingSupportEntry(request, response) {
+        response.html += "<div class='outgoing support relation'><div class='outgoing support relation-symbol'><span>+</span></div>";
       },
-      outgoingSupportExit: function outgoingSupportExit() {
-        $.html += "</div>";
+      outgoingSupportExit: function outgoingSupportExit(request, response) {
+        response.html += "</div>";
       },
-      outgoingAttackEntry: function outgoingAttackEntry() {
-        $.html += "<div class='outgoing attack relation'><div class='outgoing attack relation-symbol'><span>-</span></div>";
+      outgoingAttackEntry: function outgoingAttackEntry(request, response) {
+        response.html += "<div class='outgoing attack relation'><div class='outgoing attack relation-symbol'><span>-</span></div>";
       },
-      outgoingAttackExit: function outgoingAttackExit() {
-        $.html += "</div>";
+      outgoingAttackExit: function outgoingAttackExit(request, response) {
+        response.html += "</div>";
       },
-      outgoingUndercutEntry: function outgoingUndercutEntry() {
-        $.html += "<div class='outgoing undercut relation'><div class='outgoing undercut relation-symbol'><span>&lt;_</span></div>";
+      outgoingUndercutEntry: function outgoingUndercutEntry(request, response) {
+        response.html += "<div class='outgoing undercut relation'><div class='outgoing undercut relation-symbol'><span>&lt;_</span></div>";
       },
-      outgoingUndercutExit: function outgoingUndercutExit() {
-        $.html += "</div>";
+      outgoingUndercutExit: function outgoingUndercutExit(request, response) {
+        response.html += "</div>";
       },
-      contradictionEntry: function contradictionEntry() {
-        $.html += "<div class='contradiction relation'><div class='contradiction relation-symbol'><span>&gt;&lt;</span></div>";
+      contradictionEntry: function contradictionEntry(request, response) {
+        response.html += "<div class='contradiction relation'><div class='contradiction relation-symbol'><span>&gt;&lt;</span></div>";
       },
-      contradictionExit: function contradictionExit() {
-        $.html += "</div>";
+      contradictionExit: function contradictionExit(request, response) {
+        response.html += "</div>";
       },
-      relationsEntry: function relationsEntry() {
-        $.html += "<div class='relations'>";
+      relationsEntry: function relationsEntry(request, response) {
+        response.html += "<div class='relations'>";
       },
-      relationsExit: function relationsExit() {
-        $.html += "</div>";
+      relationsExit: function relationsExit(request, response) {
+        response.html += "</div>";
       },
-      orderedListEntry: function orderedListEntry() {
-        return $.html += "<ol>";
+      orderedListEntry: function orderedListEntry(request, response) {
+        return response.html += "<ol>";
       },
-      orderedListExit: function orderedListExit() {
-        return $.html += "</ol>";
+      orderedListExit: function orderedListExit(request, response) {
+        return response.html += "</ol>";
       },
-      unorderedListEntry: function unorderedListEntry() {
-        return $.html += "<ul>";
+      unorderedListEntry: function unorderedListEntry(request, response) {
+        return response.html += "<ul>";
       },
-      unorderedListExit: function unorderedListExit() {
-        return $.html += "</ul>";
+      unorderedListExit: function unorderedListExit(request, response) {
+        return response.html += "</ul>";
       },
-      orderedListItemEntry: function orderedListItemEntry() {
-        return $.html += "<li>";
+      orderedListItemEntry: function orderedListItemEntry(request, response) {
+        return response.html += "<li>";
       },
-      orderedListItemExit: function orderedListItemExit() {
-        return $.html += "</li>";
+      orderedListItemExit: function orderedListItemExit(request, response) {
+        return response.html += "</li>";
       },
-      unorderedListItemEntry: function unorderedListItemEntry() {
-        return $.html += "<li>";
+      unorderedListItemEntry: function unorderedListItemEntry(request, response) {
+        return response.html += "<li>";
       },
-      unorderedListItemExit: function unorderedListItemExit() {
-        return $.html += "</li>";
+      unorderedListItemExit: function unorderedListItemExit(request, response) {
+        return response.html += "</li>";
       },
-      headingEntry: function headingEntry(node) {
+      headingEntry: function headingEntry(request, response, node) {
         if (node.level == 1) {
           if ($.settings.title == 'Argdown Document') {
-            $.html = $.html.replace('<title>Argdown Document</title>', '<title>' + $.escapeHtml(node.text) + '</title>');
+            response.html = response.html.replace('<title>Argdown Document</title>', '<title>' + $.escapeHtml(node.text) + '</title>');
           }
         }
-        var htmlId = $.getHtmlId("heading", node.text);
-        $.htmlIds[htmlId] = node;
-        $.html += "<h" + node.level + " id='" + htmlId + "'>";
+        var htmlId = $.getHtmlId(response, "heading", node.text);
+        response.htmlIds[htmlId] = node;
+        response.html += "<h" + node.level + " id='" + htmlId + "'>";
       },
-      headingExit: function headingExit(node) {
-        return $.html += "</h" + node.level + ">";
+      headingExit: function headingExit(request, response, node) {
+        return response.html += "</h" + node.level + ">";
       },
-      freestyleTextEntry: function freestyleTextEntry(node, parentNode) {
+      freestyleTextEntry: function freestyleTextEntry(request, response, node, parentNode) {
         if (parentNode.name != 'inferenceRules' && parentNode.name != 'metadataStatement') {
-          $.html += $.escapeHtml(node.text);
+          response.html += $.escapeHtml(node.text);
         }
       },
-      boldEntry: function boldEntry() {
-        return $.html += "<b>";
+      boldEntry: function boldEntry(request, response) {
+        return response.html += "<b>";
       },
-      boldExit: function boldExit(node) {
-        return $.html += "</b>" + node.trailingWhitespace;
+      boldExit: function boldExit(request, response, node) {
+        return response.html += "</b>" + node.trailingWhitespace;
       },
-      italicEntry: function italicEntry() {
-        return $.html += "<i>";
+      italicEntry: function italicEntry(request, response) {
+        return response.html += "<i>";
       },
-      italicExit: function italicExit(node) {
-        return $.html += "</i>" + node.trailingWhitespace;
+      italicExit: function italicExit(request, response, node) {
+        return response.html += "</i>" + node.trailingWhitespace;
       },
-      LinkEntry: function LinkEntry(node) {
-        return $.html += "<a href='" + node.url + "'>" + node.text + "</a>" + node.trailingWhitespace;
+      LinkEntry: function LinkEntry(request, response, node) {
+        return response.html += "<a href='" + node.url + "'>" + node.text + "</a>" + node.trailingWhitespace;
       },
-      TagEntry: function TagEntry(node, parentNode, childIndex, data) {
+      TagEntry: function TagEntry(request, response, node) {
         if (node.text) {
-          $.html += "<span class='tag " + $.getCssClassesFromTags([node.tag], data) + "'>" + $.escapeHtml(node.text) + "</span>";
+          response.html += "<span class='tag " + $.getCssClassesFromTags(response, [node.tag]) + "'>" + $.escapeHtml(node.text) + "</span>";
         }
       },
-      argumentEntry: function argumentEntry(node, parentNode, childIndex, data) {
+      argumentEntry: function argumentEntry(request, response, node) {
         var classes = "argument";
         if (node.argument.tags) {
-          classes += " " + $.getCssClassesFromTags(node.argument.sortedTags, data);
+          classes += " " + $.getCssClassesFromTags(response, node.argument.sortedTags);
         }
-        $.html += "<div class='" + classes + "'>";
+        response.html += "<div class='" + classes + "'>";
       },
-      argumentExit: function argumentExit() {
-        return $.html += "</div>";
+      argumentExit: function argumentExit(request, response) {
+        return response.html += "</div>";
       },
-      argumentStatementEntry: function argumentStatementEntry(node) {
+      argumentStatementEntry: function argumentStatementEntry(request, response, node) {
         if (node.statement.role == 'conclusion') {
           var inference = node.statement.inference;
           var metadataKeys = Object.keys(inference.metaData);
           if (metadataKeys.length == 0 && inference.inferenceRules.length == 0) {
-            $.html += "<div class='inference'>";
+            response.html += "<div class='inference'>";
           } else {
-            $.html += "<div class='inference with-data'>";
+            response.html += "<div class='inference with-data'>";
           }
 
-          $.html += "<span class='inference-rules'>";
+          response.html += "<span class='inference-rules'>";
           if (inference.inferenceRules.length > 0) {
             var i = 0;
             var _iteratorNormalCompletion = true;
@@ -292,8 +285,8 @@ var HtmlExport = function () {
               for (var _iterator = inference.inferenceRules[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                 var inferenceRule = _step.value;
 
-                if (i > 0) $.html += ", ";
-                $.html += "<span class='inference-rule'>" + inferenceRule + "</span>";
+                if (i > 0) response.html += ", ";
+                response.html += "<span class='inference-rule'>" + inferenceRule + "</span>";
                 i++;
               }
             } catch (err) {
@@ -311,16 +304,16 @@ var HtmlExport = function () {
               }
             }
 
-            $.html += "</span> ";
+            response.html += "</span> ";
           }
           if (metadataKeys.length > 0) {
-            $.html += "<span class='metadata'>(";
+            response.html += "<span class='metadata'>(";
             for (var _i = 0; _i < metadataKeys.length; _i++) {
               var key = metadataKeys[_i];
-              $.html += "<span class='meta-data-statement'>";
-              $.html += "<span class='meta-data-key'>" + key + ": </span>";
+              response.html += "<span class='meta-data-statement'>";
+              response.html += "<span class='meta-data-key'>" + key + ": </span>";
               if (_.isString(inference.metaData[key])) {
-                $.html += "<span class='meta-data-value'>" + $.escapeHtml(inference.metaData[key]) + "</span>";
+                response.html += "<span class='meta-data-value'>" + $.escapeHtml(inference.metaData[key]) + "</span>";
               } else {
                 var j = 0;
                 var _iteratorNormalCompletion2 = true;
@@ -331,8 +324,8 @@ var HtmlExport = function () {
                   for (var _iterator2 = inference.metaData[key][Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
                     var value = _step2.value;
 
-                    if (j > 0) $.html += ", ";
-                    $.html += "<span class='meta-data-value'>" + $.escapeHtml(value) + "</span>";
+                    if (j > 0) response.html += ", ";
+                    response.html += "<span class='meta-data-value'>" + $.escapeHtml(value) + "</span>";
                     j++;
                   }
                 } catch (err) {
@@ -350,31 +343,31 @@ var HtmlExport = function () {
                   }
                 }
               }
-              if (_i < metadataKeys.length - 1) $.html += "; ";
-              $.html += "</span>";
+              if (_i < metadataKeys.length - 1) response.html += "; ";
+              response.html += "</span>";
             }
-            $.html += " )</span>";
+            response.html += " )</span>";
           }
 
-          $.html += "</div>";
+          response.html += "</div>";
         }
-        $.html += "<div class='" + node.statement.role + " argument-statement'><div class='statement-nr'>(<span>" + node.statementNr + "</span>)</div>";
+        response.html += "<div class='" + node.statement.role + " argument-statement'><div class='statement-nr'>(<span>" + node.statementNr + "</span>)</div>";
       },
-      argumentStatementExit: function argumentStatementExit() {
-        return $.html += "</div>";
+      argumentStatementExit: function argumentStatementExit(request, response) {
+        return response.html += "</div>";
       }
     };
   }
 
   _createClass(HtmlExport, [{
     key: 'getHtmlId',
-    value: function getHtmlId(type, title, ignoreDuplicates) {
+    value: function getHtmlId(response, type, title, ignoreDuplicates) {
       var id = type + "-" + title;
       id = _util2.default.getHtmlId(id);
       if (!ignoreDuplicates) {
         var originalId = id;
         var i = 1;
-        while (this.htmlIds && this.htmlIds[id]) {
+        while (response.htmlIds && response.htmlIds[id]) {
           i++;
           id = originalId + "-occurrence-" + i;
         }
@@ -383,9 +376,9 @@ var HtmlExport = function () {
     }
   }, {
     key: 'getCssClassesFromTags',
-    value: function getCssClassesFromTags(tags, data) {
+    value: function getCssClassesFromTags(response, tags) {
       var classes = "";
-      if (!tags || !data.tagsDictionary) {
+      if (!tags || !response.tagsDictionary) {
         return classes;
       }
       var index = 0;
@@ -401,7 +394,7 @@ var HtmlExport = function () {
             classes += " ";
           }
           index++;
-          var tagData = data.tagsDictionary[tag];
+          var tagData = response.tagsDictionary[tag];
           classes += tagData.cssClass;
         }
       } catch (err) {

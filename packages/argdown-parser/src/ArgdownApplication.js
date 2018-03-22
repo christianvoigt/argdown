@@ -100,66 +100,51 @@ class ArgdownApplication{
       };
     }
   }
-  run(param, previousData){
+  run(request, response){
     let processorsToRun = null;
     this.logger.setLevel("error");
-    let data = {};
-    
-    if(param == null){
-      processorsToRun = ['default'];
-    }else if(_.isString(param)){
-      processorsToRun = [param];
-      if(previousData){
-        data = previousData;
+    let resp = response ||{};
+
+    if (request) {
+      if (request.logLevel) {
+        this.logger.setLevel(request.logLevel);
       }
-    }else if(_.isArray(param)){
-      processorsToRun = param;
-      if(previousData){
-        data = previousData;
-      }
-    }else if(_.isObject(param)){
-      data = param;
-    }
-    if(data.config){
-      if(data.config.logLevel){
-        this.logger.setLevel(data.config.logLevel);        
-      }
-      if(data.config.process){
-        if(_.isArray(data.config.process)){
-          processorsToRun = data.config.process;
+      if (request.process) {
+        if (_.isArray(request.process)) {
+          processorsToRun = request.process;
         }
       }
     }
-    
-    if(_.isEmpty(processorsToRun)){
+
+    if (_.isEmpty(processorsToRun)) {
       this.logger.log("verbose", "No processors to run.");
-      return data;
+      return resp;
     }
-    
-    for(let processorId of processorsToRun){
+
+    for (let processorId of processorsToRun) {
       let processor = this.processors[processorId];
-      if(!processor){
+      if (!processor) {
         this.logger.log("verbose", "Processor not found: " + processorId);
         continue;
       }
       this.logger.log("verbose", "Running processor: " + processorId);
 
-      if(data.ast && processor.walker){
-        processor.walker.walk(data.ast, data, this.logger);
+      if (resp.ast && processor.walker) {
+        processor.walker.walk(request, resp, this.logger);
       }
 
-      for(let plugin of processor.plugins){
+      for (let plugin of processor.plugins) {
         this.logger.log("verbose", "Running plugin: " + plugin.name);
-        if(_.isFunction(plugin.run)){
-          let newData = plugin.run(data, this.logger);
-          if(_.isObject(newData)){
-            data = newData;
+        if (_.isFunction(plugin.run)) {
+          let newResponse = plugin.run(request, resp, this.logger);
+          if (_.isObject(newResponse)) {
+            resp = newResponse;
           }
         }
       }
     }
-    this.dataOfLastRun = data;
-    return data;
+    this.responseOfLastRun = resp;
+    return resp;
   }
 }
 

@@ -1,5 +1,4 @@
 "use strict";
-
 import {ArgdownLexer} from './ArgdownLexer.js';
 import {ArgdownParser} from "./ArgdownParser.js";
 import {ArgdownTreeWalker} from "./ArgdownTreeWalker.js";
