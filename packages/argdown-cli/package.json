@@ -1,14 +1,9 @@
 {
     "name": "argdown-cli",
     "description": "A command line interface for exporting Argdown files to html, dot or json.",
-    "keywords": [
-        "argumentation",
-        "argument mapping",
-        "Argdown",
-        "Markdown"
-    ],
+    "keywords": ["argumentation", "argument mapping", "Argdown", "Markdown"],
     "engines": {
-        "node": ">= 7.6.0"
+        "node": ">= 8.0.0"
     },
     "version": "0.8.0",
     "license": "MIT",
