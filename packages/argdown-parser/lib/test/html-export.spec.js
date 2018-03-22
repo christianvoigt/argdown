@@ -22,22 +22,23 @@ describe("HtmlExport", function () {
   var htmlExport = new _index.HtmlExport();
   app.addPlugin(htmlExport, "export-html");
   it("can export Argdown", function () {
-    var data = {
+    var request = {
+      process: ['parse-input', 'build-model', 'export-html'],
       input: "# Title\n\n[Statement]: Hello World!\n +<Argument>\n\n<Argument>: Description 1 \< 2"
     };
-    var result = app.run(['parse-input', 'build-model', 'export-html'], data);
+    var result = app.run(request);
     //console.log(result.html);
     (0, _chai.expect)(result.html).to.equal("<!doctype html>\n\n<html lang='en'>\n<head>\n<meta charset='utf8'>\n<title>Title</title>\n<link rel='stylesheet' href='./argdown.css'>\n</head><body><div class='argdown'><h1 id='heading-title'>Title</h1><div class='statement'><span id='statement-statement' class='definition statement-definition definiendum'>[<span class='title statement-title'>Statement</span>]: </span>Hello World!<div class='relations'><div class='outgoing support relation'><div class='outgoing support relation-symbol'><span>+</span></div><a href='#argument-argument' class='reference argument-reference'>&lt;<span class='title argument-title'>Argument</span>&gt; </a></div></div></div><div id='argument-argument' class='definition argument-definition'><span class='definiendum argument-definiendum'>&lt;<span class='title argument-title'>Argument</span>&gt;: </span><span class='argument-definiens definiens description'>Description 1 &lt; 2</span></div></div></body></html>");
   });
   it("can export the argdown intro", function () {
     var source = _fs2.default.readFileSync("./test/intro.argdown", 'utf8');
-    var result = app.run(['parse-input', 'build-model', 'export-html'], { input: source });
+    var result = app.run({ process: ['parse-input', 'build-model', 'export-html'], input: source });
     (0, _chai.expect)(result.lexerErrors).to.be.empty;
     (0, _chai.expect)(result.parserErrors).to.be.empty;
   });
   it("can create class names for tags", function () {
     var source = '[Statement 1]: #tag1\n      + [Statement 2]: #tag2\n        - [Statement 3]: #tag3';
-    var result = app.run(['parse-input', 'build-model'], { input: source });
+    var result = app.run({ process: ['parse-input', 'build-model'], input: source });
     (0, _chai.expect)(result.tagsDictionary).to.exist;
     (0, _chai.expect)(Object.keys(result.tagsDictionary).length).to.be.equal(3);
     (0, _chai.expect)(result.tagsDictionary["tag1"].cssClass).to.be.equal("tag-tag1 tag0");
@@ -51,7 +52,7 @@ describe("HtmlExport", function () {
   });
   it("can export titles with ranges", function () {
     var source = '# title _italic_ **bold**';
-    var result = app.run(['parse-input', 'build-model', 'export-html'], { input: source, config: { html: { headless: true } } });
+    var result = app.run({ process: ['parse-input', 'build-model', 'export-html'], input: source, html: { headless: true } });
     (0, _chai.expect)(result.html).to.equal("<div class='argdown'><h1 id='heading-title-italic-bold'>title <i>italic</i> <b>bold</b></h1></div>");
   });
 });

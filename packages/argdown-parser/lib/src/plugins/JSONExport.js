@@ -17,33 +17,31 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var JSONExport = function () {
   _createClass(JSONExport, [{
     key: 'run',
-    value: function run(data, logger) {
-      if (data.config) {
-        if (data.config.json) {
-          this.config = data.config.json;
-        } else if (data.config.JSONExport) {
-          this.config = data.config.JSONExport;
-        }
+    value: function run(request, response) {
+      if (request.json) {
+        this.config = request.json;
+      } else if (request.JSONExport) {
+        this.config = request.JSONExport;
       }
       var argdown = {
-        arguments: data.arguments,
-        statements: data.statements,
-        relations: data.relations
+        arguments: response.arguments,
+        statements: response.statements,
+        relations: response.relations
       };
-      if (this.settings.exportMap && data.map && data.map.nodes && data.map.edges) {
+      if (this.settings.exportMap && response.map && response.map.nodes && response.map.edges) {
         argdown.map = {
-          nodes: data.map.nodes,
-          edges: data.map.edges
+          nodes: response.map.nodes,
+          edges: response.map.edges
         };
       }
-      if (this.settings.exportSections && data.sections) {
-        argdown.sections = data.sections;
+      if (this.settings.exportSections && response.sections) {
+        argdown.sections = response.sections;
       }
-      if (this.settings.exportTags && data.tags) {
-        argdown.tags = data.tags;
+      if (this.settings.exportTags && response.tags) {
+        argdown.tags = response.tags;
       }
       var $ = this;
-      data.json = JSON.stringify(argdown, function (key, value) {
+      response.json = JSON.stringify(argdown, function (key, value) {
         if ($.settings.removeEmbeddedRelations && key == "relations" && (this instanceof _Argument.Argument || this instanceof _EquivalenceClass.EquivalenceClass)) {
           return undefined;
         }
@@ -54,7 +52,7 @@ var JSONExport = function () {
 
         return value;
       }, this.settings.spaces);
-      return data;
+      return response;
     }
   }, {
     key: 'config',

@@ -43,31 +43,31 @@ var ParserPlugin = function () {
 
   _createClass(ParserPlugin, [{
     key: 'run',
-    value: function run(data, logger) {
-      if (!data.input) {
-        return data;
+    value: function run(request, response, logger) {
+      if (!request.input) {
+        return response;
       }
 
-      var lexResult = this.lexer.tokenize(data.input);
-      data.tokens = lexResult.tokens;
-      data.lexerErrors = lexResult.errors;
+      var lexResult = this.lexer.tokenize(request.input);
+      response.tokens = lexResult.tokens;
+      response.lexerErrors = lexResult.errors;
 
       this.parser.input = lexResult.tokens;
-      data.ast = this.parser.argdown();
-      data.parserErrors = this.parser.errors;
+      response.ast = this.parser.argdown();
+      response.parserErrors = this.parser.errors;
 
-      if (data.lexerErrors && data.lexerErrors.length > 0) {
-        logger.log("verbose", data.lexerErrors);
+      if (response.lexerErrors && response.lexerErrors.length > 0) {
+        logger.log("verbose", response.lexerErrors);
       }
-      if (data.parserErrors && data.parserErrors.length > 0) {
+      if (response.parserErrors && response.parserErrors.length > 0) {
         // //add location if token is EOF
-        var lastToken = _.last(data.tokens);
+        var lastToken = _.last(response.tokens);
         var _iteratorNormalCompletion = true;
         var _didIteratorError = false;
         var _iteratorError = undefined;
 
         try {
-          for (var _iterator = data.parserErrors[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          for (var _iterator = response.parserErrors[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
             var error = _step.value;
 
             if (error.token && tokenMatcher(error.token, chevrotain.EOF)) {
@@ -81,7 +81,6 @@ var ParserPlugin = function () {
               error.token = newToken;
             }
           }
-          // logger.log("verbose", data.parserErrors);
         } catch (err) {
           _didIteratorError = true;
           _iteratorError = err;
@@ -97,7 +96,7 @@ var ParserPlugin = function () {
           }
         }
       }
-      return data;
+      return response;
     }
   }]);
 

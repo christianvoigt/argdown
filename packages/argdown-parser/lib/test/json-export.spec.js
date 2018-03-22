@@ -16,7 +16,7 @@ describe("JSONExport", function () {
 
   it("sanity test", function () {
     var source = "[Test]: Hello _World_!\n  +<Argument 1>\n    -[Test]\n\n[Test]: Tschüss!";
-    var result = app.run(['parse-input', 'build-model', 'export-json'], { input: source });
+    var result = app.run({ process: ['parse-input', 'build-model', 'export-json'], input: source });
     (0, _chai.expect)(result.json).to.exist;
   });
 });

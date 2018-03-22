@@ -12,7 +12,7 @@ describe("Parser", function() {
     let source = "\n\n\n\n\nHallo World!\n\n\n<!-- Comment -->\n\n";
     let lexResult = lexer.tokenize(source);
     parser.input = lexResult.tokens;
-    let parseResult = parser.argdown();
+    parser.argdown();
     expect(lexResult.errors).to.be.empty;
     expect(parser.errors).to.be.empty;
   });
@@ -20,7 +20,7 @@ describe("Parser", function() {
     let source = fs.readFileSync("./test/veggie_debate.argdown", 'utf8');
     let lexResult = lexer.tokenize(source);
     parser.input = lexResult.tokens;
-    let parseResult = parser.argdown();
+    parser.argdown();
     expect(lexResult.errors).to.be.empty;
     expect(parser.errors).to.be.empty;
   });
@@ -28,7 +28,7 @@ describe("Parser", function() {
     let source = fs.readFileSync("./test/parser-arguments.argdown", 'utf8');
     let lexResult = lexer.tokenize(source);
     parser.input = lexResult.tokens;
-    let parseResult = parser.argdown();
+    parser.argdown();
     expect(lexResult.errors).to.be.empty;
     expect(parser.errors).to.be.empty;
   });
@@ -36,7 +36,7 @@ describe("Parser", function() {
     let source = "Text <Title>:\n\n+ text";
     let lexResult = lexer.tokenize(source);
     parser.input = lexResult.tokens;
-    let parseResult = parser.argdown();
+    parser.argdown();
     //console.log(parser.errors[0]);
     expect(lexResult.errors).to.be.empty;
     expect(parser.errors).to.exist;
@@ -45,7 +45,7 @@ describe("Parser", function() {
     let source = "<Title>: text \\[text\\]";
     let lexResult = lexer.tokenize(source);
     parser.input = lexResult.tokens;
-    let parseResult = parser.argdown();
+    parser.argdown();
     expect(lexResult.errors).to.be.empty;
     expect(parser.errors).to.be.empty;
   });
@@ -64,10 +64,10 @@ describe("ArgdownTreeWalker", function() {
     let source = "Hallo Welt!";
     let lexResult = lexer.tokenize(source);
     parser.input = lexResult.tokens;
-    let parseResult = parser.argdown();
+    let ast = parser.argdown();
     let statements = 0;
-    walker.on('statementEntry',(node)=>{statements++; expect(node.name).to.equal('statement');});
-    walker.walk(parseResult);
+    walker.on('statementEntry',(request, response, node)=>{statements++; expect(node.name).to.equal('statement');});
+    walker.walk({}, {ast: ast});
     expect(statements).to.equal(1);
   });
 });

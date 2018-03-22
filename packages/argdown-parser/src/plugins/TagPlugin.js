@@ -16,34 +16,33 @@ class TagPlugin{
     this.name = "TagPlugin";
     this.config = config;
   }
-  run(data, logger){
-    if(!data.tags || !data.statements || !data.arguments){
+  run(request, response){
+    if(!response.tags || !response.statements || !response.arguments){
       return;
     }
-    data.config = data.config ||{};
-    data.tagsDictionary = {};
+    response.tagsDictionary = {};
     
-    let tagConfigExists = data.config.tags != null;
-    if(data.config && data.config.tagColorScheme){
-      this.config = {colorScheme: data.config.tagColorScheme};      
+    let tagConfigExists = request.tags != null;
+    if(request.tagColorScheme){
+      this.config = {colorScheme: request.tagColorScheme};      
     }
-    let selectedTags = data.tags;
+    let selectedTags = response.tags;
     if(tagConfigExists){
       selectedTags = [];
-      for(let tagData of data.config.tags){
+      for(let tagData of request.tags){
         selectedTags.push(tagData.tag);
       }
     }
-    for(let tag of data.tags){
+    for(let tag of response.tags){
       let tagData = null;
       if(tagConfigExists){
-        let tagConfig = _.find(data.config.tags,{tag:tag});
+        let tagConfig = _.find(request.tags,{tag:tag});
         tagData = _.clone(tagConfig);        
       }
       if(!tagData){
         tagData = {tag:tag};
       }
-      data.tagsDictionary[tag] = tagData;
+      response.tagsDictionary[tag] = tagData;
       let index = selectedTags.indexOf(tag);
       tagData.cssClass = util.getHtmlId('tag-'+tag);
       if(index > -1){
@@ -54,25 +53,25 @@ class TagPlugin{
         tagData.index = index;
       }
     }
-    for(let title of Object.keys(data.statements)){
-      let equivalenceClass = data.statements[title];
+    for(let title of Object.keys(response.statements)){
+      let equivalenceClass = response.statements[title];
       if(equivalenceClass.tags){
-        equivalenceClass.sortedTags = this.sortTags(equivalenceClass.tags, data);
+        equivalenceClass.sortedTags = this.sortTags(equivalenceClass.tags, response);
       }
     }
-    for(let title of Object.keys(data.arguments)){
-      let argument = data.arguments[title];
+    for(let title of Object.keys(response.arguments)){
+      let argument = response.arguments[title];
       if(argument.tags){
-        argument.sortedTags = this.sortTags(argument.tags, data);
+        argument.sortedTags = this.sortTags(argument.tags, response);
       }
     }
   }
-  sortTags(tags, data){
+  sortTags(tags, response){
     const filtered = _.filter(tags, function(tag){
-      return data.tagsDictionary[tag].index != null;
+      return response.tagsDictionary[tag].index != null;
     });
     const sorted = _.sortBy(filtered, function(tag){
-      return data.tagsDictionary[tag].index;
+      return response.tagsDictionary[tag].index;
     });
     return sorted;
   }

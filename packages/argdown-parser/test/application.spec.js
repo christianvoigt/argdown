@@ -14,19 +14,19 @@ describe("Application", function() {
       argdownListeners : {
         statementEntry: ()=>statements++
       },
-      run(data){
-        data.testRunCompleted = true;
-        return data;
+      run(request, response){
+        response.testRunCompleted = true;
+        return response;
       }
     };
     app.addPlugin(plugin, 'test');
     expect(app.getPlugin(plugin.name, 'test')).to.equal(plugin);
-    let result = app.run(['parse-input','test'],{input:source});
+    let result = app.run({process: ['parse-input','test'], input:source});
     expect(statements).to.equal(1);
     expect(result.testRunCompleted).to.be.true;
     statements = 0;
     app.removePlugin(plugin, 'test');
-    result = app.run(['parse-input','test'],{input:source});
+    result = app.run({process: ['parse-input','test'], input:source});
     expect(statements).to.equal(0);
     expect(result.testRunCompleted).to.be.undefined;
   });

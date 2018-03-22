@@ -14,7 +14,7 @@ describe("TagPlugin", function() {
     let source = `[Statement 1]: #tag1
       + [Statement 2]: #tag2 #tag3
         - [Statement 3]: #tag3`;
-    let result = app.run(['parse-input','build-model'], {input:source});
+    let result = app.run({process: ['parse-input','build-model'], input:source});
     expect(result.tagsDictionary).to.exist;
     expect(Object.keys(result.tagsDictionary).length).to.be.equal(3);
     expect(result.tagsDictionary["tag1"].cssClass).to.be.equal("tag-tag1 tag0");

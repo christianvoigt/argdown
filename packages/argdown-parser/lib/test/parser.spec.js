@@ -20,7 +20,7 @@ describe("Parser", function () {
     var source = "\n\n\n\n\nHallo World!\n\n\n<!-- Comment -->\n\n";
     var lexResult = lexer.tokenize(source);
     parser.input = lexResult.tokens;
-    var parseResult = parser.argdown();
+    parser.argdown();
     (0, _chai.expect)(lexResult.errors).to.be.empty;
     (0, _chai.expect)(parser.errors).to.be.empty;
   });
@@ -28,7 +28,7 @@ describe("Parser", function () {
     var source = _fs2.default.readFileSync("./test/veggie_debate.argdown", 'utf8');
     var lexResult = lexer.tokenize(source);
     parser.input = lexResult.tokens;
-    var parseResult = parser.argdown();
+    parser.argdown();
     (0, _chai.expect)(lexResult.errors).to.be.empty;
     (0, _chai.expect)(parser.errors).to.be.empty;
   });
@@ -36,7 +36,7 @@ describe("Parser", function () {
     var source = _fs2.default.readFileSync("./test/parser-arguments.argdown", 'utf8');
     var lexResult = lexer.tokenize(source);
     parser.input = lexResult.tokens;
-    var parseResult = parser.argdown();
+    parser.argdown();
     (0, _chai.expect)(lexResult.errors).to.be.empty;
     (0, _chai.expect)(parser.errors).to.be.empty;
   });
@@ -44,7 +44,7 @@ describe("Parser", function () {
     var source = "Text <Title>:\n\n+ text";
     var lexResult = lexer.tokenize(source);
     parser.input = lexResult.tokens;
-    var parseResult = parser.argdown();
+    parser.argdown();
     //console.log(parser.errors[0]);
     (0, _chai.expect)(lexResult.errors).to.be.empty;
     (0, _chai.expect)(parser.errors).to.exist;
@@ -53,7 +53,7 @@ describe("Parser", function () {
     var source = "<Title>: text \\[text\\]";
     var lexResult = lexer.tokenize(source);
     parser.input = lexResult.tokens;
-    var parseResult = parser.argdown();
+    parser.argdown();
     (0, _chai.expect)(lexResult.errors).to.be.empty;
     (0, _chai.expect)(parser.errors).to.be.empty;
   });
@@ -72,12 +72,12 @@ describe("ArgdownTreeWalker", function () {
     var source = "Hallo Welt!";
     var lexResult = lexer.tokenize(source);
     parser.input = lexResult.tokens;
-    var parseResult = parser.argdown();
+    var ast = parser.argdown();
     var statements = 0;
-    walker.on('statementEntry', function (node) {
+    walker.on('statementEntry', function (request, response, node) {
       statements++;(0, _chai.expect)(node.name).to.equal('statement');
     });
-    walker.walk(parseResult);
+    walker.walk({}, { ast: ast });
     (0, _chai.expect)(statements).to.equal(1);
   });
 });

@@ -13,7 +13,7 @@ describe("JSONExport", function() {
 
   it("sanity test", function(){
     let source = "[Test]: Hello _World_!\n  +<Argument 1>\n    -[Test]\n\n[Test]: Tschüss!";
-    let result = app.run(['parse-input','build-model','export-json'],{input:source});
+    let result = app.run({process: ['parse-input','build-model','export-json'], input:source});
     expect(result.json).to.exist;
   });
 });

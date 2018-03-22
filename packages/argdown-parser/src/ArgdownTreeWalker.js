@@ -1,35 +1,33 @@
 import {EventEmitter} from "eventemitter3";
-import {getTokenConstructor} from "chevrotain";
-
 
 class ArgdownTreeWalker extends EventEmitter{
-  walk(tree, data, logger){
-    this.visitNode(tree, null, null, data);
+  walk(request, response, logger){
+    this.visitNode(request, response, response.ast, null, null, logger);
   }
 
   getTokenName(tokenInstance){
     return tokenInstance.tokenType.tokenName;
   }
 
-  visitNode(node, parentNode, childIndex, data, logger){
+  visitNode(request, response, node, parentNode, childIndex, logger){
     if(node){
       if(node.name){
-        this.emit(node.name+'Entry', node, parentNode, childIndex, data, logger);
+        this.emit(node.name+'Entry', request, response, node, parentNode, childIndex, logger);
       }else {
-        this.emit(node.tokenType.tokenName + 'Entry', node, parentNode, childIndex, data, logger);
+        this.emit(node.tokenType.tokenName + 'Entry', request, response, node, parentNode, childIndex, logger);
       }
 
       if(node.children && node.children.length > 0){
         for(var i = 0; i < node.children.length; i++){
           let child = node.children[i];
-          this.visitNode(child, node, i, data, logger);
+          this.visitNode(request, response, child, node, i, logger);
         }
       }
 
       if(node.name){
-        this.emit(node.name+'Exit', node, parentNode, childIndex, data, logger);
+        this.emit(node.name+'Exit', request, response, node, parentNode, childIndex, logger);
       }else{
-        this.emit(node.tokenType.tokenName + 'Exit', node, parentNode, childIndex, data, logger);
+        this.emit(node.tokenType.tokenName + 'Exit', request, response, node, parentNode, childIndex, logger);
       }
     }
   }
