@@ -1,8 +1,12 @@
 {
     "name": "argdown-cli",
-    "description":
-        "A command line interface for exporting Argdown files to html, dot or json.",
-    "keywords": ["argumentation", "argument mapping", "Argdown", "Markdown"],
+    "description": "A command line interface for exporting Argdown files to html, dot or json.",
+    "keywords": [
+        "argumentation",
+        "argument mapping",
+        "Argdown",
+        "Markdown"
+    ],
     "engines": {
         "node": ">= 7.6.0"
     },
@@ -10,17 +14,15 @@
     "license": "MIT",
     "main": "lib/src/index.js",
     "dependencies": {
-        "argdown-map-maker":
-            "git+https://github.com/christianvoigt/argdown-map-maker.git#develop",
-        "argdown-parser":
-            "git+https://github.com/christianvoigt/argdown-parser.git#develop",
+        "argdown-map-maker": "git+https://github.com/christianvoigt/argdown-map-maker.git#develop",
+        "argdown-parser": "git+https://github.com/christianvoigt/argdown-parser.git#develop",
         "chokidar": "^1.7.0",
         "glob": "^7.1.2",
         "lodash": "^4.17.4",
         "mkdirp": "^0.5.1",
         "require-uncached": "^1.0.3",
+        "sharp": "^0.20.1",
         "svg-to-pdfkit": "^0.1.7",
-        "svg2png": "^4.1.1",
         "yargs": "^8.0.1"
     },
     "bin": {
@@ -39,8 +41,7 @@
         "build": "npm run clean && npm run build:src",
         "build:src": "babel src/ -d lib/src --source-maps --copy-files",
         "test": "mocha --require babel-core/register --colors ./test/*.spec.js",
-        "test:glob":
-            "mocha --require babel-core/register --colors -g glob ./test/*.spec.js",
+        "test:glob": "mocha --require babel-core/register --colors -g glob ./test/*.spec.js",
         "prepare": "npm run-script build",
         "clean": "rimraf lib/*",
         "version:patch": "npm version patch"
