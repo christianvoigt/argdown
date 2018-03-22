@@ -9,8 +9,8 @@
     "license": "MIT",
     "main": "lib/src/index.js",
     "dependencies": {
-        "argdown-map-maker": "git+https://github.com/christianvoigt/argdown-map-maker.git#develop",
-        "argdown-parser": "git+https://github.com/christianvoigt/argdown-parser.git#develop",
+        "argdown-map-maker": "^0.4.0",
+        "argdown-parser": "^0.8.0",
         "chokidar": "^1.7.0",
         "glob": "^7.1.2",
         "lodash": "^4.17.4",
@@ -36,7 +36,7 @@
         "build": "npm run clean && npm run build:src",
         "build:src": "babel src/ -d lib/src --source-maps --copy-files",
         "test": "mocha --require babel-core/register --colors ./test/*.spec.js",
-        "test:glob": "mocha --require babel-core/register --colors -g glob ./test/*.spec.js",
+        "test:png": "mocha --require babel-core/register --colors -g png ./test/*.spec.js",
         "prepare": "npm run-script build",
         "clean": "rimraf lib/*",
         "version:patch": "npm version patch"

@@ -1,3 +1,4 @@
+let path = require("path");
 import * as _ from "lodash";
 const sharp = require("sharp");
 let mkdirp = require("mkdirp");
@@ -36,10 +37,7 @@ class SvgToPngExportPlugin {
         } else if (request.inputPath) {
             fileName = this.getFileName(request.inputPath);
         }
-        const absoluteOutputDir = path.resolve(
-            process.cwd(),
-            this.settings.outputDir
-        );
+        const absoluteOutputDir = path.resolve(process.cwd(), this.settings.outputDir);
         const filePath = absoluteOutputDir + "/" + fileName + ".png";
         const settings = this.settings;
 
@@ -51,16 +49,8 @@ class SvgToPngExportPlugin {
         // Instead 10px has to be convertd to 9pt and 8px has to be converted to 7.5pt to obtain satisfactory results.
         // This will break if font sizes or if the viz.js svg output change. :(
         let convertedSvg = response.svg;
-        convertedSvg = this.replaceAll(
-            convertedSvg,
-            'font-size="10.00"',
-            'font-size="9pt"'
-        );
-        convertedSvg = this.replaceAll(
-            convertedSvg,
-            'font-size="8.00"',
-            'font-size="7.5pt"'
-        );
+        convertedSvg = this.replaceAll(convertedSvg, 'font-size="10.00"', 'font-size="9pt"');
+        convertedSvg = this.replaceAll(convertedSvg, 'font-size="8.00"', 'font-size="7.5pt"');
 
         await new Promise((resolve, reject) => {
             mkdirp(absoluteOutputDir, function(err) {

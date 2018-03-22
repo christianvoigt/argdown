@@ -6,12 +6,10 @@ var _ = _interopRequireWildcard(_lodash);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-//const puppeteer = require("puppeteer");
-const sharp = require("sharp");
-var fs = require("fs");
 let path = require("path");
-let mkdirp = require("mkdirp");
 
+const sharp = require("sharp");
+let mkdirp = require("mkdirp");
 
 class SvgToPngExportPlugin {
     set config(config) {
@@ -57,6 +55,7 @@ class SvgToPngExportPlugin {
         // Normally 10px should be converted to 7.5pt and 8px should be converted to 6pt
         // For some unknown reason this leads to wrong results
         // Instead 10px has to be convertd to 9pt and 8px has to be converted to 7.5pt to obtain satisfactory results.
+        // This will break if font sizes or if the viz.js svg output change. :(
         let convertedSvg = response.svg;
         convertedSvg = this.replaceAll(convertedSvg, 'font-size="10.00"', 'font-size="9pt"');
         convertedSvg = this.replaceAll(convertedSvg, 'font-size="8.00"', 'font-size="7.5pt"');
