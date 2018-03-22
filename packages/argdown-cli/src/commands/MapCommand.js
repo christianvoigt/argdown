@@ -29,14 +29,7 @@ export const builder = {
     statementSelectionMode: {
         alias: "statement-selection",
         type: "string",
-        choices: [
-            undefined,
-            "all",
-            "titled",
-            "roots",
-            "statement-trees",
-            "with-relations"
-        ]
+        choices: [undefined, "all", "titled", "roots", "statement-trees", "with-relations"]
     },
     graphName: {
         alias: "name",
@@ -98,7 +91,6 @@ export const handler = function(argv) {
     config.dot = config.dot || config.DotExport || {};
     config.map = config.map || config.MapMaker || {};
     const format = argv.format || "pdf";
-    console.log("argv.width: " + argv.width);
     if (format === "pdf") {
         config.svgToPdf = config.svgToPdf || config.SvgToPdfExportPlugin || {};
     } else if (format === "png") {

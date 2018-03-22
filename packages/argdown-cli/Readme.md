@@ -15,20 +15,28 @@ Current features of argdown-cli:
 
 ## Installation
 
-If you have not already done so, please [install node.js and npm](https://docs.npmjs.com/getting-started/installing-node) on your system before installing argdown-cli. To install argdown-cli run the following npm command:
+If you have not already done so, please [install node.js and npm](https://docs.npmjs.com/getting-started/installing-node) on your system before installing argdown-cli. 
+
+If you already have installed node on your system, please ensure that it is at least of version 8.0.0.
+
+To install argdown-cli run the following npm command:
 
 ```bash
 npm install -g argdown-cli
 ```
 
-This library requires a node version of 7.6.0 or newer.
+You can try out argdown-cli without installing it by running:
+
+```bash
+npx argdown-cli map -f png --width=2000 --height=2000 --density=300
+```
 
 ## Available commands
 
 Available commands:
 
 *   `argdown html [input glob] [output folder]`: exports the input files as html files into the output folder.
-*   `argdown map [input glob] [output folder]`: exports argument maps layouted with Graphviz. By default the maps are saved as pdf files. Use `--format png` to png files, `--format svg` to save svg files and `--format dot` to save dot files. If you export a png image, you can specify its dimensions by using `argdown map -f png --width=1000 --height=800`. Pngs are created by using the PhantomJS virtual browser, so this might take a while.
+*   `argdown map [input glob] [output folder]`: exports argument maps layouted with Graphviz. By default the maps are saved as pdf files. Use `--format png` to png files, `--format svg` to save svg files and `--format dot` to save dot files. If you export a png image, you can specify its dimensions and dpi density by using `argdown map -f png --width=1000 --height=800 --density=300`. The default density is `72`. Increase the density if the resulting png is of low quality. For more information on the density parameter read [this](https://github.com/lovell/sharp/issues/729).
 *   `argdown json [input glob] [output folder]`: exports the input files as .json files into the output folder.
 *   `argdown compile [input glob] [output folder]`: compiles the input files with included files into new .argdown files.
 

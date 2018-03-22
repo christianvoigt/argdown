@@ -98,7 +98,6 @@ const handler = exports.handler = function (argv) {
     config.dot = config.dot || config.DotExport || {};
     config.map = config.map || config.MapMaker || {};
     const format = argv.format || "pdf";
-    console.log("argv.width: " + argv.width);
     if (format === "pdf") {
         config.svgToPdf = config.svgToPdf || config.SvgToPdfExportPlugin || {};
     } else if (format === "png") {

@@ -177,7 +177,7 @@ describe("argdown-cli", function() {
         const cmd =
             "node " +
             filePathToCli +
-            " map -f png " +
+            " map -f png --width=2000 --height=2000 --density=300 " +
             filePath +
             " " +
             pngFolder;
