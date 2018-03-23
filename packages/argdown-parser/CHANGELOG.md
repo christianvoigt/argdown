@@ -1,3 +1,9 @@
+## 0.8.1 (03-21-2018)
+
+## Minor changes
+
+* Better configuration system for plugins. Plugins now extend PluginWithSettings and are expected to call reset() on every run.
+
 ## 0.8.0 (03-22-2018)
 
 ### Breaking Changes

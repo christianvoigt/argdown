@@ -6,22 +6,16 @@ import {Section} from '../model/Section.js';
 import {EquivalenceClass} from '../model/EquivalenceClass.js';
 import {tokenMatcher} from 'chevrotain';
 import {ArgdownLexer} from './../ArgdownLexer.js';
+import { PluginWithSettings } from "./PluginWithSettings.js";
 
 const RelationObjectTypes = Object.freeze({STATEMENT: Symbol("STATEMENT"), RECONSTRUCTED_ARGUMENT: Symbol("RECONSTRUCTED ARGUMENT"), SKETCHED_ARGUMENT: Symbol("SKETCHED ARGUMENT")});
 
-class ModelPlugin{
-  set config(config){
-    let previousSettings = this.settings;
-    if(!previousSettings){
-      previousSettings = {
-        removeTagsFromText: false
-      }
-    }
-    this.settings = _.defaultsDeep({}, config, previousSettings);
-  }
+class ModelPlugin extends PluginWithSettings{
   run(request, response){
     if(request.model){
-      this.config = request.model;
+      this.reset(request.model);
+    }else{
+      this.reset();
     }
 
     if(response.relations){
@@ -103,9 +97,11 @@ class ModelPlugin{
     return null;
   }
   constructor(config){
-    this.name = "ModelPlugin";
-    this.config = config;
-    
+    let defaultSettings = {
+        removeTagsFromText: false
+    }
+    super(defaultSettings, config);
+    this.name = "ModelPlugin";    
     let $ = this;
 
     const statementReferencePattern = /\[(.+)\]/;
