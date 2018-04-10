@@ -28,20 +28,23 @@ var _Section = require("./model/Section.js");
 
 var _EquivalenceClass = require("./model/EquivalenceClass.js");
 
+var _PluginWithSettings = require("./plugins/PluginWithSettings.js");
+
 module.exports = {
-  ArgdownTreeWalker: _ArgdownTreeWalker.ArgdownTreeWalker,
-  ArgdownParser: _ArgdownParser.ArgdownParser,
-  ArgdownLexer: _ArgdownLexer.ArgdownLexer,
-  ArgdownApplication: _ArgdownApplication.ArgdownApplication,
-  ParserPlugin: _ParserPlugin.ParserPlugin,
-  ModelPlugin: _ModelPlugin.ModelPlugin,
-  HtmlExport: _HtmlExport.HtmlExport,
-  Argument: _Argument.Argument,
-  Statement: _Statement.Statement,
-  Relation: _Relation.Relation,
-  Section: _Section.Section,
-  EquivalenceClass: _EquivalenceClass.EquivalenceClass,
-  JSONExport: _JSONExport.JSONExport,
-  TagPlugin: _TagPlugin.TagPlugin
+    ArgdownTreeWalker: _ArgdownTreeWalker.ArgdownTreeWalker,
+    ArgdownParser: _ArgdownParser.ArgdownParser,
+    ArgdownLexer: _ArgdownLexer.ArgdownLexer,
+    ArgdownApplication: _ArgdownApplication.ArgdownApplication,
+    ParserPlugin: _ParserPlugin.ParserPlugin,
+    ModelPlugin: _ModelPlugin.ModelPlugin,
+    HtmlExport: _HtmlExport.HtmlExport,
+    Argument: _Argument.Argument,
+    Statement: _Statement.Statement,
+    Relation: _Relation.Relation,
+    Section: _Section.Section,
+    EquivalenceClass: _EquivalenceClass.EquivalenceClass,
+    JSONExport: _JSONExport.JSONExport,
+    TagPlugin: _TagPlugin.TagPlugin,
+    PluginWithSettings: _PluginWithSettings.PluginWithSettings
 };
 //# sourceMappingURL=index.js.map

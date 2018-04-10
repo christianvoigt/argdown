@@ -20,18 +20,28 @@ var _chevrotain = require('chevrotain');
 
 var _ArgdownLexer = require('./../ArgdownLexer.js');
 
+var _PluginWithSettings2 = require('./PluginWithSettings.js');
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 var RelationObjectTypes = Object.freeze({ STATEMENT: Symbol("STATEMENT"), RECONSTRUCTED_ARGUMENT: Symbol("RECONSTRUCTED ARGUMENT"), SKETCHED_ARGUMENT: Symbol("SKETCHED ARGUMENT") });
 
-var ModelPlugin = function () {
+var ModelPlugin = function (_PluginWithSettings) {
+  _inherits(ModelPlugin, _PluginWithSettings);
+
   _createClass(ModelPlugin, [{
     key: 'run',
     value: function run(request, response) {
       if (request.model) {
-        this.config = request.model;
+        this.reset(request.model);
+      } else {
+        this.reset();
       }
 
       if (response.relations) {
@@ -176,26 +186,19 @@ var ModelPlugin = function () {
       }
       return null;
     }
-  }, {
-    key: 'config',
-    set: function set(config) {
-      var previousSettings = this.settings;
-      if (!previousSettings) {
-        previousSettings = {
-          removeTagsFromText: false
-        };
-      }
-      this.settings = _.defaultsDeep({}, config, previousSettings);
-    }
   }]);
 
   function ModelPlugin(config) {
     _classCallCheck(this, ModelPlugin);
 
-    this.name = "ModelPlugin";
-    this.config = config;
+    var defaultSettings = {
+      removeTagsFromText: false
+    };
 
-    var $ = this;
+    var _this = _possibleConstructorReturn(this, (ModelPlugin.__proto__ || Object.getPrototypeOf(ModelPlugin)).call(this, defaultSettings, config));
+
+    _this.name = "ModelPlugin";
+    var $ = _this;
 
     var statementReferencePattern = /\[(.+)\]/;
     var statementDefinitionPattern = /\[(.+)\]\:/;
@@ -817,7 +820,7 @@ var ModelPlugin = function () {
       currentHeading = null;
     }
 
-    this.argdownListeners = {
+    _this.argdownListeners = {
       argdownEntry: onArgdownEntry,
       headingEntry: onHeadingEntry,
       headingExit: onHeadingExit,
@@ -864,6 +867,7 @@ var ModelPlugin = function () {
       LinkEntry: onLinkEntry,
       TagEntry: onTagEntry
     };
+    return _this;
   }
 
   _createClass(ModelPlugin, [{
@@ -974,7 +978,7 @@ var ModelPlugin = function () {
   }]);
 
   return ModelPlugin;
-}();
+}(_PluginWithSettings2.PluginWithSettings);
 
 module.exports = {
   ModelPlugin: ModelPlugin,
