@@ -1,12 +1,12 @@
-'use strict';
+"use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _chevrotain = require('chevrotain');
+var _chevrotain = require("chevrotain");
 
 var chevrotain = _interopRequireWildcard(_chevrotain);
 
-var _lodash = require('lodash');
+var _lodash = require("lodash");
 
 var _ = _interopRequireWildcard(_lodash);
 
@@ -20,7 +20,7 @@ var tokenMatcher = chevrotain.tokenMatcher;
 
 var ArgdownLexer = function () {
     _createClass(ArgdownLexer, [{
-        key: 'init',
+        key: "init",
         value: function init() {
             // State required for matching the indentations
             this.indentStack = [0];
@@ -28,7 +28,7 @@ var ArgdownLexer = function () {
             this.rangesStack = [];
         }
     }, {
-        key: 'getCurrentLine',
+        key: "getCurrentLine",
         value: function getCurrentLine(matchedTokens) {
             var matchedTokensIsEmpty = _.isEmpty(matchedTokens);
             if (matchedTokensIsEmpty) return 1;
@@ -39,7 +39,7 @@ var ArgdownLexer = function () {
             return currentLine;
         }
     }, {
-        key: 'emitRemainingDedentTokens',
+        key: "emitRemainingDedentTokens",
         value: function emitRemainingDedentTokens(matchedTokens) {
             if (this.indentStack.length <= 1) return;
             var lastToken = _.last(matchedTokens);
@@ -57,7 +57,7 @@ var ArgdownLexer = function () {
             }
         }
     }, {
-        key: 'emitIndentOrDedent',
+        key: "emitIndentOrDedent",
         value: function emitIndentOrDedent(matchedTokens, groups, indentStr) {
             var currIndentLevel = indentStr.length;
             var lastIndentLevel = _.last(this.indentStack);
@@ -169,11 +169,11 @@ var ArgdownLexer = function () {
         });
         $.tokens.push($.OutgoingUndercut);
 
-        var inferenceStartPattern = /^[\r\n|\n|\r]?[' '\t]*-{2}/;
+        var inferenceStartPattern = /^(?:\r\n|\n|\r)?[' '\t]*-{2}/;
 
         function matchInferenceStart(text, offset, matchedTokens) {
             var remainingText = text.substr(offset);
-            var startsWithNewline = /^[\r\n|\n|\r]/.exec(remainingText) != null;
+            var startsWithNewline = /^(?:\r\n|\n|\r)/.exec(remainingText) != null;
             if (_.isEmpty(matchedTokens) || startsWithNewline) {
                 var match = inferenceStartPattern.exec(remainingText);
                 if (match != null) {
@@ -233,7 +233,7 @@ var ArgdownLexer = function () {
 
         function matchListItem(text, offset, matchedTokens, groups, pattern) {
             var remainingText = text.substr(offset);
-            var startsWithNewline = /^[\r\n|\n|\r]/.exec(remainingText) != null;
+            var startsWithNewline = /^(?:\r\n|\n|\r)/.exec(remainingText) != null;
             var last = _.last(matchedTokens);
             var afterEmptyline = last && tokenMatcher(last, $.Emptyline);
             if (_.isEmpty(matchedTokens) || afterEmptyline || startsWithNewline) {
@@ -332,7 +332,6 @@ var ArgdownLexer = function () {
         //     pattern: /\<(.+?)\>\(\d+\)/
         // });
         // $.tokens.push($.StatementReferenceByNumber);
-
 
         $.StatementMention = createToken({
             name: "StatementMention",
@@ -578,7 +577,7 @@ var ArgdownLexer = function () {
 
         var lexerConfig = {
             modes: {
-                "default_mode": [$.Comment, $.EscapedChar, //must come first after $.Comment
+                default_mode: [$.Comment, $.EscapedChar, //must come first after $.Comment
                 $.Emptyline,
                 // Relation tokens must appear before Spaces, otherwise all indentation will always be consumed as spaces.
                 // Dedent must appear before Indent for handling zero spaces dedents.
@@ -599,7 +598,7 @@ var ArgdownLexer = function () {
                 // $.StatementReferenceByNumber, // needs to be lexed before ArgumentReference
                 // $.StatementMentionByNumber, // needs to be lexed before ArgumentReference
                 $.StatementDefinition, $.StatementReference, $.StatementMention, $.ArgumentDefinition, $.ArgumentReference, $.ArgumentMention, $.Newline, $.Spaces, $.Freestyle, $.UnusedControlChar],
-                "inference_mode": [$.Comment, $.InferenceEnd, $.MetadataStart, $.MetadataEnd, $.MetadataStatementEnd, $.ListDelimiter, $.Colon, $.Newline, $.Spaces, $.Freestyle, $.UnusedControlChar]
+                inference_mode: [$.Comment, $.InferenceEnd, $.MetadataStart, $.MetadataEnd, $.MetadataStatementEnd, $.ListDelimiter, $.Colon, $.Newline, $.Spaces, $.Freestyle, $.UnusedControlChar]
             },
 
             defaultMode: "default_mode"
@@ -609,7 +608,7 @@ var ArgdownLexer = function () {
     }
 
     _createClass(ArgdownLexer, [{
-        key: 'tokensToString',
+        key: "tokensToString",
         value: function tokensToString(tokens) {
             var str = "";
             var _iteratorNormalCompletion = true;
@@ -640,7 +639,7 @@ var ArgdownLexer = function () {
             return str;
         }
     }, {
-        key: 'tokenLocationsToString',
+        key: "tokenLocationsToString",
         value: function tokenLocationsToString(tokens) {
             var str = "";
             var _iteratorNormalCompletion2 = true;
@@ -672,7 +671,7 @@ var ArgdownLexer = function () {
             return str;
         }
     }, {
-        key: 'tokenize',
+        key: "tokenize",
         value: function tokenize(text) {
             this.init();
 
