@@ -337,7 +337,7 @@ describe("Lexer", function() {
         let source = fs.readFileSync("./test/lexer-windows-line-endings.argdown", "utf8");
         const result = lexer.tokenize(source);
         startTest(result.tokens);
-        console.log(lexer.tokensToString(result.tokens));
+        //console.log(lexer.tokensToString(result.tokens));
         //expect(result.tokens.length).to.equal(5);
         expectToken(lexer.Freestyle);
         expectToken(lexer.Indent);

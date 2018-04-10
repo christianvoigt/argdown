@@ -1,8 +1,8 @@
+import * as _ from "lodash";
 import { Argument } from "../model/Argument.js";
 import { EquivalenceClass } from "../model/EquivalenceClass.js";
-import { PluginWithSettings } from "./PluginWithSettings.js";
 
-class JSONExport extends PluginWithSettings {
+class JSONExport {
     constructor(config) {
         let defaultSettings = {
             spaces: 2,
@@ -11,38 +11,46 @@ class JSONExport extends PluginWithSettings {
             exportSections: true,
             exportTags: true
         };
-        super(defaultSettings, config);
+        this.defaults = _.defaultsDeep({}, config, defaultSettings);
         this.name = "JSONExport";
     }
-    run(request, response) {
+    getSettings(request) {
         if (request.json) {
-            this.config = request.json;
+            return request.json;
         } else if (request.JSONExport) {
-            this.config = request.JSONExport;
+            return request.JSONExport;
+        } else {
+            request.json = {};
+            return request.json;
         }
+    }
+    prepare(request) {
+        _.defaultsDeep(this.getSettings(request), this.defaults);
+    }
+    run(request, response) {
         const argdown = {
             arguments: response.arguments,
             statements: response.statements,
             relations: response.relations
         };
-        if (this.settings.exportMap && response.map && response.map.nodes && response.map.edges) {
+        const settings = this.getSettings(request);
+        if (settings.exportMap && response.map && response.map.nodes && response.map.edges) {
             argdown.map = {
                 nodes: response.map.nodes,
                 edges: response.map.edges
             };
         }
-        if (this.settings.exportSections && response.sections) {
+        if (settings.exportSections && response.sections) {
             argdown.sections = response.sections;
         }
-        if (this.settings.exportTags && response.tags) {
+        if (settings.exportTags && response.tags) {
             argdown.tags = response.tags;
         }
-        const $ = this;
         response.json = JSON.stringify(
             argdown,
             function(key, value) {
                 if (
-                    $.settings.removeEmbeddedRelations &&
+                    settings.removeEmbeddedRelations &&
                     key == "relations" &&
                     (this instanceof Argument || this instanceof EquivalenceClass)
                 ) {
@@ -50,7 +58,7 @@ class JSONExport extends PluginWithSettings {
                 }
 
                 if (
-                    !$.settings.exportSections &&
+                    !settings.exportSections &&
                     key == "section" &&
                     (this instanceof Argument || this instanceof EquivalenceClass)
                 ) {
@@ -59,7 +67,7 @@ class JSONExport extends PluginWithSettings {
 
                 return value;
             },
-            this.settings.spaces
+            settings.spaces
         );
         return response;
     }

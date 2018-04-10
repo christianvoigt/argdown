@@ -10,48 +10,53 @@ var _util = require("./util.js");
 
 var _util2 = _interopRequireDefault(_util);
 
-var _PluginWithSettings2 = require("./PluginWithSettings.js");
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var HtmlExport = function (_PluginWithSettings) {
-    _inherits(HtmlExport, _PluginWithSettings);
+var HtmlExport = function () {
+    _createClass(HtmlExport, [{
+        key: "getSettings",
+        value: function getSettings(request) {
+            var settings = request["html"] || request[this.name];
+            if (!settings) {
+                settings = {};
+                request["html"] = settings;
+            }
+            return settings;
+        }
+    }, {
+        key: "prepare",
+        value: function prepare(request) {
+            _.defaultsDeep(this.getSettings(request), this.defaults);
+        }
+    }]);
 
     function HtmlExport(config) {
         _classCallCheck(this, HtmlExport);
 
-        var _this = _possibleConstructorReturn(this, (HtmlExport.__proto__ || Object.getPrototypeOf(HtmlExport)).call(this, {
+        this.name = "HtmlExport";
+        this.defaults = _.defaultsDeep({}, config, {
             headless: false,
             cssFile: "./argdown.css",
             title: "Argdown Document",
             lang: "en",
             charset: "utf8"
-        }, config));
-
-        _this.name = "HtmlExport";
-        var $ = _this;
-        _this.argdownListeners = {
+        });
+        var $ = this;
+        this.argdownListeners = {
             argdownEntry: function argdownEntry(request, response) {
-                if (request.html) {
-                    $.reset(request.html);
-                }
-
                 response.html = "";
                 response.htmlIds = {};
-                if (!$.settings.headless) {
-                    var head = $.settings.head;
+                var settings = $.getSettings(request);
+                if (!settings.headless) {
+                    var head = settings.head;
                     if (!head) {
-                        head = "<!doctype html>\n\n" + "<html lang='" + $.settings.lang + "'>\n" + "<head>\n" + "<meta charset='" + $.settings.charset + "'>\n" + "<title>" + $.settings.title + "</title>\n";
-                        if ($.settings.cssFile) {
-                            head += "<link rel='stylesheet' href='" + $.settings.cssFile + "'>\n";
+                        head = "<!doctype html>\n\n" + "<html lang='" + settings.lang + "'>\n" + "<head>\n" + "<meta charset='" + settings.charset + "'>\n" + "<title>" + settings.title + "</title>\n";
+                        if (settings.cssFile) {
+                            head += "<link rel='stylesheet' href='" + settings.cssFile + "'>\n";
                         }
                         head += "</head>";
                     }
@@ -61,8 +66,9 @@ var HtmlExport = function (_PluginWithSettings) {
                 response.html += "<div class='argdown'>";
             },
             argdownExit: function argdownExit(request, response) {
+                var settings = $.getSettings(request);
                 response.html += "</div>";
-                if (!$.settings.headless) {
+                if (!settings.headless) {
                     response.html += "</body></html>";
                 }
             },
@@ -204,8 +210,9 @@ var HtmlExport = function (_PluginWithSettings) {
                 return response.html += "</li>";
             },
             headingEntry: function headingEntry(request, response, node) {
+                var settings = $.getSettings(request);
                 if (node.level == 1) {
-                    if ($.settings.title == "Argdown Document") {
+                    if (settings.title == "Argdown Document") {
                         response.html = response.html.replace("<title>Argdown Document</title>", "<title>" + $.escapeHtml(node.text) + "</title>");
                     }
                 }
@@ -344,7 +351,6 @@ var HtmlExport = function (_PluginWithSettings) {
                 return response.html += "</div>";
             }
         };
-        return _this;
     }
 
     _createClass(HtmlExport, [{
@@ -420,7 +426,7 @@ var HtmlExport = function (_PluginWithSettings) {
     }]);
 
     return HtmlExport;
-}(_PluginWithSettings2.PluginWithSettings);
+}();
 
 module.exports = {
     HtmlExport: HtmlExport

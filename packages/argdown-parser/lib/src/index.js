@@ -28,8 +28,6 @@ var _Section = require("./model/Section.js");
 
 var _EquivalenceClass = require("./model/EquivalenceClass.js");
 
-var _PluginWithSettings = require("./plugins/PluginWithSettings.js");
-
 module.exports = {
     ArgdownTreeWalker: _ArgdownTreeWalker.ArgdownTreeWalker,
     ArgdownParser: _ArgdownParser.ArgdownParser,
@@ -44,7 +42,6 @@ module.exports = {
     Section: _Section.Section,
     EquivalenceClass: _EquivalenceClass.EquivalenceClass,
     JSONExport: _JSONExport.JSONExport,
-    TagPlugin: _TagPlugin.TagPlugin,
-    PluginWithSettings: _PluginWithSettings.PluginWithSettings
+    TagPlugin: _TagPlugin.TagPlugin
 };
 //# sourceMappingURL=index.js.map
