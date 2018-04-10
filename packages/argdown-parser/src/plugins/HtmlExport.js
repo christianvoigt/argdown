@@ -1,43 +1,50 @@
 import * as _ from "lodash";
 import util from "./util.js";
-import { PluginWithSettings } from "./PluginWithSettings.js";
 
-class HtmlExport extends PluginWithSettings {
+class HtmlExport {
+    getSettings(request) {
+        let settings = request["html"] || request[this.name];
+        if (!settings) {
+            settings = {};
+            request["html"] = settings;
+        }
+        return settings;
+    }
+    prepare(request) {
+        _.defaultsDeep(this.getSettings(request), this.defaults);
+    }
     constructor(config) {
-        super({
+        this.name = "HtmlExport";
+        this.defaults = _.defaultsDeep({}, config, {
             headless: false,
             cssFile: "./argdown.css",
             title: "Argdown Document",
             lang: "en",
             charset: "utf8"
-        }, config);
-        this.name = "HtmlExport";
+        });
         let $ = this;
         this.argdownListeners = {
             argdownEntry: (request, response) => {
-                if (request.html) {
-                    $.reset(request.html);
-                }
-
                 response.html = "";
                 response.htmlIds = {};
-                if (!$.settings.headless) {
-                    let head = $.settings.head;
+                let settings = $.getSettings(request);
+                if (!settings.headless) {
+                    let head = settings.head;
                     if (!head) {
                         head =
                             "<!doctype html>\n\n" +
                             "<html lang='" +
-                            $.settings.lang +
+                            settings.lang +
                             "'>\n" +
                             "<head>\n" +
                             "<meta charset='" +
-                            $.settings.charset +
+                            settings.charset +
                             "'>\n" +
                             "<title>" +
-                            $.settings.title +
+                            settings.title +
                             "</title>\n";
-                        if ($.settings.cssFile) {
-                            head += "<link rel='stylesheet' href='" + $.settings.cssFile + "'>\n";
+                        if (settings.cssFile) {
+                            head += "<link rel='stylesheet' href='" + settings.cssFile + "'>\n";
                         }
                         head += "</head>";
                     }
@@ -47,8 +54,9 @@ class HtmlExport extends PluginWithSettings {
                 response.html += "<div class='argdown'>";
             },
             argdownExit: (request, response) => {
+                let settings = $.getSettings(request);
                 response.html += "</div>";
-                if (!$.settings.headless) {
+                if (!settings.headless) {
                     response.html += "</body></html>";
                 }
             },
@@ -215,8 +223,9 @@ class HtmlExport extends PluginWithSettings {
             unorderedListItemEntry: (request, response) => (response.html += "<li>"),
             unorderedListItemExit: (request, response) => (response.html += "</li>"),
             headingEntry: (request, response, node) => {
+                let settings = $.getSettings(request);
                 if (node.level == 1) {
-                    if ($.settings.title == "Argdown Document") {
+                    if (settings.title == "Argdown Document") {
                         response.html = response.html.replace(
                             "<title>Argdown Document</title>",
                             "<title>" + $.escapeHtml(node.text) + "</title>"

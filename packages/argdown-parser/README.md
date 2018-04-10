@@ -65,21 +65,28 @@ console.log(response.json);
 
 ## How ArgdownApplication processes Argdown text
 
-Processing Argdown text with an ArgdownApplication app is done by running different "processors" after one another, passing the same request and response objects between them (`app.run(request);`). The request object contains the Argdown input, the processors to be run and configuration options for the plugins. The response object is used by the plugin to store processed data. Plugins should only change the response object, while callers of app.run only configure the request object.
+Processing Argdown text with an ArgdownApplication app is done by running different "processors" after one another, passing the same request and response objects between them (`app.run(request);`). The request object contains the Argdown input, the processors to be run and configuration options for the plugins. The response object is used by the plugin to store processed data. Plugins can add their default settings to the request and should change the response object, while callers of app.run only configure the request object.
 
-Normally, one of the first processors runs the ParserPlugin that parses the ArgdownInput and adds an abstract syntax tree (AST) to the response object (`response.ast`). Subsequent processors can access response.ast and add additional properties to the response object. Processors that run before the processors that parses the input can be used to add "preprocessors" to the app (for example loading files or changing the input data).
+Normally, the first processor runs the ParserPlugin that parses the ArgdownInput and adds an abstract syntax tree (AST) to the response object (`response.ast`). Subsequent processors can access response.ast and add additional properties to the response object. Processors that run before the processors that parses the input can be used to add "preprocessors" to the app (for example loading files or changing the input data). Alternatively, a plugin's "prepare" method can be used for the same purpose.
 
 Building the application means adding plugins to different processors of the app. A new processor is created by simply adding a plugin to a processor that has not been initialized before (using `app.addPlugin(plugin, processorName);`).
 
-Each processor has its own instance of an ArgdownTreeWalker and a list of plugins belonging to this processor. If the app runs the process it will first call the `walk` method of the processor's ArgdownTreeWalker. The tree walker will traverse the tree and call any plugins that have registered for its events passing the request and response objects along. After the tree walk has been completed, the app calls each plugin's `run(request, response, logger)` method in the order they have been registered, once again passing the same request and response objects between the plugins. Each plugin can add data to the response object and is expected to return it on completing its run method. By using a common request and response objects plugins are thus chained together without keeping any application state within the application or plugins themselves.
+Each processor has its own instance of an ArgdownTreeWalker and a list of plugins belonging to this processor. If the app runs the process it will
+
+*   call all `prepare` methods of the plugins so that the plugins can add their default settings to the request
+*   call the `walk` method of the processor's ArgdownTreeWalker if the response already has an ast property. The tree walker will traverse the tree and call any plugins that have registered for its events passing the request and response objects along. Plugins can use the listeners to collect and transform data and add it to the response object.
+*   After the tree walk has been completed, the app calls each plugin's `run(request, response, logger)` method in the order they have been registered, once again passing the same request and response objects between the plugins. Each plugin can add data to the response object and is expected to return it on completing its run method.
+
+By using a common request and response objects plugins are thus chained together without keeping any application state within the application or plugins themselves. This makes it possible to add the ability to run several requests asynchronously (for an example look at the source code of argdown-cli).
 
 ## Writing your own plugin
 
 A plugin is an object with
 
 *   a name property
-*   a run method
-*   and/or an argdownListeners property
+*   an optional prepare method
+*   an optional dictionary of argdownListener handler methods
+*   an optional run method
 
 Example:
 
@@ -120,53 +127,49 @@ You can also use the online [Demo Editor](christianvoigt.github.io/argdown) and 
 
 ## Configuration
 
-Argdown plugins can also use the configuration system of ArgdownApplication. Here is the plugin from above, changed to es6 class syntax with configuration options added. This pattern is used for all standard Argdown plugins:
+Argdown plugins can add their default settings to the request object. Here is the plugin from above, changed to es6 class syntax with configuration options added. This pattern is used for all standard Argdown plugins:
 
 ```JavaScript
 import * as _ from 'lodash';
 
 class MyNewPlugin{
-  set config(config){ // This pattern allows default settings that can be overwritten by consecutive calls to this.config = config;
-    let previousSettings = this.settings;
-    if(!previousSettings){
-      previousSettings = { // defaul settings
-        configOption: true
-      }
+  getSettings(request){ // get the plugin's settings from the request object
+    if(!request.myNewPluginSettings){
+      request.myNewPluginSettings = {};
     }
-    this.settings = _.defaultsDeep({}, config, previousSettings);
-  }  
-  constructor(config){ // allow configuration on initialization
+    return request.myNewPluginSettings;
+  }
+  prepare(request){ // adds the default plugin settings to the request object
+    _.defaultsDeep(this.getSettings(request), this.defaults)
+  }
+  constructor(config){ // config may contain special default settings for this instance
+    // The default settings for all instances
+    let defaultSettings = {
+      configOption: true
+    };
+    this.defaults = _.defaultsDeep({}, config, defaultSettings); // both sets of default settings are merged
     this.name = 'MyNewPlugin';
-    this.config = config;
-    const $ = this;
     this.argdownListeners = {
       argdownEntry: function(request, response, node, parentNode, childIndex, logger){ // each listener receives the request and response objects
-        if(data.config && data.config.myNewPlugin){ // allow on the fly configuration
-          $.config = data.config.myNewPlugin;
-        }
-        logger.log('verbose' 'Tree traversal started.');
-      },
-      statementEntry: function(request, response, node, parentNode, logger){
-        logger.log('verbose','TestPlugin event listener has been called on statement entry!');
-        logger.log('verbose', node.statement.text);
-      }
-      argdownExit: function(request, response, node, parentNode, logger){
-        logger.log('verbose', 'Tree traversal finished.');
+        const settings = $.getSettings(request); // get the settings from the request object
+        logger.log('verbose' 'Tree traversal started. ConfigOption is '+settings.configOption);
       }
     }
   }
   run(request, response, logger){
-      if(request.myNewPlugin){ // allow on the fly configuration
-        this.config = request.myNewPlugin;
-      }
-      logger.log('verbose','TestPlugin.run has been called!');
+      const settings = this.getSettings(request);
+      logger.log('verbose','TestPlugin.run has been called! ConfigOption is '+settings.configOption);
       response.test = "some new data";
       return response;
   }
 };
 const myNewPlugin = new MyNewPlugin({
-  configOption: true
+  configOption: false // special default settings for this instance
 });
+
+const app = new ArgdownApplication();
+app.addPlugin(myNewPlugin); // omitting a processor name will add the plugin to the default processor
+app.run({input: "Hallo World!", logLevel: "verbose", myNewPluginSettings: {configOption: true}}); // adds special plugin settings for this request
 ```
 
 ## Logging

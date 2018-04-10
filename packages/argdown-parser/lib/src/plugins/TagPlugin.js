@@ -10,36 +10,45 @@ var _util = require("./util.js");
 
 var _util2 = _interopRequireDefault(_util);
 
-var _PluginWithSettings2 = require("./PluginWithSettings.js");
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var TagPlugin = function (_PluginWithSettings) {
-    _inherits(TagPlugin, _PluginWithSettings);
-
+var TagPlugin = function () {
     function TagPlugin(config) {
         _classCallCheck(this, TagPlugin);
 
         var defaultSettings = {
             colorScheme: ["#1b9e77", "#d95f02", "#7570b3", "#e7298a", "#66a61e", "#e6ab02", "#a6761d", "#666666"]
         };
-
-        var _this = _possibleConstructorReturn(this, (TagPlugin.__proto__ || Object.getPrototypeOf(TagPlugin)).call(this, defaultSettings, config));
-
-        _this.name = "TagPlugin";
-        _this.config = config;
-        return _this;
+        this.defaults = _.defaultsDeep({}, config, defaultSettings);
+        this.name = "TagPlugin";
+        this.config = config;
     }
 
     _createClass(TagPlugin, [{
+        key: "getSettings",
+        value: function getSettings(request) {
+            if (!request.tagPlugin) {
+                request.tagPlugin = {};
+            }
+            return request.tagPlugin;
+        }
+    }, {
+        key: "prepare",
+        value: function prepare(request) {
+            var settings = this.getSettings(request);
+            _.defaultsDeep(settings, this.defaults);
+            if (request.tagColorScheme) {
+                settings.colorScheme = request.tagColorScheme;
+            }
+            if (request.tags) {
+                settings.tags = request.tags;
+            }
+        }
+    }, {
         key: "run",
         value: function run(request, response) {
             if (!response.tags || !response.statements || !response.arguments) {
@@ -47,21 +56,16 @@ var TagPlugin = function (_PluginWithSettings) {
             }
             response.tagsDictionary = {};
 
-            var tagConfigExists = request.tags != null;
-            if (request.tagColorScheme) {
-                this.reset({ colorScheme: request.tagColorScheme });
-            } else {
-                this.reset();
-            }
             var selectedTags = response.tags;
-            if (tagConfigExists) {
+            var settings = this.getSettings(request);
+            if (settings.tags) {
                 selectedTags = [];
                 var _iteratorNormalCompletion = true;
                 var _didIteratorError = false;
                 var _iteratorError = undefined;
 
                 try {
-                    for (var _iterator = request.tags[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    for (var _iterator = settings.tags[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                         var tagData = _step.value;
 
                         selectedTags.push(tagData.tag);
@@ -90,7 +94,7 @@ var TagPlugin = function (_PluginWithSettings) {
                     var tag = _step2.value;
 
                     var _tagData = null;
-                    if (tagConfigExists) {
+                    if (settings.tags) {
                         var tagConfig = _.find(request.tags, { tag: tag });
                         _tagData = _.clone(tagConfig);
                     }
@@ -101,8 +105,8 @@ var TagPlugin = function (_PluginWithSettings) {
                     var index = selectedTags.indexOf(tag);
                     _tagData.cssClass = _util2.default.getHtmlId("tag-" + tag);
                     if (index > -1) {
-                        if (!_tagData.color && index < this.settings.colorScheme.length) {
-                            _tagData.color = this.settings.colorScheme[index];
+                        if (!_tagData.color && index < settings.colorScheme.length) {
+                            _tagData.color = settings.colorScheme[index];
                         }
                         _tagData.cssClass += " tag" + index;
                         _tagData.index = index;
@@ -193,7 +197,7 @@ var TagPlugin = function (_PluginWithSettings) {
     }]);
 
     return TagPlugin;
-}(_PluginWithSettings2.PluginWithSettings);
+}();
 
 module.exports = {
     TagPlugin: TagPlugin

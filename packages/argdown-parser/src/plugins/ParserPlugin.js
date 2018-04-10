@@ -2,13 +2,12 @@ import * as _ from "lodash";
 import { ArgdownLexer } from "../ArgdownLexer.js";
 import { ArgdownParser } from "../ArgdownParser.js";
 import * as chevrotain from "chevrotain";
-import { PluginWithSettings } from "./PluginWithSettings.js";
 
 const tokenMatcher = chevrotain.tokenMatcher;
 
-class ParserPlugin extends PluginWithSettings {
+class ParserPlugin {
     constructor(config) {
-        super(null, config);
+        this.defaults = _.defaultsDeep({}, config);
         this.name = "ParserPlugin";
         this.lexer = ArgdownLexer;
         this.parser = ArgdownParser;
@@ -17,7 +16,6 @@ class ParserPlugin extends PluginWithSettings {
         if (!request.input) {
             return response;
         }
-        this.reset();
 
         let lexResult = this.lexer.tokenize(request.input);
         response.tokens = lexResult.tokens;

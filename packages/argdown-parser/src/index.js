@@ -13,7 +13,6 @@ import { Statement } from "./model/Statement.js";
 import { Relation } from "./model/Relation.js";
 import { Section } from "./model/Section.js";
 import { EquivalenceClass } from "./model/EquivalenceClass.js";
-import { PluginWithSettings } from "./plugins/PluginWithSettings.js";
 
 module.exports = {
     ArgdownTreeWalker: ArgdownTreeWalker,
@@ -29,6 +28,5 @@ module.exports = {
     Section: Section,
     EquivalenceClass: EquivalenceClass,
     JSONExport: JSONExport,
-    TagPlugin: TagPlugin,
-    PluginWithSettings: PluginWithSettings
+    TagPlugin: TagPlugin
 };

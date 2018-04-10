@@ -1,15 +1,30 @@
 import * as _ from "lodash";
 import util from "./util.js";
-import { PluginWithSettings } from "./PluginWithSettings.js";
 
-class TagPlugin extends PluginWithSettings {
+class TagPlugin {
     constructor(config) {
         let defaultSettings = {
             colorScheme: ["#1b9e77", "#d95f02", "#7570b3", "#e7298a", "#66a61e", "#e6ab02", "#a6761d", "#666666"]
         };
-        super(defaultSettings, config);
+        this.defaults = _.defaultsDeep({}, config, defaultSettings);
         this.name = "TagPlugin";
         this.config = config;
+    }
+    getSettings(request) {
+        if (!request.tagPlugin) {
+            request.tagPlugin = {};
+        }
+        return request.tagPlugin;
+    }
+    prepare(request) {
+        const settings = this.getSettings(request);
+        _.defaultsDeep(settings, this.defaults);
+        if (request.tagColorScheme) {
+            settings.colorScheme = request.tagColorScheme;
+        }
+        if (request.tags) {
+            settings.tags = request.tags;
+        }
     }
     run(request, response) {
         if (!response.tags || !response.statements || !response.arguments) {
@@ -17,22 +32,17 @@ class TagPlugin extends PluginWithSettings {
         }
         response.tagsDictionary = {};
 
-        let tagConfigExists = request.tags != null;
-        if (request.tagColorScheme) {
-            this.reset({ colorScheme: request.tagColorScheme });
-        } else {
-            this.reset();
-        }
         let selectedTags = response.tags;
-        if (tagConfigExists) {
+        const settings = this.getSettings(request);
+        if (settings.tags) {
             selectedTags = [];
-            for (let tagData of request.tags) {
+            for (let tagData of settings.tags) {
                 selectedTags.push(tagData.tag);
             }
         }
         for (let tag of response.tags) {
             let tagData = null;
-            if (tagConfigExists) {
+            if (settings.tags) {
                 let tagConfig = _.find(request.tags, { tag: tag });
                 tagData = _.clone(tagConfig);
             }
@@ -43,8 +53,8 @@ class TagPlugin extends PluginWithSettings {
             let index = selectedTags.indexOf(tag);
             tagData.cssClass = util.getHtmlId("tag-" + tag);
             if (index > -1) {
-                if (!tagData.color && index < this.settings.colorScheme.length) {
-                    tagData.color = this.settings.colorScheme[index];
+                if (!tagData.color && index < settings.colorScheme.length) {
+                    tagData.color = settings.colorScheme[index];
                 }
                 tagData.cssClass += " tag" + index;
                 tagData.index = index;

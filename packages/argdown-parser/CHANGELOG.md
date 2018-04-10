@@ -1,8 +1,12 @@
-## 0.8.1 (03-21-2018)
+## 0.8.1 (04-10-2018)
 
-## Minor changes
+### Minor changes
 
-* Better configuration system for plugins. Plugins now extend PluginWithSettings and are expected to call reset() on every run.
+*   Plugins can now use the prepare method to add default settings to the request object before argdownListeners and the run method are called. Plugins no longer have to keep any kind of state (see Readme for details).
+
+### Bug fixes
+
+*   Windows line endings in argument reconstructions and list items no longer produce lexer errors.
 
 ## 0.8.0 (03-22-2018)
 
