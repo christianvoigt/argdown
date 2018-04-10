@@ -32,8 +32,7 @@ describe("argdown-cli", function() {
     it("can create dot output", () => {
         let filePath = path.resolve(__dirname, "./test.argdown");
         let filePathToCli = path.resolve(__dirname, "../lib/src/cli.js");
-        const cmd =
-            "node " + filePathToCli + " map -f dot " + filePath + " --stdout";
+        const cmd = "node " + filePathToCli + " map -f dot " + filePath + " --stdout";
         return execPromise(cmd, (error, stdout, stderr) => {
             expect(error).to.equal(null);
             expect(stderr).to.equal("");
@@ -66,11 +65,7 @@ describe("argdown-cli", function() {
     it("can load config and run process", () => {
         let filePathToCli = path.resolve(__dirname, "../lib/src/cli.js");
         let filePathToConfig = path.resolve(__dirname, "./argdown.config.js");
-        const cmd =
-            "node " +
-            filePathToCli +
-            " --stdout --verbose --config " +
-            filePathToConfig;
+        const cmd = "node " + filePathToCli + " --stdout --verbose --config " + filePathToConfig;
         return execPromise(cmd, (error, stdout, stderr) => {
             expect(error).to.equal(null);
             expect(stderr).to.equal("");
@@ -84,13 +79,13 @@ describe("argdown-cli", function() {
         let filePathToHtml = path.resolve(__dirname, "./html/test.html");
         let filePathToCss = path.resolve(__dirname, "./html/argdown.css");
         let filePathToCli = path.resolve(__dirname, "../lib/src/cli.js");
-        const cmd =
-            "node " + filePathToCli + " html " + filePath + " " + htmlFolder;
+        const cmd = "node " + filePathToCli + " html " + filePath + " " + htmlFolder;
         return rimrafPromise(htmlFolder)
             .then(() => {
                 return execPromise(cmd, function(error, stdout, stderr) {
                     expect(error).to.equal(null);
                     expect(stderr).to.equal("");
+                    console.log(stdout);
                     expect(filePathToHtml).to.be.a.file();
                     expect(filePathToCss).to.be.a.file();
                 });
@@ -104,13 +99,7 @@ describe("argdown-cli", function() {
         let filePath = path.resolve(__dirname, "./test.argdown");
         let filePathToDot = path.resolve(__dirname, "./dot/test.dot");
         let filePathToCli = path.resolve(__dirname, "../lib/src/cli.js");
-        const cmd =
-            "node " +
-            filePathToCli +
-            " map -f dot " +
-            filePath +
-            " " +
-            dotFolder;
+        const cmd = "node " + filePathToCli + " map -f dot " + filePath + " " + dotFolder;
         return rimrafPromise(dotFolder)
             .then(() => {
                 return execPromise(cmd, (error, stdout, stderr) => {
@@ -131,13 +120,7 @@ describe("argdown-cli", function() {
         let filePath = path.resolve(__dirname, "./test.argdown");
         let filePathToSvg = path.resolve(__dirname, "./svg/test.svg");
         let filePathToCli = path.resolve(__dirname, "../lib/src/cli.js");
-        const cmd =
-            "node " +
-            filePathToCli +
-            " map -f svg " +
-            filePath +
-            " " +
-            svgFolder;
+        const cmd = "node " + filePathToCli + " map -f svg " + filePath + " " + svgFolder;
         return rimrafPromise(svgFolder)
             .then(() => {
                 return execPromise(cmd, (error, stdout, stderr) => {
@@ -155,8 +138,7 @@ describe("argdown-cli", function() {
         let filePath = path.resolve(__dirname, "./test.argdown");
         let filePathToPdf = path.resolve(__dirname, "./pdf/test.pdf");
         let filePathToCli = path.resolve(__dirname, "../lib/src/cli.js");
-        const cmd =
-            "node " + filePathToCli + " map " + filePath + " " + pdfFolder;
+        const cmd = "node " + filePathToCli + " map " + filePath + " " + pdfFolder;
         return rimrafPromise(pdfFolder)
             .then(() => {
                 return execPromise(cmd, (error, stdout, stderr) => {
@@ -198,8 +180,7 @@ describe("argdown-cli", function() {
         let filePath = path.resolve(__dirname, "./test.argdown");
         let filePathToJson = path.resolve(__dirname, "./json/test.json");
         let filePathToCli = path.resolve(__dirname, "../lib/src/cli.js");
-        const cmd =
-            "node " + filePathToCli + " json " + filePath + " " + jsonFolder;
+        const cmd = "node " + filePathToCli + " json " + filePath + " " + jsonFolder;
         return rimrafPromise(jsonFolder)
             .then(() => {
                 return execPromise(cmd, (error, stdout, stderr) => {
@@ -214,13 +195,9 @@ describe("argdown-cli", function() {
     });
     it("can include files", () => {
         let globPath = "./test/include-test.argdown";
-        let expectedResult = fs.readFileSync(
-            path.resolve(__dirname, "./include-test-expected-result.txt"),
-            "utf8"
-        );
+        let expectedResult = fs.readFileSync(path.resolve(__dirname, "./include-test-expected-result.txt"), "utf8");
         let filePathToCli = path.resolve(__dirname, "../lib/src/cli.js");
-        const cmd =
-            "node " + filePathToCli + " compile " + globPath + " --stdout";
+        const cmd = "node " + filePathToCli + " compile " + globPath + " --stdout";
         return execPromise(cmd, (error, stdout, stderr) => {
             expect(error).to.equal(null);
             expect(stderr).to.equal("");
@@ -232,19 +209,10 @@ describe("argdown-cli", function() {
         let jsonFolder = path.resolve(__dirname, "./json");
         let globPath = "./test/*.argdown";
         let filePathToJson1 = path.resolve(__dirname, "./json/test.json");
-        let filePathToJson2 = path.resolve(
-            __dirname,
-            "./json/include-test.json"
-        );
+        let filePathToJson2 = path.resolve(__dirname, "./json/include-test.json");
         let filePathToJson3 = path.resolve(__dirname, "./json/_partial1.json");
         let filePathToCli = path.resolve(__dirname, "../lib/src/cli.js");
-        const cmd =
-            "node " +
-            filePathToCli +
-            " json -v '" +
-            globPath +
-            "' " +
-            jsonFolder;
+        const cmd = "node " + filePathToCli + " json -v '" + globPath + "' " + jsonFolder;
         return rimrafPromise(jsonFolder)
             .then(() => {
                 return execPromise(cmd, (error, stdout, stderr) => {

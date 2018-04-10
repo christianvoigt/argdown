@@ -1,24 +1,11 @@
-'use strict';
+"use strict";
 
-var _lodash = require('lodash');
-
-var _ = _interopRequireWildcard(_lodash);
-
-var _argdownParser = require('argdown-parser');
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+var _argdownParser = require("argdown-parser");
 
 class LogParserErrorsPlugin {
-    set config(config) {
-        let previousSettings = this.settings;
-        if (!previousSettings) {
-            previousSettings = {};
-        }
-        this.settings = _.defaultsDeep({}, config, previousSettings);
-    }
-    constructor(config) {
+    constructor() {
         this.name = "LogParserErrorsPlugin";
-        this.config = config;
+        //this.defaults = _.defaultsDeep({}, config, {});
     }
     run(request, response, logger) {
         if (response.parserErrors && response.parserErrors.length > 0) {

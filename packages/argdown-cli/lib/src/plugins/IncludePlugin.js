@@ -19,27 +19,28 @@ let path = require("path");
 
 
 class IncludePlugin {
-    set config(config) {
-        let previousSettings = this.settings;
-        if (!previousSettings) {
-            previousSettings = {
-                regEx: /@include\(([^\)]+)\)/g
-            };
-        }
-        this.settings = _.defaultsDeep({}, config, previousSettings);
-    }
     constructor(config) {
         this.name = "IncludePlugin";
-        this.config = config;
+        this.defaults = _.defaultsDeep({}, config, {
+            regEx: /@include\(([^\)]+)\)/g
+        });
+    }
+    getSettings(request) {
+        if (!request.include) {
+            request.include = {};
+        }
+        return request.include;
+    }
+    prepare(request) {
+        _.defaultsDeep(this.getSettings(request), this.defaults);
     }
     async runAsync(request, response) {
-        if (request.include) {
-            this.config = request.include;
-        }
         if (!request.input || !request.inputPath) {
             return response;
         }
-        request.input = await this.replaceIncludesAsync(request.inputPath, request.input, this.settings.regEx, []);
+        const settings = this.getSettings(request);
+        settings.regEx.lastIndex = 0;
+        request.input = await this.replaceIncludesAsync(request.inputPath, request.input, settings.regEx, []);
         return response;
     }
     async replaceIncludesAsync(currentFilePath, str, regEx, filesAlreadyIncluded) {

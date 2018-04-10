@@ -15,7 +15,7 @@ Current features of argdown-cli:
 
 ## Installation
 
-If you have not already done so, please [install node.js and npm](https://docs.npmjs.com/getting-started/installing-node) on your system before installing argdown-cli. 
+If you have not already done so, please [install node.js and npm](https://docs.npmjs.com/getting-started/installing-node) on your system before installing argdown-cli.
 
 If you already have installed node on your system, please ensure that it is at least of version 8.0.0.
 
@@ -77,3 +77,7 @@ This naming convention makes it possible to have a main .argdown file and severa
 The cli can be configured with a config file. It will automatically look for a `argdown.config.js`. If you want to use a different name you can use `argdown --config [name-of-my-config-file].js`.
 
 [Visit the config documentation](https://github.com/christianvoigt/argdown/tree/master/docs/Configuration.md) at the central Argdown repository to learn more about the format of the config file.
+
+## Installation problems under Linux
+
+If the installation of argdown-cli fails under Linux this may be caused by the sharp module being unable to build the library needed for the png export. Please take a look at [christianvoigt/argdown#47](https://github.com/christianvoigt/argdown/issues/47) for further information.

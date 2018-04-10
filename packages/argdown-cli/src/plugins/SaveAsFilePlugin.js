@@ -4,54 +4,45 @@ let mkdirp = require("mkdirp");
 import * as _ from "lodash";
 
 class SaveAsFilePlugin {
-    set config(config) {
-        let previousSettings = this.settings;
-        if (!previousSettings) {
-            previousSettings = {
-                dataKey: "test",
-                extension: ".txt",
-                outputDir: "./output"
-            };
-        }
-        this.settings = _.defaultsDeep({}, config, previousSettings);
-    }
     constructor(config) {
         this.name = "SaveAsFilePlugin";
-        this.config = config;
+        this.defaults = _.defaultsDeep({}, config, {
+            dataKey: "test",
+            extension: ".txt",
+            outputDir: "./output"
+        });
+    }
+    // there can be several instances of this plugin in the same ArgdownApplication
+    // Because of this, we can not add the instance default settings to the request object as in other plugins
+    // Instead we have to add it each time the getSettings method is called to avoid keeping request specific state
+    getSettings(request) {
+        let settings = {};
+        if (request.saveAs) {
+            settings = request.saveAs;
+        } else if (request.SaveAsFilePlugin) {
+            settings = request.SaveAsFilePlugin;
+        }
+        settings = _.defaultsDeep({}, settings, this.defaults);
+        return settings;
     }
     async runAsync(request, response, logger) {
-        if (request.saveAs) {
-            this.config = request.saveAs;
-        } else if (request.SaveAsFilePlugin) {
-            this.config = request.SaveAsFilePlugin;
-        }
-
-        let fileContent = !this.settings.isRequestData
-            ? response[this.settings.dataKey]
-            : request[this.settings.dataKey];
+        const settings = this.getSettings(request);
+        let fileContent = !settings.isRequestData ? response[settings.dataKey] : request[settings.dataKey];
         if (!_.isEmpty(fileContent) && _.isString(fileContent)) {
             let fileName = "default";
-            if (_.isFunction(this.settings.fileName)) {
-                fileName = this.settings.fileName.call(this, request, response);
-            } else if (_.isString(this.settings.fileName)) {
-                fileName = this.settings.fileName;
+            if (_.isFunction(settings.fileName)) {
+                fileName = settings.fileName.call(this, request, response);
+            } else if (_.isString(settings.fileName)) {
+                fileName = settings.fileName;
             } else if (request.inputPath) {
                 fileName = this.getFileName(request.inputPath);
             }
-            let outputDir = this.settings.outputDir;
-            const dataSettings = !this.settings.isRequestData
-                ? request[this.settings.dataKey]
-                : null;
+            let outputDir = settings.outputDir;
+            const dataSettings = !settings.isRequestData ? request[settings.dataKey] : null;
             if (dataSettings && dataSettings.outputDir) {
                 outputDir = dataSettings.outputDir;
             }
-            await this.saveAsFile(
-                fileContent,
-                outputDir,
-                fileName,
-                this.settings.extension,
-                logger
-            );
+            await this.saveAsFile(fileContent, outputDir, fileName, settings.extension, logger);
         }
     }
     getFileName(file) {
@@ -69,24 +60,13 @@ class SaveAsFilePlugin {
             });
         });
         await new Promise((resolve, reject) => {
-            fs.writeFile(
-                absoluteOutputDir + "/" + fileName + extension,
-                data,
-                function(err) {
-                    if (err) {
-                        reject(err);
-                    }
-                    logger.log(
-                        "verbose",
-                        "Saved " +
-                            absoluteOutputDir +
-                            "/" +
-                            fileName +
-                            extension
-                    );
-                    resolve();
+            fs.writeFile(absoluteOutputDir + "/" + fileName + extension, data, function(err) {
+                if (err) {
+                    reject(err);
                 }
-            );
+                logger.log("verbose", "Saved " + absoluteOutputDir + "/" + fileName + extension);
+                resolve();
+            });
         });
     }
 }

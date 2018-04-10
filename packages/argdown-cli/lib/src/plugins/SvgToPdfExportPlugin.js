@@ -1,10 +1,10 @@
-'use strict';
+"use strict";
 
-var _svgToPdfkit = require('svg-to-pdfkit');
+var _svgToPdfkit = require("svg-to-pdfkit");
 
 var _svgToPdfkit2 = _interopRequireDefault(_svgToPdfkit);
 
-var _lodash = require('lodash');
+var _lodash = require("lodash");
 
 var _ = _interopRequireWildcard(_lodash);
 
@@ -13,48 +13,48 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // We have to use a local file and let babel ignore it, until pdfkit is ported to ES6
-var PDFDocument = require('../pdfkit.js');
-var fs = require('fs');
-let path = require('path');
-let mkdirp = require('mkdirp');
+var PDFDocument = require("../pdfkit.js");
+var fs = require("fs");
+let path = require("path");
+let mkdirp = require("mkdirp");
 
 
 class SvgToPdfExportPlugin {
-    set config(config) {
-        let previousSettings = this.settings;
-        if (!previousSettings) {
-            previousSettings = {
-                outputDir: "./pdf"
-            };
-        }
-        this.settings = _.defaultsDeep({}, config, previousSettings);
-        // enforce svg export
-        this.settings.format = 'svg';
-    }
     constructor(config) {
         this.name = "SvgToPdfExportPlugin";
-        this.config = config;
+        this.defaults = _.defaultsDeep({}, config, {
+            outputDir: "./pdf",
+            format: "svg"
+        });
+    }
+    getSettings(request) {
+        if (request.svgToPdf) {
+            return request.svgToPdf;
+        } else if (request.SvgToPdfExportPlugin) {
+            return request.SvgToPdfExportPlugin;
+        } else {
+            request.svgToPdf = {};
+            return request.svgToPdf;
+        }
+    }
+    prepare(request) {
+        _.defaults(this.getSettings(request), this.defaults);
     }
     async runAsync(request, response) {
-        if (request.svgToPdf) {
-            this.config = request.svgToPdf;
-        } else if (request.SvgToPdfExportPlugin) {
-            this.config = request.SvgToPdfExportPlugin;
-        }
         if (!response.svg) {
             return response;
         }
-        let fileName = 'default';
-        if (_.isFunction(this.settings.fileName)) {
-            fileName = this.settings.fileName.call(this, request, response);
-        } else if (_.isString(this.settings.fileName)) {
-            fileName = this.settings.fileName;
+        const settings = this.getSettings(request);
+        let fileName = "default";
+        if (_.isFunction(settings.fileName)) {
+            fileName = settings.fileName.call(this, request, response);
+        } else if (_.isString(settings.fileName)) {
+            fileName = settings.fileName;
         } else if (request.inputPath) {
             fileName = this.getFileName(request.inputPath);
         }
-        const absoluteOutputDir = path.resolve(process.cwd(), this.settings.outputDir);
-        const filePath = absoluteOutputDir + '/' + fileName + '.pdf';
-        const settings = this.settings;
+        const absoluteOutputDir = path.resolve(process.cwd(), settings.outputDir);
+        const filePath = absoluteOutputDir + "/" + fileName + ".pdf";
         await new Promise((resolve, reject) => {
             mkdirp(absoluteOutputDir, function (err) {
                 if (err) {
@@ -71,8 +71,7 @@ class SvgToPdfExportPlugin {
     // https://github.com/devongovett/pdfkit/issues/265
     async savePdfToFile(pdf, fileName) {
         return new Promise(resolve => {
-
-            // To determine when the PDF has finished being written successfully 
+            // To determine when the PDF has finished being written successfully
             // we need to confirm the following 2 conditions:
             //
             //   1. The write stream has been closed
@@ -87,7 +86,7 @@ class SvgToPdfExportPlugin {
             };
 
             const writeStream = fs.createWriteStream(fileName);
-            writeStream.on('close', stepFinished);
+            writeStream.on("close", stepFinished);
             pdf.pipe(writeStream);
 
             pdf.end();

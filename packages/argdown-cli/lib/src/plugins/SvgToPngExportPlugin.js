@@ -12,42 +12,42 @@ const sharp = require("sharp");
 let mkdirp = require("mkdirp");
 
 class SvgToPngExportPlugin {
-    set config(config) {
-        let previousSettings = this.settings;
-        if (!previousSettings) {
-            previousSettings = {
-                outputDir: "./png",
-                density: 300
-            };
-        }
-        this.settings = _.defaultsDeep({}, config, previousSettings);
-        // enforce svg export
-        this.settings.format = "png";
-    }
     constructor(config) {
         this.name = "SvgToPngExportPlugin";
-        this.config = config;
+        this.defaults = _.defaultsDeep({}, config, {
+            outputDir: "./png",
+            density: 300,
+            format: "png"
+        });
     }
-    async runAsync(request, response, logger) {
+    getSettings(request) {
         if (request.svgToPng) {
-            this.config = request.svgToPng;
+            return request.svgToPng;
         } else if (request.SvgToPngExportPlugin) {
-            this.config = request.SvgToPngExportPlugin;
+            return request.SvgToPngExportPlugin;
+        } else {
+            request.svgToPng = {};
+            return request.svgToPng;
         }
+    }
+    prepare(request) {
+        _.defaultsDeep(this.getSettings(request), this.defaults);
+    }
+    async runAsync(request, response) {
         if (!response.svg) {
             return response;
         }
+        const settings = this.getSettings(request);
         let fileName = "default";
-        if (_.isFunction(this.settings.fileName)) {
-            fileName = this.settings.fileName.call(this, request, response);
-        } else if (_.isString(this.settings.fileName)) {
-            fileName = this.settings.fileName;
+        if (_.isFunction(settings.fileName)) {
+            fileName = settings.fileName.call(this, request, response);
+        } else if (_.isString(settings.fileName)) {
+            fileName = settings.fileName;
         } else if (request.inputPath) {
             fileName = this.getFileName(request.inputPath);
         }
-        const absoluteOutputDir = path.resolve(process.cwd(), this.settings.outputDir);
+        const absoluteOutputDir = path.resolve(process.cwd(), settings.outputDir);
         const filePath = absoluteOutputDir + "/" + fileName + ".png";
-        const settings = this.settings;
 
         // Graphviz svg font sizes are missing a size format (font-size="10.00") and are interpreted by sharp (librsvg) as pixel sizes.
         // Because of this if density is increased, Sharp (librsvg) will not scale the text with the rest of the image.
