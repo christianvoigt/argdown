@@ -1,10 +1,10 @@
 "use strict";
 
-var _lodash = require('lodash');
+var _lodash = require("lodash");
 
 var _ = _interopRequireWildcard(_lodash);
 
-var _argdownParser = require('argdown-parser');
+var _argdownParser = require("argdown-parser");
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -34,6 +34,13 @@ class AsyncArgdownApplication extends _argdownParser.ArgdownApplication {
             if (!processor) {
                 this.logger.log("verbose", "Processor not found: " + processorId);
                 continue;
+            }
+
+            for (let plugin of processor.plugins) {
+                if (_.isFunction(plugin.prepare)) {
+                    this.logger.log("verbose", "Preparing plugin: " + plugin.name);
+                    plugin.prepare(request, resp, this.logger);
+                }
             }
 
             if (resp.ast && processor.walker) {

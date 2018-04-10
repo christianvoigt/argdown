@@ -1,8 +1,8 @@
 "use strict";
-import * as _ from 'lodash';
-import {ArgdownApplication} from 'argdown-parser';
+import * as _ from "lodash";
+import { ArgdownApplication } from "argdown-parser";
 
-class AsyncArgdownApplication extends ArgdownApplication{
+class AsyncArgdownApplication extends ArgdownApplication {
     async runAsync(request, response) {
         let processorsToRun = null;
         this.logger.setLevel("error");
@@ -30,6 +30,13 @@ class AsyncArgdownApplication extends ArgdownApplication{
                 continue;
             }
 
+            for (let plugin of processor.plugins) {
+                if (_.isFunction(plugin.prepare)) {
+                    this.logger.log("verbose", "Preparing plugin: " + plugin.name);
+                    plugin.prepare(request, resp, this.logger);
+                }
+            }
+
             if (resp.ast && processor.walker) {
                 processor.walker.walk(request, resp, this.logger);
             }
@@ -48,4 +55,4 @@ class AsyncArgdownApplication extends ArgdownApplication{
 }
 module.exports = {
     AsyncArgdownApplication: AsyncArgdownApplication
-}
+};
