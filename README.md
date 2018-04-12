@@ -24,7 +24,8 @@ The easiest way to get started is to install [the Argdown extension for Visual S
 
 ## Example
     
-```
+```argdown
+
 # Example 
 
 First we define some relations between statements and arguments:

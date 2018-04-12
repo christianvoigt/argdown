@@ -3,7 +3,7 @@
     <div class="content">
       <div class="rendered">
         <svg ref="svg" width="100%" height="100%">
-          <g style="transform: translate(0, 10px)">
+          <g class="dagre" style="transform: translate(0, 10px)">
           </g>
         </svg>
       </div>
@@ -14,6 +14,11 @@
 <script>
 import * as dagreD3 from 'dagre-d3'
 import * as d3 from 'd3'
+import { EventBus } from '../event-bus.js'
+import {saveAsSvg, saveAsPng} from '../map-export.js'
+
+var saveDagreAsPng = null
+var saveDagreAsSvg = null
 
 export default {
   name: 'dagre-d3-output',
@@ -54,6 +59,21 @@ export default {
   },
   mounted: function () {
     this.updateSVG()
+    var el = this.$refs.svg
+    var $store = this.$store
+    saveDagreAsPng = function () {
+      var scale = $store.state.pngScale
+      saveAsPng(el, scale, true)
+    }
+    saveDagreAsSvg = function () {
+      saveAsSvg(el, true)
+    }
+    EventBus.$on('save-map-as-svg', saveDagreAsSvg)
+    EventBus.$on('save-map-as-png', saveDagreAsPng)
+  },
+  beforeDestroy: function () {
+    EventBus.$off('save-map-as-svg', saveDagreAsSvg)
+    EventBus.$off('save-map-as-png', saveDagreAsPng)
   },
   methods: {
     addNode: function (node, g, currentGroup) {
@@ -98,8 +118,10 @@ export default {
       // console.log('updateSVG called!')
       const map = this.$store.getters.map
 
-      if (!this.$refs.svg || !map || !map.nodes || !map.edges) {
+      if (!this.$refs.svg || !map || !map.nodes || !map.edges || map.nodes.length === 0) {
         // console.log('svg or map undefined')
+        const svg = d3.select(this.$refs.svg)
+        svg.selectAll('*').remove()
         return
       }
       // Create the input graph
@@ -140,6 +162,7 @@ export default {
 
       svg.append('g')
       const svgGroup = svg.select('g')
+      svgGroup.attr('class', 'dagre')
       // console.log('svg ' + svg)
       // console.log('svgGroup ' + svgGroup)
 
@@ -167,11 +190,12 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .dagre-d3-output{
+  @import "../scss/dagre.css";
   .content{
     flex: 1;
-    overflow: auto;   
+    overflow: auto;
     .rendered{
       flex:1;
       display:flex;
@@ -179,176 +203,7 @@ export default {
       /* Firefox bug fix styles */
       min-width:0;
       min-height:0;
-    } 
-  }
-  .cluster {
-    rect{
-      fill: #ddd;      
     }
-    .node-label{
-      width:auto;
-    }
-    h3{
-      margin:0;
-      padding-top:3px;
-      font-size:14px;
-    }
-    &.level-0 rect{
-      fill:#dadada;
-    }
-    &.level-1 rect{
-      fill:#bababa;
-    }
-    &.level-2 rect{
-      fill:#aaa;
-    }
-  }
-
-  text {
-    font-weight: 300;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serf;
-    font-size: 14px;
-  }
-
-  .node rect {
-    stroke: #999;
-    fill: #fff;
-    stroke-width: 1.5px;
-  }
-
-  .edgePath path {
-    stroke: #333;
-    stroke-width: 1.5px;
-  }    
-  .edgePath.attack {
-    path{
-      stroke: red;
-    }
-    marker{
-      fill: red;
-    }
-  }
-  .edgePath.support {
-    path{
-      stroke: green;
-    }
-    marker{
-      fill: green;
-    }
-  }
-  .edgePath.undercut {
-    path{
-      stroke: purple;
-    }
-    marker{
-      fill: purple;
-    }
-  }  
-  .node{
-  cursor:pointer;
-  display:block;
-  position:static;
-  margin:0;
-  white-space: normal;
-  width:200px;
-  height:auto;
-  text-align:center;
-  color:#000;
-  .node-label{
-    white-space:normal;
-    padding:5px;
-  }
-p{
-  padding: 0px;
-  margin:0;
-  font-weight:normal;
-  font-size:12px;
-  display:block;
-} 
-h3{
-  padding: 0px;
-  margin:0;
-  font-size:14px;
-  font-weight:bold;
-  color:#264260;
-  display:block;
-}   
-  }
-  .node.argument{
-    rect{
-      fill: cornflowerblue;  
-      stroke: black;
-      stroke-width: 2px;
-    }
-    text{
-      fill: black;
-    }
-  }
-  .node.statement{
-    rect{
-      fill: white;  
-      stroke: cornflowerblue;
-      stroke-width: 3px;
-    }
-    text{
-      fill: black;
-    }
-  }  
-  .node-label{
-    text-align:center;
-    width: 150px;
-    
-    h3{
-        font-weight:bold;
-    }
-  }
-  .node.statement.tag7 rect{
-    stroke:#666666;
-  }
-  .node.argument.tag7 rect{
-    fill:#666666;
-  }
-  .node.statement.tag6 rect{
-    stroke:#a6761d;
-  }
-  .node.argument.tag6 rect{
-    fill:#a6761d;
-  }
-  .node.statement.tag5 rect{
-    stroke:#e6ab02;
-  }
-  .node.argument.tag5 rect{
-    fill:#e6ab02;
-  }
-  .node.statement.tag4 rect{
-    stroke:#66a61e;
-  }
-  .node.argument.tag4 rect{
-    fill:#66a61e;
-  }
-  .node.statement.tag3 rect{
-    stroke:#e7298a;
-  }
-  .node.argument.tag3 rect{
-    fill:#e7298a;
-  }
-  .node.statement.tag2 rect{
-    stroke:#7570b3;
-  }
-  .node.argument.tag2 rect{
-    fill:#7570b3;
-  }
-  .node.statement.tag1 rect{
-    stroke:#d95f02;
-  }
-  .node.argument.tag1 rect{
-    fill:#d95f02;
-  }
-  .node.statement.tag0 rect{
-    stroke:#1b9e77;
-  }
-  .node.argument.tag0 rect{
-    fill:#1b9e77;
   }
 }
 

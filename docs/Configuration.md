@@ -2,7 +2,7 @@
 
 The VS Code extension and the commandline interface both support configuring the Argdown parser by using config files. By default config files are named `argdown.config.js`. The VS Code extension will look for config files in your workspace folders. The argdown-cli tool will look for config files in the folder it is executed.
 
-The config file is a javascript file that exports a config object: 
+The config file is a javascript file that exports a config object:
 
 ```JavaScript
 module.exports = {
@@ -17,14 +17,14 @@ Currently you can use the following options (hint: you can try out the effects o
 ```JavaScript
 module.exports = {
   config: {
-    input: './*.argdown',
+    inputPath: './*.argdown', // files to be loaded. Use glob syntax (e.g. './**/*.argdown') to load several files at once. you can also directly use argdown input with config.input
     ignoreFiles: [ // by default 'partial' argdown files and folders that start with an underscore are ignored
           '**/_*',        // Exclude files starting with '_'.
           '**/_*/**'  // Exclude entire directories starting with '_'.
       ],
     watch: false, // should the input be continually watched for changes?
-    logLevel: "verbose", // use this if you want to get a lot of log messages from the parser
-    process: ["preprocessor", "parse-input", "build-model", "export-html", "save-as-html", "export-dot", "save-as-dot"], //just as an example, this will export to html and dot at the same time. If a process is defined, the config file can be run without a command (by entering `argdown`). If you want to know which processors are available, take a look at the index.js in the argdown-cli repository.
+    logLevel: 'verbose', // use this if you want to get a lot of log messages from the parser
+    process: ['preprocessor', 'parse-input', 'build-model', 'export-html', 'save-as-html', 'export-dot', 'save-as-dot'], //just as an example, this will export to html and dot at the same time. If a process is defined, the config file can be run without a command (by entering `argdown`). If you want to know which processors are available, take a look at the index.js in the argdown-cli repository.
     model: {
       removeTagsFromText: false // omit all tags in statement texts sand argument descriptions
     },
@@ -45,14 +45,15 @@ module.exports = {
       useHtmlLabels : true,
       graphname: 'Argument Map',
       lineLength: 25, // after how many characters should a line break be inserted?
-      groupColors: ["#DADADA","#BABABA","#AAAAAA"], // groups of level 0 will be colored with groupColors[0]
+      groupColors: ['#DADADA','#BABABA','#AAAAAA'], // groups of level 0 will be colored with groupColors[0]
       graphVizSettings: { //can contain all possible Graphviz graph settings
         rankdir: 'BT', //BT | TB | LR | RL
         concentrate: 'true',
         ratio: 'auto',
         size: '10,10'
       },
-      colorNodesByTag: true      
+      colorNodesByTag: true,
+      outputPath: './dot' // path for dot file export
     },
     html: {
       headless: false,
@@ -60,13 +61,15 @@ module.exports = {
       title: 'Argdown Document', // if not set, the first h1 element's content will be taken
       lang: 'en',
       charset: 'utf8',
-      head: null // you can use this to add a custom head section, including doctype and opening html tag 
+      head: null, // you can use this to add a custom head section, including doctype and opening html tag
+      outputPath: './html' // path for html file export
     },
     json: {
       spaces: 2,
       removeEmbeddedRelations: false,
       exportMap : true,
-      exportSections : true
+      exportSections : true,
+      outputPath: './json' // path for json file export
     }
   }
 }

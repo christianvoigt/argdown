@@ -46,6 +46,9 @@ export default {
     CodeMirror.registerHelper('lint', 'argdown', function (text, options) {
       const found = []
       const errors = store.getters.parserErrors
+      if (!errors) {
+        return found
+      }
       for (let i = 0; i < errors.length; i++) {
         let error = errors[i]
         let startLine = error.token.startLine - 1
