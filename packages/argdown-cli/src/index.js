@@ -8,8 +8,9 @@ import {
     JSONExport,
     TagPlugin
 } from "argdown-parser";
-import { MapMaker, DotExport, DotToSvgExport } from "argdown-map-maker";
+import { MapMaker, DotExport } from "argdown-map-maker";
 import { SaveAsFilePlugin } from "./plugins/SaveAsFilePlugin.js";
+import { DotToSvgExportPlugin } from "./plugins/DotToSvgExportPlugin.js";
 import { SvgToPdfExportPlugin } from "./plugins/SvgToPdfExportPlugin.js";
 import { SvgToPngExportPlugin } from "./plugins/SvgToPngExportPlugin.js";
 import { CopyDefaultCssPlugin } from "./plugins/CopyDefaultCssPlugin.js";
@@ -43,7 +44,7 @@ const saveAsHtml = new SaveAsFilePlugin({
     extension: ".html"
 });
 const copyDefaultCss = new CopyDefaultCssPlugin();
-const dotToSvgExport = new DotToSvgExport();
+const dotToSvgExport = new DotToSvgExportPlugin();
 const saveSvgAsSvg = new SaveAsFilePlugin({
     outputDir: "./svg",
     dataKey: "svg",
@@ -218,5 +219,6 @@ export {
     SaveAsFilePlugin,
     SvgToPdfExportPlugin,
     SvgToPngExportPlugin,
-    LogParserErrorsPlugin
+    LogParserErrorsPlugin,
+    DotToSvgExportPlugin
 };

@@ -1,8 +1,14 @@
+## 0.10.0
+
+### Minor Changes
+
+*   Moved DotToSvgExportPlugin into this repository to keep file size of argdown-map-maker small (useful for web projects like the online editor)
+
 ## 0.9.1
 
 ### Minor Changes
 
-*   Update to argdown-parser 0.8.1 and argdown-map-maker 0.4.1 (see their Changelog for info about the new bug fixes)
+*   Updated to argdown-parser 0.8.1 and argdown-map-maker 0.4.1 (see their Changelog for info about the new bug fixes)
 *   Added support for plugin's prepare method in app.runAsync
 *   Implemented new configuration pattern for plugins (for details see Readme of argdown-parser)
 
