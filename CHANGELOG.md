@@ -1,5 +1,11 @@
 ## 1.6.0 (03-13-2018)
 
+#### Bug fixes
+
+* Fixed base url for gh-pages
+
+## 1.6.0 (03-13-2018)
+
 #### Major Changes
 
 * Save maps as SVG or PNG files
