@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.LogParserErrorsPlugin = exports.SvgToPngExportPlugin = exports.SvgToPdfExportPlugin = exports.SaveAsFilePlugin = exports.CopyDefaultCssPlugin = exports.app = exports.AsyncArgdownApplication = undefined;
+exports.DotToSvgExportPlugin = exports.LogParserErrorsPlugin = exports.SvgToPngExportPlugin = exports.SvgToPdfExportPlugin = exports.SaveAsFilePlugin = exports.CopyDefaultCssPlugin = exports.app = exports.AsyncArgdownApplication = undefined;
 
 var _AsyncArgdownApplication = require("./AsyncArgdownApplication.js");
 
@@ -12,6 +12,8 @@ var _argdownParser = require("argdown-parser");
 var _argdownMapMaker = require("argdown-map-maker");
 
 var _SaveAsFilePlugin = require("./plugins/SaveAsFilePlugin.js");
+
+var _DotToSvgExportPlugin = require("./plugins/DotToSvgExportPlugin.js");
 
 var _SvgToPdfExportPlugin = require("./plugins/SvgToPdfExportPlugin.js");
 
@@ -62,7 +64,7 @@ const saveAsHtml = new _SaveAsFilePlugin.SaveAsFilePlugin({
     extension: ".html"
 });
 const copyDefaultCss = new _CopyDefaultCssPlugin.CopyDefaultCssPlugin();
-const dotToSvgExport = new _argdownMapMaker.DotToSvgExport();
+const dotToSvgExport = new _DotToSvgExportPlugin.DotToSvgExportPlugin();
 const saveSvgAsSvg = new _SaveAsFilePlugin.SaveAsFilePlugin({
     outputDir: "./svg",
     dataKey: "svg",
@@ -226,4 +228,5 @@ exports.SaveAsFilePlugin = _SaveAsFilePlugin.SaveAsFilePlugin;
 exports.SvgToPdfExportPlugin = _SvgToPdfExportPlugin.SvgToPdfExportPlugin;
 exports.SvgToPngExportPlugin = _SvgToPngExportPlugin.SvgToPngExportPlugin;
 exports.LogParserErrorsPlugin = _LogParserErrorsPlugin.LogParserErrorsPlugin;
+exports.DotToSvgExportPlugin = _DotToSvgExportPlugin.DotToSvgExportPlugin;
 //# sourceMappingURL=index.js.map
