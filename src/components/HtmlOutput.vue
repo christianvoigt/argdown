@@ -8,20 +8,19 @@
 </template>
 
 <script>
-
 export default {
-  name: 'html-output',
-  props: ['source'],
+  name: "html-output",
+  props: ["source"],
   computed: {
-    html: function () {
-      return this.$store.getters.html
+    html: function() {
+      return this.$store.getters.html;
     }
   }
-}
+};
 </script>
 
 <style scoped>
-.output .content{
-  padding:1em;
+.output .content {
+  padding: 1em;
 }
 </style>

@@ -16,7 +16,7 @@
           <tr class="error-property" v-for="(key,index) in Object.keys(error)" :key="index">
             <td class="property-name">{{key}}:</td>
             <td v-if="key == 'resyncedTokens' || key == 'context'" class="property-value">{{JSON.stringify(error[key])}}</td>
-            <td v-else-if="key == 'token'" class="property-value">{{error[key] | tokenName}}</td>
+            <td v-else-if="key == 'token'" class="property-value">{{error[key] |tokenName}}</td>
             <td v-else class="property-value">{{JSON.stringify(error[key])}}</td>
           </tr>
         </table>
@@ -35,24 +35,24 @@
 
 <script>
 export default {
-  name: 'debug-lexer-parser-output'
-}
+  name: "debug-lexer-parser-output"
+};
 </script>
 
 <style scoped>
 .output .content {
-    padding: 1em;
+  padding: 1em;
 }
 table.error {
-    border: 1px solid red;
-    padding: 1em;
-    margin-bottom: 2em;
+  border: 1px solid red;
+  padding: 1em;
+  margin-bottom: 2em;
 }
 td {
-    padding: 0.5em 1em;
-    vertical-align: top;
+  padding: 0.5em 1em;
+  vertical-align: top;
 }
 .property-name {
-    font-weight: bold;
+  font-weight: bold;
 }
 </style>

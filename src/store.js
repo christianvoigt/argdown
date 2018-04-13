@@ -1,19 +1,27 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import _ from 'lodash'
-import { ArgdownApplication, ParserPlugin, ModelPlugin, TagPlugin, HtmlExport, JSONExport } from 'argdown-parser'
-import { MapMaker, DotExport } from 'argdown-map-maker'
+import Vue from "vue";
+import Vuex from "vuex";
+import _ from "lodash";
+import {
+  ArgdownApplication,
+  ParserPlugin,
+  ModelPlugin,
+  TagPlugin,
+  HtmlExport,
+  JSONExport
+} from "argdown-parser";
+import { MapMaker, DotExport } from "argdown-map-maker";
 
-const app = new ArgdownApplication()
-const parserPlugin = new ParserPlugin()
-const modelPlugin = new ModelPlugin()
-const tagPlugin = new TagPlugin()
+const app = new ArgdownApplication();
+const parserPlugin = new ParserPlugin();
+const modelPlugin = new ModelPlugin();
+const tagPlugin = new TagPlugin();
+
 const htmlExport = new HtmlExport({
   headless: true
-})
-const jsonExport = new JSONExport({ removeEmbeddedRelations: true })
-const mapMaker = new MapMaker()
-const dotExport = new DotExport()
+});
+const jsonExport = new JSONExport({ removeEmbeddedRelations: true });
+const mapMaker = new MapMaker();
+const dotExport = new DotExport();
 const testInput = `# Welcome to Argdown!
 
 [Intro]: Argdown is a simple syntax for defining argumentative
@@ -97,20 +105,20 @@ Some inference rule (Some additional info: 1,2)
 
   We can also link to headings:
   [Back to top](#heading-welcome-to-argdown)
-`
+`;
 
-app.addPlugin(parserPlugin, 'parse-input')
-app.addPlugin(modelPlugin, 'build-model')
-app.addPlugin(tagPlugin, 'build-model')
-app.addPlugin(htmlExport, 'export-html')
-app.addPlugin(mapMaker, 'export-dot')
-app.addPlugin(dotExport, 'export-dot')
-app.addPlugin(mapMaker, 'export-argml')
-app.addPlugin(mapMaker, 'export-json')
-app.addPlugin(jsonExport, 'export-json')
-app.addPlugin(mapMaker, 'make-map')
+app.addPlugin(parserPlugin, "parse-input");
+app.addPlugin(modelPlugin, "build-model");
+app.addPlugin(tagPlugin, "build-model");
+app.addPlugin(htmlExport, "export-html");
+app.addPlugin(mapMaker, "export-dot");
+app.addPlugin(dotExport, "export-dot");
+app.addPlugin(mapMaker, "export-argml");
+app.addPlugin(mapMaker, "export-json");
+app.addPlugin(jsonExport, "export-json");
+app.addPlugin(mapMaker, "make-map");
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
@@ -118,21 +126,21 @@ export default new Vuex.Store({
     config: {
       map: {
         excludeDisconnected: true,
-        statementSelectionMode: 'statement-trees',
-        statementLabelMode: 'hide-untitled',
-        argumentLabelMode: 'hide-untitled',
+        statementSelectionMode: "statement-trees",
+        statementLabelMode: "hide-untitled",
+        argumentLabelMode: "hide-untitled",
         groupDepth: 2
       },
       dot: {
         graphVizSettings: {
-          rankdir: 'BT',
-          concentrate: 'false',
-          ratio: 'auto',
-          size: '10,10'
+          rankdir: "BT",
+          concentrate: "false",
+          ratio: "auto",
+          size: "10,10"
         }
       },
       dagre: {
-        rankDir: 'BT',
+        rankDir: "BT",
         rankSep: 50,
         nodeSep: 70
       },
@@ -140,97 +148,105 @@ export default new Vuex.Store({
         removeTagsFromText: false
       }
     },
-    viewState: 'default',
+    viewState: "default",
     showSettings: false,
     showSaveAsPngDialog: false,
     pngScale: 1
   },
   mutations: {
-    setArgdownInput (state, value) {
-      state.argdownInput = value
+    setArgdownInput(state, value) {
+      state.argdownInput = value;
     },
-    setViewState (state, value) {
-      state.viewState = value
+    setViewState(state, value) {
+      state.viewState = value;
     },
-    toggleSettings (state) {
-      state.showSettings = !state.showSettings
+    toggleSettings(state) {
+      state.showSettings = !state.showSettings;
     },
-    openSaveAsPngDialog (state) {
-      state.showSaveAsPngDialog = true
+    openSaveAsPngDialog(state) {
+      state.showSaveAsPngDialog = true;
     },
-    closeSaveAsPngDialog (state) {
-      state.showSaveAsPngDialog = false
+    closeSaveAsPngDialog(state) {
+      state.showSaveAsPngDialog = false;
     }
   },
   getters: {
-    argdownData: (state, getters) => {
+    argdownData: state => {
       const request = _.defaultsDeep(
-        { input: state.argdownInput, process: ['parse-input', 'build-model'] },
+        { input: state.argdownInput, process: ["parse-input", "build-model"] },
         state.config
-      )
-      const response = app.run(request)
-      return response
+      );
+      const response = app.run(request);
+      return response;
     },
     html: (state, getters) => {
-      const data = getters.argdownData
+      const data = getters.argdownData;
       if (!data.ast) {
-        return null
+        return null;
       }
-      const request = _.defaultsDeep({ process: ['export-html'] }, state.config)
-      const response = app.run(request, data)
-      return response.html
+      const request = _.defaultsDeep(
+        { process: ["export-html"] },
+        state.config
+      );
+      const response = app.run(request, data);
+      return response.html;
     },
     dot: (state, getters) => {
-      const data = getters.argdownData
+      const data = getters.argdownData;
       if (!data.ast) {
-        return null
+        return null;
       }
-      const request = _.defaultsDeep({ process: ['export-dot'] }, state.config)
-      const response = app.run(request, data)
-      return response.dot
+      const request = _.defaultsDeep({ process: ["export-dot"] }, state.config);
+      const response = app.run(request, data);
+      return response.dot;
     },
     json: (state, getters) => {
-      const data = getters.argdownData
+      const data = getters.argdownData;
       if (!data.ast) {
-        return null
+        return null;
       }
-      const request = _.defaultsDeep({ process: ['export-json'] }, state.config)
-      const response = app.run(request, data)
-      return response.json
+      const request = _.defaultsDeep(
+        { process: ["export-json"] },
+        state.config
+      );
+      const response = app.run(request, data);
+      return response.json;
     },
     parserErrors: (state, getters) => {
-      return getters.argdownData.parserErrors
+      return getters.argdownData.parserErrors;
     },
     lexerErrors: (state, getters) => {
-      return getters.argdownData.lexerErrors
+      return getters.argdownData.lexerErrors;
     },
     statements: (state, getters) => {
-      return getters.argdownData.statements
+      return getters.argdownData.statements;
     },
     arguments: (state, getters) => {
-      return getters.argdownData.arguments
+      return getters.argdownData.arguments;
     },
     relations: (state, getters) => {
-      return getters.argdownData.relations
+      return getters.argdownData.relations;
     },
     ast: (state, getters) => {
-      return parserPlugin.parser.astToString(getters.argdownData.ast)
+      return parserPlugin.parser.astToString(getters.argdownData.ast);
     },
     tokens: (state, getters) => {
-      const data = getters.argdownData
-      return data.tokens ? parserPlugin.lexer.tokensToString(data.tokens) : null
+      const data = getters.argdownData;
+      return data.tokens
+        ? parserPlugin.lexer.tokensToString(data.tokens)
+        : null;
     },
     map: (state, getters) => {
-      const data = getters.argdownData
+      const data = getters.argdownData;
       if (!data.ast) {
-        return null
+        return null;
       }
-      const request = _.defaultsDeep({ process: ['make-map'] }, state.config)
-      const response = app.run(request, data)
-      return response.map
+      const request = _.defaultsDeep({ process: ["make-map"] }, state.config);
+      const response = app.run(request, data);
+      return response.map;
     },
     tagsDictionary: (state, getters) => {
-      return getters.argdownData.tagsDictionary
+      return getters.argdownData.tagsDictionary;
     }
   }
-})
+});

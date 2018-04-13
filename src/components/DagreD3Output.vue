@@ -12,117 +12,117 @@
 </template>
 
 <script>
-import * as dagreD3 from 'dagre-d3'
-import * as d3 from 'd3'
-import { EventBus } from '../event-bus.js'
-import {saveAsSvg, saveAsPng} from '../map-export.js'
+import * as dagreD3 from "dagre-d3";
+import * as d3 from "d3";
+import { EventBus } from "../event-bus.js";
+import { saveAsSvg, saveAsPng } from "../map-export.js";
 
-var saveDagreAsPng = null
-var saveDagreAsSvg = null
+var saveDagreAsPng = null;
+var saveDagreAsSvg = null;
 
 export default {
-  name: 'dagre-d3-output',
+  name: "dagre-d3-output",
   computed: {
-    map: function () {
+    map: function() {
       // console.log('map called!')
-      this.updateSVG()
-      this.$store.getters.argdownData
-      return this.$store.getters.map
+      this.updateSVG();
+      this.$store.getters.argdownData;
+      return this.$store.getters.map;
     },
-    rankDir: function () {
+    rankDir: function() {
       // console.log('rankDir called!')
-      this.updateSVG()
-      return this.$store.state.config.dagre.rankDir
+      this.updateSVG();
+      return this.$store.state.config.dagre.rankDir;
     },
-    nodeSep: function () {
+    nodeSep: function() {
       // console.log('nodeSep called!')
-      this.updateSVG()
-      return this.$store.state.config.dagre.nodeSep
+      this.updateSVG();
+      return this.$store.state.config.dagre.nodeSep;
     },
-    rankSep: function () {
+    rankSep: function() {
       // console.log('nodeSep called!')
-      this.updateSVG()
-      return this.$store.state.config.dagre.rankSep
+      this.updateSVG();
+      return this.$store.state.config.dagre.rankSep;
     }
   },
   watch: {
-    map: function () {
+    map: function() {
       // console.log('map watcher called!')
     },
-    rankDir: function () {
+    rankDir: function() {
       // console.log('rankDir watcher called!')
     },
-    nodeSep: function () {
-    },
-    rankSep: function () {
-    }
+    nodeSep: function() {},
+    rankSep: function() {}
   },
-  mounted: function () {
-    this.updateSVG()
-    var el = this.$refs.svg
-    var $store = this.$store
-    saveDagreAsPng = function () {
-      var scale = $store.state.pngScale
-      saveAsPng(el, scale, true)
-    }
-    saveDagreAsSvg = function () {
-      saveAsSvg(el, true)
-    }
-    EventBus.$on('save-map-as-svg', saveDagreAsSvg)
-    EventBus.$on('save-map-as-png', saveDagreAsPng)
+  mounted: function() {
+    this.updateSVG();
+    var el = this.$refs.svg;
+    var $store = this.$store;
+    saveDagreAsPng = function() {
+      var scale = $store.state.pngScale;
+      saveAsPng(el, scale, true);
+    };
+    saveDagreAsSvg = function() {
+      saveAsSvg(el, true);
+    };
+    EventBus.$on("save-map-as-svg", saveDagreAsSvg);
+    EventBus.$on("save-map-as-png", saveDagreAsPng);
   },
-  beforeDestroy: function () {
-    EventBus.$off('save-map-as-svg', saveDagreAsSvg)
-    EventBus.$off('save-map-as-png', saveDagreAsPng)
+  beforeDestroy: function() {
+    EventBus.$off("save-map-as-svg", saveDagreAsSvg);
+    EventBus.$off("save-map-as-png", saveDagreAsPng);
   },
   methods: {
-    addNode: function (node, g, currentGroup) {
+    addNode: function(node, g, currentGroup) {
       const nodeProperties = {
-        labelType: 'html',
+        labelType: "html",
         class: node.type,
         paddingBottom: 0,
         paddingTop: 0,
         paddingLeft: 0,
         paddingRight: 0
-      }
-      nodeProperties.label = '<div class="node-label">'
+      };
+      nodeProperties.label = '<div class="node-label">';
       if (node.labelTitle) {
-        nodeProperties.label += '<h3>' + node.labelTitle + '</h3>'
+        nodeProperties.label += "<h3>" + node.labelTitle + "</h3>";
       }
-      if (node.labelText && (node.type === 'statement' || node.type === 'argument')) {
-        nodeProperties.label += '<p>' + node.labelText + '</p>'
+      // eslint-disable-next-line
+      if (node.labelText && (node.type === "statement" || node.type === "argument")) {
+        nodeProperties.label += "<p>" + node.labelText + "</p>";
       }
       if (node.tags) {
         for (let tag of node.tags) {
-          nodeProperties.class += ' '
-          nodeProperties.class += this.$store.getters.tagsDictionary[tag].cssClass
+          nodeProperties.class += " ";
+          // eslint-disable-next-line
+          nodeProperties.class += this.$store.getters.tagsDictionary[tag].cssClass;
         }
       }
-      nodeProperties.label += '</div>'
+      nodeProperties.label += "</div>";
 
-      if (node.type === 'group') {
-        nodeProperties.clusterLabelPos = 'top'
-        nodeProperties.class += ' level-' + node.level
+      if (node.type === "group") {
+        nodeProperties.clusterLabelPos = "top";
+        nodeProperties.class += " level-" + node.level;
       }
-      g.setNode(node.id, nodeProperties)
+      g.setNode(node.id, nodeProperties);
       if (currentGroup) {
-        g.setParent(node.id, currentGroup.id)
+        g.setParent(node.id, currentGroup.id);
       }
-      if (node.type === 'group') {
+      if (node.type === "group") {
         for (let child of node.nodes) {
-          this.addNode(child, g, node)
+          this.addNode(child, g, node);
         }
       }
     },
-    updateSVG: function () {
+    updateSVG: function() {
       // console.log('updateSVG called!')
-      const map = this.$store.getters.map
-
+      const map = this.$store.getters.map;
+      // eslint-disable-next-line
       if (!this.$refs.svg || !map || !map.nodes || !map.edges || map.nodes.length === 0) {
         // console.log('svg or map undefined')
-        const svg = d3.select(this.$refs.svg)
-        svg.selectAll('*').remove()
-        return
+        const svg = d3.select(this.$refs.svg);
+        svg.selectAll("*").remove();
+        return;
       }
       // Create the input graph
       const g = new dagreD3.graphlib.Graph({ compound: true })
@@ -133,78 +133,84 @@ export default {
           marginx: 20,
           marginy: 20
         })
-        .setDefaultEdgeLabel(function () { return {} })
+        .setDefaultEdgeLabel(function() {
+          return {};
+        });
 
       for (let node of map.nodes) {
-        this.addNode(node, g)
+        this.addNode(node, g);
       }
 
       for (let edge of map.edges) {
-        g.setEdge(edge.from.id, edge.to.id, { class: edge.type })
+        g.setEdge(edge.from.id, edge.to.id, { class: edge.type });
       }
 
-      const nodes = g.nodes()
+      const nodes = g.nodes();
 
       for (let v of nodes) {
-        const node = g.node(v)
+        const node = g.node(v);
         // Round the corners of the nodes
-        node.rx = node.ry = 5
+        node.rx = node.ry = 5;
       }
 
       // Create the renderer
-      const render = new dagreD3.render() // eslint-disable-line new-cap
+      const render = new dagreD3.render(); // eslint-disable-line new-cap
 
       // const layout = dagreD3.layout().rankSep(50).rankDir('BT')
 
       // Set up an SVG group so that we can translate the final graph.
-      const svg = d3.select(this.$refs.svg)
-      svg.selectAll('*').remove()
+      const svg = d3.select(this.$refs.svg);
+      svg.selectAll("*").remove();
 
-      svg.append('g')
-      const svgGroup = svg.select('g')
-      svgGroup.attr('class', 'dagre')
+      svg.append("g");
+      const svgGroup = svg.select("g");
+      svgGroup.attr("class", "dagre");
       // console.log('svg ' + svg)
       // console.log('svgGroup ' + svgGroup)
 
-      var zoom = d3.behavior.zoom().on('zoom', function () {
-        svgGroup.attr('transform', 'translate(' + d3.event.translate + ')' + 'scale(' + d3.event.scale + ')')
-      })
-      svg.call(zoom)
+      var zoom = d3.zoom().on("zoom", function() {
+        // eslint-disable-next-line
+        svgGroup.attr("transform", d3.event.transform);
+      });
+      svg.call(zoom);
 
       // Run the renderer. This is what draws the final graph.
-      render(svgGroup, g)
+      render(svgGroup, g);
       // renderer.layout(layout).run(svgGroup, g)
       // Center the graph
-      let initialScale = 0.75
-      let getSvgWidth = function () {
-        let positionInfo = svg.node().getBoundingClientRect()
-        return positionInfo.width
-      }
-      zoom
-        .translate([(getSvgWidth() - g.graph().width * initialScale) / 2, 20])
-        .scale(initialScale)
-        .event(svg)
-      svgGroup.attr('height', g.graph().height * initialScale + 40)
+      let initialScale = 0.75;
+      let getSvgWidth = function() {
+        let positionInfo = svg.node().getBoundingClientRect();
+        return positionInfo.width;
+      };
+      svg
+        .transition()
+        .duration(0)
+        .call(
+          zoom.transform,
+          // eslint-disable-next-line
+          d3.zoomIdentity.translate((getSvgWidth() - g.graph().width * initialScale) / 2, 20).scale(initialScale)
+        );
+      svgGroup.attr("height", g.graph().height * initialScale + 40);
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
-.dagre-d3-output{
+.dagre-d3-output {
   @import "../scss/dagre.css";
-  .content{
+  .content {
     flex: 1;
     overflow: auto;
-    .rendered{
-      flex:1;
-      display:flex;
-      flex-direction:column;
+    .rendered {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
       /* Firefox bug fix styles */
-      min-width:0;
-      min-height:0;
+      min-width: 0;
+      min-height: 0;
     }
   }
 }
-
 </style>

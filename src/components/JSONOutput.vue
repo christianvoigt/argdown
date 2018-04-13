@@ -8,12 +8,12 @@
 
 <script>
 export default {
-  name: 'json-output'
-}
+  name: "json-output"
+};
 </script>
 
 <style scoped>
-.output .content{
-padding:1em;  
+.output .content {
+  padding: 1em;
 }
 </style>

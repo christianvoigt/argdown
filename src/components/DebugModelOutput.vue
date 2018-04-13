@@ -25,12 +25,12 @@
 
 <script>
 export default {
-  name: 'debug-model-output'
-}
+  name: "debug-model-output"
+};
 </script>
 
 <style scoped>
-.output .content{
-  padding:1em;
+.output .content {
+  padding: 1em;
 }
 </style>

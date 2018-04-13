@@ -10,12 +10,12 @@
 
 <script>
 export default {
-  name: 'dot-output'
-}
+  name: "dot-output"
+};
 </script>
 
 <style scoped>
-.output .content{
-padding:1em;  
+.output .content {
+  padding: 1em;
 }
 </style>

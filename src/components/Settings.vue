@@ -13,7 +13,7 @@
   <label for="excludeDisconnected">exclude disconnected</label>  
 </fieldset>
 <fieldset>
-  <label for="statementSelectionMode">Statement selection: </label>  
+  <label for="statementSelectionMode">Statement selection: </label>
   <select id="statementSelectionMode" v-model="$store.state.config.map.statementSelectionMode">
     <option disabled value="">Please select one</option>
     <option value='all'>all</option>
@@ -93,33 +93,33 @@
 
 <script>
 export default {
-  name: 'settings'
-}
+  name: "settings"
+};
 </script>
 
 <style scoped lang="scss">
-.settings{
-  position:fixed;
-  top:0px;
-  left:100%;
-  bottom:0px;
-  background-color:#A0DDE5;
-  padding:1em;
+.settings {
+  position: fixed;
+  top: 0px;
+  left: 100%;
+  bottom: 0px;
+  background-color: #a0dde5;
+  padding: 1em;
   overflow: auto;
   height: 100%;
-  .header{
-    padding-bottom:1em;
-    h3{
-      padding:0;
-      margin:0;
+  .header {
+    padding-bottom: 1em;
+    h3 {
+      padding: 0;
+      margin: 0;
     }
   }
-  .content{
-    font-size:0.9em;
-    display:flex;
-    flex-direction:column;
-    fieldset{
-      border:0;
+  .content {
+    font-size: 0.9em;
+    display: flex;
+    flex-direction: column;
+    fieldset {
+      border: 0;
     }
   }
 }

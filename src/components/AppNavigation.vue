@@ -12,33 +12,33 @@
 
 <script>
 export default {
-  name: 'app-navigation',
-  data () {
+  name: "app-navigation",
+  data() {
     return {
-      title: 'Argdown Test Environment'
-    }
+      title: "Argdown Test Environment"
+    };
   }
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-nav{
-  font-size:1.25em;
+nav {
+  font-size: 1.25em;
   padding: 0.25em 0;
-  a{
+  a {
     display: flex;
     height: 100%;
     justify-content: center;
     align-items: center;
     padding: 0.2em 0.75em;
     border-radius: 0.4em;
-    padding:0.5em 0.75em;
-    text-decoration:none;
-    color:#ddd;
-    &:hover{
-      text-decoration:underline;
-      color:#fff;
+    padding: 0.5em 0.75em;
+    text-decoration: none;
+    color: #ddd;
+    &:hover {
+      text-decoration: underline;
+      color: #fff;
     }
   }
 }

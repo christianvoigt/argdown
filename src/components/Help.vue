@@ -3,13 +3,8 @@
     <h2>Argdown Help</h2>
 </div>
 </template>
-
 <script>
-
 export default {
-  name: 'help'
-}
+  name: "help"
+};
 </script>
-
-<style scoped>
-</style>
