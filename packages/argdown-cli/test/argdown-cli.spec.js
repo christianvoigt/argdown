@@ -151,30 +151,6 @@ describe("argdown-cli", function() {
                 return rimrafPromise(pdfFolder);
             });
     });
-    it("can create png file from map", () => {
-        let pngFolder = path.resolve(__dirname, "./png/");
-        let filePath = path.resolve(__dirname, "./test.argdown");
-        let filePathToPng = path.resolve(__dirname, "./png/test.png");
-        let filePathToCli = path.resolve(__dirname, "../lib/src/cli.js");
-        const cmd =
-            "node " +
-            filePathToCli +
-            " map -f png --width=2000 --height=2000 --density=300 " +
-            filePath +
-            " " +
-            pngFolder;
-        return rimrafPromise(pngFolder)
-            .then(() => {
-                return execPromise(cmd, (error, stdout, stderr) => {
-                    expect(error).to.equal(null);
-                    expect(stderr).to.equal("");
-                    expect(filePathToPng).to.be.a.file();
-                });
-            })
-            .then(() => {
-                return rimrafPromise(pngFolder);
-            });
-    });
     it("can create json file", () => {
         let jsonFolder = path.resolve(__dirname, "./json");
         let filePath = path.resolve(__dirname, "./test.argdown");
