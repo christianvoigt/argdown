@@ -1,9 +1,9 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
-exports.DotToSvgExportPlugin = exports.LogParserErrorsPlugin = exports.SvgToPngExportPlugin = exports.SvgToPdfExportPlugin = exports.SaveAsFilePlugin = exports.CopyDefaultCssPlugin = exports.app = exports.AsyncArgdownApplication = undefined;
+exports.DotToSvgExportPlugin = exports.LogParserErrorsPlugin = exports.SvgToPdfExportPlugin = exports.SaveAsFilePlugin = exports.CopyDefaultCssPlugin = exports.app = exports.AsyncArgdownApplication = undefined;
 
 var _AsyncArgdownApplication = require("./AsyncArgdownApplication.js");
 
@@ -16,8 +16,6 @@ var _SaveAsFilePlugin = require("./plugins/SaveAsFilePlugin.js");
 var _DotToSvgExportPlugin = require("./plugins/DotToSvgExportPlugin.js");
 
 var _SvgToPdfExportPlugin = require("./plugins/SvgToPdfExportPlugin.js");
-
-var _SvgToPngExportPlugin = require("./plugins/SvgToPngExportPlugin.js");
 
 var _CopyDefaultCssPlugin = require("./plugins/CopyDefaultCssPlugin.js");
 
@@ -59,43 +57,42 @@ const mapMaker = new _argdownMapMaker.MapMaker();
 const dotExport = new _argdownMapMaker.DotExport();
 const jsonExport = new _argdownParser.JSONExport();
 const saveAsHtml = new _SaveAsFilePlugin.SaveAsFilePlugin({
-    outputDir: "./html",
-    dataKey: "html",
-    extension: ".html"
+  outputDir: "./html",
+  dataKey: "html",
+  extension: ".html"
 });
 const copyDefaultCss = new _CopyDefaultCssPlugin.CopyDefaultCssPlugin();
 const dotToSvgExport = new _DotToSvgExportPlugin.DotToSvgExportPlugin();
 const saveSvgAsSvg = new _SaveAsFilePlugin.SaveAsFilePlugin({
-    outputDir: "./svg",
-    dataKey: "svg",
-    extension: ".svg"
+  outputDir: "./svg",
+  dataKey: "svg",
+  extension: ".svg"
 });
 const saveSvgAsPdf = new _SvgToPdfExportPlugin.SvgToPdfExportPlugin();
-const saveSvgAsPng = new _SvgToPngExportPlugin.SvgToPngExportPlugin();
 
 const saveAsDot = new _SaveAsFilePlugin.SaveAsFilePlugin({
-    outputDir: "./dot",
-    dataKey: "dot",
-    extension: ".dot"
+  outputDir: "./dot",
+  dataKey: "dot",
+  extension: ".dot"
 });
 const saveAsJSON = new _SaveAsFilePlugin.SaveAsFilePlugin({
-    outputDir: "./json",
-    dataKey: "json",
-    extension: ".json"
+  outputDir: "./json",
+  dataKey: "json",
+  extension: ".json"
 });
 const saveAsArgdown = new _SaveAsFilePlugin.SaveAsFilePlugin({
-    outputDir: "./compiled",
-    dataKey: "input",
-    extension: ".argdown",
-    isRequestData: true
+  outputDir: "./compiled",
+  dataKey: "input",
+  extension: ".argdown",
+  isRequestData: true
 });
 const stdoutDot = new _StdOutPlugin.StdOutPlugin({ dataKey: "dot" });
 const stdoutSvg = new _StdOutPlugin.StdOutPlugin({ dataKey: "svg" });
 const stdoutJSON = new _StdOutPlugin.StdOutPlugin({ dataKey: "json" });
 const stdoutHtml = new _StdOutPlugin.StdOutPlugin({ dataKey: "html" });
 const stdoutArgdown = new _StdOutPlugin.StdOutPlugin({
-    dataKey: "input",
-    isRequestData: true
+  dataKey: "input",
+  isRequestData: true
 });
 
 app.addPlugin(includePlugin, "preprocessor");
@@ -125,65 +122,74 @@ app.addPlugin(dotToSvgExport, "export-svg");
 app.addPlugin(saveSvgAsSvg, "save-svg-as-svg");
 app.addPlugin(stdoutSvg, "stdout-svg");
 app.addPlugin(saveSvgAsPdf, "save-svg-as-pdf");
-app.addPlugin(saveSvgAsPng, "save-svg-as-png");
 
 app.load = async function (config) {
-    const request = _.defaults({}, config);
-    const inputGlob = request.inputPath || "./*.argdown";
-    const ignoreFiles = request.ignore || ["**/_*", // Exclude files starting with '_'.
-    "**/_*/**" // Exclude entire directories starting with '_'.
-    ];
-    if (!request.rootPath) {
-        request.rootPath = process.cwd();
+  const request = _.defaults({}, config);
+  const inputGlob = request.inputPath || "./*.argdown";
+  const ignoreFiles = request.ignore || ["**/_*", // Exclude files starting with '_'.
+  "**/_*/**" // Exclude entire directories starting with '_'.
+  ];
+  if (!request.rootPath) {
+    request.rootPath = process.cwd();
+  }
+  if (request.logLevel) {
+    app.logger.setLevel(request.logLevel);
+  }
+  if (request.plugins) {
+    for (let pluginData of request.plugins) {
+      if (_.isObject(pluginData.plugin) && _.isString(pluginData.processor)) {
+        app.addPlugin(pluginData.plugin, pluginData.processor);
+      }
     }
-    if (request.logLevel) {
-        app.logger.setLevel(request.logLevel);
-    }
+  }
+  if (request.input && !request.inputPath) {
+    app.runAsync(_.clone(request));
+  }
 
-    const $ = this;
-    let absoluteInputGlob = path.resolve(request.rootPath, inputGlob);
-    const loadOptions = {};
-    if (ignoreFiles) {
-        loadOptions.ignore = ignoreFiles;
-    }
-    if (request.watch) {
-        const watcher = chokidar.watch(absoluteInputGlob, loadOptions);
-        const watcherRequest = _.cloneDeep(request);
-        watcherRequest.watch = false;
+  const $ = this;
+  let absoluteInputGlob = path.resolve(request.rootPath, inputGlob);
+  const loadOptions = {};
+  if (ignoreFiles) {
+    loadOptions.ignore = ignoreFiles;
+  }
+  if (request.watch) {
+    const watcher = chokidar.watch(absoluteInputGlob, loadOptions);
+    const watcherRequest = _.cloneDeep(request);
+    watcherRequest.watch = false;
 
-        watcher.on("add", path => {
-            app.logger.log("verbose", `File ${path} has been added.`);
-            watcherRequest.inputPath = path;
-            $.load(loadOptions);
-        }).on("change", path => {
-            app.logger.log("verbose", `File ${path} has been changed.`);
-            watcherRequest.inputPath = path;
-            $.load(loadOptions);
-        }).on("unlink", path => {
-            app.logger.log("verbose", `File ${path} has been removed.`);
-        });
-    } else {
-        let files = await new Promise((resolve, reject) => {
-            glob(absoluteInputGlob, loadOptions, function (er, files) {
-                if (er) {
-                    reject(er);
-                }
-                resolve(files);
-            });
-        });
-        const promises = [];
-        for (let file of files) {
-            app.logger.log("verbose", "Reading file: " + file);
-            promises.push(readFile(file, "utf8").then(input => {
-                app.logger.log("verbose", "Reading file completed, starting processing: " + file);
-                const requestForFile = _.clone(request);
-                requestForFile.input = input;
-                requestForFile.inputPath = file;
-                return $.runAsync(requestForFile);
-            }));
+    watcher.on("add", path => {
+      app.logger.log("verbose", `File ${path} has been added.`);
+      watcherRequest.inputPath = path;
+      $.load(loadOptions);
+    }).on("change", path => {
+      app.logger.log("verbose", `File ${path} has been changed.`);
+      watcherRequest.inputPath = path;
+      $.load(loadOptions);
+    }).on("unlink", path => {
+      app.logger.log("verbose", `File ${path} has been removed.`);
+    });
+  } else {
+    let files = await new Promise((resolve, reject) => {
+      glob(absoluteInputGlob, loadOptions, function (er, files) {
+        if (er) {
+          reject(er);
         }
-        await Promise.all(promises);
+        resolve(files);
+      });
+    });
+    const promises = [];
+    for (let file of files) {
+      app.logger.log("verbose", "Reading file: " + file);
+      promises.push(readFile(file, "utf8").then(input => {
+        app.logger.log("verbose", "Reading file completed, starting processing: " + file);
+        const requestForFile = _.clone(request);
+        requestForFile.input = input;
+        requestForFile.inputPath = file;
+        return $.runAsync(requestForFile);
+      }));
     }
+    await Promise.all(promises);
+  }
 };
 
 /**
@@ -195,30 +201,30 @@ app.load = async function (config) {
  * @private
  */
 app.loadJSFile = function loadJSFile(filePath) {
-    let absoluteFilePath = path.resolve(process.cwd(), filePath);
-    try {
-        return requireUncached(absoluteFilePath);
-    } catch (e) {
-        e.message = `Cannot read file: ${absoluteFilePath}\nError: ${e.message}`;
-        throw e;
-    }
+  let absoluteFilePath = path.resolve(process.cwd(), filePath);
+  try {
+    return requireUncached(absoluteFilePath);
+  } catch (e) {
+    e.message = `Cannot read file: ${absoluteFilePath}\nError: ${e.message}`;
+    throw e;
+  }
 };
 
 app.loadConfig = function (filePath) {
-    filePath = filePath || "./argdown.config.js";
-    let config = {};
-    try {
-        let jsModuleExports = this.loadJSFile(filePath);
-        if (jsModuleExports.config) {
-            config = jsModuleExports.config;
-        } else {
-            // let's try the default export
-            config = jsModuleExports;
-        }
-    } catch (e) {
-        app.logger.log("verbose", "No config found: " + e);
+  filePath = filePath || "./argdown.config.js";
+  let config = {};
+  try {
+    let jsModuleExports = this.loadJSFile(filePath);
+    if (jsModuleExports.config) {
+      config = jsModuleExports.config;
+    } else {
+      // let's try the default export
+      config = jsModuleExports;
     }
-    return config;
+  } catch (e) {
+    app.logger.log("verbose", "No config found: " + e);
+  }
+  return config;
 };
 
 exports.AsyncArgdownApplication = _AsyncArgdownApplication.AsyncArgdownApplication;
@@ -226,7 +232,6 @@ exports.app = app;
 exports.CopyDefaultCssPlugin = _CopyDefaultCssPlugin.CopyDefaultCssPlugin;
 exports.SaveAsFilePlugin = _SaveAsFilePlugin.SaveAsFilePlugin;
 exports.SvgToPdfExportPlugin = _SvgToPdfExportPlugin.SvgToPdfExportPlugin;
-exports.SvgToPngExportPlugin = _SvgToPngExportPlugin.SvgToPngExportPlugin;
 exports.LogParserErrorsPlugin = _LogParserErrorsPlugin.LogParserErrorsPlugin;
 exports.DotToSvgExportPlugin = _DotToSvgExportPlugin.DotToSvgExportPlugin;
 //# sourceMappingURL=index.js.map

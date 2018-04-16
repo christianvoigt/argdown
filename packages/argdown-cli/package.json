@@ -1,66 +1,60 @@
 {
-    "name": "argdown-cli",
-    "description": "A command line interface for exporting Argdown files to html, dot or json.",
-    "keywords": [
-        "argumentation",
-        "argument mapping",
-        "Argdown",
-        "Markdown"
-    ],
-    "engines": {
-        "node": ">= 8.0.0"
-    },
-    "version": "0.10.0",
-    "license": "MIT",
-    "main": "lib/src/index.js",
-    "dependencies": {
-        "argdown-map-maker": "^0.5.0",
-        "argdown-parser": "^0.8.1",
-        "chokidar": "^1.7.0",
-        "glob": "^7.1.2",
-        "lodash": "^4.17.4",
-        "mkdirp": "^0.5.1",
-        "require-uncached": "^1.0.3",
-        "sharp": "^0.20.1",
-        "svg-to-pdfkit": "^0.1.7",
-        "viz.js": "^1.8.1",
-        "yargs": "^8.0.1"
-    },
-    "bin": {
-        "argdown": "./lib/src/cli.js"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/christianvoigt/argdown-cli"
-    },
-    "author": {
-        "name": "Christian Voigt",
-        "email": "1pxsolidblack@gmail.com"
-    },
-    "scripts": {
-        "deploy": "npm run version:patch && git push --tags origin HEAD:master",
-        "build": "npm run clean && npm run build:src",
-        "build:src": "babel src/ -d lib/src --source-maps --copy-files",
-        "test": "mocha --require babel-core/register --colors ./test/*.spec.js",
-        "test:png": "mocha --require babel-core/register --colors -g png ./test/*.spec.js",
-        "prepare": "npm run-script build",
-        "clean": "rimraf lib/*",
-        "version:patch": "npm version patch"
-    },
-    "readmeFilename": "Readme.md",
-    "preferGlobal": true,
-    "devDependencies": {
-        "babel-cli": "^6.23.0",
-        "babel-core": "^6.23.1",
-        "babel-eslint": "^7.2.3",
-        "babel-preset-env": "^1.6.1",
-        "chai": "^4.1.2",
-        "chai-fs": "^2.0.0",
-        "cpx": "^1.5.0",
-        "eslint": "^3.15.0",
-        "mocha": "^3.4.2",
-        "rimraf": "^2.6.1",
-        "sinon": "^1.17.7",
-        "source-map-support": "^0.4.11"
-    }
+  "name": "argdown-cli",
+  "description": "A command line interface for exporting Argdown files to html, dot or json.",
+  "keywords": ["argumentation", "argument mapping", "Argdown", "Markdown"],
+  "engines": {
+    "node": ">= 8.0.0"
+  },
+  "version": "0.10.0",
+  "license": "MIT",
+  "main": "lib/src/index.js",
+  "dependencies": {
+    "argdown-map-maker": "^0.5.0",
+    "argdown-parser": "^0.8.1",
+    "chokidar": "^1.7.0",
+    "glob": "^7.1.2",
+    "lodash": "^4.17.4",
+    "mkdirp": "^0.5.1",
+    "require-uncached": "^1.0.3",
+    "sharp": "^0.20.1",
+    "svg-to-pdfkit": "^0.1.7",
+    "viz.js": "^1.8.1",
+    "yargs": "^8.0.1"
+  },
+  "bin": {
+    "argdown": "./lib/src/cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/christianvoigt/argdown-cli"
+  },
+  "author": {
+    "name": "Christian Voigt",
+    "email": "1pxsolidblack@gmail.com"
+  },
+  "scripts": {
+    "deploy": "npm run version:patch && git push --tags origin HEAD:master",
+    "build": "npm run clean && npm run build:src",
+    "build:src": "babel src/ -d lib/src --source-maps --copy-files",
+    "test": "mocha --require babel-core/register --colors ./test/*.spec.js",
+    "prepare": "npm run-script build",
+    "clean": "rimraf lib/*",
+    "version:patch": "npm version patch"
+  },
+  "readmeFilename": "Readme.md",
+  "preferGlobal": true,
+  "devDependencies": {
+    "babel-cli": "^6.23.0",
+    "babel-core": "^6.23.1",
+    "babel-eslint": "^7.2.3",
+    "babel-preset-env": "^1.6.1",
+    "chai": "^4.1.2",
+    "chai-fs": "^2.0.0",
+    "cpx": "^1.5.0",
+    "eslint": "^3.15.0",
+    "mocha": "^3.4.2",
+    "rimraf": "^2.6.1",
+    "sinon": "^1.17.7",
+    "source-map-support": "^0.4.11"
+  }
 }
