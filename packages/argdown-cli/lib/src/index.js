@@ -143,7 +143,8 @@ app.load = async function (config) {
     }
   }
   if (request.input && !request.inputPath) {
-    app.runAsync(_.clone(request));
+    await app.runAsync(_.clone(request));
+    return;
   }
 
   const $ = this;
