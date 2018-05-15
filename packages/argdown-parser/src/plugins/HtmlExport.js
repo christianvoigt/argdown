@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import util from "./util.js";
+import utils from "../utils.js";
 
 class HtmlExport {
     getSettings(request) {
@@ -55,6 +55,9 @@ class HtmlExport {
             },
             argdownExit: (request, response) => {
                 let settings = $.getSettings(request);
+                // Remove htmlIds, because other plugins might create their own ones. 
+                // Ids only need to be unique within one document, not across documents.
+                response.htmlIds = null;
                 response.html += "</div>";
                 if (!settings.headless) {
                     response.html += "</body></html>";
@@ -69,7 +72,7 @@ class HtmlExport {
             },
             statementExit: (request, response) => (response.html += "</div>"),
             StatementDefinitionEntry: (request, response, node, parentNode) => {
-                let htmlId = $.getHtmlId(response, "statement", node.statement.title);
+                let htmlId = utils.getHtmlId("statement", node.statement.title, response.htmlIds);
                 response.htmlIds[htmlId] = node.statement;
                 let classes = "definition statement-definition definiendum";
                 if (parentNode.equivalenceClass && parentNode.equivalenceClass.sortedTags) {
@@ -81,11 +84,11 @@ class HtmlExport {
                     "' class='" +
                     classes +
                     "'>[<span class='title statement-title'>" +
-                    $.escapeHtml(node.statement.title) +
+                    _.escape(node.statement.title) +
                     "</span>]: </span>";
             },
             StatementReferenceEntry: (request, response, node, parentNode) => {
-                let htmlId = $.getHtmlId(response, "statement", node.statement.title, true);
+                let htmlId = utils.getHtmlId("statement", node.statement.title);
                 let classes = "reference statement-reference";
                 if (parentNode.equivalenceClass && parentNode.equivalenceClass.sortedTags) {
                     classes += " " + $.getCssClassesFromTags(response, parentNode.equivalenceClass.sortedTags);
@@ -96,7 +99,7 @@ class HtmlExport {
                     "' class='" +
                     classes +
                     "'>[<span class='title statement-title'>" +
-                    $.escapeHtml(node.statement.title) +
+                    _.escape(node.statement.title) +
                     "</span>] </a>";
             },
             StatementMentionEntry: (request, response, node) => {
@@ -105,19 +108,19 @@ class HtmlExport {
                 if (equivalenceClass.sortedTags) {
                     classes += " " + $.getCssClassesFromTags(response, equivalenceClass.sortedTags);
                 }
-                let htmlId = $.getHtmlId(response, "statement", node.title, true);
+                let htmlId = utils.getHtmlId("statement", node.title);
                 response.html +=
                     "<a href='#" +
                     htmlId +
                     "' class='" +
                     classes +
                     "'>@[<span class='title statement-title'>" +
-                    $.escapeHtml(node.title) +
+                    _.escape(node.title) +
                     "</span>]</a>" +
                     node.trailingWhitespace;
             },
             argumentReferenceEntry: (request, response, node) => {
-                let htmlId = $.getHtmlId(response, "argument", node.argument.title, true);
+                let htmlId = utils.getHtmlId("argument", node.argument.title);
                 let classes = "reference argument-reference";
                 if (node.argument.tags) {
                     classes += " " + $.getCssClassesFromTags(response, node.argument.sortedTags);
@@ -128,11 +131,11 @@ class HtmlExport {
                     "' class='" +
                     classes +
                     "'>&lt;<span class='title argument-title'>" +
-                    $.escapeHtml(node.argument.title) +
+                    _.escape(node.argument.title) +
                     "</span>&gt; </a>";
             },
             argumentDefinitionEntry: (request, response, node) => {
-                let htmlId = $.getHtmlId(response, "argument", node.argument.title);
+                let htmlId = utils.getHtmlId("argument", node.argument.title, response.htmlIds);
                 response.htmlIds[htmlId] = node.argument;
                 let classes = "definition argument-definition";
                 if (node.argument.tags) {
@@ -144,11 +147,11 @@ class HtmlExport {
                     "' class='" +
                     classes +
                     "'><span class='definiendum argument-definiendum'>&lt;<span class='title argument-title'>" +
-                    $.escapeHtml(node.argument.title) +
+                    _.escape(node.argument.title) +
                     "</span>&gt;: </span><span class='argument-definiens definiens description'>";
             },
             ArgumentMentionEntry: (request, response, node) => {
-                let htmlId = $.getHtmlId(response, "argument", node.title, true);
+                let htmlId = utils.getHtmlId("argument", node.title);
                 let classes = "mention argument-mention";
                 const argument = response.arguments[node.title];
                 if (argument.tags) {
@@ -160,7 +163,7 @@ class HtmlExport {
                     "' class='" +
                     classes +
                     "'>@&lt;<span class='title argument-title'>" +
-                    $.escapeHtml(node.title) +
+                    _.escape(node.title) +
                     "</span>&gt;</a>" +
                     node.trailingWhitespace;
             },
@@ -228,33 +231,40 @@ class HtmlExport {
                     if (settings.title == "Argdown Document") {
                         response.html = response.html.replace(
                             "<title>Argdown Document</title>",
-                            "<title>" + $.escapeHtml(node.text) + "</title>"
+                            "<title>" + _.escape(node.text) + "</title>"
                         );
                     }
                 }
-                let htmlId = $.getHtmlId(response, "heading", node.text);
+                let htmlId = utils.getHtmlId("heading", node.text, response.htmlIds);
                 response.htmlIds[htmlId] = node;
                 response.html += "<h" + node.level + " id='" + htmlId + "'>";
             },
             headingExit: (request, response, node) => (response.html += "</h" + node.level + ">"),
             freestyleTextEntry: (request, response, node, parentNode) => {
                 if (parentNode.name != "inferenceRules" && parentNode.name != "metadataStatement") {
-                    response.html += $.escapeHtml(node.text);
+                    response.html += _.escape(node.text);
                 }
             },
             boldEntry: (request, response) => (response.html += "<b>"),
             boldExit: (request, response, node) => (response.html += "</b>" + node.trailingWhitespace),
             italicEntry: (request, response) => (response.html += "<i>"),
             italicExit: (request, response, node) => (response.html += "</i>" + node.trailingWhitespace),
-            LinkEntry: (request, response, node) =>
-                (response.html += "<a href='" + node.url + "'>" + node.text + "</a>" + node.trailingWhitespace),
+            LinkEntry: (request, response, node) => {
+                let linkUrl = utils.normalizeLink(node.url);
+                let linkText = node.text;
+                if(!utils.validateLink(linkUrl)){
+                    linkUrl = "";
+                    linkText = "removed insecure url.";
+                }
+                response.html += "<a href='" + linkUrl + "'>" + linkText+ "</a>" + node.trailingWhitespace;
+            },
             TagEntry: (request, response, node) => {
                 if (node.text) {
                     response.html +=
                         "<span class='tag " +
                         $.getCssClassesFromTags(response, [node.tag]) +
                         "'>" +
-                        $.escapeHtml(node.text) +
+                        _.escape(node.text) +
                         "</span>";
                 }
             },
@@ -295,13 +305,13 @@ class HtmlExport {
                             if (_.isString(inference.metaData[key])) {
                                 response.html +=
                                     "<span class='meta-data-value'>" +
-                                    $.escapeHtml(inference.metaData[key]) +
+                                    _.escape(inference.metaData[key]) +
                                     "</span>";
                             } else {
                                 let j = 0;
                                 for (let value of inference.metaData[key]) {
                                     if (j > 0) response.html += ", ";
-                                    response.html += "<span class='meta-data-value'>" + $.escapeHtml(value) + "</span>";
+                                    response.html += "<span class='meta-data-value'>" + _.escape(value) + "</span>";
                                     j++;
                                 }
                             }
@@ -323,19 +333,6 @@ class HtmlExport {
             argumentStatementExit: (request, response) => (response.html += "</div>")
         };
     }
-    getHtmlId(response, type, title, ignoreDuplicates) {
-        let id = type + "-" + title;
-        id = util.getHtmlId(id);
-        if (!ignoreDuplicates) {
-            let originalId = id;
-            let i = 1;
-            while (response.htmlIds && response.htmlIds[id]) {
-                i++;
-                id = originalId + "-occurrence-" + i;
-            }
-        }
-        return id;
-    }
     getCssClassesFromTags(response, tags) {
         let classes = "";
         if (!tags || !response.tagsDictionary) {
@@ -351,20 +348,6 @@ class HtmlExport {
             classes += tagData.cssClass;
         }
         return classes;
-    }
-    replaceAll(str, find, replace) {
-        return str.replace(new RegExp(find, "g"), replace);
-    }
-    escapeHtml(unsafe) {
-        return unsafe
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-    }
-    escapeRegExp(str) {
-        return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
     }
 }
 module.exports = {

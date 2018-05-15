@@ -219,6 +219,8 @@ var ArgdownApplication = function () {
                 if (request.process) {
                     if (_.isArray(request.process)) {
                         processorsToRun = request.process;
+                    } else if (_.isString(request.process) && request.processes) {
+                        processorsToRun = request.processes[request.process];
                     }
                 }
             }

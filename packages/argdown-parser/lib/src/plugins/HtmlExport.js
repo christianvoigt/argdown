@@ -6,9 +6,9 @@ var _lodash = require("lodash");
 
 var _ = _interopRequireWildcard(_lodash);
 
-var _util = require("./util.js");
+var _utils = require("../utils.js");
 
-var _util2 = _interopRequireDefault(_util);
+var _utils2 = _interopRequireDefault(_utils);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -67,6 +67,9 @@ var HtmlExport = function () {
             },
             argdownExit: function argdownExit(request, response) {
                 var settings = $.getSettings(request);
+                // Remove htmlIds, because other plugins might create their own ones. 
+                // Ids only need to be unique within one document, not across documents.
+                response.htmlIds = null;
                 response.html += "</div>";
                 if (!settings.headless) {
                     response.html += "</body></html>";
@@ -83,21 +86,21 @@ var HtmlExport = function () {
                 return response.html += "</div>";
             },
             StatementDefinitionEntry: function StatementDefinitionEntry(request, response, node, parentNode) {
-                var htmlId = $.getHtmlId(response, "statement", node.statement.title);
+                var htmlId = _utils2.default.getHtmlId("statement", node.statement.title, response.htmlIds);
                 response.htmlIds[htmlId] = node.statement;
                 var classes = "definition statement-definition definiendum";
                 if (parentNode.equivalenceClass && parentNode.equivalenceClass.sortedTags) {
                     classes += " " + $.getCssClassesFromTags(response, parentNode.equivalenceClass.sortedTags);
                 }
-                response.html += "<span id='" + htmlId + "' class='" + classes + "'>[<span class='title statement-title'>" + $.escapeHtml(node.statement.title) + "</span>]: </span>";
+                response.html += "<span id='" + htmlId + "' class='" + classes + "'>[<span class='title statement-title'>" + _.escape(node.statement.title) + "</span>]: </span>";
             },
             StatementReferenceEntry: function StatementReferenceEntry(request, response, node, parentNode) {
-                var htmlId = $.getHtmlId(response, "statement", node.statement.title, true);
+                var htmlId = _utils2.default.getHtmlId("statement", node.statement.title);
                 var classes = "reference statement-reference";
                 if (parentNode.equivalenceClass && parentNode.equivalenceClass.sortedTags) {
                     classes += " " + $.getCssClassesFromTags(response, parentNode.equivalenceClass.sortedTags);
                 }
-                response.html += "<a href='#" + htmlId + "' class='" + classes + "'>[<span class='title statement-title'>" + $.escapeHtml(node.statement.title) + "</span>] </a>";
+                response.html += "<a href='#" + htmlId + "' class='" + classes + "'>[<span class='title statement-title'>" + _.escape(node.statement.title) + "</span>] </a>";
             },
             StatementMentionEntry: function StatementMentionEntry(request, response, node) {
                 var equivalenceClass = response.statements[node.title];
@@ -105,34 +108,34 @@ var HtmlExport = function () {
                 if (equivalenceClass.sortedTags) {
                     classes += " " + $.getCssClassesFromTags(response, equivalenceClass.sortedTags);
                 }
-                var htmlId = $.getHtmlId(response, "statement", node.title, true);
-                response.html += "<a href='#" + htmlId + "' class='" + classes + "'>@[<span class='title statement-title'>" + $.escapeHtml(node.title) + "</span>]</a>" + node.trailingWhitespace;
+                var htmlId = _utils2.default.getHtmlId("statement", node.title);
+                response.html += "<a href='#" + htmlId + "' class='" + classes + "'>@[<span class='title statement-title'>" + _.escape(node.title) + "</span>]</a>" + node.trailingWhitespace;
             },
             argumentReferenceEntry: function argumentReferenceEntry(request, response, node) {
-                var htmlId = $.getHtmlId(response, "argument", node.argument.title, true);
+                var htmlId = _utils2.default.getHtmlId("argument", node.argument.title);
                 var classes = "reference argument-reference";
                 if (node.argument.tags) {
                     classes += " " + $.getCssClassesFromTags(response, node.argument.sortedTags);
                 }
-                response.html += "<a href='#" + htmlId + "' class='" + classes + "'>&lt;<span class='title argument-title'>" + $.escapeHtml(node.argument.title) + "</span>&gt; </a>";
+                response.html += "<a href='#" + htmlId + "' class='" + classes + "'>&lt;<span class='title argument-title'>" + _.escape(node.argument.title) + "</span>&gt; </a>";
             },
             argumentDefinitionEntry: function argumentDefinitionEntry(request, response, node) {
-                var htmlId = $.getHtmlId(response, "argument", node.argument.title);
+                var htmlId = _utils2.default.getHtmlId("argument", node.argument.title, response.htmlIds);
                 response.htmlIds[htmlId] = node.argument;
                 var classes = "definition argument-definition";
                 if (node.argument.tags) {
                     classes += " " + $.getCssClassesFromTags(response, node.argument.sortedTags);
                 }
-                response.html += "<div id='" + htmlId + "' class='" + classes + "'><span class='definiendum argument-definiendum'>&lt;<span class='title argument-title'>" + $.escapeHtml(node.argument.title) + "</span>&gt;: </span><span class='argument-definiens definiens description'>";
+                response.html += "<div id='" + htmlId + "' class='" + classes + "'><span class='definiendum argument-definiendum'>&lt;<span class='title argument-title'>" + _.escape(node.argument.title) + "</span>&gt;: </span><span class='argument-definiens definiens description'>";
             },
             ArgumentMentionEntry: function ArgumentMentionEntry(request, response, node) {
-                var htmlId = $.getHtmlId(response, "argument", node.title, true);
+                var htmlId = _utils2.default.getHtmlId("argument", node.title);
                 var classes = "mention argument-mention";
                 var argument = response.arguments[node.title];
                 if (argument.tags) {
                     classes += " " + $.getCssClassesFromTags(response, argument.sortedTags);
                 }
-                response.html += "<a href='#" + htmlId + "' class='" + classes + "'>@&lt;<span class='title argument-title'>" + $.escapeHtml(node.title) + "</span>&gt;</a>" + node.trailingWhitespace;
+                response.html += "<a href='#" + htmlId + "' class='" + classes + "'>@&lt;<span class='title argument-title'>" + _.escape(node.title) + "</span>&gt;</a>" + node.trailingWhitespace;
             },
             argumentDefinitionExit: function argumentDefinitionExit(request, response) {
                 return response.html += "</span></div>";
@@ -213,10 +216,10 @@ var HtmlExport = function () {
                 var settings = $.getSettings(request);
                 if (node.level == 1) {
                     if (settings.title == "Argdown Document") {
-                        response.html = response.html.replace("<title>Argdown Document</title>", "<title>" + $.escapeHtml(node.text) + "</title>");
+                        response.html = response.html.replace("<title>Argdown Document</title>", "<title>" + _.escape(node.text) + "</title>");
                     }
                 }
-                var htmlId = $.getHtmlId(response, "heading", node.text);
+                var htmlId = _utils2.default.getHtmlId("heading", node.text, response.htmlIds);
                 response.htmlIds[htmlId] = node;
                 response.html += "<h" + node.level + " id='" + htmlId + "'>";
             },
@@ -225,7 +228,7 @@ var HtmlExport = function () {
             },
             freestyleTextEntry: function freestyleTextEntry(request, response, node, parentNode) {
                 if (parentNode.name != "inferenceRules" && parentNode.name != "metadataStatement") {
-                    response.html += $.escapeHtml(node.text);
+                    response.html += _.escape(node.text);
                 }
             },
             boldEntry: function boldEntry(request, response) {
@@ -241,11 +244,17 @@ var HtmlExport = function () {
                 return response.html += "</i>" + node.trailingWhitespace;
             },
             LinkEntry: function LinkEntry(request, response, node) {
-                return response.html += "<a href='" + node.url + "'>" + node.text + "</a>" + node.trailingWhitespace;
+                var linkUrl = _utils2.default.normalizeLink(node.url);
+                var linkText = node.text;
+                if (!_utils2.default.validateLink(linkUrl)) {
+                    linkUrl = "";
+                    linkText = "removed insecure url.";
+                }
+                response.html += "<a href='" + linkUrl + "'>" + linkText + "</a>" + node.trailingWhitespace;
             },
             TagEntry: function TagEntry(request, response, node) {
                 if (node.text) {
-                    response.html += "<span class='tag " + $.getCssClassesFromTags(response, [node.tag]) + "'>" + $.escapeHtml(node.text) + "</span>";
+                    response.html += "<span class='tag " + $.getCssClassesFromTags(response, [node.tag]) + "'>" + _.escape(node.text) + "</span>";
                 }
             },
             argumentEntry: function argumentEntry(request, response, node) {
@@ -307,7 +316,7 @@ var HtmlExport = function () {
                             response.html += "<span class='meta-data-statement'>";
                             response.html += "<span class='meta-data-key'>" + key + ": </span>";
                             if (_.isString(inference.metaData[key])) {
-                                response.html += "<span class='meta-data-value'>" + $.escapeHtml(inference.metaData[key]) + "</span>";
+                                response.html += "<span class='meta-data-value'>" + _.escape(inference.metaData[key]) + "</span>";
                             } else {
                                 var j = 0;
                                 var _iteratorNormalCompletion2 = true;
@@ -319,7 +328,7 @@ var HtmlExport = function () {
                                         var value = _step2.value;
 
                                         if (j > 0) response.html += ", ";
-                                        response.html += "<span class='meta-data-value'>" + $.escapeHtml(value) + "</span>";
+                                        response.html += "<span class='meta-data-value'>" + _.escape(value) + "</span>";
                                         j++;
                                     }
                                 } catch (err) {
@@ -354,21 +363,6 @@ var HtmlExport = function () {
     }
 
     _createClass(HtmlExport, [{
-        key: "getHtmlId",
-        value: function getHtmlId(response, type, title, ignoreDuplicates) {
-            var id = type + "-" + title;
-            id = _util2.default.getHtmlId(id);
-            if (!ignoreDuplicates) {
-                var originalId = id;
-                var i = 1;
-                while (response.htmlIds && response.htmlIds[id]) {
-                    i++;
-                    id = originalId + "-occurrence-" + i;
-                }
-            }
-            return id;
-        }
-    }, {
         key: "getCssClassesFromTags",
         value: function getCssClassesFromTags(response, tags) {
             var classes = "";
@@ -407,21 +401,6 @@ var HtmlExport = function () {
             }
 
             return classes;
-        }
-    }, {
-        key: "replaceAll",
-        value: function replaceAll(str, find, replace) {
-            return str.replace(new RegExp(find, "g"), replace);
-        }
-    }, {
-        key: "escapeHtml",
-        value: function escapeHtml(unsafe) {
-            return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-        }
-    }, {
-        key: "escapeRegExp",
-        value: function escapeRegExp(str) {
-            return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
         }
     }]);
 

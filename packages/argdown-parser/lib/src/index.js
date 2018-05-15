@@ -28,6 +28,12 @@ var _Section = require("./model/Section.js");
 
 var _EquivalenceClass = require("./model/EquivalenceClass.js");
 
+var _utils = require("./utils.js");
+
+var _utils2 = _interopRequireDefault(_utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 module.exports = {
     ArgdownTreeWalker: _ArgdownTreeWalker.ArgdownTreeWalker,
     ArgdownParser: _ArgdownParser.ArgdownParser,
@@ -42,6 +48,7 @@ module.exports = {
     Section: _Section.Section,
     EquivalenceClass: _EquivalenceClass.EquivalenceClass,
     JSONExport: _JSONExport.JSONExport,
-    TagPlugin: _TagPlugin.TagPlugin
+    TagPlugin: _TagPlugin.TagPlugin,
+    utils: _utils2.default
 };
 //# sourceMappingURL=index.js.map
