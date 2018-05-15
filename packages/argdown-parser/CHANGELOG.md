@@ -1,3 +1,10 @@
+## 0.8.2 (05-15-2018)
+
+### Minor changes
+
+* Improved security of HTML Export: link validation
+* Added utils for link validation/normalization (copied from Markdown-It)
+
 ## 0.8.1 (04-10-2018)
 
 ### Minor changes

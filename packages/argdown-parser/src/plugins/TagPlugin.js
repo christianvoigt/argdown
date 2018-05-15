@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import util from "./util.js";
+import utils from "../utils.js";
 
 class TagPlugin {
     constructor(config) {
@@ -51,7 +51,7 @@ class TagPlugin {
             }
             response.tagsDictionary[tag] = tagData;
             let index = selectedTags.indexOf(tag);
-            tagData.cssClass = util.getHtmlId("tag-" + tag);
+            tagData.cssClass = utils.stringToClassName("tag-" + tag);
             if (index > -1) {
                 if (!tagData.color && index < settings.colorScheme.length) {
                     tagData.color = settings.colorScheme[index];

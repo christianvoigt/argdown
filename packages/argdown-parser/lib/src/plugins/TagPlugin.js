@@ -6,9 +6,9 @@ var _lodash = require("lodash");
 
 var _ = _interopRequireWildcard(_lodash);
 
-var _util = require("./util.js");
+var _utils = require("../utils.js");
 
-var _util2 = _interopRequireDefault(_util);
+var _utils2 = _interopRequireDefault(_utils);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -103,7 +103,7 @@ var TagPlugin = function () {
                     }
                     response.tagsDictionary[tag] = _tagData;
                     var index = selectedTags.indexOf(tag);
-                    _tagData.cssClass = _util2.default.getHtmlId("tag-" + tag);
+                    _tagData.cssClass = _utils2.default.stringToClassName("tag-" + tag);
                     if (index > -1) {
                         if (!_tagData.color && index < settings.colorScheme.length) {
                             _tagData.color = settings.colorScheme[index];
