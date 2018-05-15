@@ -1,7 +1,7 @@
 "use strict";
 
 import { AsyncArgdownApplication } from "./AsyncArgdownApplication.js";
-import { ParserPlugin, ModelPlugin, HtmlExport, JSONExport, TagPlugin } from "argdown-parser";
+import { ParserPlugin, ModelPlugin, HtmlExport, JSONExport, TagPlugin, utils } from "argdown-parser";
 import { MapMaker, DotExport } from "argdown-map-maker";
 import { SaveAsFilePlugin } from "./plugins/SaveAsFilePlugin.js";
 import { DotToSvgExportPlugin } from "./plugins/DotToSvgExportPlugin.js";
@@ -216,5 +216,6 @@ export {
   SaveAsFilePlugin,
   SvgToPdfExportPlugin,
   LogParserErrorsPlugin,
-  DotToSvgExportPlugin
+  DotToSvgExportPlugin,
+  utils
 };
