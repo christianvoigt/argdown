@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.DotToSvgExportPlugin = exports.LogParserErrorsPlugin = exports.SvgToPdfExportPlugin = exports.SaveAsFilePlugin = exports.CopyDefaultCssPlugin = exports.app = exports.AsyncArgdownApplication = undefined;
+exports.utils = exports.DotToSvgExportPlugin = exports.LogParserErrorsPlugin = exports.SvgToPdfExportPlugin = exports.SaveAsFilePlugin = exports.CopyDefaultCssPlugin = exports.app = exports.AsyncArgdownApplication = undefined;
 
 var _AsyncArgdownApplication = require("./AsyncArgdownApplication.js");
 
@@ -235,4 +235,5 @@ exports.SaveAsFilePlugin = _SaveAsFilePlugin.SaveAsFilePlugin;
 exports.SvgToPdfExportPlugin = _SvgToPdfExportPlugin.SvgToPdfExportPlugin;
 exports.LogParserErrorsPlugin = _LogParserErrorsPlugin.LogParserErrorsPlugin;
 exports.DotToSvgExportPlugin = _DotToSvgExportPlugin.DotToSvgExportPlugin;
+exports.utils = _argdownParser.utils;
 //# sourceMappingURL=index.js.map

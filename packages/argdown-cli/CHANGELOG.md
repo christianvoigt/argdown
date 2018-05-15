@@ -1,3 +1,13 @@
+## 0.11.1
+
+### Minor Changes
+
+* Package exports utils for link validation/normalization
+
+### Bug fixes
+
+* Removed sharp as (unused) dependency
+
 ## 0.11.0
 
 ### Breaking Changes
