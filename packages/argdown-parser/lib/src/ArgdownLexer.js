@@ -26,28 +26,57 @@ var ArgdownLexer = function () {
             this.indentStack = [0];
             // State require for matching bold and italic ranges in the right order
             this.rangesStack = [];
+            this.NEWLINE_GROUP = "NL_GROUP";
         }
     }, {
         key: "getCurrentLine",
-        value: function getCurrentLine(matchedTokens) {
+        value: function getCurrentLine(matchedTokens, groups) {
+            var nlGroup = groups[this.NEWLINE_GROUP];
             var matchedTokensIsEmpty = _.isEmpty(matchedTokens);
-            if (matchedTokensIsEmpty) return 1;
+            var nlGroupIsEmpty = _.isEmpty(nlGroup);
+            if (matchedTokensIsEmpty && nlGroupIsEmpty) return 1;
 
-            var last = _.last(matchedTokens);
-            var currentLine = last ? last.endLine : 1;
-            if (last && chevrotain.tokenMatcher(last, this.Emptyline)) currentLine++;
+            var lastToken = _.last(matchedTokens);
+            var lastNl = _.last(nlGroup);
+            var currentLine = lastToken ? lastToken.endLine : 1;
+            if (lastToken && chevrotain.tokenMatcher(lastToken, this.Emptyline)) {
+                currentLine++;
+            }
+            if (lastNl && lastNl.endLine + 1 > currentLine) {
+                currentLine = lastNl.endLine + 1;
+            }
             return currentLine;
         }
     }, {
+        key: "getCurrentEndOffset",
+        value: function getCurrentEndOffset(matchedTokens, groups) {
+            var nlGroup = groups[this.NEWLINE_GROUP];
+            var matchedTokensIsEmpty = _.isEmpty(matchedTokens);
+            var nlGroupIsEmpty = _.isEmpty(nlGroup);
+            if (matchedTokensIsEmpty && nlGroupIsEmpty) return 0;
+
+            var lastToken = _.last(matchedTokens);
+            var lastNl = _.last(nlGroup);
+            var tokenEndOffset = lastToken ? lastToken.endOffset : 0;
+            var nlEndOffset = lastNl ? lastNl.endOffset : 0;
+            return tokenEndOffset > nlEndOffset ? tokenEndOffset : nlEndOffset;
+        }
+    }, {
+        key: "lastTokenIsNewline",
+        value: function lastTokenIsNewline(lastToken, groups) {
+            var newlineGroup = groups[this.NEWLINE_GROUP];
+            return newlineGroup && newlineGroup.length > 0 && (!lastToken || _.last(newlineGroup).endOffset > lastToken.endOffset);
+        }
+    }, {
         key: "emitRemainingDedentTokens",
-        value: function emitRemainingDedentTokens(matchedTokens) {
+        value: function emitRemainingDedentTokens(matchedTokens, groups) {
             if (this.indentStack.length <= 1) return;
             var lastToken = _.last(matchedTokens);
-            var startOffset = lastToken ? lastToken.endOffset + 1 : 0;
+            var startOffset = this.getCurrentEndOffset(matchedTokens, groups);
             var endOffset = startOffset;
-            var startLine = lastToken ? lastToken.endLine + 1 : 1; //+1 because of linebreak before indentation
+            var startLine = this.getCurrentLine(matchedTokens, groups);
             var endLine = startLine;
-            var startColumn = 1;
+            var startColumn = lastToken.endColumn;
             var endColumn = startColumn;
 
             //add remaining Dedents
@@ -63,9 +92,9 @@ var ArgdownLexer = function () {
             var lastIndentLevel = _.last(this.indentStack);
             var image = "";
             var last = _.last(matchedTokens);
-            var startOffset = last ? last.endOffset + 2 : 0; //+2 because of linebreak before indentation
+            var startOffset = this.getCurrentEndOffset(matchedTokens, groups) + 1;
             var endOffset = startOffset + indentStr.length - 1;
-            var startLine = this.getCurrentLine(matchedTokens, groups.nl) + 1; //relation includes linebreak
+            var startLine = this.getCurrentLine(matchedTokens, groups);
             var endLine = startLine;
             var startColumn = 1;
             var endColumn = startColumn + indentStr.length - 1;
@@ -91,11 +120,11 @@ var ArgdownLexer = function () {
 
         function matchRelation(text, offset, matchedTokens, groups, pattern) {
             var remainingText = text.substr(offset);
-            var startsWithNewline = /^(?:\r\n|\n|\r)/.exec(remainingText) != null;
-            var last = _.last(matchedTokens);
-            var afterEmptyline = last && tokenMatcher(last, $.Emptyline);
+            var lastToken = _.last(matchedTokens);
+            var afterNewline = $.lastTokenIsNewline(lastToken, groups);
+            var afterEmptyline = lastToken && tokenMatcher(lastToken, $.Emptyline);
 
-            if (_.isEmpty(matchedTokens) || afterEmptyline || startsWithNewline) {
+            if (_.isEmpty(matchedTokens) || afterEmptyline || afterNewline) {
                 //relations after Emptyline are illegal, but we need the token for error reporting
                 var match = pattern.exec(remainingText);
                 if (match !== null && match.length == 3) {
@@ -107,13 +136,13 @@ var ArgdownLexer = function () {
             return null;
         }
         //relations start at BOF or after a newline, optionally followed by indentation (spaces or tabs)
-        var matchIncomingSupport = _.partialRight(matchRelation, /^(?:\r\n|\n|\r)?([' '\t]*)(\+>)/);
-        var matchIncomingAttack = _.partialRight(matchRelation, /^(?:\r\n|\n|\r)?([' '\t]*)(->)/);
-        var matchOutgoingSupport = _.partialRight(matchRelation, /^(?:\r\n|\n|\r)?([' '\t]*)(<?\+)/);
-        var matchOutgoingAttack = _.partialRight(matchRelation, /^(?:\r\n|\n|\r)?([' '\t]*)(<?-)/);
-        var matchContradiction = _.partialRight(matchRelation, /^(?:\r\n|\n|\r)?([' '\t]*)(><)/);
-        var matchIncomingUndercut = _.partialRight(matchRelation, /^(?:\r\n|\n|\r)?([' '\t]*)(_>)/);
-        var matchOutgoingUndercut = _.partialRight(matchRelation, /^(?:\r\n|\n|\r)?([' '\t]*)(<_)/);
+        var matchIncomingSupport = _.partialRight(matchRelation, /^([' '\t]*)(\+>)/);
+        var matchIncomingAttack = _.partialRight(matchRelation, /^([' '\t]*)(->)/);
+        var matchOutgoingSupport = _.partialRight(matchRelation, /^([' '\t]*)(<?\+)/);
+        var matchOutgoingAttack = _.partialRight(matchRelation, /^([' '\t]*)(<?-)/);
+        var matchContradiction = _.partialRight(matchRelation, /^([' '\t]*)(><)/);
+        var matchIncomingUndercut = _.partialRight(matchRelation, /^([' '\t]*)(_>)/);
+        var matchOutgoingUndercut = _.partialRight(matchRelation, /^([' '\t]*)(<_)/);
 
         $.IncomingSupport = createToken({
             name: "IncomingSupport",
@@ -169,15 +198,15 @@ var ArgdownLexer = function () {
         });
         $.tokens.push($.OutgoingUndercut);
 
-        var inferenceStartPattern = /^(?:\r\n|\n|\r)?[' '\t]*-{2}/;
+        var inferenceStartPattern = /^[' '\t]*-{2}/;
 
-        function matchInferenceStart(text, offset, matchedTokens) {
+        function matchInferenceStart(text, offset, matchedTokens, groups) {
             var remainingText = text.substr(offset);
-            var startsWithNewline = /^(?:\r\n|\n|\r)/.exec(remainingText) != null;
-            if (_.isEmpty(matchedTokens) || startsWithNewline) {
+            var afterNewline = $.lastTokenIsNewline(_.last(matchedTokens), groups);
+            if (_.isEmpty(matchedTokens) || afterNewline) {
                 var match = inferenceStartPattern.exec(remainingText);
                 if (match != null) {
-                    $.emitRemainingDedentTokens(matchedTokens);
+                    $.emitRemainingDedentTokens(matchedTokens, groups);
                     return match;
                 }
             }
@@ -233,10 +262,10 @@ var ArgdownLexer = function () {
 
         function matchListItem(text, offset, matchedTokens, groups, pattern) {
             var remainingText = text.substr(offset);
-            var startsWithNewline = /^(?:\r\n|\n|\r)/.exec(remainingText) != null;
             var last = _.last(matchedTokens);
+            var afterNewline = $.lastTokenIsNewline(last, groups);
             var afterEmptyline = last && tokenMatcher(last, $.Emptyline);
-            if (_.isEmpty(matchedTokens) || afterEmptyline || startsWithNewline) {
+            if (_.isEmpty(matchedTokens) || afterEmptyline || afterNewline) {
                 var match = pattern.exec(remainingText);
                 if (match !== null) {
                     var indentStr = match[1];
@@ -247,7 +276,7 @@ var ArgdownLexer = function () {
             return null;
         }
 
-        var orderedListItemPattern = /^(?:\r\n|\n|\r)?([' '\t]+)\d+\.(?=\s)/;
+        var orderedListItemPattern = /^([' '\t]+)\d+\.(?=\s)/;
         var matchOrderedListItem = _.partialRight(matchListItem, orderedListItemPattern);
 
         $.OrderedListItem = createToken({
@@ -258,7 +287,7 @@ var ArgdownLexer = function () {
         });
         $.tokens.push($.OrderedListItem);
         //whitespace + * + whitespace (to distinguish list items from bold and italic ranges)
-        var unorderedListItemPattern = /^(?:\r\n|\n|\r)?([' '\t]+)\*(?=\s)/; //Newline +
+        var unorderedListItemPattern = /^([' '\t]+)\*(?=\s)/;
         var matchUnorderedListItem = _.partialRight(matchListItem, unorderedListItemPattern);
 
         $.UnorderedListItem = createToken({
@@ -272,7 +301,7 @@ var ArgdownLexer = function () {
         //This does not work with \r\n|\n||r as a simple CRLF linebreak will be interpreted as an Emptyline
         //Instead we drop the last alternative (\r?\n would work as well)
         var emptylinePattern = /^((?:\r\n|\n)[ \t]*(?:\r\n|\n)+)/; //two or more linebreaks
-        function matchEmptyline(text, offset, matchedTokens) {
+        function matchEmptyline(text, offset, matchedTokens, groups) {
             var remainingText = text.substr(offset);
             var last = _.last(matchedTokens);
             //ignore Emptylines after first one (relevant for Emptylines after ignored comments)
@@ -280,7 +309,7 @@ var ArgdownLexer = function () {
             var match = emptylinePattern.exec(remainingText);
             if (match !== null && match[0].length < remainingText.length) {
                 //ignore trailing linebreaks
-                $.emitRemainingDedentTokens(matchedTokens);
+                $.emitRemainingDedentTokens(matchedTokens, groups);
                 //TODO: emitRemainingRanges (to be more resistant against unclosed bold and italic ranges)
                 return match;
             }
@@ -347,17 +376,17 @@ var ArgdownLexer = function () {
         // $.tokens.push($.StatementMentionByNumber);
 
         var statementNumberPattern = /^(?:\r\n|\n|\r)?[' '\t]*\(\d+\)/;
-        function matchStatementNumber(text, offset, matchedTokens) {
+        function matchStatementNumber(text, offset, matchedTokens, groups) {
             var remainingText = text.substr(offset);
             var last = _.last(matchedTokens);
-            var startsWithNewline = /^(?:\r\n|\n|\r)/.exec(remainingText) != null;
+            var afterNewline = $.lastTokenIsNewline(last, groups);
             var afterEmptyline = last && tokenMatcher(last, $.Emptyline);
 
             //Statement in argument reconstruction:
-            if (_.isEmpty(matchedTokens) || afterEmptyline || startsWithNewline) {
+            if (_.isEmpty(matchedTokens) || afterEmptyline || afterNewline) {
                 var match = statementNumberPattern.exec(remainingText);
                 if (match !== null) {
-                    $.emitRemainingDedentTokens(matchedTokens);
+                    $.emitRemainingDedentTokens(matchedTokens, groups);
                     return match;
                 }
             }
@@ -533,7 +562,7 @@ var ArgdownLexer = function () {
         $.Newline = createToken({
             name: "Newline",
             pattern: /(?:\r\n|\n|\r)/,
-            group: chevrotain.Lexer.SKIPPED,
+            group: "NL_GROUP",
             line_breaks: true,
             label: "{linebreak} (New Line)"
         });
@@ -578,7 +607,7 @@ var ArgdownLexer = function () {
         var lexerConfig = {
             modes: {
                 default_mode: [$.Comment, $.EscapedChar, //must come first after $.Comment
-                $.Emptyline,
+                $.Emptyline, $.Newline,
                 // Relation tokens must appear before Spaces, otherwise all indentation will always be consumed as spaces.
                 // Dedent must appear before Indent for handling zero spaces dedents.
                 $.Dedent, $.Indent, $.InferenceStart, //needs to be lexed before OutgoingAttack (- vs --)
@@ -597,8 +626,8 @@ var ArgdownLexer = function () {
                 // $.StatementDefinitionByNumber, // needs to be lexed before ArgumentReference
                 // $.StatementReferenceByNumber, // needs to be lexed before ArgumentReference
                 // $.StatementMentionByNumber, // needs to be lexed before ArgumentReference
-                $.StatementDefinition, $.StatementReference, $.StatementMention, $.ArgumentDefinition, $.ArgumentReference, $.ArgumentMention, $.Newline, $.Spaces, $.Freestyle, $.UnusedControlChar],
-                inference_mode: [$.Comment, $.InferenceEnd, $.MetadataStart, $.MetadataEnd, $.MetadataStatementEnd, $.ListDelimiter, $.Colon, $.Newline, $.Spaces, $.Freestyle, $.UnusedControlChar]
+                $.StatementDefinition, $.StatementReference, $.StatementMention, $.ArgumentDefinition, $.ArgumentReference, $.ArgumentMention, $.Spaces, $.Freestyle, $.UnusedControlChar],
+                inference_mode: [$.Newline, $.Comment, $.InferenceEnd, $.MetadataStart, $.MetadataEnd, $.MetadataStatementEnd, $.ListDelimiter, $.Colon, $.Spaces, $.Freestyle, $.UnusedControlChar]
             },
 
             defaultMode: "default_mode"
@@ -685,7 +714,7 @@ var ArgdownLexer = function () {
                 lexResult.tokens.pop();
             }
 
-            this.emitRemainingDedentTokens(lexResult.tokens);
+            this.emitRemainingDedentTokens(lexResult.tokens, lexResult.groups);
 
             return lexResult;
         }

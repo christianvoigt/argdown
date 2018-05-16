@@ -31,6 +31,7 @@ describe("Lexer", function() {
     it("recognizes incoming and outgoing relations", function() {
         let source = fs.readFileSync("./test/lexer-relations.argdown", "utf8");
         const result = lexer.tokenize(source);
+        //console.log(lexer.tokensToString(result.tokens));
         startTest(result.tokens);
         expectToken(lexer.OutgoingSupport);
         expectToken(lexer.OutgoingAttack);
@@ -386,13 +387,13 @@ describe("Lexer", function() {
         expectTokenLocation(17, 20, 5, 5, 1, 4); //<B>:
         expectTokenLocation(22, 22, 5, 5, 6, 6); //skipped whitespace at offset 21
         expectTokenLocation(24, 27, 6, 6, 1, 4); // Indent (4 spaces)
-        expectTokenLocation(23, 28, 5, 6, 7, 5); // + (including linebreak and 4 spaces for indentation)
+        expectTokenLocation(24, 28, 6, 6, 1, 5); // + (including 4 spaces for indentation)
         expectTokenLocation(30, 30, 6, 6, 7, 7);
         expectTokenLocation(32, 39, 7, 7, 1, 8); // Indent (8 spaces)
-        expectTokenLocation(31, 41, 6, 7, 8, 10); // -> including linebreak and spaces
+        expectTokenLocation(32, 41, 7, 7, 1, 10); // -> including spaces
         expectTokenLocation(43, 43, 7, 7, 12, 12); // skipped whitespace at offset 42
-        expectTokenLocation(44, 44, 8, 8, 1, 1); // Dedent is always at next line at column 1
-        expectTokenLocation(44, 44, 8, 8, 1, 1); // Dedent is always at next line at column 1
+        expectTokenLocation(43, 43, 7, 7, 12, 12); // Dedent is always at last column of current line
+        expectTokenLocation(43, 43, 7, 7, 12, 12); // Dedent is always at last column of current line
     });
     it("can save correct token location data if first line is empty", function() {
         let source = fs.readFileSync("./test/lexer-token-locations-first-line-empty.argdown", "utf8");

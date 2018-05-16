@@ -34,14 +34,16 @@ function escapeHtml(str) {
 // replace it with dummy function and use external sanitizer.
 //
 
+var BAD_PROTO_WITHOUT_FILE_RE = /^(vbscript|javascript|data):/;
 var BAD_PROTO_RE = /^(vbscript|javascript|file|data):/;
 var GOOD_DATA_RE = /^data:image\/(gif|png|jpeg|webp);/;
 
-function validateLink(url) {
+function validateLink(url, allowFile) {
   // url should be normalized at this point, and existing entities are decoded
   var str = url.trim().toLowerCase();
+  var proto_re = allowFile? BAD_PROTO_WITHOUT_FILE_RE : BAD_PROTO_RE;
 
-  return BAD_PROTO_RE.test(str) ? (GOOD_DATA_RE.test(str) ? true : false) : true;
+  return proto_re.test(str) ? (GOOD_DATA_RE.test(str) ? true : false) : true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
