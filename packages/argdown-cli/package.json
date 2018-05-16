@@ -10,12 +10,12 @@
   "engines": {
     "node": ">= 8.0.0"
   },
-  "version": "0.11.1",
+  "version": "0.11.2",
   "license": "MIT",
   "main": "lib/src/index.js",
   "dependencies": {
     "argdown-map-maker": "^0.5.0",
-    "argdown-parser": "^0.8.2",
+    "argdown-parser": "^0.8.3",
     "chokidar": "^1.7.0",
     "glob": "^7.1.2",
     "lodash": "^4.17.4",
