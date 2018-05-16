@@ -88,6 +88,7 @@ var ArgdownParser = function (_chevrotain$Parser) {
 
             return {
                 name: "heading",
+                startLine: children[0].startLine,
                 children: children
             };
         });
@@ -124,6 +125,7 @@ var ArgdownParser = function (_chevrotain$Parser) {
             children.push($.SUBRULE($.statement));
             return {
                 name: "argumentStatement",
+                startLine: children[0].startLine,
                 children: children
             };
         });
@@ -139,6 +141,7 @@ var ArgdownParser = function (_chevrotain$Parser) {
             children.push($.CONSUME(lexer.InferenceEnd));
             return {
                 name: "inference",
+                startLine: children[0].startLine,
                 children: children
             };
         });
@@ -186,7 +189,7 @@ var ArgdownParser = function (_chevrotain$Parser) {
             };
         });
 
-        $.list = $.RULE("orderedList", function () {
+        $.orderedList = $.RULE("orderedList", function () {
             var children = [];
             children.push($.CONSUME(lexer.Indent));
             $.AT_LEAST_ONE(function () {
@@ -195,10 +198,11 @@ var ArgdownParser = function (_chevrotain$Parser) {
             children.push($.CONSUME(lexer.Dedent));
             return {
                 name: 'orderedList',
+                startLine: children[0].startLine,
                 children: children
             };
         });
-        $.list = $.RULE("unorderedList", function () {
+        $.unorderedList = $.RULE("unorderedList", function () {
             var children = [];
             children.push($.CONSUME(lexer.Indent));
             $.AT_LEAST_ONE(function () {
@@ -207,6 +211,7 @@ var ArgdownParser = function (_chevrotain$Parser) {
             children.push($.CONSUME(lexer.Dedent));
             return {
                 name: 'unorderedList',
+                startLine: children[0].startLine,
                 children: children
             };
         });
@@ -217,6 +222,7 @@ var ArgdownParser = function (_chevrotain$Parser) {
             children.push($.SUBRULE($.statement));
             return {
                 name: "unorderedListItem",
+                startLine: children[0].startLine,
                 children: children
             };
         });
@@ -226,6 +232,7 @@ var ArgdownParser = function (_chevrotain$Parser) {
             children.push($.SUBRULE($.statement));
             return {
                 name: "orderedListItem",
+                startLine: children[0].startLine,
                 children: children
             };
         });
@@ -238,11 +245,12 @@ var ArgdownParser = function (_chevrotain$Parser) {
             });
             return {
                 name: 'argumentReference',
+                startLine: children[0].startLine,
                 children: children
             };
         });
 
-        $.argumentDescription = $.RULE("argumentDefinition", function () {
+        $.argumentDefinition = $.RULE("argumentDefinition", function () {
             var children = [];
             children.push($.CONSUME(lexer.ArgumentDefinition));
             children.push($.SUBRULE2($.statementContent));
@@ -251,6 +259,7 @@ var ArgdownParser = function (_chevrotain$Parser) {
             });
             return {
                 name: 'argumentDefinition',
+                startLine: children[0].startLine,
                 children: children
             };
         });
@@ -272,6 +281,7 @@ var ArgdownParser = function (_chevrotain$Parser) {
                     children.push($.SUBRULE3($.statementContent));
                     return {
                         name: "statementDefinition",
+                        startLine: children[0].startLine,
                         children: children
                     };
                 }
@@ -300,6 +310,7 @@ var ArgdownParser = function (_chevrotain$Parser) {
             });
             return {
                 name: 'statement',
+                startLine: children[0].startLine,
                 children: children
             };
         });
@@ -393,6 +404,7 @@ var ArgdownParser = function (_chevrotain$Parser) {
 
             return {
                 name: 'incomingSupport',
+                startLine: children[0].startLine,
                 children: children
             };
         });
@@ -410,6 +422,7 @@ var ArgdownParser = function (_chevrotain$Parser) {
             });
             return {
                 name: 'incomingAttack',
+                startLine: children[0].startLine,
                 children: children
             };
         });
@@ -425,6 +438,7 @@ var ArgdownParser = function (_chevrotain$Parser) {
             });
             return {
                 name: 'incomingUndercut',
+                startLine: children[0].startLine,
                 children: children
             };
         });
@@ -442,6 +456,7 @@ var ArgdownParser = function (_chevrotain$Parser) {
             });
             return {
                 name: 'outgoingUndercut',
+                startLine: children[0].startLine,
                 children: children
             };
         });
@@ -460,6 +475,7 @@ var ArgdownParser = function (_chevrotain$Parser) {
             });
             return {
                 name: 'outgoingSupport',
+                startLine: children[0].startLine,
                 children: children
             };
         });
@@ -477,6 +493,7 @@ var ArgdownParser = function (_chevrotain$Parser) {
             });
             return {
                 name: 'outgoingAttack',
+                startLine: children[0].startLine,
                 children: children
             };
         });
@@ -486,6 +503,7 @@ var ArgdownParser = function (_chevrotain$Parser) {
             children.push($.SUBRULE($.statement));
             return {
                 name: 'contradiction',
+                startLine: children[0].startLine,
                 children: children
             };
         });
@@ -563,6 +581,7 @@ var ArgdownParser = function (_chevrotain$Parser) {
             });
             return {
                 name: 'statementContent',
+                startLine: children[0].startLine,
                 children: children
             };
         });
@@ -586,6 +605,7 @@ var ArgdownParser = function (_chevrotain$Parser) {
             });
             return {
                 name: "freestyleText",
+                startLine: children[0].startLine,
                 children: children
             };
         });

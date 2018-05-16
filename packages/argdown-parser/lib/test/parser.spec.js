@@ -57,6 +57,34 @@ describe("Parser", function () {
     (0, _chai.expect)(lexResult.errors).to.be.empty;
     (0, _chai.expect)(parser.errors).to.be.empty;
   });
+  it("can add line numbers", function () {
+    var source = '# Heading\n\nStatement\n\n[Statement Definition]: Bla\n    + support relation\n    - attack relation\n    +> incoming support\n    -> incoming attack\n\n[Statement Reference] \n  >< Contradiction\n\n<Argument Definition>: Bla\n\n<Argument Reference>\n\n(1) A\n(2) B\n----\n(3) C\n\n 1. A\n 2. B\n\n * A\n * B\n';
+    var lexResult = lexer.tokenize(source);
+    parser.input = lexResult.tokens;
+    var ast = parser.argdown();
+    (0, _chai.expect)(lexResult.errors).to.be.empty;
+    (0, _chai.expect)(parser.errors).to.be.empty;
+    //console.log(parser.astToJsonString(ast));
+    (0, _chai.expect)(ast.children[0].startLine).to.equal(1); // Heading
+    (0, _chai.expect)(ast.children[1].startLine).to.equal(3); // Statement
+    (0, _chai.expect)(ast.children[2].startLine).to.equal(5); // Statement Definition
+    (0, _chai.expect)(ast.children[2].children[1].children[1].startLine).to.equal(6); // Outgoing Support
+    (0, _chai.expect)(ast.children[2].children[1].children[2].startLine).to.equal(7); // Outgoing Attack
+    (0, _chai.expect)(ast.children[2].children[1].children[3].startLine).to.equal(8); // Incoming Support
+    (0, _chai.expect)(ast.children[2].children[1].children[4].startLine).to.equal(9); // Incoming Attack
+    (0, _chai.expect)(ast.children[3].startLine).to.equal(11); // Statement Reference
+    (0, _chai.expect)(ast.children[3].children[1].children[2].startLine).to.equal(12); // Contradiction
+    (0, _chai.expect)(ast.children[4].startLine).to.equal(14); // Argument Definition
+    (0, _chai.expect)(ast.children[5].startLine).to.equal(16); // Argument Reference
+    (0, _chai.expect)(ast.children[6].children[0].startLine).to.equal(18); // Argument Statement 1
+    (0, _chai.expect)(ast.children[6].children[1].children[0].startLine).to.equal(19); // Argument Statement 2
+    (0, _chai.expect)(ast.children[6].children[1].children[1].startLine).to.equal(20); // Inference
+    (0, _chai.expect)(ast.children[6].children[1].children[2].startLine).to.equal(21); // Argument Statement 3
+    (0, _chai.expect)(ast.children[7].children[1].startLine).to.equal(23); // Ordered List item 1
+    (0, _chai.expect)(ast.children[7].children[2].startLine).to.equal(24); // Ordered List item 2
+    (0, _chai.expect)(ast.children[8].children[1].startLine).to.equal(26); // Unordered List item 1
+    (0, _chai.expect)(ast.children[8].children[2].startLine).to.equal(27); // Unordered List item 2
+  });
   // it("can return custom NoViableAltMessage", function () {
   //   let source = `asdda
   // + adas [sdsd] sadd`;

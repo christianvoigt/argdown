@@ -1,3 +1,15 @@
+## 0.8.3 (05-16-2018)
+
+### Minor changes
+
+ * Parser: Added startLine information for block elements (statements, arguments, relations, list items).
+ * HTML export: Added data-line attributes for block elements. This will make it possible to sync scrolling in VS Code preview.
+ * HTML export: added configuration options (will be used in VS Code preview) to change validateLink and normalizeLink behaviour.
+
+### Bug fixes
+
+ * Fixed line numbers for relations, argument statements, inferences and list items. The lexer now puts all single line breaks in a special group, instead of skipping them completely. This makes it possible to ignore single line breaks in the parser, but still check the lexing context for line breaks.
+
 ## 0.8.2 (05-15-2018)
 
 ### Minor changes
