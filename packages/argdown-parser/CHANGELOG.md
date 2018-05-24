@@ -1,3 +1,14 @@
+## 0.8.4 (05-24-2018)
+
+### Bug fixes
+
+* Removed data-line attribute from argument html elements
+* fixed line numbers for inferences
+
+### Minor changes
+
+* added has-line class to all html elements with line numbers.
+
 ## 0.8.3 (05-16-2018)
 
 ### Minor changes

@@ -61,7 +61,7 @@ class HtmlExport {
                 if (node.equivalenceClass.tags) {
                     classes += " " + $.getCssClassesFromTags(response, node.equivalenceClass.sortedTags);
                 }
-                response.html += `<div data-line="${node.startLine}" class="${classes}">`;
+                response.html += `<div data-line="has-line ${node.startLine}" class="${classes}">`;
             },
             statementExit: (request, response) => (response.html += "</div>"),
             StatementDefinitionEntry: (request, response, node, parentNode) => {
@@ -97,7 +97,7 @@ class HtmlExport {
                     classes += " " + $.getCssClassesFromTags(response, node.argument.sortedTags);
                 }
                 response.html +=
-                    `<a href="#${htmlId}" data-line="${node.startLine}" class="${classes}">&lt;<span class="title argument-title">${_.escape(node.argument.title)}</span>&gt; </a>`;
+                    `<a href="#${htmlId}" data-line="${node.startLine}" class="has-line ${classes}">&lt;<span class="title argument-title">${_.escape(node.argument.title)}</span>&gt; </a>`;
             },
             argumentDefinitionEntry: (request, response, node) => {
                 let htmlId = utils.getHtmlId("argument", node.argument.title, response.htmlIds);
@@ -107,7 +107,7 @@ class HtmlExport {
                     classes += " " + $.getCssClassesFromTags(response, node.argument.sortedTags);
                 }
                 response.html +=
-                    `<div id="${htmlId}" data-line="${node.startLine}" class="${classes}"><span class="definiendum argument-definiendum">&lt;<span class="title argument-title">${_.escape(node.argument.title)}</span>&gt;: </span><span class="argument-definiens definiens description">`;
+                    `<div id="${htmlId}" data-line="${node.startLine}" class="has-line ${classes}"><span class="definiendum argument-definiendum">&lt;<span class="title argument-title">${_.escape(node.argument.title)}</span>&gt;: </span><span class="argument-definiens definiens description">`;
             },
             ArgumentMentionEntry: (request, response, node) => {
                 let htmlId = utils.getHtmlId("argument", node.title);
@@ -121,43 +121,43 @@ class HtmlExport {
             argumentDefinitionExit: (request, response) => (response.html += "</span></div>"),
             incomingSupportEntry: (request, response, node) => {
                 response.html +=
-                    `<div data-line="${node.startLine}" class="incoming support relation"><div class="incoming support relation-symbol"><span>+&gt;</span></div>`;
+                    `<div data-line="${node.startLine}" class="has-line incoming support relation"><div class="incoming support relation-symbol"><span>+&gt;</span></div>`;
             },
             incomingSupportExit: (request, response) => (response.html += "</div>"),
             incomingAttackEntry: (request, response, node) => {
                 response.html +=
-                    `<div data-line="${node.startLine}" class="incoming attack relation"><div class="incoming attack relation-symbol"><span>-&gt;</span></div>`;
+                    `<div data-line="${node.startLine}" class="has-line incoming attack relation"><div class="incoming attack relation-symbol"><span>-&gt;</span></div>`;
             },
             incomingAttackExit: (request, response) => (response.html += "</div>"),
             incomingUndercutEntry: (request, response, node) => {
                 response.html +=
-                    `<div data-line="${node.startLine}" class="incoming undercut relation"><div class="incoming undercut relation-symbol"><span>_&gt;</span></div>`;
+                    `<div data-line="${node.startLine}" class="has-line incoming undercut relation"><div class="incoming undercut relation-symbol"><span>_&gt;</span></div>`;
             },
             incomingUndercutExit: (request, response) => (response.html += "</div>"),
             outgoingSupportEntry: (request, response, node) => {
                 response.html +=
-                    `<div data-line="${node.startLine}" class="outgoing support relation"><div class="outgoing support relation-symbol"><span>+</span></div>`;
+                    `<div data-line="${node.startLine}" class="has-line outgoing support relation"><div class="outgoing support relation-symbol"><span>+</span></div>`;
             },
             outgoingSupportExit: (request, response) => {
                 response.html += "</div>";
             },
             outgoingAttackEntry: (request, response, node) => {
                 response.html +=
-                    `<div data-line="${node.startLine}" class="outgoing attack relation"><div class="outgoing attack relation-symbol"><span>-</span></div>`;
+                    `<div data-line="${node.startLine}" class="has-line outgoing attack relation"><div class="outgoing attack relation-symbol"><span>-</span></div>`;
             },
             outgoingAttackExit: (request, response) => {
                 response.html += "</div>";
             },
             outgoingUndercutEntry: (request, response, node) => {
                 response.html +=
-                    `<div data-line="${node.startLine}" class="outgoing undercut relation"><div class="outgoing undercut relation-symbol"><span>&lt;_</span></div>`;
+                    `<div data-line="${node.startLine}" class="has-line outgoing undercut relation"><div class="outgoing undercut relation-symbol"><span>&lt;_</span></div>`;
             },
             outgoingUndercutExit: (request, response) => {
                 response.html += "</div>";
             },
             contradictionEntry: (request, response, node) => {
                 response.html +=
-                    `<div data-line="${node.startLine}" class="contradiction relation"><div class="contradiction relation-symbol"><span>&gt;&lt;</span></div>`;
+                    `<div data-line="${node.startLine}" class="has-line contradiction relation"><div class="contradiction relation-symbol"><span>&gt;&lt;</span></div>`;
             },
             contradictionExit: (request, response) => {
                 response.html += "</div>";
@@ -172,9 +172,9 @@ class HtmlExport {
             orderedListExit: (request, response) => (response.html += "</ol>"),
             unorderedListEntry: (request, response) => (response.html += "<ul>"),
             unorderedListExit: (request, response) => (response.html += "</ul>"),
-            orderedListItemEntry: (request, response, node) => (response.html += `<li data-line="${node.startLine}">`),
+            orderedListItemEntry: (request, response, node) => (response.html += `<li data-line="${node.startLine}" class="has-line">`),
             orderedListItemExit: (request, response) => (response.html += "</li>"),
-            unorderedListItemEntry: (request, response, node) => (response.html += `<li data-line="${node.startLine}">`),
+            unorderedListItemEntry: (request, response, node) => (response.html += `<li data-line="${node.startLine}" class="has-line">`),
             unorderedListItemExit: (request, response) => (response.html += "</li>"),
             headingEntry: (request, response, node) => {
                 let settings = $.getSettings(request);
@@ -188,7 +188,7 @@ class HtmlExport {
                 }
                 let htmlId = utils.getHtmlId("heading", node.text, response.htmlIds);
                 response.htmlIds[htmlId] = node;
-                response.html += `<h${node.level} data-line="${node.startLine}" id="${htmlId}">`;
+                response.html += `<h${node.level} data-line="${node.startLine}" id="${htmlId}" class="has-line heading">`;
             },
             headingExit: (request, response, node) => (response.html += "</h" + node.level + ">"),
             freestyleTextEntry: (request, response, node, parentNode) => {
@@ -220,7 +220,7 @@ class HtmlExport {
                 if (node.argument.tags) {
                     classes += " " + $.getCssClassesFromTags(response, node.argument.sortedTags);
                 }
-                response.html += `<div data-line="${node.startLine}" class="${classes}">`;
+                response.html += `<div class="${classes}">`;
             },
             argumentExit: (request, response) => (response.html += "</div>"),
             argumentStatementEntry: (request, response, node) => {
@@ -228,9 +228,9 @@ class HtmlExport {
                     let inference = node.statement.inference;
                     let metadataKeys = Object.keys(inference.metaData);
                     if (metadataKeys.length == 0 && inference.inferenceRules.length == 0) {
-                        response.html += `<div data-line="${inference.startLine}" class="inference">`;
+                        response.html += `<div data-line="${inference.startLine}" class="has-line inference">`;
                     } else {
-                        response.html += `<div data-line="${inference.startLine}" class="inference with-data">`;
+                        response.html += `<div data-line="${inference.startLine}" class="has-line inference with-data">`;
                     }
 
                     response.html += `<span class="inference-rules">`;
@@ -269,7 +269,7 @@ class HtmlExport {
                     response.html += "</div>";
                 }
                 response.html +=
-                    `<div data-line="${node.startLine}" class="${node.statement.role} argument-statement"><div class="statement-nr">(<span>${node.statementNr}</span>)</div>`;
+                    `<div data-line="${node.startLine}" class="has-line ${node.statement.role} argument-statement"><div class="statement-nr">(<span>${node.statementNr}</span>)</div>`;
             },
             argumentStatementExit: (request, response) => (response.html += "</div>")
         };
