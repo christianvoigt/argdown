@@ -752,7 +752,7 @@ var ModelPlugin = function () {
             }
         }
         function onInferenceEntry(request, response, node) {
-            currentInference = { inferenceRules: [], metaData: {} };
+            currentInference = { inferenceRules: [], metaData: {}, startLine: node.startLine };
             node.inference = currentInference;
         }
         function onInferenceRulesExit(request, response, node) {
