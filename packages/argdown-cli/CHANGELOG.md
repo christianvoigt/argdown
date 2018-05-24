@@ -1,3 +1,10 @@
+## 0.11.3
+
+### Minor Changes
+
+* Upgraded to argdown-parser 0.8.4
+* Added config option for custom logger
+
 ## 0.11.2
 
 ### Minor Changes

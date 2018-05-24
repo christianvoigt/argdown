@@ -129,6 +129,16 @@ app.load = async function (config) {
   const ignoreFiles = request.ignore || ["**/_*", // Exclude files starting with '_'.
   "**/_*/**" // Exclude entire directories starting with '_'.
   ];
+
+  if (request.logger && _.isFunction(request.logger.log) && _.isFunction(request.logger.setLevel)) {
+    if (!app.defaultLogger) {
+      app.defaultLogger = app.logger;
+    }
+    app.logger = request.logger;
+  } else if (app.defaultLogger) {
+    app.logger = app.defaultLogger;
+  }
+
   if (!request.rootPath) {
     request.rootPath = process.cwd();
   }
