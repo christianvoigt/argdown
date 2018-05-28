@@ -64,8 +64,9 @@ var JSONExport = function () {
             if (settings.exportSections && response.sections) {
                 argdown.sections = response.sections;
             }
-            if (settings.exportTags && response.tags) {
+            if (settings.exportTags && response.tags && response.tagsDictionary) {
                 argdown.tags = response.tags;
+                argdown.tagsDictionary = response.tagsDictionary;
             }
             response.json = JSON.stringify(argdown, function (key, value) {
                 if (settings.removeEmbeddedRelations && key == "relations" && (this instanceof _Argument.Argument || this instanceof _EquivalenceClass.EquivalenceClass)) {

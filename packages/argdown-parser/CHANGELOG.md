@@ -1,3 +1,15 @@
+## 0.8.5 (05-28-2018)
+
+### Minor Changes
+
+* lexer performance optimization: added custom token start char hints (see http://sap.github.io/chevrotain/docs/guide/resolving_lexer_errors.html#CUSTOM_OPTIMIZE)
+* parser performance optimization: OR caching, see point 3 at http://sap.github.io/chevrotain/docs/FAQ.html#major-performance-benefits
+* added tagsDictionary to JSON export.
+
+### Bug fixes
+
+* JSON export includes labelTitle and labelText for map nodes
+
 ## 0.8.4 (05-24-2018)
 
 ### Bug fixes

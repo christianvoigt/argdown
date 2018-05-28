@@ -36,10 +36,11 @@ var ArgdownParser = function (_chevrotain$Parser) {
             $.OPTION1(function () {
                 $.CONSUME1(lexer.Emptyline);
             });
+            // OR caching. see: http://sap.github.io/chevrotain/docs/FAQ.html#major-performance-benefits
             var atLeastOne = $.AT_LEAST_ONE_SEP({
                 SEP: lexer.Emptyline,
                 DEF: function DEF() {
-                    return $.OR([{
+                    return $.OR($.c1 || ($.c1 = [{
                         ALT: function ALT() {
                             return $.SUBRULE($.heading);
                         }
@@ -67,7 +68,7 @@ var ArgdownParser = function (_chevrotain$Parser) {
                         ALT: function ALT() {
                             return $.SUBRULE($.unorderedList);
                         }
-                    }]);
+                    }]));
                 }
             });
 
@@ -318,8 +319,9 @@ var ArgdownParser = function (_chevrotain$Parser) {
         $.statementRelations = $.RULE("statementRelations", function () {
             var children = [];
             children.push($.CONSUME(lexer.Indent));
+            // OR caching. see: http://sap.github.io/chevrotain/docs/FAQ.html#major-performance-benefits
             var atLeastOne = $.AT_LEAST_ONE(function () {
-                return $.OR([{
+                return $.OR($.c2 || ($.c2 = [{
                     ALT: function ALT() {
                         return $.SUBRULE($.incomingSupport);
                     }
@@ -343,7 +345,7 @@ var ArgdownParser = function (_chevrotain$Parser) {
                     ALT: function ALT() {
                         return $.SUBRULE($.incomingUndercut);
                     }
-                }]);
+                }]));
             });
             children = children.concat(atLeastOne);
             children.push($.CONSUME(lexer.Dedent));
@@ -355,8 +357,9 @@ var ArgdownParser = function (_chevrotain$Parser) {
         $.argumentRelations = $.RULE("argumentRelations", function () {
             var children = [];
             children.push($.CONSUME(lexer.Indent));
+            // OR caching. see: http://sap.github.io/chevrotain/docs/FAQ.html#major-performance-benefits
             var atLeastOne = $.AT_LEAST_ONE(function () {
-                return $.OR([{
+                return $.OR($.c3 || ($.c3 = [{
                     ALT: function ALT() {
                         return $.SUBRULE($.incomingSupport);
                     }
@@ -380,7 +383,7 @@ var ArgdownParser = function (_chevrotain$Parser) {
                     ALT: function ALT() {
                         return $.SUBRULE($.outgoingUndercut);
                     }
-                }]);
+                }]));
             });
             children = children.concat(atLeastOne);
             children.push($.CONSUME(lexer.Dedent));
@@ -544,41 +547,42 @@ var ArgdownParser = function (_chevrotain$Parser) {
         });
         $.statementContent = $.RULE("statementContent", function () {
             var children = [];
-            $.AT_LEAST_ONE(function () {
-                return $.OR([{
+            // OR caching. see: http://sap.github.io/chevrotain/docs/FAQ.html#major-performance-benefits
+            var atLeastOne = $.AT_LEAST_ONE(function () {
+                return $.OR($.c4 || ($.c4 = [{
                     ALT: function ALT() {
-                        return children.push($.SUBRULE($.freestyleText));
+                        return $.SUBRULE($.freestyleText);
                     }
                 }, {
                     ALT: function ALT() {
-                        return children.push($.CONSUME(lexer.Link));
+                        return $.CONSUME(lexer.Link);
                     }
                 }, {
                     ALT: function ALT() {
-                        return children.push($.SUBRULE($.bold));
+                        return $.SUBRULE($.bold);
                     }
                 }, {
                     ALT: function ALT() {
-                        return children.push($.SUBRULE($.italic));
+                        return $.SUBRULE($.italic);
                     }
                 }, {
                     ALT: function ALT() {
-                        return children.push($.CONSUME(lexer.Tag));
+                        return $.CONSUME(lexer.Tag);
                     }
                 }, {
                     ALT: function ALT() {
-                        return children.push($.CONSUME(lexer.ArgumentMention));
+                        return $.CONSUME(lexer.ArgumentMention);
                     }
                 }, {
                     ALT: function ALT() {
-                        return children.push($.CONSUME(lexer.StatementMention));
+                        return $.CONSUME(lexer.StatementMention);
                     }
-
                     // , {
                     //     ALT: () => children.push($.CONSUME(lexer.StatementMentionByNumber))
                     // }
-                }]);
+                }]));
             });
+            children = atLeastOne;
             return {
                 name: 'statementContent',
                 startLine: children[0].startLine,

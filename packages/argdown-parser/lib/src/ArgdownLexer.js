@@ -148,7 +148,8 @@ var ArgdownLexer = function () {
             name: "IncomingSupport",
             pattern: matchIncomingSupport,
             line_breaks: true,
-            label: "+> (Incoming Support)"
+            label: "+> (Incoming Support)",
+            start_chars_hint: [" ", "\t", "+"]
         });
         $.tokens.push($.IncomingSupport);
 
@@ -156,7 +157,8 @@ var ArgdownLexer = function () {
             name: "IncomingAttack",
             pattern: matchIncomingAttack,
             line_breaks: true,
-            label: "-> (Incoming Attack)"
+            label: "-> (Incoming Attack)",
+            start_chars_hint: [" ", "\t", "-"]
         });
         $.tokens.push($.IncomingAttack);
 
@@ -164,7 +166,8 @@ var ArgdownLexer = function () {
             name: "OutgoingSupport",
             pattern: matchOutgoingSupport,
             line_breaks: true,
-            label: "<+ (Outgoing Support)"
+            label: "<+ (Outgoing Support)",
+            start_chars_hint: [" ", "\t", "<"]
         });
         $.tokens.push($.OutgoingSupport);
 
@@ -172,7 +175,8 @@ var ArgdownLexer = function () {
             name: "OutgoingAttack",
             pattern: matchOutgoingAttack,
             line_breaks: true,
-            label: "<- (Outgoing Attack)"
+            label: "<- (Outgoing Attack)",
+            start_chars_hint: [" ", "\t", "<"]
         });
         $.tokens.push($.OutgoingAttack);
 
@@ -180,21 +184,24 @@ var ArgdownLexer = function () {
             name: "Contradiction",
             pattern: matchContradiction,
             line_breaks: true,
-            label: ">< (Contradiction)"
+            label: ">< (Contradiction)",
+            start_chars_hint: [" ", "\t", ">"]
         });
         $.tokens.push($.Contradiction);
         $.IncomingUndercut = createToken({
             name: "IncomingUndercut",
             pattern: matchIncomingUndercut,
             line_breaks: true,
-            label: "_> (Incoming Undercut)"
+            label: "_> (Incoming Undercut)",
+            start_chars_hint: [" ", "\t", "_"]
         });
         $.tokens.push($.IncomingUndercut);
         $.OutgoingUndercut = createToken({
             name: "OutgoingUndercut",
             pattern: matchOutgoingUndercut,
             line_breaks: true,
-            label: "<_ (Outgoing Undercut)"
+            label: "<_ (Outgoing Undercut)",
+            start_chars_hint: [" ", "\t", "<"]
         });
         $.tokens.push($.OutgoingUndercut);
 
@@ -217,7 +224,8 @@ var ArgdownLexer = function () {
             pattern: matchInferenceStart,
             push_mode: "inference_mode",
             line_breaks: true,
-            label: "-- (Inference Start)"
+            label: "-- (Inference Start)",
+            start_chars_hint: [" ", "\t", "-"]
         });
         $.tokens.push($.InferenceStart);
 
@@ -283,7 +291,8 @@ var ArgdownLexer = function () {
             name: "OrderedListItem",
             pattern: matchOrderedListItem,
             line_breaks: true,
-            label: "{Indentation}{number}. (Ordered List Item)"
+            label: "{Indentation}{number}. (Ordered List Item)",
+            start_chars_hint: [" ", "\t"]
         });
         $.tokens.push($.OrderedListItem);
         //whitespace + * + whitespace (to distinguish list items from bold and italic ranges)
@@ -294,7 +303,8 @@ var ArgdownLexer = function () {
             name: "UnorderedListItem",
             pattern: matchUnorderedListItem,
             line_breaks: true,
-            label: "{Indentation}* (Unordered List Item)"
+            label: "{Indentation}* (Unordered List Item)",
+            start_chars_hint: [" ", "\t"]
         });
         $.tokens.push($.UnorderedListItem);
 
@@ -319,7 +329,8 @@ var ArgdownLexer = function () {
             name: "Emptyline",
             pattern: matchEmptyline,
             line_breaks: true,
-            label: "{linebreak}{linebreak} (Empty Line)"
+            label: "{linebreak}{linebreak} (Empty Line)",
+            start_chars_hint: ["\r", "\n"]
         });
         $.tokens.push($.Emptyline);
 
@@ -375,7 +386,7 @@ var ArgdownLexer = function () {
         // });
         // $.tokens.push($.StatementMentionByNumber);
 
-        var statementNumberPattern = /^(?:\r\n|\n|\r)?[' '\t]*\(\d+\)/;
+        var statementNumberPattern = /^[' '\t]*\(\d+\)/;
         function matchStatementNumber(text, offset, matchedTokens, groups) {
             var remainingText = text.substr(offset);
             var last = _.last(matchedTokens);
@@ -396,7 +407,8 @@ var ArgdownLexer = function () {
             name: "StatementNumber",
             pattern: matchStatementNumber,
             line_breaks: true,
-            label: "(Number) (Statement Number)"
+            label: "(Number) (Statement Number)",
+            start_chars_hint: [" ", "\t", "("]
         });
         $.tokens.push($.StatementNumber);
 
@@ -435,7 +447,8 @@ var ArgdownLexer = function () {
         $.HeadingStart = createToken({
             name: "HeadingStart",
             pattern: matchHeadingStart,
-            label: "# (Heading Start)"
+            label: "# (Heading Start)",
+            start_chars_hint: ["#"]
         });
         $.tokens.push($.HeadingStart);
 
@@ -483,56 +496,64 @@ var ArgdownLexer = function () {
         $.AsteriskBoldStart = createToken({
             name: "AsteriskBoldStart",
             pattern: matchAsteriskBoldStart,
-            label: "** (Bold Start)"
+            label: "** (Bold Start)",
+            start_chars_hint: ["*"]
         });
         $.tokens.push($.AsteriskBoldStart);
 
         $.AsteriskBoldEnd = createToken({
             name: "AsteriskBoldEnd",
             pattern: matchAsteriskBoldEnd,
-            label: "** (Bold End)"
+            label: "** (Bold End)",
+            start_chars_hint: ["*"]
         });
         $.tokens.push($.AsteriskBoldEnd);
 
         $.UnderscoreBoldStart = createToken({
             name: "UnderscoreBoldStart",
             pattern: matchUnderscoreBoldStart,
-            label: "__ (Bold Start)"
+            label: "__ (Bold Start)",
+            start_chars_hint: ["_"]
         });
         $.tokens.push($.UnderscoreBoldStart);
 
         $.UnderscoreBoldEnd = createToken({
             name: "UnderscoreBoldEnd",
             pattern: matchUnderscoreBoldEnd,
-            label: "__ (Bold End)"
+            label: "__ (Bold End)",
+            start_chars_hint: ["_"]
         });
         $.tokens.push($.UnderscoreBoldEnd);
 
         $.AsteriskItalicStart = createToken({
             name: "AsteriskItalicStart",
             pattern: matchAsteriskItalicStart,
-            label: "* (Italic Start)"
+            label: "* (Italic Start)",
+            start_chars_hint: ["*"]
         });
         $.tokens.push($.AsteriskItalicStart);
 
         $.AsteriskItalicEnd = createToken({
             name: "AsteriskItalicEnd",
             pattern: matchAsteriskItalicEnd,
-            label: "* (Italic End)"
+            label: "* (Italic End)",
+            start_chars_hint: ["*"]
         });
         $.tokens.push($.AsteriskItalicEnd);
 
         $.UnderscoreItalicStart = createToken({
             name: "UnderscoreItalicStart",
             pattern: matchUnderscoreItalicStart,
-            label: "_ (Italic Start)"
+            label: "_ (Italic Start)",
+            start_chars_hint: ["_"]
         });
         $.tokens.push($.UnderscoreItalicStart);
 
         $.UnderscoreItalicEnd = createToken({
             name: "UnderscoreItalicEnd",
             pattern: matchUnderscoreItalicEnd,
-            label: "_ (Italic End)"
+            label: "_ (Italic End)",
+            start_chars_hint: ["_"]
         });
         $.tokens.push($.UnderscoreItalicEnd);
 
@@ -724,6 +745,6 @@ var ArgdownLexer = function () {
 }();
 
 module.exports = {
-    ArgdownLexer: new ArgdownLexer()
+    ArgdownLexer: new ArgdownLexer({ ensureOptimizations: true })
 };
 //# sourceMappingURL=ArgdownLexer.js.map

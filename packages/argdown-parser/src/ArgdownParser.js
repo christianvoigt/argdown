@@ -20,9 +20,11 @@ class ArgdownParser extends chevrotain.Parser {
             $.OPTION1(() => {
                 $.CONSUME1(lexer.Emptyline);
             });        
+            // OR caching. see: http://sap.github.io/chevrotain/docs/FAQ.html#major-performance-benefits
             let atLeastOne = $.AT_LEAST_ONE_SEP({
                 SEP: lexer.Emptyline,
-                DEF: () => $.OR([{
+                DEF: () => $.OR($.c1 ||
+                    ($.c1 = [{
                     ALT: () => $.SUBRULE($.heading)
                 }, {
                     ALT: () => $.SUBRULE($.statement)
@@ -36,7 +38,7 @@ class ArgdownParser extends chevrotain.Parser {
                     ALT: () => $.SUBRULE($.orderedList)
                 }, {
                     ALT: () => $.SUBRULE($.unorderedList)
-                }])
+                }]))
             });            
                    
             return {
@@ -270,7 +272,9 @@ class ArgdownParser extends chevrotain.Parser {
         $.statementRelations = $.RULE("statementRelations", () => {
             let children = [];
             children.push($.CONSUME(lexer.Indent));
-            let atLeastOne = $.AT_LEAST_ONE(() => $.OR([{
+            // OR caching. see: http://sap.github.io/chevrotain/docs/FAQ.html#major-performance-benefits
+            let atLeastOne = $.AT_LEAST_ONE(() => $.OR($.c2 ||
+                ($.c2 =[{
                 ALT: () => $.SUBRULE($.incomingSupport)
             }, {
                 ALT: () => $.SUBRULE($.incomingAttack)
@@ -282,7 +286,7 @@ class ArgdownParser extends chevrotain.Parser {
                 ALT: () => $.SUBRULE($.contradiction)
             },{
                 ALT: () => $.SUBRULE($.incomingUndercut)
-            }]));
+            }])));
             children = children.concat(atLeastOne);
             children.push($.CONSUME(lexer.Dedent));
             return {
@@ -293,7 +297,9 @@ class ArgdownParser extends chevrotain.Parser {
         $.argumentRelations = $.RULE("argumentRelations", () => {
             let children = [];
             children.push($.CONSUME(lexer.Indent));
-            let atLeastOne = $.AT_LEAST_ONE(() => $.OR([{
+            // OR caching. see: http://sap.github.io/chevrotain/docs/FAQ.html#major-performance-benefits
+            let atLeastOne = $.AT_LEAST_ONE(() => $.OR($.c3 ||
+                ($.c3 =[{
                 ALT: () => $.SUBRULE($.incomingSupport)
             }, {
                 ALT: () => $.SUBRULE($.incomingAttack)
@@ -305,7 +311,7 @@ class ArgdownParser extends chevrotain.Parser {
                 ALT: () => $.SUBRULE($.incomingUndercut)
             }, {
                 ALT: () => $.SUBRULE($.outgoingUndercut)
-            }]));
+            }])));
             children = children.concat(atLeastOne);
             children.push($.CONSUME(lexer.Dedent));
             return {
@@ -457,26 +463,28 @@ class ArgdownParser extends chevrotain.Parser {
         });
         $.statementContent = $.RULE("statementContent", () => {
             let children = [];
-            $.AT_LEAST_ONE(() => $.OR([{
-                ALT: () => children.push($.SUBRULE($.freestyleText))
-            }, {
-                ALT: () => children.push($.CONSUME(lexer.Link))
-            }, {
-                ALT: () => children.push($.SUBRULE($.bold))
-            }, {
-                ALT: () => children.push($.SUBRULE($.italic))
-            }, {
-                ALT: () => children.push($.CONSUME(lexer.Tag))
-            }, {
-                ALT: () => children.push($.CONSUME(lexer.ArgumentMention))
-            }, {
-                ALT: () => children.push($.CONSUME(lexer.StatementMention))
-            }
-
+            // OR caching. see: http://sap.github.io/chevrotain/docs/FAQ.html#major-performance-benefits
+            let atLeastOne = $.AT_LEAST_ONE(() => $.OR($.c4 ||
+                ($.c4 =[{
+                    ALT: () => $.SUBRULE($.freestyleText)
+                }, {
+                    ALT: () => $.CONSUME(lexer.Link)
+                }, {
+                    ALT: () => $.SUBRULE($.bold)
+                }, {
+                    ALT: () => $.SUBRULE($.italic)
+                }, {
+                    ALT: () => $.CONSUME(lexer.Tag)
+                }, {
+                    ALT: () => $.CONSUME(lexer.ArgumentMention)
+                }, {
+                    ALT: () => $.CONSUME(lexer.StatementMention)
+                }
             // , {
             //     ALT: () => children.push($.CONSUME(lexer.StatementMentionByNumber))
             // }
-        ]));
+            ])));
+            children = atLeastOne;
             return {
                 name: 'statementContent',
                 startLine: children[0].startLine,
