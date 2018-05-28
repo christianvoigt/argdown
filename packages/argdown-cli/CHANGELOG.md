@@ -1,5 +1,9 @@
 ## 0.11.4
 
+* Upgraded to argdown-map-maker 0.5.1
+
+## 0.11.4
+
 * Upgraded to argdown-parser 0.8.5
 
 ## 0.11.3
