@@ -43,8 +43,9 @@ class JSONExport {
         if (settings.exportSections && response.sections) {
             argdown.sections = response.sections;
         }
-        if (settings.exportTags && response.tags) {
+        if (settings.exportTags && response.tags && response.tagsDictionary) {
             argdown.tags = response.tags;
+            argdown.tagsDictionary = response.tagsDictionary;
         }
         response.json = JSON.stringify(
             argdown,
