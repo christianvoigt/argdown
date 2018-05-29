@@ -1,9 +1,15 @@
+## 0.11.7
+
+### Bug fixes
+
+* fixed outputPath fileName in SvgToPdfExportPlugin
+* added outputPath support to CopyDefaultCssPlugin
+
 ## 0.11.6
 
 ### Minor Changes
 
 * Added outputPath option for export (useful if argdown-cli is used together with a saveAs file dialog that provides an outputPath containing a file name). Can be used in config.html.outputPath, config.svg.outputPath, config.pdf.outputPath, config.json.outputPath or simply config.outputPath.
-
 
 ## 0.11.5
 
@@ -24,7 +30,7 @@
 
 ### Minor Changes
 
- * Updated to argdown-parser 0.8.3
+* Updated to argdown-parser 0.8.3
 
 ## 0.11.1
 
