@@ -1,4 +1,11 @@
-## 0.11.4
+## 0.11.6
+
+### Minor Changes
+
+* Added outputPath option for export (useful if argdown-cli is used together with a saveAs file dialog that provides an outputPath containing a file name). Can be used in config.html.outputPath, config.svg.outputPath, config.pdf.outputPath, config.json.outputPath or simply config.outputPath.
+
+
+## 0.11.5
 
 * Upgraded to argdown-map-maker 0.5.1
 

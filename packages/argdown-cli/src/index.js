@@ -1,7 +1,14 @@
 "use strict";
 
 import { AsyncArgdownApplication } from "./AsyncArgdownApplication.js";
-import { ParserPlugin, ModelPlugin, HtmlExport, JSONExport, TagPlugin, utils } from "argdown-parser";
+import {
+  ParserPlugin,
+  ModelPlugin,
+  HtmlExport,
+  JSONExport,
+  TagPlugin,
+  utils
+} from "argdown-parser";
 import { MapMaker, DotExport } from "argdown-map-maker";
 import { SaveAsFilePlugin } from "./plugins/SaveAsFilePlugin.js";
 import { DotToSvgExportPlugin } from "./plugins/DotToSvgExportPlugin.js";
@@ -105,13 +112,17 @@ app.load = async function(config) {
     "**/_*", // Exclude files starting with '_'.
     "**/_*/**" // Exclude entire directories starting with '_'.
   ];
-  
-  if(request.logger && _.isFunction(request.logger.log) && _.isFunction(request.logger.setLevel)){
-    if(!app.defaultLogger){
+
+  if (
+    request.logger &&
+    _.isFunction(request.logger.log) &&
+    _.isFunction(request.logger.setLevel)
+  ) {
+    if (!app.defaultLogger) {
       app.defaultLogger = app.logger;
     }
     app.logger = request.logger;
-  }else if(app.defaultLogger){
+  } else if (app.defaultLogger) {
     app.logger = app.defaultLogger;
   }
 
@@ -172,7 +183,10 @@ app.load = async function(config) {
       app.logger.log("verbose", "Reading file: " + file);
       promises.push(
         readFile(file, "utf8").then(input => {
-          app.logger.log("verbose", "Reading file completed, starting processing: " + file);
+          app.logger.log(
+            "verbose",
+            "Reading file completed, starting processing: " + file
+          );
           const requestForFile = _.clone(request);
           requestForFile.input = input;
           requestForFile.inputPath = file;
