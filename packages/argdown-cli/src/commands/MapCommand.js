@@ -29,7 +29,14 @@ export const builder = {
   statementSelectionMode: {
     alias: "statement-selection",
     type: "string",
-    choices: [undefined, "all", "titled", "roots", "statement-trees", "with-relations"]
+    choices: [
+      undefined,
+      "all",
+      "titled",
+      "roots",
+      "statement-trees",
+      "with-relations"
+    ]
   },
   graphName: {
     alias: "name",

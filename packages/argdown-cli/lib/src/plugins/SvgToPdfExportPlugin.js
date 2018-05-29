@@ -51,10 +51,10 @@ class SvgToPdfExportPlugin {
     let fileName = "default";
     let outputDir = settings.outputDir;
     if (request.outputPath) {
-      filename = this.getFileName(request.outputPath);
+      fileName = this.getFileName(request.outputPath);
       outputDir = path.dirname(request.outputPath);
     } else if (request.pdf && request.pdf.outputPath) {
-      filename = this.getFileName(request.pdf.outputPath);
+      fileName = this.getFileName(request.pdf.outputPath);
       outputDir = path.dirname(request.pdf.outputPath);
     } else if (_.isFunction(settings.fileName)) {
       fileName = settings.fileName.call(this, request, response);
