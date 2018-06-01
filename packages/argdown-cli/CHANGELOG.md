@@ -1,3 +1,10 @@
+## 0.11.8
+
+### Minor Changes
+
+* updated argdown-parser to 0.8.6
+* app.load now returs array of responses
+
 ## 0.11.7
 
 ### Bug fixes

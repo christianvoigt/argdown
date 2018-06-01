@@ -199,7 +199,7 @@ app.load = async function (config) {
         return $.runAsync(requestForFile);
       }));
     }
-    await Promise.all(promises);
+    return await Promise.all(promises);
   }
 };
 
