@@ -194,7 +194,7 @@ app.load = async function(config) {
         })
       );
     }
-    await Promise.all(promises);
+    return await Promise.all(promises);
   }
 };
 
