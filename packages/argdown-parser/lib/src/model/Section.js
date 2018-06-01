@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _lodash = require('lodash');
+var _lodash = require("lodash");
 
 var _ = _interopRequireWildcard(_lodash);
 
@@ -23,11 +23,14 @@ var Section = function () {
   }
 
   _createClass(Section, [{
-    key: 'toJSON',
+    key: "toJSON",
     value: function toJSON() {
       var copy = _.clone(this);
       if (copy.parent) {
         copy.parent = copy.parent.id;
+      }
+      if (copy.heading) {
+        delete copy.heading;
       }
       return copy;
     }

@@ -1,18 +1,18 @@
-import * as _ from 'lodash';
+import * as _ from "lodash";
 
-class Statement{
-  constructor(){
+class Statement {
+  constructor() {
     this.text = "";
     this.ranges = [];
   }
-  toJSON(){
+  toJSON() {
     let copy = _.clone(this);
-    if(copy.section){
-      copy.section = copy.section.id;      
+    if (copy.section) {
+      copy.section = copy.section.id;
     }
     return copy;
   }
 }
 module.exports = {
   Statement: Statement
-}
+};

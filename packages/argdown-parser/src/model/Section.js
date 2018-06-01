@@ -1,7 +1,7 @@
-import * as _ from 'lodash';
+import * as _ from "lodash";
 
-class Section{
-  constructor(id, level, title, ranges, tags){
+class Section {
+  constructor(id, level, title, ranges, tags) {
     this.id = id;
     this.title = title;
     this.ranges = ranges;
@@ -9,14 +9,17 @@ class Section{
     this.children = [];
     this.tags = tags;
   }
-  toJSON(){
+  toJSON() {
     let copy = _.clone(this);
-    if(copy.parent){
-      copy.parent = copy.parent.id;      
+    if (copy.parent) {
+      copy.parent = copy.parent.id;
+    }
+    if (copy.heading) {
+      delete copy.heading;
     }
     return copy;
   }
 }
 module.exports = {
   Section: Section
-}
+};
