@@ -15,7 +15,7 @@
   "main": "lib/src/index.js",
   "dependencies": {
     "argdown-map-maker": "^0.5.1",
-    "argdown-parser": "^0.8.6",
+    "argdown-parser": "^0.8.7",
     "chokidar": "^1.7.0",
     "glob": "^7.1.2",
     "lodash": "^4.17.4",

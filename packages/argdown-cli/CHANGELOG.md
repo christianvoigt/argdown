@@ -1,3 +1,7 @@
+## 0.11.9
+
+* updated argdown-parser to 0.8.7
+
 ## 0.11.8
 
 ### Minor Changes
