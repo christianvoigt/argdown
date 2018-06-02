@@ -1,3 +1,9 @@
+## 0.8.7 (02-06-2018)
+
+### Minor changes
+
+* added location information to argument descriptions
+
 ## 0.8.6 (01-06-2018)
 
 ### Minor Changes

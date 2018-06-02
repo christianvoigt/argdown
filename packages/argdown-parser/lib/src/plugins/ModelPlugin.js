@@ -416,6 +416,10 @@ var ModelPlugin = function () {
         var title = match[1];
         updateArgument(response, title);
         currentStatement = new _Statement.Statement();
+        currentStatement.startLine = node.startLine;
+        currentStatement.endLine = node.endLine;
+        currentStatement.startColumn = node.startColumn;
+        currentStatement.endColumn = node.endColumn;
         currentStatement.role = "argument-description";
         if (currentSection) {
           currentStatement.section = currentSection;
@@ -850,6 +854,7 @@ var ModelPlugin = function () {
         response.sections.push(newSection);
       }
       currentSection = newSection;
+      currentHeading.section = newSection;
       currentHeading = null;
     }
 
