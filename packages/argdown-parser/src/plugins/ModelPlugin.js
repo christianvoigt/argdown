@@ -20,8 +20,11 @@ class ModelPlugin {
     }
     return request.model;
   }
-  prepare(request) {
+  prepare(request, response, logger) {
     _.defaultsDeep(this.getSettings(request), this.defaults);
+    if (!response.ast) {
+      logger.log("error", "[ModelPlugin]: No AST field in response.");
+    }
   }
   run(request, response) {
     if (response.relations) {
