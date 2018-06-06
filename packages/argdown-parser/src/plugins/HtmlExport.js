@@ -10,8 +10,20 @@ class HtmlExport {
     }
     return settings;
   }
-  prepare(request) {
+  prepare(request, response, logger) {
     _.defaultsDeep(this.getSettings(request), this.defaults);
+    if (!response.ast) {
+      logger.log("error", "[HTMLExportPlugin]: No AST field in response");
+    }
+    if (!response.statements) {
+      logger.log(
+        "error",
+        "[HTMLExportPlugin]: No statements field in response"
+      );
+    }
+    if (!response.arguments) {
+      logger.log("error", "[HTMLExportPlugin]: No arguments field in response");
+    }
   }
   constructor(config) {
     this.name = "HtmlExport";

@@ -35,7 +35,6 @@
     "copy:argdown": "cpx \"test/**/*.{ad,argdown}\" lib/test --verbose",
     "copy:css": "cpx \"src/**/*.css\" lib/src --verbose",
     "test": "mocha --require babel-core/register --colors ./test/*.spec.js",
-    "test:issue668": "mocha --require babel-core/register --colors ./test/issue-668.spec.js",
     "test:lexer": "mocha --require babel-core/register --colors ./test/lexer.spec.js",
     "test:map-maker": "mocha --require babel-core/register --colors ./test/map-maker.spec.js",
     "test:argml-export": "mocha --require babel-core/register --colors ./test/argml-export.spec.js",
