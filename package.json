@@ -5,35 +5,42 @@
   "private": true,
   "scripts": {
     "bootstrap": "lerna bootstrap",
-    "test": "jest",
+    "test": "mocha --require ./babel-polyfill.js --colors \"./packages/argdown-parser/test/*.spec.ts\"",
+    "test:coverage": "nyc --reporter=html --reporter=text mocha ./test/**/*.spec.ts",
     "prepare": "lerna run prepare",
     "clean": "rimraf packages/**/lib"
   },
-  "workspaces": [
-    "./packages/*"
-  ],
   "readmeFilename": "Readme.md",
   "preferGlobal": true,
   "devDependencies": {
     "@babel/cli": "7.0.0-beta.49",
     "@babel/core": "^7.0.0-beta.49",
-    "@babel/plugin-proposal-class-properties": "^7.0.0-beta.32",
-    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.32",
+    "@babel/plugin-proposal-class-properties": "^7.0.0-beta.49",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.49",
     "@babel/preset-env": "7.0.0-beta.49",
     "@babel/preset-typescript": "7.0.0-beta.49",
     "@babel/register": "^7.0.0-beta.49",
     "chai": "^4.1.2",
     "copyfiles": "^2.0.0",
     "glob": "^7.1.1",
-    "jest": "^23.1.0",
-    "lerna": "^2.9.0",
     "mkdirp": "^0.5.1",
     "mocha": "^5.2.0",
     "nyc": "^12.0.2",
     "rimraf": "^2.6.2",
     "source-map-support": "^0.5.6",
     "typedoc": "^0.11.1",
-    "typescript": "^2.9.2"
+    "typescript": "~2.9.1",
+    "lerna": "^2.9.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@babel/polyfill": "^7.0.0-beta.51"
+  },
+  "nyc": {
+    "extension": [
+      ".ts"
+    ],
+    "require": [
+      "./babel-polyfill.js"
+    ]
+  }
 }

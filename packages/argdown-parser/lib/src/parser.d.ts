@@ -1,0 +1,36 @@
+import chevrotain from "chevrotain";
+declare class ArgdownParser extends chevrotain.Parser {
+    constructor();
+    private c1;
+    private c2;
+    private c3;
+    argdown: any;
+    private heading;
+    private pcs;
+    private pcsTail;
+    private argumentStatement;
+    private inference;
+    private inferenceRules;
+    private orderedList;
+    private unorderedList;
+    private unorderedListItem;
+    private orderedListItem;
+    private argumentReference;
+    private argumentDefinition;
+    private statement;
+    private inferenceRelations;
+    private relations;
+    private incomingSupport;
+    private incomingAttack;
+    private incomingUndercut;
+    private outgoingUndercut;
+    private outgoingSupport;
+    private outgoingAttack;
+    private contradiction;
+    private bold;
+    private italic;
+    private statementContent;
+    private freestyleText;
+}
+export declare const parser: ArgdownParser;
+export {};

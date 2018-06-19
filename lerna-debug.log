@@ -1,0 +1,21 @@
+0 silly input [ '../argdown-cli' ]
+1 silly flags { _: [ 'import' ],
+1 silly flags   'reject-cycles': false,
+1 silly flags   rejectCycles: false,
+1 silly flags   pathToRepo: '../argdown-cli' }
+2 verbose rootPath /Users/cvoigt/Documents/workspace/argdown
+3 info version 2.11.0
+4 silly isInitialized
+5 silly isInitialized true
+6 silly existsSync /Users/cvoigt/Documents/workspace/argdown/VERSION
+7 info versioning independent
+8 silly initialize attempt
+9 silly statSync /Users/cvoigt/Documents/workspace/argdown-cli
+10 silly getWorkspaceRoot
+11 verbose getWorkspaceRoot /Users/cvoigt/Documents/workspace/argdown
+12 silly existsSync /Users/cvoigt/Documents/workspace/argdown/packages/argdown-cli
+13 silly getCurrentSHA
+14 verbose getCurrentSHA 87d15f4a40b41b0ff474f156bae993ed2002f723
+15 error initialize callback with error
+16 error Error: Local repository has un-committed changes
+16 error     at ImportCommand.initialize (/usr/local/lib/node_modules/lerna/lib/commands/ImportCommand.js:158:25)
