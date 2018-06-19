@@ -1,4 +1,4 @@
 (1) First premise
 (2) Second premise
--- Inference Rule 1, Inference Rule 2 (depends on: 1,2; uses: 1,2) -----
+-- Inference Rule 1, Inference Rule 2 {depends on: [1,2]; uses: [1,2], myObject: {hallo: world}, anotherObject: {child: {says:hello}}} -----
 (3) Conclusion
