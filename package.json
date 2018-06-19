@@ -1,45 +1,39 @@
 {
-  "name": "argdown-browser",
-  "version": "1.6.1",
-  "description": "A simple Argdown editor for the browser",
+  "name": "@argdown/monorepo",
   "author": "Christian Voigt <1pxsolidblack@googlemail.com>",
+  "repository": "https://github.com/christianvoigt/argdown",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve --open",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "deploy": "git push origin --tags HEAD:master && git subtree push --prefix dist origin gh-pages"
+    "bootstrap": "lerna bootstrap",
+    "test": "jest",
+    "prepare": "lerna run prepare",
+    "clean": "rimraf packages/**/lib"
   },
-  "dependencies": {
-    "argdown-codemirror-mode": "git+https://github.com/christianvoigt/argdown-codemirror-mode.git",
-    "argdown-map-maker": "^0.5.0",
-    "argdown-parser": "^0.8.1",
-    "d3": "^5.0.0",
-    "dagre-d3": "^0.6.1",
-    "file-saver": "^1.3.8",
-    "lodash": "^4.17.4",
-    "viz.js": "^1.7.1",
-    "vue": "^2.5.13",
-    "vue-codemirror": "^4.0.4",
-    "vue-router": "^3.0.1",
-    "vuex": "^3.0.1"
-  },
+  "workspaces": [
+    "./packages/*"
+  ],
+  "readmeFilename": "Readme.md",
+  "preferGlobal": true,
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.0.0-beta.6",
-    "@vue/cli-plugin-eslint": "^3.0.0-beta.6",
-    "@vue/cli-service": "^3.0.0-beta.6",
-    "@vue/eslint-config-prettier": "^3.0.0-beta.6",
-    "babel-plugin-dynamic-import-node": "^1.2.0",
-    "babel-plugin-syntax-dynamic-import": "^6.18.0",
-    "css-loader": "^0.28.11",
-    "node-sass": "^4.7.2",
-    "raw-loader": "^0.5.1",
-    "sass-loader": "^6.0.6",
-    "vue-template-compiler": "^2.5.13"
+    "@babel/cli": "7.0.0-beta.49",
+    "@babel/core": "^7.0.0-beta.49",
+    "@babel/plugin-proposal-class-properties": "^7.0.0-beta.32",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.32",
+    "@babel/preset-env": "7.0.0-beta.49",
+    "@babel/preset-typescript": "7.0.0-beta.49",
+    "@babel/register": "^7.0.0-beta.49",
+    "chai": "^4.1.2",
+    "copyfiles": "^2.0.0",
+    "glob": "^7.1.1",
+    "jest": "^23.1.0",
+    "lerna": "^2.9.0",
+    "mkdirp": "^0.5.1",
+    "mocha": "^5.2.0",
+    "nyc": "^12.0.2",
+    "rimraf": "^2.6.2",
+    "source-map-support": "^0.5.6",
+    "typedoc": "^0.11.1",
+    "typescript": "^2.9.2"
   },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
-  ]
+  "dependencies": {}
 }

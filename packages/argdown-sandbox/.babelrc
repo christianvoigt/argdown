@@ -1,0 +1,4 @@
+{
+    "presets": ["@vue/app"],
+    "plugins": ["syntax-dynamic-import"]
+}
