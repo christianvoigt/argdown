@@ -6,22 +6,29 @@ import {
   ParserPlugin,
   ModelPlugin,
   TagPlugin,
-  HtmlExport,
-  JSONExport
-} from "argdown-parser";
-import { MapMaker, DotExport } from "argdown-map-maker";
+  HtmlExportPlugin,
+  JSONExportPlugin,
+  DataPlugin,
+  MapPlugin,
+  DotExportPlugin,
+  StatementSelectionMode,
+  LabelMode,
+  tokensToString,
+  astToString
+} from "@argdown/core";
 
 const app = new ArgdownApplication();
 const parserPlugin = new ParserPlugin();
+const dataPlugin = new DataPlugin();
 const modelPlugin = new ModelPlugin();
 const tagPlugin = new TagPlugin();
 
-const htmlExport = new HtmlExport({
+const htmlExport = new HtmlExportPlugin({
   headless: true
 });
-const jsonExport = new JSONExport({ removeEmbeddedRelations: true });
-const mapMaker = new MapMaker();
-const dotExport = new DotExport();
+const jsonExport = new JSONExportPlugin({ removeEmbeddedRelations: true });
+const mapPlugin = new MapPlugin();
+const dotExport = new DotExportPlugin();
 const testInput = `# Welcome to Argdown!
 
 [Intro]: Argdown is a simple syntax for defining argumentative
@@ -108,15 +115,13 @@ Some inference rule (Some additional info: 1,2)
 `;
 
 app.addPlugin(parserPlugin, "parse-input");
+app.addPlugin(dataPlugin, "build-model");
 app.addPlugin(modelPlugin, "build-model");
 app.addPlugin(tagPlugin, "build-model");
+app.addPlugin(mapPlugin, "build-map");
 app.addPlugin(htmlExport, "export-html");
-app.addPlugin(mapMaker, "export-dot");
 app.addPlugin(dotExport, "export-dot");
-app.addPlugin(mapMaker, "export-argml");
-app.addPlugin(mapMaker, "export-json");
 app.addPlugin(jsonExport, "export-json");
-app.addPlugin(mapMaker, "make-map");
 
 Vue.use(Vuex);
 
@@ -126,9 +131,9 @@ export default new Vuex.Store({
     config: {
       map: {
         excludeDisconnected: true,
-        statementSelectionMode: "statement-trees",
-        statementLabelMode: "hide-untitled",
-        argumentLabelMode: "hide-untitled",
+        statementSelectionMode: StatementSelectionMode.NOT_USED_IN_ARGUMENT,
+        statementLabelMode: LabelMode.HIDE_UNTITLED,
+        argumentLabelMode: LabelMode.HIDE_UNTITLED,
         groupDepth: 2
       },
       dot: {
@@ -185,7 +190,9 @@ export default new Vuex.Store({
         return null;
       }
       const request = _.defaultsDeep(
-        { process: ["export-html"] },
+        {
+          process: ["export-html"]
+        },
         state.config
       );
       const response = app.run(request, data);
@@ -196,7 +203,12 @@ export default new Vuex.Store({
       if (!data.ast) {
         return null;
       }
-      const request = _.defaultsDeep({ process: ["export-dot"] }, state.config);
+      const request = _.defaultsDeep(
+        {
+          process: ["build-map", "export-dot"]
+        },
+        state.config
+      );
       const response = app.run(request, data);
       return response.dot;
     },
@@ -206,7 +218,9 @@ export default new Vuex.Store({
         return null;
       }
       const request = _.defaultsDeep(
-        { process: ["export-json"] },
+        {
+          process: ["build-map", "export-json"]
+        },
         state.config
       );
       const response = app.run(request, data);
@@ -228,20 +242,19 @@ export default new Vuex.Store({
       return getters.argdownData.relations;
     },
     ast: (state, getters) => {
-      return parserPlugin.parser.astToString(getters.argdownData.ast);
+      return astToString(getters.argdownData.ast);
     },
     tokens: (state, getters) => {
       const data = getters.argdownData;
-      return data.tokens
-        ? parserPlugin.lexer.tokensToString(data.tokens)
-        : null;
+      // eslint-disable-next-line
+      return data.tokens ? tokensToString(data.tokens) : null;
     },
     map: (state, getters) => {
       const data = getters.argdownData;
       if (!data.ast) {
         return null;
       }
-      const request = _.defaultsDeep({ process: ["make-map"] }, state.config);
+      const request = _.defaultsDeep({ process: ["build-map"] }, state.config);
       const response = app.run(request, data);
       return response.map;
     },

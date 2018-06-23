@@ -1,37 +1,32 @@
 #!/usr/bin/env node
-
-'use strict';
-/*jshint esversion: 6 */
-/*jslint node: true */
-
-var _yargs = require('yargs');
-
-var _yargs2 = _interopRequireDefault(_yargs);
-
-var _package = require('../../package.json');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-_yargs2.default.options({
-  watch: {
-    alias: 'w',
-    describe: 'Watch the input files for changes',
-    type: 'boolean',
-    default: false
-  },
-  config: {
-    alias: 'cfg',
-    describe: 'The path to the config .js file.',
-    type: 'string'
-  },
-  verbose: {
-    alias: 'v',
-    type: 'boolean',
-    describe: 'verbose mode'
-  },
-  stdout: {
-    type: 'boolean',
-    describe: 'Export data to stdout'
-  }
-}).commandDir('commands').help().version(_package.version).argv;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const yargs = require("yargs");
+require("pkginfo")(module, "version");
+yargs
+    .options({
+    watch: {
+        alias: "w",
+        describe: "Watch the input files for changes",
+        type: "boolean",
+        default: false
+    },
+    config: {
+        alias: "cfg",
+        describe: "The path to the config .js file.",
+        type: "string"
+    },
+    verbose: {
+        alias: "v",
+        type: "boolean",
+        describe: "verbose mode"
+    },
+    stdout: {
+        type: "boolean",
+        describe: "Export data to stdout"
+    }
+})
+    .commandDir("commands")
+    .help()
+    .version(module.exports.version).argv;
 //# sourceMappingURL=cli.js.map

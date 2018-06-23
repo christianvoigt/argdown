@@ -1,0 +1,28 @@
+{
+  "fileTypes": [],
+  "injectionSelector": "L:markup.fenced_code.block.markdown",
+  "patterns": [
+    {
+      "include": "#argdown-code-block"
+    }
+  ],
+  "repository": {
+    "argdown-code-block": {
+      "begin": "argdown(\\s+[^`~]*)?$",
+      "end": "(^|\\G)(?=\\s*[`~]{3,}\\s*$)",
+      "patterns": [
+        {
+          "begin": "(^|\\G)(\\s*)(.*)",
+          "while": "(^|\\G)(?!\\s*([`~]{3,})\\s*$)",
+          "contentName": "meta.embedded.block.argdown",
+          "patterns": [
+            {
+              "include": "text.html.argdown"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "scopeName": "markdown.argdown.codeblock"
+}

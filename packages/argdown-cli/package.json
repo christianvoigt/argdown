@@ -1,5 +1,5 @@
 {
-  "name": "argdown-cli",
+  "name": "@argdown/cli",
   "description": "A command line interface for exporting Argdown files to html, dot or json.",
   "keywords": [
     "argumentation",
@@ -12,17 +12,13 @@
   },
   "version": "0.11.9",
   "license": "MIT",
-  "main": "lib/src/index.js",
+  "main": "lib/src/cli.js",
   "dependencies": {
-    "argdown-map-maker": "^0.5.1",
-    "argdown-parser": "^0.8.7",
-    "chokidar": "^1.7.0",
-    "glob": "^7.1.2",
-    "lodash": "^4.17.4",
-    "mkdirp": "^0.5.1",
-    "require-uncached": "^1.0.3",
-    "svg-to-pdfkit": "^0.1.7",
-    "viz.js": "^1.8.1",
+    "@argdown/core": "^0.8.7",
+    "@argdown/node": "^0.11.9",
+    "@types/yargs": "^11.0.0",
+    "nyc": "^12.0.2",
+    "pkginfo": "^0.4.1",
     "yargs": "^8.0.1"
   },
   "bin": {
@@ -30,7 +26,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/christianvoigt/argdown-cli"
+    "url": "https://github.com/christianvoigt/argdown/tree/master/packages/argdown-cli"
   },
   "author": {
     "name": "Christian Voigt",
@@ -39,26 +35,53 @@
   "scripts": {
     "deploy": "npm run version:patch && git push --tags origin HEAD:master",
     "build": "npm run clean && npm run build:src",
-    "build:src": "babel src/ -d lib/src --source-maps --copy-files",
-    "test": "mocha --require babel-core/register --colors ./test/*.spec.js",
-    "prepare": "npm run-script build",
+    "build:src": "tsc",
+    "test": "mocha -r ts-node/register --full-trace --require source-map-support/register ./test/**/*.spec.ts",
+    "coverage": "nyc mocha -r ts-node/register --full-trace --bail --require source-map-support/register ./test/**/*.spec.ts",
+    "report": "nyc report",
+    "prepublish": "npm run-script build",
     "clean": "rimraf lib/*",
     "version:patch": "npm version patch"
   },
   "readmeFilename": "Readme.md",
   "preferGlobal": true,
   "devDependencies": {
-    "babel-cli": "^6.23.0",
-    "babel-core": "^6.23.1",
-    "babel-eslint": "^7.2.3",
-    "babel-preset-env": "^1.6.1",
+    "@types/mocha": "^5.2.3",
+    "@types/rimraf": "^2.0.2",
     "chai": "^4.1.2",
     "chai-fs": "^2.0.0",
+    "copyfiles": "^2.0.0",
     "cpx": "^1.5.0",
-    "eslint": "^3.15.0",
-    "mocha": "^3.4.2",
-    "rimraf": "^2.6.1",
-    "sinon": "^1.17.7",
-    "source-map-support": "^0.4.11"
+    "glob": "^7.1.1",
+    "intercept-stdout": "^0.1.2",
+    "jest": "^23.1.0",
+    "mkdirp": "^0.5.1",
+    "mocha": "^5.2.0",
+    "nyc": "^12.0.2",
+    "rimraf": "^2.6.2",
+    "source-map-support": "^0.5.6",
+    "ts-node": "^6.1.2",
+    "typedoc": "^0.11.1",
+    "typescript": "~2.9.1",
+    "typescript-workspace-plugin": "^1.0.5"
+  },
+  "nyc": {
+    "include": [
+      "lib/src/**/*.js",
+      "lib/src/**/*.jsx"
+    ],
+    "extension": [
+      ".js",
+      ".jsx"
+    ],
+    "require": [
+      "ts-node/register"
+    ],
+    "reporter": [
+      "text",
+      "html"
+    ],
+    "sourceMap": true,
+    "instrument": true
   }
 }

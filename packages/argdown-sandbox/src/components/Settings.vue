@@ -17,10 +17,11 @@
   <select id="statementSelectionMode" v-model="$store.state.config.map.statementSelectionMode">
     <option disabled value="">Please select one</option>
     <option value='all'>all</option>
-    <option value='titled'>titled</option>
-    <option value='roots'>roots</option>
-    <option value='statement-trees'>statement-trees</option>
+    <option value='with-title'>titled</option>
+    <option value='top-level'>top-level</option>
+    <option value='not-used-in-argument'>not-used-in-argument</option>
     <option value='with-relations'>with-relations</option>
+    <option value='with-more-than-one-relation'>with-more-than-one-relation</option>
   </select>
 </fieldset>
 <fieldset>
@@ -29,7 +30,7 @@
     <option disabled value="">Please select one</option>
     <option value='hide-untitled'>hide-untitled</option>
     <option value='title'>title</option>
-    <option value='description'>description</option>
+    <option value='text'>text</option>
   </select>
 </fieldset>
 <fieldset>

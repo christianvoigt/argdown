@@ -1,0 +1,13 @@
+{
+  "presets": [
+    [
+      "@babel/env",
+      {
+        "useBuiltIns": "usage"
+      }
+    ],
+    "@babel/typescript"
+  ],
+  "ignore": ["src/pdfkit.js"],
+  "plugins": ["@babel/proposal-class-properties", "@babel/proposal-object-rest-spread"]
+}

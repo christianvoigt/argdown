@@ -11,7 +11,7 @@
 <script>
 import * as _ from "lodash";
 import { CodeMirror, codemirror } from "vue-codemirror";
-import * as argdownMode from "argdown-codemirror-mode";
+import * as argdownMode from "@argdown/codemirror-mode";
 
 import "codemirror/addon/mode/simple.js";
 import "codemirror/addon/lint/lint.js";
@@ -83,7 +83,7 @@ export default {
 @import "../../node_modules/codemirror/lib/codemirror.css";
 @import "../../node_modules/codemirror/theme/monokai.css";
 @import "../../node_modules/codemirror/addon/lint/lint.css";
-@import "../../node_modules/argdown-codemirror-mode/codemirror-argdown.css";
+@import "../../node_modules/@argdown/codemirror-mode/codemirror-argdown.css";
 
 .input-maximized {
   .argdown-input {

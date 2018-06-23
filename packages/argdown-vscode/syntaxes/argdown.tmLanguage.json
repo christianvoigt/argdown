@@ -1,0 +1,539 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Argdown",
+  "repository": {
+    "data": {
+      "begin": "(^|\\G|\\s+)(?={)",
+      "end": "(?<=})\\s*$",
+      "patterns": [{ "include": "source.yaml" }],
+      "name": "meta.block.data.argdown"
+    },
+    "dataContent": {
+      "begin": "(?<!\\\\){",
+      "patterns": [{ "include": "#dataContent" }],
+      "end": "(?<!\\\\)}"
+    }
+  },
+  "patterns": [
+    {
+      "match": "\\\\.",
+      "name": "html.text.argdown"
+    },
+    {
+      "begin": "(?<=^|[^\\w\\d\\*])\\*\\*(?!$|\\*|\\s)",
+      "end": "(?<!^|\\s)\\*\\**\\*(?=$|[^\\w|\\d])",
+      "name": "markup.bold.argdown",
+      "patterns": [
+        {
+          "match": "(&)([a-zA-Z0-9]+|#[0-9]+|#x[0-9a-fA-F]+)(;)",
+          "name": "constant.character.entity.argdown",
+          "captures": {
+            "1": {
+              "name": "punctuation.definition.entity.argdown"
+            },
+            "3": {
+              "name": "punctuation.definition.entity.argdown"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "begin": "(?<=^|[^\\w\\d_])__(?!$|_|\\s)",
+      "end": "(?<!^|\\s)__*_(?=$|[^\\w|\\d])",
+      "name": "markup.bold.argdown",
+      "patterns": [
+        {
+          "match": "(&)([a-zA-Z0-9]+|#[0-9]+|#x[0-9a-fA-F]+)(;)",
+          "name": "constant.character.entity.argdown",
+          "captures": {
+            "1": {
+              "name": "punctuation.definition.entity.argdown"
+            },
+            "3": {
+              "name": "punctuation.definition.entity.argdown"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "begin": "(?<=^|[^\\w\\d\\*])\\*(?!$|\\*|\\s)",
+      "end": "(?<!^|\\s)\\**\\*(?=$|[^\\w|\\d])",
+      "name": "markup.italic.argdown",
+      "patterns": [
+        {
+          "match": "(&)([a-zA-Z0-9]+|#[0-9]+|#x[0-9a-fA-F]+)(;)",
+          "name": "constant.character.entity.argdown",
+          "captures": {
+            "1": {
+              "name": "punctuation.definition.entity.argdown"
+            },
+            "3": {
+              "name": "punctuation.definition.entity.argdown"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "begin": "(?<=^|[^\\w\\d_\\{\\}])_(?!$|_|\\s)",
+      "end": "(?<!^|\\s)_*_(?=$|[^\\w|\\d])",
+      "name": "markup.italic.argdown",
+      "patterns": [
+        {
+          "match": "(&)([a-zA-Z0-9]+|#[0-9]+|#x[0-9a-fA-F]+)(;)",
+          "name": "constant.character.entity.argdown",
+          "captures": {
+            "1": {
+              "name": "punctuation.definition.entity.argdown"
+            },
+            "3": {
+              "name": "punctuation.definition.entity.argdown"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "begin": "^(#{6})(\\s*)",
+      "end": "$",
+      "name": "markup.heading.heading-6.argdown",
+      "captures": {
+        "1": {
+          "name": "markup.heading.marker.argdown"
+        },
+        "2": {
+          "name": "markup.heading.space.argdown"
+        }
+      },
+      "patterns": [
+        {
+          "include": "$self"
+        }
+      ]
+    },
+    {
+      "begin": "^(#{5})(\\s*)",
+      "end": "$",
+      "name": "markup.heading.heading-5.argdown",
+      "captures": {
+        "1": {
+          "name": "markup.heading.marker.argdown"
+        },
+        "2": {
+          "name": "markup.heading.space.argdown"
+        }
+      },
+      "patterns": [
+        {
+          "include": "$self"
+        }
+      ]
+    },
+    {
+      "begin": "^(#{4})(\\s*)",
+      "end": "$",
+      "name": "markup.heading.heading-4.argdown",
+      "captures": {
+        "1": {
+          "name": "markup.heading.marker.argdown"
+        },
+        "2": {
+          "name": "markup.heading.space.argdown"
+        }
+      },
+      "patterns": [
+        {
+          "include": "$self"
+        }
+      ]
+    },
+    {
+      "begin": "^(#{3})(\\s*)",
+      "end": "$",
+      "name": "markup.heading.heading-3.argdown",
+      "captures": {
+        "1": {
+          "name": "markup.heading.marker.argdown"
+        },
+        "2": {
+          "name": "markup.heading.space.argdown"
+        }
+      },
+      "patterns": [
+        {
+          "include": "$self"
+        }
+      ]
+    },
+    {
+      "begin": "^(#{2})(\\s*)",
+      "end": "$",
+      "name": "markup.heading.heading-2.argdown",
+      "captures": {
+        "1": {
+          "name": "markup.heading.marker.argdown"
+        },
+        "2": {
+          "name": "markup.heading.space.argdown"
+        }
+      },
+      "patterns": [
+        {
+          "include": "$self"
+        }
+      ]
+    },
+    {
+      "begin": "^(#{1})(\\s*)",
+      "end": "$",
+      "name": "markup.heading.heading-1.argdown",
+      "captures": {
+        "1": {
+          "name": "markup.heading.marker.argdown"
+        },
+        "2": {
+          "name": "markup.heading.space.argdown"
+        }
+      },
+      "patterns": [
+        {
+          "include": "$self"
+        }
+      ]
+    },
+    {
+      "begin": "#\\([^\\)]+",
+      "end": "\\)",
+      "name": "meta.tag.argdown"
+    },
+    {
+      "match": "#[\\w-]+(?=[\\s$])",
+      "name": "meta.tag.argdown"
+    },
+    {
+      "match": "(\\[!)(\\[)([^\\]]*)(\\])((\\()[^\\)]+(\\)))(\\])(((\\()[^\\)]+(\\)))|((\\[)[^\\]]+(\\])))",
+      "name": "link",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.begin.argdown"
+        },
+        "2": {
+          "name": "punctuation.definition.begin.argdown"
+        },
+        "3": {
+          "name": "entity.argdown"
+        },
+        "4": {
+          "name": "punctuation.definition.end.argdown"
+        },
+        "5": {
+          "name": "markup.underline.link.argdown"
+        },
+        "6": {
+          "name": "punctuation.definition.begin.argdown"
+        },
+        "7": {
+          "name": "punctuation.definition.end.argdown"
+        },
+        "8": {
+          "name": "punctuation.definition.end.argdown"
+        },
+        "10": {
+          "name": "markup.underline.link.argdown"
+        },
+        "11": {
+          "name": "punctuation.definition.begin.argdown"
+        },
+        "12": {
+          "name": "punctuation.definition.end.argdown"
+        },
+        "13": {
+          "name": "markup.underline.link.argdown"
+        },
+        "14": {
+          "name": "punctuation.definition.begin.argdown"
+        },
+        "15": {
+          "name": "punctuation.definition.end.argdown"
+        }
+      }
+    },
+    {
+      "match": "!?(\\[)([^\\]]*)(\\])((\\()[^\\)]+(\\)))",
+      "name": "link",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.begin.argdown"
+        },
+        "2": {
+          "name": "entity.argdown"
+        },
+        "3": {
+          "name": "punctuation.definition.end.argdown"
+        },
+        "4": {
+          "name": "markup.underline.link.argdown"
+        },
+        "5": {
+          "name": "punctuation.definition.begin.argdown"
+        },
+        "6": {
+          "name": "punctuation.definition.end.argdown"
+        }
+      }
+    },
+    {
+      "match": "^\\s*(\\[)([^\\]]+)(\\])\\s*:\\s*<([^>]+)>",
+      "name": "link",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.begin.argdown"
+        },
+        "2": {
+          "name": "entity.argdown"
+        },
+        "3": {
+          "name": "punctuation.definition.end.argdown"
+        },
+        "4": {
+          "name": "markup.underline.link.argdown"
+        }
+      }
+    },
+    {
+      "match": "^\\s*(\\*)[ \\t]+",
+      "captures": {
+        "1": {
+          "name": "markup.list.unordered.argdown"
+        }
+      }
+    },
+    {
+      "match": "^\\s*(\\<?\\+)[ \\t]+",
+      "captures": {
+        "1": {
+          "name": "markup.list.unordered.support.outgoing.argdown"
+        }
+      }
+    },
+    {
+      "match": "^\\s*(\\+\\>)[ \\t]+",
+      "captures": {
+        "1": {
+          "name": "markup.list.unordered.support.incoming.argdown"
+        }
+      }
+    },
+    {
+      "match": "^\\s*(\\<?-)[ \\t]+",
+      "captures": {
+        "1": {
+          "name": "markup.list.unordered.attack.outgoing.argdown"
+        }
+      }
+    },
+    {
+      "match": "^\\s*(-\\>)[ \\t]+",
+      "captures": {
+        "1": {
+          "name": "markup.list.unordered.attack.incoming.argdown"
+        }
+      }
+    },
+    {
+      "match": "^\\s*(\\>\\<)[ \\t]+",
+      "captures": {
+        "1": {
+          "name": "markup.list.unordered.contradiction.outgoing.argdown"
+        }
+      }
+    },
+    {
+      "match": "^\\s*(\\<_)[ \\t]+",
+      "captures": {
+        "1": {
+          "name": "markup.list.unordered.undercut.outgoing.argdown"
+        }
+      }
+    },
+    {
+      "match": "^\\s*(_\\>)[ \\t]+",
+      "captures": {
+        "1": {
+          "name": "markup.list.unordered.undercut.incoming.argdown"
+        }
+      }
+    },
+    {
+      "match": "^\\s*(\\d+\\.)[ \\t]+",
+      "captures": {
+        "1": {
+          "name": "markup.list.ordered.argument.pcs.reconstruction.argdown"
+        }
+      }
+    },
+    {
+      "match": "^\\s*(\\(\\d+\\))[ \\t]+",
+      "captures": {
+        "1": {
+          "name": "markup.list.ordered.argument.statement-index.argdown"
+        }
+      }
+    },
+    {
+      "match": "(  )$",
+      "disabled": 1,
+      "captures": {
+        "1": {
+          "name": "linebreak.argdown"
+        }
+      }
+    },
+    {
+      "begin": "<!--",
+      "captures": {
+        "0": {
+          "name": "punctuation.definition.comment.argdown"
+        }
+      },
+      "end": "--\\s*>",
+      "name": "comment.block.argdown"
+    },
+    {
+      "begin": "^\\s*===+\\s*$",
+      "end": "^\\s*===+\\s*$",
+      "name": "meta.block.frontmatter.argdown",
+      "patterns": [{ "include": "source.yaml" }]
+    },
+    {
+      "begin": "\\/\\*",
+      "captures": {
+        "0": {
+          "name": "punctuation.definition.comment.argdown"
+        }
+      },
+      "end": "\\*\\/",
+      "name": "comment.block.argdown"
+    },
+    {
+      "begin": "\\/\\/",
+      "captures": {
+        "0": {
+          "name": "punctuation.definition.comment.argdown"
+        }
+      },
+      "end": "(?:\\n|\\r|\\r\\n|$)",
+      "name": "comment.block.argdown"
+    },
+    {
+      "match": "(?<=^|\\s)(@<)([^<>]+)(>)(?=\\s*)",
+      "name": "variable.argument-title.mention.argdown",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.begin.argdown"
+        },
+        "2": {
+          "name": "entity.name.argument.argdown"
+        },
+        "3": {
+          "name": "punctuation.definition.end.argdown"
+        }
+      }
+    },
+    {
+      "match": "(?<=^|\\s)(<)([^<>]+)(>:)(?=\\s*)",
+      "name": "variable.argument-title.definition.argdown",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.begin.argdown"
+        },
+        "2": {
+          "name": "entity.name.argument.argdown"
+        },
+        "3": {
+          "name": "punctuation.definition.end.argdown"
+        }
+      }
+    },
+    {
+      "match": "(?<=^|\\s)(<)([^<>]+)(>)(?=\\s*)",
+      "name": "variable.argument-title.reference.argdown",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.begin.argdown"
+        },
+        "2": {
+          "name": "entity.name.argument.argdown"
+        },
+        "3": {
+          "name": "punctuation.definition.end.argdown"
+        }
+      }
+    },
+    {
+      "match": "(?<=^|\\s)(@\\[)([^\\[\\]]+)(\\])(?=\\s)",
+      "name": "variable.statement-title.definition.argdown",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.begin.argdown"
+        },
+        "2": {
+          "name": "entity.name.statement.argdown"
+        },
+        "3": {
+          "name": "punctuation.definition.end.argdown"
+        }
+      }
+    },
+    {
+      "match": "(?<=^|\\s)(\\[)([^\\[\\]]+)(\\]:)(?=\\s)",
+      "name": "variable.statement-title.definition.argdown",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.begin.argdown"
+        },
+        "2": {
+          "name": "entity.name.statement.argdown"
+        },
+        "3": {
+          "name": "punctuation.definition.end.argdown"
+        }
+      }
+    },
+    {
+      "match": "(?<=^|\\s)(\\[)([^\\[\\]]+)(\\])(?=\\s*)",
+      "name": "variable.statement-title.reference.argdown",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.begin.argdown"
+        },
+        "2": {
+          "name": "entity.name.statement.argdown"
+        },
+        "3": {
+          "name": "punctuation.definition.end.argdown"
+        }
+      }
+    },
+    {
+      "begin": "(?<=^)\\s*\\-\\-\\s*",
+      "end": "\\s*\\-\\-\\-*\\s*(?=$|[^\\w|\\d])",
+      "name": "variable.inference.argdown",
+      "patterns": [
+        {
+          "include": "#data"
+        },
+        {
+          "match": "[\\w\\s]+,?",
+          "name": "variable.inference-rule.argdown"
+        }
+      ]
+    },
+    {
+      "include": "#data"
+    }
+  ],
+  "scopeName": "text.html.argdown"
+}

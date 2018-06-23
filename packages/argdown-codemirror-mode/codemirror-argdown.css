@@ -1,0 +1,60 @@
+.cm-statement-definition,
+.cm-statement-reference,
+.cm-statement-mention {
+  color: cornflowerblue;
+  font-weight: bold;
+}
+.cm-argument-definition,
+.cm-argument-reference,
+.cm-argument-mention {
+  color: blue;
+  font-weight: bold;
+}
+.cm-incoming-support,
+.cm-outgoing-support {
+  color: green;
+  font-weight: bold;
+}
+.cm-incoming-attack,
+.cm-outgoing-attack,
+.cm-contradiction {
+  color: red;
+  font-weight: bold;
+}
+.cm-incoming-undercut,
+.cm-outgoing-undercut {
+  color: purple;
+  font-weight: bold;
+}
+.cm-heading {
+  font-weight: bold;
+  color: #7d04c9;
+}
+.cm-inference {
+  color: blue;
+}
+.cm-argument-statement {
+  color: blue;
+  font-weight: bold;
+}
+.cm-list-item {
+  color: #7d04c9;
+}
+.cm-bold {
+  font-weight: bold;
+  color: #7d04c9;
+}
+.cm-italic {
+  font-style: italic;
+  color: #7d04c9;
+}
+.cm-tag {
+  font-style: bold;
+  color: #170;
+}
+.cm-frontmatter {
+  color: #ccc;
+}
+.cm-data {
+  color: #ccc;
+}

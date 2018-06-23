@@ -1,0 +1,525 @@
+body {
+  padding: 0;
+}
+.main-menu-hover-field {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3em;
+  z-index: 1;
+}
+.unlocked-menu .main-menu-hover-field:hover .main-menu {
+  top: 0;
+}
+.locked-menu .main-menu-hover-field .main-menu {
+  top: 0;
+}
+a.lock-menu {
+  background: url("output_unlock.svg") center center no-repeat;
+}
+
+.vs-dark a.lock-menu,
+.hc-black a.lock-menu {
+  background: url("output_unlock_inverse.svg") center center no-repeat;
+}
+
+a.unlock-menu {
+  background: url("output_lock.svg") center center no-repeat;
+}
+
+.vs-dark a.unlock-menu,
+.hc-black a.unlock-menu {
+  background: url("output_lock_inverse.svg") center center no-repeat;
+}
+a.icon-button {
+  outline-offset: -2px;
+  font-size: 12px;
+  margin-right: 0.3em;
+  display: block;
+  min-width: 28px;
+  background-size: 16px;
+  background-position: 50%;
+  background-repeat: no-repeat;
+}
+a.icon-button span {
+  display: none;
+}
+.locked-menu a.lock-menu {
+  display: none;
+}
+.unlocked-menu a.unlock-menu {
+  display: none;
+}
+a.lock-menu,
+a.unlock-menu {
+  display: block;
+  padding: 1em;
+}
+.main-menu {
+  display: flex;
+  position: fixed;
+  top: -3em;
+  transition: top 0.25s ease;
+  left: 0;
+  right: 0;
+  height: 3em;
+  background-color: #fff;
+  z-index: 1000000;
+}
+.main-menu ul {
+  display: flex;
+  align-items: stretch; /* Default */
+  margin: 0;
+  padding: 0;
+}
+.main-menu li {
+  display: block;
+  flex: 0 1 auto; /* Default */
+  list-style-type: none;
+}
+.main-menu li a {
+  display: block;
+  padding: 1em;
+  color: inherit;
+  text-decoration: none;
+  background: #fafafa;
+  border-right: 1px solid #ccc;
+}
+.main-menu li a:hover {
+  background-color: #eaeaea;
+}
+.main-menu li a.active {
+  background-color: #ddd;
+}
+.main-menu li:last-child a {
+  border-right: 0px;
+}
+.submenu {
+  text-align: right;
+  flex: 1;
+  padding: 1em;
+}
+#scale-dialog {
+  z-index: 1000000;
+  width: 250px;
+  height: auto;
+  background-color: #fff;
+  border: 1px solid #aaa;
+  padding: 1em;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+#scale-dialog .dialog-footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+#scale-dialog h3 {
+  margin: 0;
+  text-align: center;
+}
+#scale-dialog button {
+  font-size: 1.25em;
+  padding: 0.5em;
+  margin: 0.25em;
+}
+#scale-dialog input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0.5em;
+  margin-bottom: 1em;
+  font-size: 1em;
+}
+
+.view.html-view {
+  padding: 2em;
+}
+.locked-menu .view.html-view {
+  margin-top: 3em;
+}
+#svg-container {
+  width: 100%;
+  height: 100%;
+}
+.view.dagre-view,
+.view.vizjs-view {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+}
+.locked-menu .view.dagre-view,
+.locked-menu .view.vizjs-view {
+  top: 3em;
+}
+.view.dagre svg,
+.view.vizjs svg {
+  width: 100%;
+  height: 100%;
+}
+.html-view .argdown {
+  font-family: "Source Sans Pro", sans-serif;
+  max-width: 35em;
+  margin: 0 auto;
+}
+.html-view .argdown > .statement,
+.html-view .argdown > .argument-definition,
+.html-view .argdown > .argument-reference {
+  display: block;
+  margin-bottom: 2em;
+  margin-top: 2em;
+}
+
+.html-view .argdown .statement-reference,
+.html-view .argdown .statement-definition,
+.html-view .argdown .statement-mention {
+  color: cornflowerblue;
+  text-decoration: none;
+}
+
+.html-view .argdown .relations {
+  margin-left: 2em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.html-view .argdown .relation {
+  margin-bottom: 0.2em;
+  padding-left: 1.5em;
+}
+
+.html-view .argdown .relation-symbol {
+  margin-left: -1.5em;
+  float: left;
+  min-width: 0.5em;
+  text-align: center;
+  padding-right: 0.25em;
+  padding-left: 0.25em;
+  border-radius: 0.5em;
+  font-weight: bold;
+  margin-right: 0.25em;
+}
+
+.html-view .argdown .support.relation-symbol {
+  color: green;
+  background-color: lightgreen;
+}
+
+.html-view .argdown .attack.relation-symbol,
+.html-view .argdown .contradiction.relation-symbol {
+  color: red;
+  background-color: lightpink;
+}
+.html-view .argdown .undercut.relation-symbol {
+  color: purple;
+  background-color: lightcoral;
+}
+
+.html-view .argdown .argument {
+  margin-top: 1em;
+  margin-bottom: 2em;
+}
+
+.html-view .argdown .argument-reference,
+.html-view .argdown .argument-definiendum,
+.html-view .argdown .argument-mention {
+  color: blue;
+  text-decoration: none;
+}
+
+.html-view .argdown .statement-reference:hover,
+.html-view .argdown .statement-mention:hover,
+.html-view .argdown .argument-reference:hover,
+.html-view .argdown .argument-mention:hover {
+  text-decoration: underline;
+}
+
+.html-view .argdown .title {
+  font-weight: bold;
+}
+
+.html-view .argdown .argument-statement {
+  padding-left: 3em;
+  padding-top: 0.25em;
+  padding-bottom: 0.25em;
+}
+
+.html-view .argdown .statement-nr {
+  margin-left: -2em;
+  float: left;
+  color: blue;
+}
+
+.html-view .argdown .inference {
+  border-top: 1px solid black;
+  font-size: 0.8em;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.html-view .argdown .inference.with-data {
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  padding: 0.5em;
+  padding-left: 1.5em;
+}
+
+.html-view .argdown .inference-rules {
+  font-style: italic;
+}
+
+.html-view .argdown .metadata {
+  font-style: italic;
+}
+
+.html-view .argdown .conclusion.argument-statement {
+  font-weight: bold;
+}
+
+.html-view .argdown .conclusion.argument-statement .relations {
+  font-weight: normal;
+}
+.html-view .argument-definition.tag7 > .definiendum,
+.statement.tag7 > .statement-definition,
+.html-view .reference.tag7,
+.mention.tag7,
+.tag.tag7 {
+  color: #666666;
+}
+.html-view .argument-definition.tag6 > .definiendum,
+.statement.tag6 > .statement-definition,
+.html-view .reference.tag6,
+.html-view .mention.tag6,
+.tag.tag6 {
+  color: #a6761d;
+}
+.html-view .argument-definition.tag5 > .definiendum,
+.statement.tag5 > .statement-definition,
+.html-view .reference.tag5,
+.html-view .mention.tag5,
+.tag.tag5 {
+  color: #e6ab02;
+}
+.html-view .argument-definition.tag4 > .definiendum,
+.statement.tag4 > .statement-definition,
+.html-view .reference.tag4,
+.mention.tag4,
+.tag.tag4 {
+  color: #66a61e;
+}
+.html-view .argument-definition.tag3 > .definiendum,
+.statement.tag3 > .statement-definition,
+.html-view .reference.tag3,
+.mention.tag3,
+.tag.tag3 {
+  color: #e7298a;
+}
+.html-view .argument-definition.tag2 > .definiendum,
+.statement.tag2 > .statement-definition,
+.html-view .reference.tag2,
+.mention.tag2,
+.tag.tag2 {
+  color: #7570b3;
+}
+.html-view .argument-definition.tag1 > .definiendum,
+.statement.tag1 > .statement-definition,
+.html-view .reference.tag1,
+.mention.tag1,
+.tag.tag1 {
+  color: #d95f02;
+}
+.html-view .argument-definition.tag0 > .definiendum,
+.statement.tag0 > .statement-definition,
+.html-view .reference.tag0,
+.mention.tag0,
+.tag.tag0 {
+  color: #1b9e77;
+}
+
+.dagre * {
+  box-sizing: border-box;
+}
+.dagre .cluster rect {
+  fill: #ddd;
+}
+.dagre .cluster .node-label {
+  font-family: Arial, sans-serif;
+  width: auto;
+}
+.dagre .cluster h3 {
+  margin: 0;
+  padding-top: 3px;
+  font-size: 14px;
+}
+.dagre .cluster.level-0 rect {
+  fill: #dadada;
+}
+.dagre .cluster.level-1 rect {
+  fill: #bababa;
+}
+.dagre .cluster.level-2 rect {
+  fill: #aaa;
+}
+.dagre text {
+  font-weight: 300;
+  font-family: Arial, sans-serf;
+  font-size: 14px;
+}
+.dagre g h3 {
+  font-family: Arial, sans-serif;
+  font-weight: normal;
+}
+.dagre g p {
+  font-family: Arial, sans-serif;
+  font-weight: normal;
+}
+.dagre .edgePath path {
+  stroke: #333;
+  stroke-width: 1.5px;
+}
+.dagre .edgePath.attack path {
+  stroke: red;
+}
+.dagre .edgePath.attack marker {
+  fill: red;
+}
+.dagre .edgePath.support path {
+  stroke: green;
+}
+.dagre .edgePath.support marker {
+  fill: green;
+}
+.dagre .edgePath.undercut path {
+  stroke: purple;
+}
+.dagre .edgePath.undercut marker {
+  fill: purple;
+}
+.dagre .node {
+  cursor: pointer;
+  display: block;
+  position: static;
+  margin: 0;
+  white-space: normal;
+  width: 200px;
+  height: auto;
+  text-align: center;
+  color: #000;
+}
+.dagre .node rect {
+  stroke: #999;
+  fill: #fff;
+  stroke-width: 1.5px;
+}
+.dagre .node .node-label {
+  white-space: normal;
+  padding: 5px;
+}
+.dagre .node p {
+  padding: 0px;
+  margin: 0;
+  font-weight: normal;
+  font-size: 12px;
+  display: block;
+}
+.dagre .node h3 {
+  padding: 0px;
+  margin: 0;
+  font-size: 14px;
+  font-weight: normal;
+  color: #264260;
+  display: block;
+}
+.dagre .node.argument-map-node rect {
+  fill: cornflowerblue;
+  stroke: black;
+  stroke-width: 2px;
+}
+.dagre .node.argument-map-node text {
+  fill: black;
+}
+.dagre .node.statement-map-node rect {
+  fill: white;
+  stroke: cornflowerblue;
+  stroke-width: 3px;
+}
+.dagre .node.statement-map-node text {
+  fill: black;
+}
+.dagre .node-label {
+  text-align: center;
+  width: 150px;
+}
+.dagre .node-label h3 {
+  font-weight: normal;
+}
+
+.dagre .node.statement-map-node.tag7 rect {
+  stroke: #666666;
+}
+.dagre .node.argument-map-node.tag7 rect {
+  fill: #666666;
+}
+.dagre .node.statement-map-node.tag6 rect {
+  stroke: #a6761d;
+}
+.dagre .node.argument-map-node.tag6 rect {
+  fill: #a6761d;
+}
+.dagre .node.statement-map-node.tag5 rect {
+  stroke: #e6ab02;
+}
+.dagre .node.argument-map-node.tag5 rect {
+  fill: #e6ab02;
+}
+.dagre .node.statement-map-node.tag4 rect {
+  stroke: #66a61e;
+}
+.dagre .node.argument-map-node.tag4 rect {
+  fill: #66a61e;
+}
+.dagre .node.statement-map-node.tag3 rect {
+  stroke: #e7298a;
+}
+.dagre .node.argument-map-node.tag3 rect {
+  fill: #e7298a;
+}
+.dagre .node.statement-map-node.tag2 rect {
+  stroke: #7570b3;
+}
+.dagre .node.argument-map-node.tag2 rect {
+  fill: #7570b3;
+}
+.dagre .node.statement-map-node.tag1 rect {
+  stroke: #d95f02;
+}
+.dagre .node.argument-map-node.tag1 rect {
+  fill: #d95f02;
+}
+.dagre .node.statement-map-node.tag0 rect {
+  stroke: #1b9e77;
+}
+.dagre .node.argument-map-node.tag0 rect {
+  fill: #1b9e77;
+}
+
+.dagre .node.statement-map-node.selected rect {
+  stroke-width: 8px;
+}
+.dagre .node.argument-map-node.selected rect {
+  stroke-width: 8px;
+}
+.dagre .node.cluster h3 {
+  cursor: pointer;
+}
+
+.vizjs-view g.node {
+  cursor: pointer;
+}
+.vizjs-view g.cluster text {
+  cursor: pointer;
+}

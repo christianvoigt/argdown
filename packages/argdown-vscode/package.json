@@ -1,0 +1,475 @@
+{
+  "name": "@argdown/vscode",
+  "displayName": "Argdown",
+  "description": "Live preview, language support & export for the Argdown argumentation syntax",
+  "icon": "argdown-icon.png",
+  "author": "Christian Voigt",
+  "license": "MIT",
+  "version": "0.0.3",
+  "publisher": "christianvoigt",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/christianvoigt/argdown/tree/master/packages/argdown-vscode"
+  },
+  "bugs": {
+    "url": "https://github.com/christianvoigt/argdown/issues"
+  },
+  "engines": {
+    "vscode": "^1.24.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Linters"
+  ],
+  "keywords": [
+    "multi-root ready",
+    "argumentation",
+    "argument mapping",
+    "Markdown"
+  ],
+  "activationEvents": [
+    "onLanguage:argdown",
+    "onCommand:argdown.exportDocumentToHtml",
+    "onCommand:argdown.exportDocumentToDot",
+    "onCommand:argdown.exportDocumentToJson",
+    "onCommand:argdown.exportDocumentToVizjsSvg",
+    "onCommand:argdown.exportDocumentToVizjsPdf",
+    "onCommand:argdown.run",
+    "onCommand:argdown.preview.toggleLock",
+    "onCommand:argdown.preview.refresh",
+    "onCommand:argdown.showPreview",
+    "onCommand:argdown.showPreviewToSide",
+    "onCommand:argdown.showLockedPreviewToSide",
+    "onCommand:argdown.showSource",
+    "onCommand:argdown.showPreviewSecuritySelector",
+    "onView:argdown.preview",
+    "workspaceContains:**/*.{argdown,ad,argdn,adown}"
+  ],
+  "main": "./out/extension",
+  "contributes": {
+    "languages": [
+      {
+        "id": "argdown",
+        "aliases": [
+          "Argdown",
+          "argdown"
+        ],
+        "extensions": [
+          ".ad",
+          ".adown",
+          ".argdown",
+          ".argdn"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "argdown",
+        "scopeName": "text.html.argdown",
+        "path": "./syntaxes/argdown.tmLanguage.json"
+      },
+      {
+        "scopeName": "markdown.argdown.codeblock",
+        "path": "./syntaxes/inject-argdown-into-markdown.json",
+        "injectTo": [
+          "text.html.markdown"
+        ],
+        "embeddedLanguages": {
+          "meta.embedded.block.argdown": "argdown"
+        }
+      }
+    ],
+    "themes": [
+      {
+        "label": "Argdown Theme",
+        "uiTheme": "vs",
+        "path": "./themes/argdown-theme.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "argdown.exportDocumentToHtml",
+        "title": "Export to HTML",
+        "category": "Argdown"
+      },
+      {
+        "command": "argdown.exportDocumentToJson",
+        "title": "Export data to JSON",
+        "category": "Argdown"
+      },
+      {
+        "command": "argdown.exportDocumentToDot",
+        "title": "Export map data to DOT",
+        "category": "Argdown"
+      },
+      {
+        "command": "argdown.exportDocumentToVizjsSvg",
+        "title": "Export Viz.js map to SVG",
+        "category": "Argdown"
+      },
+      {
+        "command": "argdown.exportDocumentToVizjsPdf",
+        "title": "Export Viz.js map to PDF",
+        "category": "Argdown"
+      },
+      {
+        "command": "argdown.exportContentToVizjsPng",
+        "title": "Export Viz.js map to PNG",
+        "category": "Argdown"
+      },
+      {
+        "command": "argdown.exportContentToDagrePng",
+        "title": "Export Dagre map to PNG",
+        "category": "Argdown"
+      },
+      {
+        "command": "argdown.exportContentToDagrePdf",
+        "title": "Export Dagre map to PDF",
+        "category": "Argdown"
+      },
+      {
+        "command": "argdown.exportContentToDagreSvg",
+        "title": "Export Dagre map to Svg",
+        "category": "Argdown"
+      },
+      {
+        "command": "argdown.showPreview",
+        "title": "Open Preview",
+        "category": "Argdown",
+        "icon": {
+          "light": "./media/Preview.svg",
+          "dark": "./media/Preview_inverse.svg"
+        }
+      },
+      {
+        "command": "argdown.showPreviewToSide",
+        "title": "Open Preview to the Side",
+        "category": "Argdown",
+        "icon": {
+          "light": "./media/PreviewOnRightPane_16x.svg",
+          "dark": "./media/PreviewOnRightPane_16x_dark.svg"
+        }
+      },
+      {
+        "command": "argdown.showLockedPreviewToSide",
+        "title": "Open locked Preview to the Side",
+        "category": "Argdown",
+        "icon": {
+          "light": "./media/PreviewOnRightPane_16x.svg",
+          "dark": "./media/PreviewOnRightPane_16x_dark.svg"
+        }
+      },
+      {
+        "command": "argdown.showSource",
+        "title": "Show Source",
+        "category": "Argdown",
+        "icon": {
+          "light": "./media/ViewSource.svg",
+          "dark": "./media/ViewSource_inverse.svg"
+        }
+      },
+      {
+        "command": "argdown.showPreviewSecuritySelector",
+        "title": "Change Preview Security Settings",
+        "category": "Argdown"
+      },
+      {
+        "command": "argdown.preview.refresh",
+        "title": "Refreshes the preview",
+        "category": "Argdown"
+      },
+      {
+        "command": "argdown.preview.toggleLock",
+        "title": "Toggle Preview Locking",
+        "category": "Argdown"
+      },
+      {
+        "command": "argdown.run",
+        "title": "Run Argdown parser with config file",
+        "category": "Argdown"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "argdown.showPreviewToSide",
+          "when": "editorLangId == argdown",
+          "alt": "argdown.showPreview",
+          "group": "navigation"
+        },
+        {
+          "command": "argdown.showSource",
+          "when": "argdownPreviewFocus",
+          "group": "navigation"
+        },
+        {
+          "command": "argdown.preview.refresh",
+          "when": "argdownPreviewFocus",
+          "group": "1_argdown"
+        },
+        {
+          "command": "argdown.preview.toggleLock",
+          "when": "argdownPreviewFocus",
+          "group": "1_argdown"
+        },
+        {
+          "command": "argdown.showPreviewSecuritySelector",
+          "when": "argdownPreviewFocus",
+          "group": "1_argdown"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "argdown.showPreview",
+          "when": "resourceLangId == argdown",
+          "group": "navigation"
+        },
+        {
+          "command": "argdown.exportDocumentToHtml",
+          "when": "resourceLangId == argdown",
+          "group": "export"
+        },
+        {
+          "command": "argdown.exportDocumentToJson",
+          "when": "resourceLangId == argdown",
+          "group": "export"
+        },
+        {
+          "command": "argdown.exportDocumentToDot",
+          "when": "resourceLangId == argdown",
+          "group": "export"
+        },
+        {
+          "command": "argdown.exportDocumentToVizjsSvg",
+          "when": "resourceLangId == argdown",
+          "group": "export"
+        },
+        {
+          "command": "argdown.exportDocumentToVizjsPdf",
+          "when": "resourceLangId == argdown",
+          "group": "export"
+        }
+      ],
+      "editor/title/context": [
+        {
+          "command": "argdown.showPreview",
+          "when": "resourceLangId == argdown",
+          "group": "navigation"
+        },
+        {
+          "command": "argdown.exportDocumentToHtml",
+          "when": "resourceLangId == argdown",
+          "group": "export"
+        },
+        {
+          "command": "argdown.exportDocumentToJson",
+          "when": "resourceLangId == argdown",
+          "group": "export"
+        },
+        {
+          "command": "argdown.exportDocumentToDot",
+          "when": "resourceLangId == argdown",
+          "group": "export"
+        },
+        {
+          "command": "argdown.exportDocumentToVizjsSvg",
+          "when": "resourceLangId == argdown",
+          "group": "export"
+        },
+        {
+          "command": "argdown.exportDocumentToVizjsPdf",
+          "when": "resourceLangId == argdown",
+          "group": "export"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "argdown.run"
+        },
+        {
+          "command": "argdown.exportDocumentToHtml",
+          "when": "editorLangId == argdown",
+          "group": "export"
+        },
+        {
+          "command": "argdown.exportDocumentToJson",
+          "when": "resourceLangId == argdown",
+          "group": "export"
+        },
+        {
+          "command": "argdown.exportDocumentToDot",
+          "when": "resourceLangId == argdown",
+          "group": "export"
+        },
+        {
+          "command": "argdown.exportDocumentToVizjsSvg",
+          "when": "resourceLangId == argdown",
+          "group": "export"
+        },
+        {
+          "command": "argdown.exportDocumentToVizjsPdf",
+          "when": "resourceLangId == argdown",
+          "group": "export"
+        },
+        {
+          "command": "argdown.showPreview",
+          "when": "editorLangId == argdown",
+          "group": "navigation"
+        },
+        {
+          "command": "argdown.showPreviewToSide",
+          "when": "editorLangId == argdown",
+          "group": "navigation"
+        },
+        {
+          "command": "argdown.showLockedPreviewToSide",
+          "when": "editorLangId == argdown",
+          "group": "navigation"
+        },
+        {
+          "command": "argdown.showSource",
+          "when": "argdownPreviewFocus",
+          "group": "navigation"
+        },
+        {
+          "command": "argdown.showPreviewSecuritySelector",
+          "when": "editorLangId == argdown"
+        },
+        {
+          "command": "argdown.showPreviewSecuritySelector",
+          "when": "argdownPreviewFocus"
+        },
+        {
+          "command": "argdown.preview.toggleLock",
+          "when": "argdownPreviewFocus"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "argdown.showPreview",
+        "key": "shift+ctrl+v",
+        "mac": "shift+cmd+v",
+        "when": "editorLangId == argdown"
+      },
+      {
+        "command": "argdown.showPreviewToSide",
+        "key": "ctrl+k v",
+        "mac": "cmd+k v",
+        "when": "editorLangId == argdown"
+      }
+    ],
+    "argdown.previewStyles": [
+      "./media/argdown.css",
+      "./media/vscode.css"
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "Argdown configuration",
+      "properties": {
+        "argdown.configFile": {
+          "scope": "resource",
+          "type": "string",
+          "default": "argdown.config.js",
+          "description": "Path at which the parser should look for an Argdown config file."
+        },
+        "argdown.preview.trace": {
+          "type": "string",
+          "enum": [
+            "off",
+            "verbose"
+          ],
+          "default": "off",
+          "description": "Log debug and error messsages.",
+          "scope": "window"
+        },
+        "argdown.preview.doubleClickToSwitchToEditor": {
+          "scope": "resource",
+          "type": "boolean",
+          "default": true,
+          "description": "Double click on element jumps to line in text editor."
+        },
+        "argdown.preview.syncPreviewSelectionWithEditor": {
+          "scope": "resource",
+          "type": "boolean",
+          "default": true,
+          "description": "Highlight and reveal arguments and statements in the map if their titles are selected in the editor"
+        },
+        "argdown.preview.lockMenu": {
+          "scope": "application",
+          "type": "boolean",
+          "default": true,
+          "description": "If false the preview menu will only be shown if the mouse moves over to the top of the preview window."
+        },
+        "argdown.preview.view": {
+          "scope": "application",
+          "type": "string",
+          "default": "dagre",
+          "enum": [
+            "html",
+            "dagre",
+            "vizjs"
+          ],
+          "description": "The type of preview currently used"
+        },
+        "argdown.preview.dagre.rankSep": {
+          "scope": "application",
+          "type": "number",
+          "default": 50,
+          "description": "The space between ranks in the Dagre map"
+        },
+        "argdown.preview.dagre.nodeSep": {
+          "scope": "application",
+          "type": "number",
+          "default": 70,
+          "description": "The space between nodes in the Dagre map"
+        },
+        "argdown.preview.dagre.rankDir": {
+          "scope": "application",
+          "type": "string",
+          "default": "BT",
+          "description": "The direction of the ranks in the Dagre map",
+          "enum": [
+            "BT",
+            "TB",
+            "LR",
+            "RL"
+          ]
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build": "npm run build-extension && npm run build-preview",
+    "watch": "tsc -w -p ./",
+    "update-vscode": "node ./node_modules/vscode/bin/install",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "build-extension": "tsc -p ./",
+    "build-preview": "webpack --mode development"
+  },
+  "dependencies": {
+    "@argdown/node": "^0.11.9",
+    "@argdown/core": "^0.8.7",
+    "@argdown/languageserver": "^0.0.1",
+    "vscode": "^1.1.18",
+    "vscode-languageclient": "^3.4.2",
+    "d3": "^5.4.0",
+    "dagre-d3": "^0.6.1",
+    "lodash.defaultsdeep": "^4.6.0",
+    "lodash.throttle": "^4.1.1"
+  },
+  "devDependencies": {
+    "@types/d3": "^5.0.0",
+    "@types/dagre-d3": "^0.4.37",
+    "@types/lodash.defaultsdeep": "^4.6.3",
+    "@types/lodash.throttle": "^4.1.3",
+    "@types/node": "^9.4.6",
+    "raw-loader": "^0.5.1",
+    "ts-loader": "^4.3.0",
+    "typescript": "^2.8.3",
+    "webpack": "^4.8.3",
+    "webpack-cli": "^2.1.4"
+  }
+}
