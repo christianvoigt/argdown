@@ -1,21 +1,40 @@
-0 silly input [ '../argdown-cli' ]
-1 silly flags { _: [ 'import' ],
+0 silly input [ 'build:documentation' ]
+1 silly flags { _: [ 'run' ],
 1 silly flags   'reject-cycles': false,
 1 silly flags   rejectCycles: false,
-1 silly flags   pathToRepo: '../argdown-cli' }
+1 silly flags   script: 'build:documentation',
+1 silly flags   args: [] }
 2 verbose rootPath /Users/cvoigt/Documents/workspace/argdown
 3 info version 2.11.0
-4 silly isInitialized
-5 silly isInitialized true
-6 silly existsSync /Users/cvoigt/Documents/workspace/argdown/VERSION
-7 info versioning independent
-8 silly initialize attempt
-9 silly statSync /Users/cvoigt/Documents/workspace/argdown-cli
-10 silly getWorkspaceRoot
-11 verbose getWorkspaceRoot /Users/cvoigt/Documents/workspace/argdown
-12 silly existsSync /Users/cvoigt/Documents/workspace/argdown/packages/argdown-cli
-13 silly getCurrentSHA
-14 verbose getCurrentSHA 87d15f4a40b41b0ff474f156bae993ed2002f723
-15 error initialize callback with error
-16 error Error: Local repository has un-committed changes
-16 error     at ImportCommand.initialize (/usr/local/lib/node_modules/lerna/lib/commands/ImportCommand.js:158:25)
+4 silly existsSync /Users/cvoigt/Documents/workspace/argdown/VERSION
+5 info versioning independent
+6 silly initialize attempt
+7 silly initialize success
+8 silly execute attempt
+9 silly runScriptInDir build:documentation [] argdown-core
+10 silly getExecOpts { cwd:
+10 silly getExecOpts    '/Users/cvoigt/Documents/workspace/argdown/packages/argdown-core' }
+11 silly runScriptInDir build:documentation [] argdown-node
+12 silly getExecOpts { cwd:
+12 silly getExecOpts    '/Users/cvoigt/Documents/workspace/argdown/packages/argdown-node' }
+13 silly runScriptInDir build:documentation [] argdown-cli
+14 silly getExecOpts { cwd:
+14 silly getExecOpts    '/Users/cvoigt/Documents/workspace/argdown/packages/argdown-cli' }
+15 error build:documentation Errored while running script in '@argdown/cli'
+16 error execute callback with error
+17 error Error: Command failed: yarn run build:documentation
+17 error error Command failed with exit code 4.
+17 error yarn run v1.7.0
+17 error $ typedoc  --options ./typedoc.js
+17 error
+17 error Using TypeScript 2.7.2 from /Users/cvoigt/Documents/workspace/argdown/packages/argdown-cli/node_modules/typedoc/node_modules/typescript/lib
+17 error Error: /Users/cvoigt/Documents/workspace/argdown/packages/argdown-cli/src/commands/DefaultCommand.ts(0)
+17 error  Module '"/Users/cvoigt/Documents/workspace/argdown/packages/argdown-cli/node_modules/@argdown/node/lib/src/index"' has no exported member 'ILogParserErrorsRequest'.
+17 error Error: /Users/cvoigt/Documents/workspace/argdown/packages/argdown-cli/src/commands/DefaultCommand.ts(0)
+17 error  Module '"/Users/cvoigt/Documents/workspace/argdown/packages/argdown-cli/node_modules/@argdown/node/lib/src/index"' has no exported member 'IFileRequest'.
+17 error Error: /Users/cvoigt/Documents/workspace/argdown/packages/argdown-cli/test/argdown-cli.spec.ts(2)
+17 error  Could not find a declaration file for module 'chai'. '/Users/cvoigt/Documents/workspace/argdown/packages/argdown-cli/node_modules/chai/index.js' implicitly has an 'any' type.
+17 error   Try `npm install @types/chai` if it exists or add a new declaration (.d.ts) file containing `declare module 'chai';`
+17 error info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+17 error
+17 error     at Promise.all.then.arr (/usr/local/lib/node_modules/lerna/node_modules/execa/index.js:236:11)

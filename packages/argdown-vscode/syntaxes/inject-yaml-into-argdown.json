@@ -1,0 +1,28 @@
+{
+  "fileTypes": [],
+  "injectionSelector": "L:meta.block.frontmatter.argdown",
+  "patterns": [
+    {
+      "include": "#yaml-frontmatter"
+    }
+  ],
+  "repository": {
+    "yaml-frontmatter": {
+      "begin": "(^|\\G)\\s*===+\\s*$",
+      "end": "(^|\\G)(?=\\s*===+\\s*$)",
+      "patterns": [
+        {
+          "begin": "(^|\\G)(\\s*)(.*)",
+          "while": "(^|\\G)(?!\\s*(===+)\\s*$)",
+          "contentName": "meta.embedded.block.yaml",
+          "patterns": [
+            {
+              "include": "source.js"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "scopeName": "argdown.yaml.data"
+}

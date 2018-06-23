@@ -1,0 +1,167 @@
+.dagre * {
+  box-sizing: border-box;
+}
+.dagre .cluster rect {
+  fill: #ddd;
+}
+.dagre .cluster .node-label {
+  font-family: Arial, sans-serif;
+  width: auto;
+}
+.dagre .cluster h3 {
+  margin: 0;
+  padding-top: 3px;
+  font-size: 14px;
+}
+.dagre .cluster.level-0 rect {
+  fill: #dadada;
+}
+.dagre .cluster.level-1 rect {
+  fill: #bababa;
+}
+.dagre .cluster.level-2 rect {
+  fill: #aaa;
+}
+.dagre text {
+  font-weight: 300;
+  font-family: Arial, sans-serf;
+  font-size: 14px;
+}
+.dagre g h3 {
+  font-family: Arial, sans-serif;
+  font-weight: normal;
+}
+.dagre g p {
+  font-family: Arial, sans-serif;
+  font-weight: normal;
+}
+.dagre .edgePath path {
+  stroke: #333;
+  stroke-width: 1.5px;
+}
+.dagre .edgePath.attack path {
+  stroke: red;
+}
+.dagre .edgePath.attack marker {
+  fill: red;
+}
+.dagre .edgePath.support path {
+  stroke: green;
+}
+.dagre .edgePath.support marker {
+  fill: green;
+}
+.dagre .edgePath.undercut path {
+  stroke: purple;
+}
+.dagre .edgePath.undercut marker {
+  fill: purple;
+}
+.dagre .node {
+  cursor: pointer;
+  display: block;
+  position: static;
+  margin: 0;
+  white-space: normal;
+  width: 200px;
+  height: auto;
+  text-align: center;
+  color: #000;
+}
+.dagre .node rect {
+  stroke: #999;
+  fill: #fff;
+  stroke-width: 1.5px;
+}
+.dagre .node .node-label {
+  white-space: normal;
+  padding: 5px;
+}
+.dagre .node p {
+  padding: 0px;
+  margin: 0;
+  font-weight: normal;
+  font-size: 12px;
+  display: block;
+}
+.dagre .node h3 {
+  padding: 0px;
+  margin: 0;
+  font-size: 14px;
+  font-weight: normal;
+  color: #264260;
+  display: block;
+}
+
+.dagre .node.argument-map-node rect {
+  fill: cornflowerblue;
+  stroke: black;
+  stroke-width: 2px;
+}
+.dagre .node.argument-map-node text {
+  fill: black;
+}
+.dagre .node.statement-map-node rect {
+  fill: white;
+  stroke: cornflowerblue;
+  stroke-width: 3px;
+}
+.dagre .node.statement-map-node text {
+  fill: black;
+}
+.dagre .node-label {
+  text-align: center;
+  width: 150px;
+}
+.dagre .node-label h3 {
+  font-weight: normal;
+}
+
+.dagre .node.statement-map-node.tag7 rect {
+  stroke: #666666;
+}
+.dagre .node.argument-map-node.tag7 rect {
+  fill: #666666;
+}
+.dagre .node.statement-map-node.tag6 rect {
+  stroke: #a6761d;
+}
+.dagre .node.argument-map-node.tag6 rect {
+  fill: #a6761d;
+}
+.dagre .node.statement-map-node.tag5 rect {
+  stroke: #e6ab02;
+}
+.dagre .node.argument-map-node.tag5 rect {
+  fill: #e6ab02;
+}
+.dagre .node.statement-map-node.tag4 rect {
+  stroke: #66a61e;
+}
+.dagre .node.argument-map-node.tag4 rect {
+  fill: #66a61e;
+}
+.dagre .node.statement-map-node.tag3 rect {
+  stroke: #e7298a;
+}
+.dagre .node.argument-map-node.tag3 rect {
+  fill: #e7298a;
+}
+.dagre .node.statement-map-node.tag2 rect {
+  stroke: #7570b3;
+}
+.dagre .node.argument-map-node.tag2 rect {
+  fill: #7570b3;
+}
+.dagre .node.statement-map-node.tag1 rect {
+  stroke: #d95f02;
+}
+.dagre .node.argument-map-node.tag1 rect {
+  fill: #d95f02;
+}
+.dagre .node.statement-map-node.tag0 rect {
+  stroke: #1b9e77;
+}
+.dagre .node.argument-map-node.tag0 rect {
+  fill: #1b9e77;
+}

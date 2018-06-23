@@ -16,6 +16,7 @@ import * as dagreD3 from "dagre-d3";
 import * as d3 from "d3";
 import { EventBus } from "../event-bus.js";
 import { saveAsSvg, saveAsPng } from "../map-export.js";
+import { ArgdownTypes } from "@argdown/core";
 
 var saveDagreAsPng = null;
 var saveDagreAsSvg = null;
@@ -88,7 +89,11 @@ export default {
         nodeProperties.label += "<h3>" + node.labelTitle + "</h3>";
       }
       // eslint-disable-next-line
-      if (node.labelText && (node.type === "statement" || node.type === "argument")) {
+      if (
+        node.labelText &&
+        (node.type === ArgdownTypes.STATEMENT_MAP_NODE ||
+          node.type === ArgdownTypes.ARGUMENT_MAP_NODE)
+      ) {
         nodeProperties.label += "<p>" + node.labelText + "</p>";
       }
       if (node.tags) {
@@ -100,7 +105,7 @@ export default {
       }
       nodeProperties.label += "</div>";
 
-      if (node.type === "group") {
+      if (node.type === ArgdownTypes.GROUP_MAP_NODE) {
         nodeProperties.clusterLabelPos = "top";
         nodeProperties.class += " level-" + node.level;
       }
@@ -108,8 +113,8 @@ export default {
       if (currentGroup) {
         g.setParent(node.id, currentGroup.id);
       }
-      if (node.type === "group") {
-        for (let child of node.nodes) {
+      if (node.type === ArgdownTypes.GROUP_MAP_NODE) {
+        for (let child of node.children) {
           this.addNode(child, g, node);
         }
       }
@@ -142,7 +147,7 @@ export default {
       }
 
       for (let edge of map.edges) {
-        g.setEdge(edge.from.id, edge.to.id, { class: edge.type });
+        g.setEdge(edge.from.id, edge.to.id, { class: edge.relationType });
       }
 
       const nodes = g.nodes();

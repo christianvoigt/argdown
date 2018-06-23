@@ -1,9 +1,0 @@
-{
-  "extends": "./tsconfig.base.jsonc",
-  "compilerOptions": {
-    "baseUrl": "./packages",
-    "paths": {
-      "@argdown/*": ["./*/src"]
-    }
-  }
-}

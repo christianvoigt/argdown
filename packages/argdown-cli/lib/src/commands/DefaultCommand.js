@@ -1,19 +1,13 @@
 "use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.handler = exports.desc = exports.command = undefined;
-
-var _index = require("../index.js");
-
-const command = exports.command = "*";
-const desc = exports.desc = "load config file and run process";
-const handler = exports.handler = function (argv) {
-  let config = _index.app.loadConfig(argv.config);
-  config.logLevel = argv.verbose ? "verbose" : config.logLevel;
-  config.watch = argv.watch || config.watch;
-  config.logParserErrors = argv.logParserErrors || config.logParserErrors;
-  _index.app.load(config).catch(e => console.log(e));
+Object.defineProperty(exports, "__esModule", { value: true });
+const node_1 = require("@argdown/node");
+exports.command = "*";
+exports.desc = "load config file and run process";
+exports.handler = async (argv) => {
+    let config = await node_1.argdown.loadConfig(argv.config);
+    config.logLevel = argv.verbose ? "verbose" : config.logLevel;
+    config.watch = argv.watch || config.watch;
+    config.logParserErrors = argv.logParserErrors || config.logParserErrors;
+    await node_1.argdown.load(config).catch(e => console.log(e));
 };
 //# sourceMappingURL=DefaultCommand.js.map
