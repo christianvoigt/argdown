@@ -1,0 +1,36 @@
+.token.operator.support {
+  color: #04c93f;
+  font-weight: bold;
+}
+.token.operator.attack,
+.token.operator.contradiction {
+  color: #c93504;
+  font-weight: bold;
+}
+.token.operator.undercut {
+  color: #ff00d4;
+  font-weight: bold;
+}
+.token.class-name.statement,
+.token.class-name.statement .punctuation {
+  color: #76bae2;
+  font-weight: bold;
+}
+.token.class-name.argument,
+.token.class-name.argument .punctuation {
+  color: #0582ca;
+  font-weight: bold;
+}
+.token.punctuation.argument-statement,
+.token.punctuation.argument-statement .punctuation {
+  color: #0582ca;
+  font-weight: bold;
+}
+.token.inference.function,
+.token.inference.function .punctuation {
+  color: #0582ca;
+  font-weight: bold;
+}
+.token.inference.function .token.cdata.data {
+  font-weight: normal;
+}

@@ -2,19 +2,22 @@
   "name": "@argdown/node",
   "version": "0.11.9",
   "description": "Async Argdown application for node.js",
-  "main": "./lib/src/index.js",
-  "types": "./lib/src/index.d.ts",
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "engines": {
+    "node": ">= 8.0.0"
+  },
   "scripts": {
     "deploy": "npm run test && npm run build && npm version patch && npm run push",
     "type-check": "tsc --noEmit",
     "build": "npm run clean && npm run build:src && npm run copy-pdfkit",
     "build:src": "tsc",
     "build:documentation": "typedoc  --options ./typedoc.js",
-    "copy-pdfkit": "copyfiles src/pdfkit.js lib",
+    "copy-pdfkit": "copyfiles src/pdfkit.js dist",
     "test": "mocha -r ts-node/register --full-trace --bail --require source-map-support/register ./test/**/*.spec.ts",
     "coverage": "nyc mocha -r ts-node/register --full-trace --bail --require source-map-support/register ./test/**/*.spec.ts",
     "report": "nyc report",
-    "clean": "rimraf lib/*",
+    "clean": "rimraf dist/*",
     "prepublish": "npm run-script build",
     "push": "git push --tags origin HEAD:master"
   },

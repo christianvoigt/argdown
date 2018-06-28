@@ -452,7 +452,7 @@
   "dependencies": {
     "@argdown/node": "^0.11.9",
     "@argdown/core": "^0.8.7",
-    "@argdown/languageserver": "^0.0.1",
+    "@argdown/language-server": "^0.0.1",
     "vscode": "^1.1.18",
     "vscode-languageclient": "^3.4.2",
     "d3": "^5.4.0",

@@ -1,0 +1,51 @@
+.code {
+  color: #e3e3e3;
+}
+.language-argdown.extra-class {
+  background-color: #232230;
+}
+.token.comment,
+.token.cdata.frontmatter,
+.token.frontmatter .token.punctuation,
+.token.cdata.hashtag,
+.token.cdata.data {
+  color: #959888;
+}
+.token.operator.support {
+  color: #4ea429;
+  font-weight: bold;
+}
+
+.token.operator.attack,
+.token.operator.contradiction {
+  color: #c24545;
+  font-weight: bold;
+}
+.token.operator.undercut {
+  color: #c227a7;
+  font-weight: bold;
+}
+.token.class-name.statement,
+.token.class-name.statement .punctuation {
+  color: #b5defa;
+}
+.token.class-name.argument,
+.token.class-name.argument .punctuation,
+.token.inference.function,
+.token.inference.function .punctuation,
+.token.punctuation.argument-statement,
+.token.punctuation.argument-statement .punctuation {
+  color: #76a8e9;
+}
+.token.punctuation.argument-statement,
+.token.punctuation.argument-statement .punctuation {
+  font-weight: bold;
+}
+.token.inference .punctuation {
+  font-weight: bold;
+}
+.token.important.title,
+.token.important.title .punctuation,
+.token.url {
+  color: #d4cc90;
+}

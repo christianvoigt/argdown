@@ -137,7 +137,7 @@ export class ArgdownEngine {
     );
     if (node && node.type === ArgdownTypes.ARGUMENT_MAP_NODE) {
       const argument = response.arguments![node.title!];
-      const desc = IArgument.getCanonicalDescription(argument);
+      const desc = IArgument.getCanonicalMember(argument);
       if (desc) {
         return new vscode.Range(
           (desc.startLine || 1) - 1,

@@ -7,13 +7,16 @@ import {
   IGroupMapNode,
   RelationType,
   StatementSelectionMode,
-  IArgdownRequest
+  IArgdownRequest,
+  DataPlugin
 } from "../src/index";
 
 const app = new ArgdownApplication();
 const parserPlugin = new ParserPlugin();
+const dataPlugin = new DataPlugin();
 app.addPlugin(parserPlugin, "parse-input");
 const modelPlugin = new ModelPlugin();
+app.addPlugin(dataPlugin, "build-model");
 app.addPlugin(modelPlugin, "build-model");
 const mapPlugin = new MapPlugin({ statementSelectionMode: StatementSelectionMode.ALL });
 app.addPlugin(mapPlugin, "make-map");
@@ -257,23 +260,27 @@ describe("MapPlugin", function() {
 # Section 1
   
   [A]: text
-    + [B]
+    + <B>
   
 ## Section 2
   
-  [B]: text
+  <B>: some more text
     - <C>
+
+  [A]: A different text
   
 ### Section 3
   
   <C>: text
+
+  <B>: Some different text
   
   `;
     let result = app.run({
       process: ["parse-input", "build-model", "make-map"],
       input: source
     });
-    //console.log(toJSON(result.map!, null, 2));
+    // console.log(toJSON(result.map!, null, 2));
     //app.parser.logAst(result.ast);
     //preprocessor.logRelations(result);
     //console.log(result.arguments);
@@ -326,6 +333,86 @@ describe("MapPlugin", function() {
     expect(section3.children!.length).to.equal(2);
     expect(section3.children![0].title).to.equal("A");
     expect(section3.children![1].title).to.equal("B");
+  });
+  it("puts argument into the group of its first definition", function() {
+    let source = `
+# h1
+
+<a>: definition of a
+    - [p]
+
+<b>: definition of b
+
+## h2
+
+<a>
+    + <b>
+
+<b>
+
+(1) s1
+(2) s2
+-----
+(3) s3
+
+<c>
+    + <a>: another definition of a
+
+### h3
+
+<c>
+
+[p]: definition of p  
+  `;
+    let result = app.run({
+      process: ["parse-input", "build-model", "make-map"],
+      input: source
+    });
+    // console.log(toJSON(result.map!.nodes, null, 2));
+    //app.parser.logAst(result.ast);
+    //preprocessor.logRelations(result);
+    //console.log(result.arguments);
+
+    expect(result.map!.nodes.length).to.equal(3);
+    expect(result.map!.nodes[0].title).to.equal("a");
+    expect(result.map!.nodes[1].title).to.equal("h2");
+    expect(result.map!.nodes[2].title).to.equal("c");
+  });
+  it("ignores sections with isGroup === false", function() {
+    let source = `
+# h1
+
+[p]: text
+
+## h2 {isGroup: false}
+
+[p]
+    - <a>: text
+
+## h3 {isGroup: true}
+
+[p]
+    - <b>: text
+
+  `;
+    let result = app.run({
+      process: ["parse-input", "build-model", "make-map"],
+      input: source,
+      map: { groupDepth: 1 }
+    });
+    //console.log(toJSON(result.map!.nodes, null, 2));
+    //app.parser.logAst(result.ast);
+    //preprocessor.logRelations(result);
+    //console.log(result.arguments);
+    expect(result.sections![0].children[0].isGroup).to.be.false;
+    expect(result.arguments!["a"].section).to.be.undefined;
+
+    expect(result.map!.nodes.length).to.equal(3);
+    expect(result.map!.nodes[0].title).to.equal("p");
+    expect(result.map!.nodes[1].title).to.equal("h3");
+    expect(result.map!.nodes[2].title).to.equal("a");
+    expect((<IGroupMapNode>result.map!.nodes[1]).children!.length).to.equal(1);
+    expect((<IGroupMapNode>result.map!.nodes[1]).children![0].title).to.equal("b");
   });
   it("can create edges from undercuts", function() {
     let source = `

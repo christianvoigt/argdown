@@ -23,5 +23,8 @@
     "*": [
       "packages/*/src"
     ]
+  },
+  "dependencies": {
+    "d3": "^5.5.0"
   }
 }

@@ -46,7 +46,7 @@ import ArgdownInput from "@/components/ArgdownInput";
 import AppNavigation from "@/components/AppNavigation";
 import Settings from "@/components/Settings";
 
-import "../node_modules/argdown-parser/lib/src/plugins/argdown.css";
+import "../node_modules/argdown-parser/dist/src/plugins/argdown.css";
 
 export default {
   name: "app",

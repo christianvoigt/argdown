@@ -13,7 +13,7 @@ import {
   ArgdownTypes,
   IRelation,
   IMapEdge,
-  IArgumentStatement,
+  IPCSStatement,
   RelationType,
   IConclusion,
   IStatement,
@@ -145,22 +145,13 @@ export class MapPlugin implements IArgdownPlugin {
   };
   prepare: IRequestHandler = (request, response) => {
     if (!response.statements) {
-      throw new ArgdownPluginError(
-        this.name,
-        "No statements field in response."
-      );
+      throw new ArgdownPluginError(this.name, "No statements field in response.");
     }
     if (!response.arguments) {
-      throw new ArgdownPluginError(
-        this.name,
-        "No arguments field in response."
-      );
+      throw new ArgdownPluginError(this.name, "No arguments field in response.");
     }
     if (!response.relations) {
-      throw new ArgdownPluginError(
-        this.name,
-        "No relations field in response."
-      );
+      throw new ArgdownPluginError(this.name, "No relations field in response.");
     }
     _.defaultsDeep(this.getSettings(request), this.defaults);
   };
@@ -174,69 +165,39 @@ export class MapPlugin implements IArgdownPlugin {
     let selectedStatements = Object.keys(response.statements!)
       .map<IEquivalenceClass>(title => response.statements![title])
       .filter(isPreselected(settings));
-    let selectedStatementsMap = reduceToMap(
-      selectedStatements,
-      curr => curr.title!
-    );
+    let selectedStatementsMap = reduceToMap(selectedStatements, curr => curr.title!);
 
     // 1.2) Preselect arguments by tag and section
-    const allArguments = Object.keys(response.arguments!).map<IArgument>(
-      title => response.arguments![title]
-    );
+    const allArguments = Object.keys(response.arguments!).map<IArgument>(title => response.arguments![title]);
     // const selectedArguments = allArguments.filter(isArgumentSelected(settings, response));
     let selectedArguments = allArguments.filter(isPreselected(settings));
-    let selectedArgumentsMap = reduceToMap(
-      selectedArguments,
-      curr => curr.title!
-    );
+    let selectedArgumentsMap = reduceToMap(selectedArguments, curr => curr.title!);
 
     // 2) Selection round: Select elements by extrinsic criteria, taking intrinsic preselection into account
     // 2.1) Select statements from preselection based on statementSelectionMode, taking preselection into account
     selectedStatements = selectedStatements.filter(
       isStatementSelected(settings, selectedStatementsMap, selectedArgumentsMap)
     );
-    selectedStatementsMap = reduceToMap(
-      selectedStatements,
-      curr => curr.title!
-    );
+    selectedStatementsMap = reduceToMap(selectedStatements, curr => curr.title!);
 
     // 2.2) Select arguments from preselection, taking argument preselection and statement selection into account
     selectedArguments = selectedArguments.filter(
-      isArgumentSelected(
-        settings,
-        response,
-        selectedStatementsMap,
-        selectedArgumentsMap
-      )
+      isArgumentSelected(settings, response, selectedStatementsMap, selectedArgumentsMap)
     );
     selectedArgumentsMap = reduceToMap(selectedArguments, curr => curr.title!);
 
     // 3) Create nodes
     // 3.1) Create statement nodes
     let nodeCount = 0;
-    const statementNodes = selectedStatements.map<IMapNode>(
-      createStatementNode(settings, nodeCount)
-    );
-    const statementNodesMap = reduceToMap<string, IMapNode>(
-      statementNodes,
-      curr => curr.title!
-    );
+    const statementNodes = selectedStatements.map<IMapNode>(createStatementNode(settings, nodeCount));
+    const statementNodesMap = reduceToMap<string, IMapNode>(statementNodes, curr => curr.title!);
     nodeCount += statementNodes.length;
     // 3.2) Create argument nodes
-    const argumentNodes = selectedArguments.map<IMapNode>(
-      createArgumentNode(settings, nodeCount)
-    );
-    const argumentNodesMap = reduceToMap<string, IMapNode>(
-      argumentNodes,
-      curr => curr.title!
-    );
+    const argumentNodes = selectedArguments.map<IMapNode>(createArgumentNode(settings, nodeCount));
+    const argumentNodesMap = reduceToMap<string, IMapNode>(argumentNodes, curr => curr.title!);
     nodeCount += argumentNodes.length;
     // 3.3) Create group nodes and node tree structure
-    const nodes = createMapNodeTree(
-      settings,
-      response,
-      statementNodes.concat(argumentNodes)
-    );
+    const nodes = createMapNodeTree(settings, response, statementNodes.concat(argumentNodes));
 
     // 4) Select relations
     const selectedRelations = response.relations!.filter(
@@ -265,9 +226,7 @@ export class MapPlugin implements IArgdownPlugin {
     };
   }
 }
-const isPreselected = (settings: IMapSettings) => (
-  el: IEquivalenceClass | IArgument
-) => {
+const isPreselected = (settings: IMapSettings) => (el: IEquivalenceClass | IArgument) => {
   const sectionSelected =
     !settings.selectedSections ||
     (!el.section && settings.selectElementsWithoutSection) ||
@@ -288,30 +247,19 @@ const isStatementSelected = (
     equivalenceClass.relations!.length > 0 &&
     undefined !==
       equivalenceClass.relations!.find(r =>
-        otherRelationMemberIsInSelection(
-          r,
-          equivalenceClass,
-          selectedStatements,
-          selectedArguments
-        )
+        otherRelationMemberIsInSelection(r, equivalenceClass, selectedStatements, selectedArguments)
       );
-  const usedInArgument = equivalenceClass.members.find(
-    isUsedInSelectedArgument(selectedArguments)
-  );
+  const usedInArgument = equivalenceClass.members.find(isUsedInSelectedArgument(selectedArguments));
   let inSelection = false;
   switch (settings.statementSelectionMode) {
     case StatementSelectionMode.ALL:
       inSelection = true;
       break;
     case StatementSelectionMode.WITH_TITLE:
-      inSelection =
-        (!usedInArgument && withRelations) ||
-        !untitledPattern.exec(equivalenceClass.title!);
+      inSelection = (!usedInArgument && withRelations) || !untitledPattern.exec(equivalenceClass.title!);
       break;
     case StatementSelectionMode.TOP_LEVEL:
-      inSelection =
-        (!usedInArgument && withRelations) ||
-        !!equivalenceClass.isUsedAsTopLevelStatement;
+      inSelection = (!usedInArgument && withRelations) || !!equivalenceClass.isUsedAsTopLevelStatement;
       break;
     case StatementSelectionMode.WITH_RELATIONS:
       inSelection = withRelations;
@@ -320,48 +268,27 @@ const isStatementSelected = (
       inSelection = !usedInArgument;
       break;
     case StatementSelectionMode.WITH_MORE_THAN_ONE_RELATION:
-      const nrOfRelationPartners = equivalenceClass.relations!.reduce(
-        (acc, r) => {
-          return countOtherRelationMembersInSelection(
-            acc,
-            r,
-            equivalenceClass,
-            selectedStatements,
-            selectedArguments
-          );
-        },
-        0
-      );
-      inSelection =
-        withRelations && (!usedInArgument || nrOfRelationPartners > 1);
+      const nrOfRelationPartners = equivalenceClass.relations!.reduce((acc, r) => {
+        return countOtherRelationMembersInSelection(acc, r, equivalenceClass, selectedStatements, selectedArguments);
+      }, 0);
+      inSelection = withRelations && (!usedInArgument || nrOfRelationPartners > 1);
       break;
   }
-  return (
-    (!settings.excludeDisconnected || (usedInArgument || withRelations)) &&
-    inSelection
-  );
+  return (!settings.excludeDisconnected || (usedInArgument || withRelations)) && inSelection;
 };
-const isUsedInSelectedArgument = (
-  selectedArguments: Map<string, IArgument>
-) => (statement: IStatement) => {
-  if (
-    isArgumentStatement(statement) &&
-    statement.role !== StatementRole.PRELIMINARY_CONCLUSION
-  ) {
+const isUsedInSelectedArgument = (selectedArguments: Map<string, IArgument>) => (statement: IStatement) => {
+  if (isArgumentStatement(statement) && statement.role !== StatementRole.PRELIMINARY_CONCLUSION) {
     return selectedArguments.get(statement.argumentTitle!) !== undefined;
   }
   return false;
 };
-const isArgumentStatementConnectedByEquivalence = (
+const isPCSStatementConnectedByEquivalence = (
   response: IArgdownResponse,
-  s: IStatement,
+  s: IPCSStatement,
   selectedStatements: Map<string, IEquivalenceClass>,
   selectedArguments: Map<string, IArgument>
 ): boolean => {
-  if (
-    s.role === StatementRole.MAIN_CONCLUSION ||
-    s.role === StatementRole.PREMISE
-  ) {
+  if (s.role === StatementRole.MAIN_CONCLUSION || s.role === StatementRole.PREMISE) {
     let requiredRole = StatementRole.MAIN_CONCLUSION;
     if (s.role === StatementRole.MAIN_CONCLUSION) {
       requiredRole = StatementRole.PREMISE;
@@ -373,10 +300,7 @@ const isArgumentStatementConnectedByEquivalence = (
     return (
       undefined !==
       ec.members.find(
-        s =>
-          s.role === requiredRole &&
-          selectedArguments.get((<IArgumentStatement>s).argumentTitle!) !==
-            undefined
+        s => s.role === requiredRole && selectedArguments.get((<IPCSStatement>s).argumentTitle!) !== undefined
       )
     );
   }
@@ -407,12 +331,7 @@ const isArgumentSelected = (
     hasConnections =
       undefined !==
       argument.relations.find(r =>
-        otherRelationMemberIsInSelection(
-          r,
-          argument,
-          selectedStatements,
-          selectedArguments
-        )
+        otherRelationMemberIsInSelection(r, argument, selectedStatements, selectedArguments)
       );
   }
   if (hasConnections) {
@@ -423,20 +342,12 @@ const isArgumentSelected = (
       undefined !==
       argument.pcs.find(s => {
         let hasConnections = false;
-        if (
-          isConclusion(s) &&
-          (<IConclusion>s).inference!.relations!.length > 0
-        ) {
+        if (isConclusion(s) && (<IConclusion>s).inference!.relations!.length > 0) {
           const inference = (<IConclusion>s).inference!;
           hasConnections =
             undefined !==
             inference.relations!.find(r =>
-              otherRelationMemberIsInSelection(
-                r,
-                inference,
-                selectedStatements,
-                selectedArguments
-              )
+              otherRelationMemberIsInSelection(r, inference, selectedStatements, selectedArguments)
             );
         }
         if (hasConnections) {
@@ -447,12 +358,7 @@ const isArgumentSelected = (
           hasConnections =
             undefined !==
             equivalenceClass.relations.find(r =>
-              otherRelationMemberIsInSelection(
-                r,
-                equivalenceClass,
-                selectedStatements,
-                selectedArguments
-              )
+              otherRelationMemberIsInSelection(r, equivalenceClass, selectedStatements, selectedArguments)
             );
           if (hasConnections) {
             return true;
@@ -461,12 +367,7 @@ const isArgumentSelected = (
         if (hasConnections) {
           return true;
         }
-        return isArgumentStatementConnectedByEquivalence(
-          response,
-          s,
-          selectedStatements,
-          selectedArguments
-        );
+        return isPCSStatementConnectedByEquivalence(response, s, selectedStatements, selectedArguments);
       });
   }
   return hasConnections;
@@ -478,8 +379,7 @@ const countOtherRelationMembersInSelection = (
   selectedStatements: Map<string, IEquivalenceClass>,
   selectedArguments: Map<string, IArgument>
 ): number => {
-  const other =
-    relation.from === relationMember ? relation.to! : relation.from!;
+  const other = relation.from === relationMember ? relation.to! : relation.from!;
   if (other.type === ArgdownTypes.EQUIVALENCE_CLASS) {
     if (selectedStatements.get(relationMember.title!) === undefined) {
       return currentCount;
@@ -490,22 +390,12 @@ const countOtherRelationMembersInSelection = (
     }
     return other.members!.reduce(
       (acc, s) =>
-        s.role === role &&
-        selectedArguments.get((<IArgumentStatement>s).argumentTitle!) !==
-          undefined
-          ? acc + 1
-          : acc,
+        s.role === role && selectedArguments.get((<IPCSStatement>s).argumentTitle!) !== undefined ? acc + 1 : acc,
       currentCount
     );
-  } else if (
-    other.type === ArgdownTypes.ARGUMENT &&
-    selectedArguments.get(other.title!) !== undefined
-  ) {
+  } else if (other.type === ArgdownTypes.ARGUMENT && selectedArguments.get(other.title!) !== undefined) {
     return currentCount + 1;
-  } else if (
-    other.type === ArgdownTypes.INFERENCE &&
-    selectedArguments.get(other.argumentTitle!) !== undefined
-  ) {
+  } else if (other.type === ArgdownTypes.INFERENCE && selectedArguments.get(other.argumentTitle!) !== undefined) {
     return currentCount + 1;
   }
   return currentCount;
@@ -516,14 +406,8 @@ const otherRelationMemberIsInSelection = (
   selectedStatements: Map<string, IEquivalenceClass>,
   selectedArguments: Map<string, IArgument>
 ) => {
-  const other =
-    relation.from === relationMember ? relation.to! : relation.from!;
-  return relationMemberIsInSelection(
-    relation,
-    other,
-    selectedStatements,
-    selectedArguments
-  );
+  const other = relation.from === relationMember ? relation.to! : relation.from!;
+  return relationMemberIsInSelection(relation, other, selectedStatements, selectedArguments);
 };
 const relationMemberIsInSelection = (
   relation: IRelation,
@@ -542,21 +426,12 @@ const relationMemberIsInSelection = (
     return (
       undefined !==
       relationMember.members.find(
-        s =>
-          s.role === role &&
-          selectedArguments.get((<IArgumentStatement>s).argumentTitle!) !==
-            undefined
+        s => s.role === role && selectedArguments.get((<IPCSStatement>s).argumentTitle!) !== undefined
       )
     );
-  } else if (
-    relationMember.type === ArgdownTypes.ARGUMENT &&
-    selectedArguments.get(relationMember.title!)
-  ) {
+  } else if (relationMember.type === ArgdownTypes.ARGUMENT && selectedArguments.get(relationMember.title!)) {
     return true;
-  } else if (
-    relationMember.type === ArgdownTypes.INFERENCE &&
-    selectedArguments.get(relationMember.argumentTitle!)
-  ) {
+  } else if (relationMember.type === ArgdownTypes.INFERENCE && selectedArguments.get(relationMember.argumentTitle!)) {
     return true;
   }
   return false;
@@ -566,37 +441,21 @@ const isRelationSelected = (
   selectedArguments: Map<string, IArgument>
 ) => (relation: IRelation): boolean => {
   return (
-    relationMemberIsInSelection(
-      relation,
-      relation.from!,
-      selectedStatements,
-      selectedArguments
-    ) &&
-    relationMemberIsInSelection(
-      relation,
-      relation.to!,
-      selectedStatements,
-      selectedArguments
-    )
+    relationMemberIsInSelection(relation, relation.from!, selectedStatements, selectedArguments) &&
+    relationMemberIsInSelection(relation, relation.to!, selectedStatements, selectedArguments)
   );
 };
-const createStatementNode = (
-  settings: IMapSettings,
-  initialNodeCount: number
-) => (ec: IEquivalenceClass, index: number) => {
+const createStatementNode = (settings: IMapSettings, initialNodeCount: number) => (
+  ec: IEquivalenceClass,
+  index: number
+) => {
   const node: IMapNode = {
     type: ArgdownTypes.STATEMENT_MAP_NODE,
     title: ec.title,
     id: "n" + Number(initialNodeCount + index)
   };
-  if (
-    settings.statementLabelMode !== LabelMode.TEXT ||
-    _.isEmpty(node.labelText)
-  ) {
-    if (
-      settings.statementLabelMode === LabelMode.TITLE ||
-      !ec.title!.startsWith("Untitled")
-    ) {
+  if (settings.statementLabelMode !== LabelMode.TEXT || _.isEmpty(node.labelText)) {
+    if (settings.statementLabelMode === LabelMode.TITLE || !ec.title!.startsWith("Untitled")) {
       node.labelTitle = ec.title;
     }
   }
@@ -608,26 +467,17 @@ const createStatementNode = (
   }
   return node;
 };
-const createArgumentNode = (
-  settings: IMapSettings,
-  initialNodeCount: number
-) => (a: IArgument, index: number) => {
+const createArgumentNode = (settings: IMapSettings, initialNodeCount: number) => (a: IArgument, index: number) => {
   const node: IMapNode = {
     title: a.title,
     type: ArgdownTypes.ARGUMENT_MAP_NODE,
     id: "n" + Number(initialNodeCount + index)
   };
   if (settings.argumentLabelMode != LabelMode.TITLE) {
-    node.labelText = IArgument.getCanonicalDescriptionText(a) || undefined;
+    node.labelText = IArgument.getCanonicalMemberText(a) || undefined;
   }
-  if (
-    settings.argumentLabelMode !== LabelMode.TEXT ||
-    _.isEmpty(node.labelText)
-  ) {
-    if (
-      !a.title!.startsWith("Untitled") ||
-      settings.argumentLabelMode == LabelMode.TITLE
-    ) {
+  if (settings.argumentLabelMode !== LabelMode.TEXT || _.isEmpty(node.labelText)) {
+    if (!a.title!.startsWith("Untitled") || settings.argumentLabelMode == LabelMode.TITLE) {
       node.labelTitle = a.title;
     }
   }
@@ -636,10 +486,10 @@ const createArgumentNode = (
   }
   return node;
 };
-const createEdgesFromRelation = (
-  statementNodesMap: Map<string, IMapNode>,
-  argumentNodesMap: Map<string, IMapNode>
-) => (acc: IMapEdge[], rel: IRelation): IMapEdge[] => {
+const createEdgesFromRelation = (statementNodesMap: Map<string, IMapNode>, argumentNodesMap: Map<string, IMapNode>) => (
+  acc: IMapEdge[],
+  rel: IRelation
+): IMapEdge[] => {
   const froms: IMapNode[] = [];
   const tos: IMapNode[] = [];
   if (rel.from!.type === ArgdownTypes.ARGUMENT) {
@@ -652,9 +502,7 @@ const createEdgesFromRelation = (
       const ec = <IEquivalenceClass>rel.from!;
       ec.members.reduce((acc, s) => {
         if (s.role === StatementRole.MAIN_CONCLUSION) {
-          const node = argumentNodesMap.get(
-            (<IArgumentStatement>s).argumentTitle!
-          );
+          const node = argumentNodesMap.get((<IPCSStatement>s).argumentTitle!);
           if (node) {
             acc.push(node);
           }
@@ -666,9 +514,7 @@ const createEdgesFromRelation = (
   if (rel.to!.type === ArgdownTypes.ARGUMENT) {
     tos.push(argumentNodesMap.get(rel.to!.title!)!);
   } else if (rel.to!.type === ArgdownTypes.INFERENCE) {
-    const argumentNode = argumentNodesMap.get(
-      (<IInference>rel.to).argumentTitle!
-    );
+    const argumentNode = argumentNodesMap.get((<IInference>rel.to).argumentTitle!);
     tos.push(argumentNode!);
   } else if (rel.to!.type === ArgdownTypes.EQUIVALENCE_CLASS) {
     const statementNode = statementNodesMap.get(rel.to!.title!);
@@ -678,9 +524,7 @@ const createEdgesFromRelation = (
       const ec = <IEquivalenceClass>rel.to;
       ec.members.reduce((acc, s) => {
         if (s.role === StatementRole.PREMISE) {
-          const node = argumentNodesMap.get(
-            (<IArgumentStatement>s).argumentTitle!
-          );
+          const node = argumentNodesMap.get((<IPCSStatement>s).argumentTitle!);
           if (node) {
             acc.push(node);
           }
@@ -758,16 +602,14 @@ const createSupportEdgesFromEquivalences = (
         to: statementNode,
         fromEquivalenceClass: ec,
         toEquivalenceClass: ec,
-        id: "n" + Number(initialEdgeCount + edges.length + 1)
+        id: "e" + Number(initialEdgeCount + edges.length + 1)
       });
       continue;
     }
     // 2)
     for (let statement of ec.members) {
       if (statement.role === StatementRole.PREMISE) {
-        const argumentNode2 = argumentNodesMap.get(
-          (<IArgumentStatement>statement).argumentTitle!
-        );
+        const argumentNode2 = argumentNodesMap.get((<IPCSStatement>statement).argumentTitle!);
         if (argumentNode2) {
           edges.push({
             type: ArgdownTypes.MAP_EDGE,
@@ -786,9 +628,7 @@ const createSupportEdgesFromEquivalences = (
     const ec = response.statements![statementNode.title!];
     for (let statement of ec.members) {
       if (statement.role === StatementRole.PREMISE) {
-        const argumentNode = argumentNodesMap.get(
-          (<IArgumentStatement>statement).argumentTitle!
-        );
+        const argumentNode = argumentNodesMap.get((<IPCSStatement>statement).argumentTitle!);
         // 3)
         if (argumentNode) {
           edges.push({
@@ -809,11 +649,7 @@ const createSupportEdgesFromEquivalences = (
 /**
  * Creates group nodes and returns a tree structure containing all group, statement and argument nodes of the map.
  */
-const createMapNodeTree = (
-  settings: IMapSettings,
-  response: IArgdownResponse,
-  nodes: IMapNode[]
-): IMapNode[] => {
+const createMapNodeTree = (settings: IMapSettings, response: IArgdownResponse, nodes: IMapNode[]): IMapNode[] => {
   if (settings.groupMode && settings.groupMode === "none") {
     return [...nodes];
   }
@@ -821,15 +657,10 @@ const createMapNodeTree = (
   [...groupMap.values()].reduce(createAncestorGroups, groupMap);
   const groups = [...groupMap.values()];
   //normalize group levels
-  const maxGroupLevel = groups.reduce(
-    (acc, curr) => (curr.level! > acc ? curr.level! : acc),
-    0
-  );
+  const maxGroupLevel = groups.reduce((acc, curr) => (curr.level! > acc ? curr.level! : acc), 0);
   const minGroupLevel = maxGroupLevel - settings.groupDepth! + 1;
   const nodesWithSection = normalizeGroupLevels(minGroupLevel, groups);
-  const nodesWithoutSection: IMapNode[] = nodes.filter(
-    n => findSection(response, n) === undefined
-  );
+  const nodesWithoutSection: IMapNode[] = nodes.filter(n => findSection(response, n) === undefined);
   return [...nodesWithSection, ...nodesWithoutSection];
 };
 const createGroups = (response: IArgdownResponse, nodes: IMapNode[]) => {
@@ -858,10 +689,7 @@ const createGroups = (response: IArgdownResponse, nodes: IMapNode[]) => {
   }
   return groupMap;
 };
-const findSection = (
-  response: IArgdownResponse,
-  node: IMapNode
-): ISection | undefined => {
+const findSection = (response: IArgdownResponse, node: IMapNode): ISection | undefined => {
   if (node.type == ArgdownTypes.ARGUMENT_MAP_NODE) {
     let argument = response.arguments![node.title!];
     return argument.section;
@@ -870,10 +698,7 @@ const findSection = (
     return equivalenceClass.section;
   }
 };
-const normalizeGroupLevels = (
-  minGroupLevel: number,
-  groups: IGroupMapNode[]
-): IMapNode[] => {
+const normalizeGroupLevels = (minGroupLevel: number, groups: IGroupMapNode[]): IMapNode[] => {
   const nodes: IMapNode[] = [];
   for (let group of groups) {
     group.level = group.level! - minGroupLevel;
@@ -882,10 +707,7 @@ const normalizeGroupLevels = (
   for (let group of groups) {
     if (group.level! < 0) {
       for (let node of group.children!) {
-        if (
-          node.type !== ArgdownTypes.GROUP_MAP_NODE ||
-          (<IGroupMapNode>node).level! >= 0
-        ) {
+        if (node.type !== ArgdownTypes.GROUP_MAP_NODE || (<IGroupMapNode>node).level! >= 0) {
           nodes.push(node);
         }
       }
@@ -896,7 +718,8 @@ const normalizeGroupLevels = (
   return nodes;
 };
 /**
- * Creates all ancestor groups of a group that are not already existing
+ * Creates all ancestor groups of a group that are not already existing.
+ * Ignores sections with isGroup false.
  * @param acc A map of all groups so far
  * @param curr The group
  * @returns The original group map with the new groups added
@@ -914,20 +737,26 @@ const createAncestorGroups = (
     }
     const parentSection = currentGroup.section!.parent;
     if (parentSection) {
-      parentGroup = {
-        type: ArgdownTypes.GROUP_MAP_NODE,
-        id: parentSection.id,
-        title: parentSection.title,
-        labelTitle: parentSection.title,
-        children: [currentGroup],
-        level: parentSection.level,
-        section: parentSection
-      };
-      if (parentSection.parent) {
-        parentGroup.parent = parentSection.parent.id;
+      if (parentSection.isGroup || parentSection.isGroup === undefined) {
+        parentGroup = {
+          type: ArgdownTypes.GROUP_MAP_NODE,
+          id: parentSection.id,
+          title: parentSection.title,
+          labelTitle: parentSection.title,
+          children: [currentGroup],
+          level: parentSection.level,
+          section: parentSection
+        };
+        if (parentSection.parent) {
+          parentGroup.parent = parentSection.parent.id;
+        }
+        groupMap.set(currentGroup.parent, parentGroup);
+        currentGroup = parentGroup;
+      } else if (parentSection.parent) {
+        currentGroup.parent = parentSection.parent.id;
+      } else {
+        break;
       }
-      groupMap.set(currentGroup.parent, parentGroup);
-      currentGroup = parentGroup;
     }
   }
   return groupMap;
