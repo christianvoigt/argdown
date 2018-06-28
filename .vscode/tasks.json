@@ -1,0 +1,18 @@
+{
+  "tasks": [
+    {
+      "identifier": "watch:argdown-vscode",
+      "type": "npm",
+      "script": "watch",
+      "path": "packages/argdown-vscode/",
+      "problemMatcher": []
+    },
+    {
+      "identifier": "watch:argdown-languageserver",
+      "type": "npm",
+      "script": "watch",
+      "path": "packages/argdown-languageserver/",
+      "problemMatcher": []
+    }
+  ]
+}

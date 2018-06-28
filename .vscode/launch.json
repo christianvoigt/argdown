@@ -1,0 +1,26 @@
+{
+  "version": "0.2.0",
+  // List of configurations. Add new configurations or edit existing ones.
+  "configurations": [
+    {
+      "name": "Launch argdown-vscode",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "args": ["--extensionDevelopmentPath=${cwd}/packages/argdown-vscode"],
+      "stopOnEntry": false,
+      "sourceMaps": true,
+      "outFiles": ["${cwd}/packages/argdown-vscode/out/**/*.js"],
+      "preLaunchTask": "watch:argdown-vscode"
+    },
+    {
+      "name": "Attach to argdown-lanugageserver",
+      "type": "node",
+      "request": "attach",
+      "port": 6009,
+      "sourceMaps": true,
+      "outFiles": ["${cwd}/packages/argdown-languageserver/dist/**/*.js"],
+      "preLaunchTask": "watch:argdown-languageserver"
+    }
+  ]
+}
