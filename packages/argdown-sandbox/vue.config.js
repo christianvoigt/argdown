@@ -1,3 +1,1 @@
-module.exports = {
-    baseUrl: '/argdown/'
-}
+export const baseUrl = "/argdown/sandbox/";

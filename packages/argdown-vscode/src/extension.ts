@@ -102,7 +102,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   // If the extension is launched in debug mode then the debug server options are used
   // Otherwise the run options are used
-  const modulePath = require.resolve("@argdown/languageserver");
+  const modulePath = require.resolve("@argdown/language-server");
   let serverOptions: ServerOptions = {
     run: {
       module: modulePath,

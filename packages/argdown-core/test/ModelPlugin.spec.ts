@@ -10,7 +10,8 @@ import {
   ArgdownTypes,
   StatementRole,
   IEquivalenceClass,
-  IArgument
+  IArgument,
+  DataPlugin
 } from "../src/index";
 import * as fs from "fs";
 
@@ -18,8 +19,10 @@ let app = new ArgdownApplication();
 
 describe("ModelPlugin", function() {
   const parserPlugin = new ParserPlugin();
+  const dataPlugin = new DataPlugin();
   let modelPlugin = new ModelPlugin();
   app.addPlugin(parserPlugin, "parse-input");
+  app.addPlugin(dataPlugin, "build-model");
   app.addPlugin(modelPlugin, "build-model");
 
   it("can create statements dictionary and save statement by title", function() {
@@ -65,13 +68,13 @@ describe("ModelPlugin", function() {
       input: source
     });
     expect(result.arguments!["Test"]).to.exist;
-    expect(result.arguments!["Test"].descriptions.length).to.equal(2);
-    let description = result.arguments!["Test"].descriptions[1];
+    expect(result.arguments!["Test"].members.length).to.equal(2);
+    let description = result.arguments!["Test"].members[1];
     expect(
-      IArgument.getCanonicalDescription(result.arguments!["Test"])
+      IArgument.getCanonicalMember(result.arguments!["Test"])
     ).to.equal(description);
     expect(
-      IArgument.getCanonicalDescriptionText(result.arguments!["Test"])
+      IArgument.getCanonicalMemberText(result.arguments!["Test"])
     ).to.equal(description.text);
     expect(description.text).to.equal("Hello World!");
     expect(description.ranges!.length).to.equal(1);
@@ -355,11 +358,19 @@ describe("ModelPlugin", function() {
   ## Section 2
   
   [A]: Text
+
+  <B>
+
+  <C>: Text
   
   ### Section 3
+
+  [A]: Some more text
   
   <B>: Text
   
+  <C>: Text
+
   ## Section 4
   
   <B>
@@ -374,6 +385,7 @@ describe("ModelPlugin", function() {
       input: source
     });
     //console.log(JSON.stringify(result.sections,null,2));
+    //console.log(toJSON(result.arguments!, null, 2));
     expect(result.sections).to.exist;
     expect(result.sections!.length).to.equal(1);
     expect(result.sections![0].title).to.equal("Section 1");
@@ -399,10 +411,75 @@ describe("ModelPlugin", function() {
     expect(result.arguments!["B"]).to.exist;
     expect(result.arguments!["B"].section).to.exist;
     expect(result.arguments!["B"].section!.title).to.equal("Section 4");
-    expect(result.arguments!["B"].descriptions[0].section).to.exist;
-    expect(result.arguments!["B"].descriptions[0].section!.title).to.equal(
+    expect(result.arguments!["B"].members[0].section).to.exist;
+    expect(result.arguments!["B"].members[0].section!.title).to.equal(
+      "Section 2"
+    );
+    expect(result.arguments!["B"].members[1].section!.title).to.equal(
       "Section 3"
     );
+    expect(result.arguments!["B"].members[2].section!.title).to.equal(
+      "Section 4"
+    );
+  
+    expect(result.arguments!["C"]).to.exist;
+    expect(result.arguments!["C"].section).to.exist;
+    expect(result.arguments!["C"].section!.title).to.equal("Section 2");
+  });
+  it("ignores sections with isGroup === false", function() {
+    let source = `
+# h1
+
+[p]: text
+
+## h2 {isGroup: false}
+
+[p]
+    - <a>: text
+
+## h3 {isGroup: true}
+
+[p]
+    - <b>: text
+
+  `;
+  let result = app.run({
+    process: ["parse-input", "build-model"],
+    input: source
+  });
+ //console.log(toJSON(result.map!.nodes, null, 2));
+    //app.parser.logAst(result.ast);
+    //preprocessor.logRelations(result);
+    //console.log(result.arguments);
+    expect(result.sections![0].isGroup === false).to.be.false;
+    expect(result.sections![0].children[0].isGroup === false).to.be.true;
+    expect(result.arguments!["a"].section).to.be.undefined;
+    expect(result.arguments!["b"].section!.title).to.equal("h3");
+  });
+  it("puts equivalence class and argument in section if isInGroup is true", function() {
+    let source = `
+# h1
+
+[p] {isInGroup: true}
+
+<a>: text
+
+## h2
+
+[p]: text
+
+<a> {isInGroup: true}
+  `;
+  let result = app.run({
+    process: ["parse-input", "build-model"],
+    input: source
+  });
+ //console.log(toJSON(result.map!.nodes, null, 2));
+    //app.parser.logAst(result.ast);
+    //preprocessor.logRelations(result);
+    //console.log(result.arguments);
+    expect(result.arguments!["a"].section!.title).to.equal("h2");
+    expect(result.statements!["p"].section!.title).to.equal("h1");
   });
   it("can create tags lists", function() {
     let source = `[Statement 1]: #tag-1 text
@@ -427,6 +504,34 @@ describe("ModelPlugin", function() {
     ).to.equal("text #tag-1 #(tag 2)");
     expect(result.statements!["Statement 2"].tags!.length).to.equal(2);
     expect(result.arguments!["Argument 1"].tags!.length).to.equal(3);
+  });
+  it("can collect tags from references", function() {
+    let source = `[Statement 1]: #tag-1
+  
+  [Statement 1] #tag-2
+  
+  [Statement 1] #tag-2
+
+  <Argument 1>: #tag-3
+  
+  <Argument 1> #tag-4 
+
+  <Argument 1>: #tag-5
+
+  <Argument 1> #tag-6
+  `;
+    let result = app.run({
+      process: ["parse-input", "build-model"],
+      input: source
+    });
+    expect(result.statements!["Statement 1"].tags!.length).to.equal(2);
+    expect(result.statements!["Statement 1"].tags!.includes("tag-1")).to.be.true;
+    expect(result.statements!["Statement 1"].tags!.includes("tag-2")).to.be.true;
+    expect(result.arguments!["Argument 1"].tags!.length).to.equal(4);
+    expect(result.arguments!["Argument 1"].tags!.includes("tag-3")).to.be.true;
+    expect(result.arguments!["Argument 1"].tags!.includes("tag-4")).to.be.true;
+    expect(result.arguments!["Argument 1"].tags!.includes("tag-5")).to.be.true;
+    expect(result.arguments!["Argument 1"].tags!.includes("tag-6")).to.be.true;
   });
   it("can identify duplicates in outgoing relations of reconstructed argument and main conclusion", function() {
     let source = `<A1>: A1

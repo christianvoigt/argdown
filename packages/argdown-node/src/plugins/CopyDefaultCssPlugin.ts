@@ -3,10 +3,7 @@ let path = require("path");
 let mkdirp = require("mkdirp");
 import * as _ from "lodash";
 import { IArgdownRequest, IRequestHandler } from "@argdown/core";
-import {
-  IAsyncArgdownPlugin,
-  IAsyncRequestHandler
-} from "../IAsyncArgdownPlugin";
+import { IAsyncArgdownPlugin, IAsyncRequestHandler } from "../IAsyncArgdownPlugin";
 
 export interface ICopyDefaultCssSettings {
   outputDir?: string;
@@ -45,9 +42,7 @@ export class CopyDefaultCssPlugin implements IAsyncArgdownPlugin {
   runAsync: IAsyncRequestHandler = async (request, _response, logger) => {
     const settings = this.getSettings(request);
     let rootPath = request.rootPath || process.cwd();
-    let outputDir = request.outputPath
-      ? path.dirname(request.outputPath)
-      : settings.outputDir;
+    let outputDir = request.outputPath ? path.dirname(request.outputPath) : settings.outputDir;
     let absoluteOutputDir = path.resolve(rootPath, outputDir);
     await new Promise((resolve, reject) => {
       mkdirp(absoluteOutputDir, function(err: Error) {
@@ -57,26 +52,16 @@ export class CopyDefaultCssPlugin implements IAsyncArgdownPlugin {
         resolve();
       });
     });
-    let pathToDefaultCssFile = require.resolve(
-      "argdown-parser/lib/src/plugins/argdown.css"
-    );
-    logger.log(
-      "verbose",
-      "Copying default argdown.css to folder: " + absoluteOutputDir
-    );
+    let pathToDefaultCssFile = require.resolve("@argdown/core/dist/src/plugins/argdown.css");
+    logger.log("verbose", "Copying default argdown.css to folder: " + absoluteOutputDir);
     const { COPYFILE_EXCL } = fs.constants;
     await new Promise((resolve, reject) => {
-      fs.copyFile(
-        pathToDefaultCssFile,
-        path.resolve(absoluteOutputDir, "argdown.css"),
-        COPYFILE_EXCL,
-        (err: Error) => {
-          if (err) {
-            reject(err);
-          }
-          resolve();
+      fs.copyFile(pathToDefaultCssFile, path.resolve(absoluteOutputDir, "argdown.css"), COPYFILE_EXCL, (err: Error) => {
+        if (err) {
+          reject(err);
         }
-      );
+        resolve();
+      });
     });
   };
 }

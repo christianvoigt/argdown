@@ -119,12 +119,7 @@ export interface HasSection {
  * Represents a matched Argdown syntax rule in the abstract syntax tree produced by the [[ParserPlugin]].
  * Has either other [[IRuleNode]]s or [[ITokenNode]]s as children.
  */
-export interface IRuleNode
-  extends HasLocation,
-    HasData,
-    HasText,
-    HasTags,
-    HasTitle {
+export interface IRuleNode extends HasLocation, HasData, HasText, HasTags, HasTitle {
   type: ArgdownTypes.RULE_NODE;
   name: RuleNames;
   children?: IAstNode[];
@@ -173,13 +168,7 @@ export type IAstNode = IRuleNode | ITokenNode;
  * are transformed by the [[ModelPlugin]] into relations of the argument's main conclusion
  * (the last statement in the argument's pcs).
  */
-export interface IArgument
-  extends HasTitle,
-    HasRelations,
-    HasTags,
-    HasData,
-    HasLocation,
-    HasSection {
+export interface IArgument extends HasTitle, HasRelations, HasTags, HasData, HasLocation, HasSection {
   type: ArgdownTypes.ARGUMENT;
   /**
    * If the argument was logically reconstructed, it has a premise conclusion structure (pcs).
@@ -189,31 +178,39 @@ export interface IArgument
    * This is used to save the role of the statement in this argument. It is either a PREMISE, PRELIMINARY_CONCLUSION or MAIN_CONCLUSION.
    * Statements that have the role of a conclusion in the argument possess an inference property.
    */
-  pcs: IStatement[];
+  pcs: IPCSStatement[];
   /**
-   * The statements that were used to describe the argument in argument definitions.
+   * All argument definitions and references with the same title are stored as "descriptions" of the same argument
+   * and are stored in the members array.
+   *
    * These statements are not members of any equivalence class,
    * have no logical relations and do not exist in the model apart from the argument.
+   *
+   * Argument references are stored as descriptions without text and with [[IArgumentDescription.isReference]] set to true.
+   *
+   * If a pcs was defined directly after an argument description, it will be stored in [[IArgumentDescription.pcs]].
    */
-  descriptions: IStatement[];
+  members: IArgumentDescription[];
 }
 export namespace IArgument {
   /**
    * Provides a default description.
-   * Chooses the last description defined in the Argdown source code.
+   * Chooses the last description defined in the Argdown source code that is not a reference.
    */
-  export const getCanonicalDescription = (
-    a: IArgument
-  ): IStatement | undefined => {
-    if (!a.descriptions || a.descriptions.length <= 0) {
+  export const getCanonicalMember = (a: IArgument): IStatement | undefined => {
+    if (!a.members || a.members.length <= 0) {
       return undefined;
     }
-    return a.descriptions[a.descriptions.length - 1];
+    for (let i = a.members.length - 1; i >= 0; i--) {
+      const current = a.members[i];
+      if (!current.isReference) {
+        return current;
+      }
+    }
+    return;
   };
-  export const getCanonicalDescriptionText = (
-    a: IArgument
-  ): string | undefined => {
-    const s = getCanonicalDescription(a);
+  export const getCanonicalMemberText = (a: IArgument): string | undefined => {
+    const s = getCanonicalMember(a);
     if (s) {
       return s.text;
     }
@@ -226,17 +223,17 @@ export namespace IArgument {
  * Statements are thus not "propositions" in the philosophical sense or "strings" in the computational sense.
  * Instead they represent string occurrences in a document.
  *
- * Each statement belongs to exactly one [[IEquivalenceClass]], identified by the statement's title. If no title was defined, a title is automatically generated.
+ * Each statement that is not an argument description, belongs to exactly one [[IEquivalenceClass]], identified by the statement's title.
+ * If no title was defined, a title is automatically generated.
+ *
+ * If the statement has the role [[StatementRole.ARGUMENT_DESCRIPTION]] and the statement's title will refer to an argument instead of an equivalence class.
+ * See [[IARgumentDescription]].
+ *
+ * Statement and argument references are also stored as IStatement objects. The only differences are that they have no text and that `isReference` is true.
  *
  * For further details on the relationship between equivalence classes and statements, see [[IEquivalenceClass]].
  */
-export interface IStatement
-  extends HasTitle,
-    HasTags,
-    HasData,
-    HasLocation,
-    HasSection,
-    HasText {
+export interface IStatement extends HasTitle, HasTags, HasData, HasLocation, HasSection, HasText {
   type: ArgdownTypes.STATEMENT;
   role?: StatementRole;
   isReference?: boolean;
@@ -263,19 +260,20 @@ export enum StatementRole {
 /**
  * A statement used within an argument's premise-conclusion-structure ([[IArgument.pcs]])
  */
-export interface IArgumentStatement extends IStatement {
-  role:
-    | StatementRole.PREMISE
-    | StatementRole.MAIN_CONCLUSION
-    | StatementRole.PRELIMINARY_CONCLUSION;
+export interface IPCSStatement extends IStatement {
+  role: StatementRole.PREMISE | StatementRole.MAIN_CONCLUSION | StatementRole.PRELIMINARY_CONCLUSION;
   argumentTitle?: string;
 }
 /**
  * A statement used as conclusion within an argument's premise-conclusion-structure ([[IArgument.pcs]])
  */
-export interface IConclusion extends IArgumentStatement {
+export interface IConclusion extends IPCSStatement {
   role: StatementRole.PRELIMINARY_CONCLUSION | StatementRole.MAIN_CONCLUSION;
   inference?: IInference;
+}
+export interface IArgumentDescription extends IStatement {
+  role: StatementRole.ARGUMENT_DESCRIPTION;
+  pcs?: IPCSStatement[];
 }
 /**
  * Argdown statements are automatically grouped into equivalence classes by using their titles as identifiers.
@@ -296,13 +294,7 @@ export interface IConclusion extends IArgumentStatement {
  * Dialectical relations with arguments or inferences can be of type: support, attack, undercut.
  *
  */
-export interface IEquivalenceClass
-  extends HasTitle,
-    HasRelations,
-    HasTags,
-    HasData,
-    HasLocation,
-    HasSection {
+export interface IEquivalenceClass extends HasTitle, HasRelations, HasTags, HasData, HasLocation, HasSection {
   type: ArgdownTypes.EQUIVALENCE_CLASS;
   /**
    * The statements that share the title with this equivalence class and are considered to be logically equivalent.
@@ -343,9 +335,7 @@ export namespace IEquivalenceClass {
    * Provides a default statement that can be used to reqpresent this equivalence class.
    * The statement chosen is the one that occurs last in the Argdown source code.
    */
-  export const getCanonicalMember = (
-    ec: IEquivalenceClass
-  ): IStatement | undefined => {
+  export const getCanonicalMember = (ec: IEquivalenceClass): IStatement | undefined => {
     if (!ec.members || ec.members.length <= 0) {
       return undefined;
     }
@@ -360,9 +350,7 @@ export namespace IEquivalenceClass {
   /**
    * Convenience method that directly returns the text of the equivalence class's canonical statement.
    */
-  export const getCanonicalMemberText = (
-    ec: IEquivalenceClass
-  ): string | undefined => {
+  export const getCanonicalMemberText = (ec: IEquivalenceClass): string | undefined => {
     let statement = getCanonicalMember(ec);
     if (statement) {
       return statement.text;
@@ -377,12 +365,7 @@ export namespace IEquivalenceClass {
  *
  * Inferences can be identified by their argument's title and their conclusion's index in the argument's pcs.
  */
-export interface IInference
-  extends HasTitle,
-    HasRelations,
-    HasData,
-    HasLocation,
-    HasSection {
+export interface IInference extends HasTitle, HasRelations, HasData, HasLocation, HasSection {
   type: ArgdownTypes.INFERENCE;
   inferenceRules?: string[];
   /**
@@ -428,9 +411,7 @@ export interface IRelation {
 }
 export namespace IRelation {
   export const relationToString = (r: IRelation) => {
-    return `Relation(from: ${r.from!.title}, to: ${r.to!.title}, type: ${
-      r.type
-    })`;
+    return `Relation(from: ${r.from!.title}, to: ${r.to!.title}, type: ${r.type})`;
   };
 }
 /**
@@ -438,12 +419,7 @@ export namespace IRelation {
  * Sections can contain other sections as children. They are derived from headings
  * and used to derive groups (clusters) in argument maps.
  */
-export interface ISection
-  extends HasTitle,
-    HasTags,
-    HasText,
-    HasLocation,
-    HasData {
+export interface ISection extends HasTitle, HasTags, HasText, HasLocation, HasData {
   type: ArgdownTypes.SECTION;
   /**
    * An automatically generated id unique among sections
@@ -453,6 +429,12 @@ export interface ISection
   children: ISection[];
   parent?: ISection;
   heading?: IRuleNode;
+  /**
+   * Should this section be used as a group in the argument map?
+   *
+   * If isGroup is undefined, the section will be used as a group if `level > maxLevel - groupDepth`.
+   */
+  isGroup?: boolean;
 }
 /**
  * The ArgdownTypes members identifying nodes in an argument map.
@@ -537,12 +519,11 @@ export const isReconstructed = (a: IArgument): boolean => {
 };
 export const isConclusion = (s: IStatement): s is IConclusion => {
   return (
-    (s.role === StatementRole.PRELIMINARY_CONCLUSION ||
-      s.role === StatementRole.MAIN_CONCLUSION) &&
+    (s.role === StatementRole.PRELIMINARY_CONCLUSION || s.role === StatementRole.MAIN_CONCLUSION) &&
     (<IConclusion>s).inference != undefined
   );
 };
-export const isArgumentStatement = (s: IStatement): s is IArgumentStatement => {
+export const isArgumentStatement = (s: IStatement): s is IPCSStatement => {
   return (
     s.role === StatementRole.PREMISE ||
     s.role === StatementRole.PRELIMINARY_CONCLUSION ||

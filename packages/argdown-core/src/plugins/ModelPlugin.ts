@@ -20,11 +20,12 @@ import {
   RelationMember,
   StatementRole,
   ITokenNode,
-  IArgumentStatement,
+  IPCSStatement,
   RangeType,
   isReconstructed,
   isRuleNode,
-  isTokenNode
+  isTokenNode,
+  IArgumentDescription
 } from "../model/model";
 import { RuleNames } from "../RuleNames";
 import { TokenNames } from "../TokenNames";
@@ -106,22 +107,13 @@ export class ModelPlugin implements IArgdownPlugin {
       throw new ArgdownPluginError(this.name, "No AST field in response.");
     }
     if (!response.statements) {
-      throw new ArgdownPluginError(
-        this.name,
-        "No statements field in response."
-      );
+      throw new ArgdownPluginError(this.name, "No statements field in response.");
     }
     if (!response.arguments) {
-      throw new ArgdownPluginError(
-        this.name,
-        "No arguments field in response."
-      );
+      throw new ArgdownPluginError(this.name, "No arguments field in response.");
     }
     if (!response.relations) {
-      throw new ArgdownPluginError(
-        this.name,
-        "No relations field in response."
-      );
+      throw new ArgdownPluginError(this.name, "No relations field in response.");
     }
     for (let relation of response.relations) {
       if (!relation.from) {
@@ -131,11 +123,8 @@ export class ModelPlugin implements IArgdownPlugin {
         throw new ArgdownPluginError(this.name, "Relation without target.");
       }
       const fromIsReconstructedArgument =
-        relation.from.type === ArgdownTypes.ARGUMENT &&
-        isReconstructed(relation.from);
-      const toIsReconstructedArgument =
-        relation.to.type === ArgdownTypes.ARGUMENT &&
-        isReconstructed(relation.to);
+        relation.from.type === ArgdownTypes.ARGUMENT && isReconstructed(relation.from);
+      const toIsReconstructedArgument = relation.to.type === ArgdownTypes.ARGUMENT && isReconstructed(relation.to);
 
       // For reconstructed arguments: change outgoing argument relations
       // to outgoing relations of the main conclusion, removing duplicates
@@ -155,10 +144,7 @@ export class ModelPlugin implements IArgdownPlugin {
         //check if this relation already exists
         let relationExists = false;
         for (let existingRelation of equivalenceClass.relations!) {
-          if (
-            relation.to == existingRelation.to &&
-            relation.relationType === existingRelation.relationType
-          ) {
+          if (relation.to == existingRelation.to && relation.relationType === existingRelation.relationType) {
             relationExists = true;
             existingRelation.occurrences.push(...relation.occurrences);
             break;
@@ -187,10 +173,7 @@ export class ModelPlugin implements IArgdownPlugin {
 
         let relationExists = false;
         for (let existingRelation of inference.relations!) {
-          if (
-            relation.from == existingRelation.from &&
-            relation.relationType === existingRelation.relationType
-          ) {
+          if (relation.from == existingRelation.from && relation.relationType === existingRelation.relationType) {
             relationExists = true;
             existingRelation.occurrences.push(...relation.occurrences);
             break;
@@ -212,10 +195,7 @@ export class ModelPlugin implements IArgdownPlugin {
     //Doing this in a separate loop makes it easier to identify duplicates in the previous loop,
     //even though it is less efficient.
     for (let relation of response.relations) {
-      if (
-        relation.from!.type === ArgdownTypes.ARGUMENT ||
-        relation.to!.type === ArgdownTypes.ARGUMENT
-      ) {
+      if (relation.from!.type === ArgdownTypes.ARGUMENT || relation.to!.type === ArgdownTypes.ARGUMENT) {
         continue;
       }
       if (relation.relationType === RelationType.SUPPORT) {
@@ -250,11 +230,7 @@ export class ModelPlugin implements IArgdownPlugin {
     }
 
     let currentStatement: IStatement | null = null;
-    let currentRelationParent:
-      | IArgument
-      | IStatement
-      | IInference
-      | null = null;
+    let currentRelationParent: IArgument | IStatement | IInference | null = null;
     let currentArgument: IArgument | null = null;
     let currentPCS: IArgument | null = null;
     let currentInference: IInference | null = null;
@@ -266,29 +242,29 @@ export class ModelPlugin implements IArgdownPlugin {
     let sectionCounter = 0;
     const getRelationMember = (
       response: IArgdownResponse,
-      relationParent: IStatement | IArgument | IInference
+      relationParent: IStatement | IInference | IArgument
     ): IArgument | IEquivalenceClass | IInference => {
       let target = relationParent;
       if (relationParent.type === ArgdownTypes.STATEMENT) {
         if (!relationParent.title) relationParent.title = getUniqueTitle();
-        return getEquivalenceClass(response.statements!, relationParent.title);
+        if(relationParent.role === StatementRole.ARGUMENT_DESCRIPTION){
+          return getArgument(response.arguments!, relationParent.title);
+        }else{
+          return getEquivalenceClass(response.statements!, relationParent.title);
+        }
       } else {
         return <IArgument | IInference>target;
       }
     };
-    const updateArgument = (
-      argumentsDict: { [title: string]: IArgument },
-      title?: string
-    ): IArgument => {
+    const getArgument = (argumentsDict: { [title: string]: IArgument }, title?: string): IArgument => {
       if (title) {
         currentArgument = argumentsDict[title];
       }
       if (!title || !currentArgument) {
         currentArgument = {
           type: ArgdownTypes.ARGUMENT,
-          title,
           relations: [],
-          descriptions: [],
+          members: [],
           pcs: []
         };
         if (!title) {
@@ -327,10 +303,7 @@ export class ModelPlugin implements IArgdownPlugin {
         let relationExists = false;
         const relationSource = relation.from;
         for (let existingRelation of relationSource.relations!) {
-          if (
-            relation.to === existingRelation.to &&
-            relation.relationType === existingRelation.relationType
-          ) {
+          if (relation.to === existingRelation.to && relation.relationType === existingRelation.relationType) {
             relationExists = true;
             existingRelation.occurrences.push(...relation.occurrences);
             break;
@@ -347,10 +320,7 @@ export class ModelPlugin implements IArgdownPlugin {
         }
         if (!relationExists) {
           if (!relation.from || !relation.to) {
-            throw new ArgdownPluginError(
-              this.name,
-              "Missing relation source or target."
-            );
+            throw new ArgdownPluginError(this.name, "Missing relation source or target.");
           }
           response.relations!.push(relation);
           relation.from.relations!.push(relation);
@@ -360,12 +330,7 @@ export class ModelPlugin implements IArgdownPlugin {
     };
 
     this.tokenListeners = {
-      [TokenNames.STATEMENT_DEFINITION]: (
-        _request,
-        _response,
-        token,
-        parentNode
-      ) => {
+      [TokenNames.STATEMENT_DEFINITION]: (_request, _response, token, parentNode) => {
         let match = statementDefinitionPattern.exec(token.image);
         if (match != null && currentStatement) {
           currentStatement.title = match[1];
@@ -373,12 +338,7 @@ export class ModelPlugin implements IArgdownPlugin {
           parentNode!.statement = currentStatement;
         }
       },
-      [TokenNames.STATEMENT_REFERENCE]: (
-        _request,
-        _response,
-        token,
-        parentNode
-      ) => {
+      [TokenNames.STATEMENT_REFERENCE]: (_request, _response, token, parentNode) => {
         let match = statementReferencePattern.exec(token.image);
         if (match != null && currentStatement) {
           currentStatement.title = match[1];
@@ -414,48 +374,21 @@ export class ModelPlugin implements IArgdownPlugin {
           }
         }
       },
-      [TokenNames.ARGUMENT_DEFINITION]: (
-        _request,
-        response,
-        token,
-        parentNode
-      ) => {
-        let match = argumentDefinitionPattern.exec(token.image);
-        if (match != null) {
+      [TokenNames.ARGUMENT_REFERENCE]: (_request, _response, token) => {
+        let match = argumentReferencePattern.exec(token.image);
+        if (match != null && currentStatement) {
           let title = match[1];
-          updateArgument(response.arguments!, title);
-          currentStatement = {
-            type: ArgdownTypes.STATEMENT,
-            text: ""
-          };
-          currentStatement.startLine = token.startLine;
-          currentStatement.endLine = token.endLine;
-          currentStatement.startColumn = token.startColumn;
-          currentStatement.endColumn = token.endColumn;
-          currentStatement.role = StatementRole.ARGUMENT_DESCRIPTION;
-          if (currentSection) {
-            currentStatement.section = currentSection;
-          }
-          currentArgument!.descriptions.push(currentStatement);
-          if (currentArgument!.section === undefined) {
-            currentArgument!.section = currentStatement.section;
-          }
+          currentStatement.title = title;
+          currentStatement.isReference = true;
           token.title = title;
-          parentNode!.argument = currentArgument!;
         }
       },
-      [TokenNames.ARGUMENT_REFERENCE]: (
-        _request,
-        response,
-        token,
-        parentNode
-      ) => {
-        let match = argumentReferencePattern.exec(token.image);
-        if (match != null) {
+      [TokenNames.ARGUMENT_DEFINITION]: (_request, _response, token) => {
+        let match = argumentDefinitionPattern.exec(token.image);
+        if (match != null && currentStatement) {
           let title = match[1];
-          updateArgument(response.arguments!, title);
+          currentStatement.title = title;
           token.title = title;
-          parentNode!.argument = currentArgument!;
         }
       },
       [TokenNames.ARGUMENT_MENTION]: (_request, _response, token) => {
@@ -517,7 +450,7 @@ export class ModelPlugin implements IArgdownPlugin {
         }
       },
       [TokenNames.TAG]: (request, response, token) => {
-        const target = currentHeading ? currentHeading : currentStatement;
+        const target = currentHeading || currentStatement;
         if (!target) {
           return;
         }
@@ -546,10 +479,10 @@ export class ModelPlugin implements IArgdownPlugin {
         }
         target.tags = target.tags || [];
         let tags = target.tags;
-        if (target.tags.indexOf(tag) == -1) {
+        if (target.tags.indexOf(tag) === -1) {
           tags.push(tag);
         }
-        if (response.tags!.indexOf(tag) == -1) {
+        if (response.tags!.indexOf(tag) === -1) {
           response.tags!.push(tag);
         }
       }
@@ -587,11 +520,12 @@ export class ModelPlugin implements IArgdownPlugin {
           currentHeading.level = headingStart.image.length - 1; //number of # - whitespace
           sectionCounter++;
           let sectionId = "s" + sectionCounter;
+          const title = currentHeading.text? currentHeading.text.trim() : "";
           let newSection: ISection = {
             type: ArgdownTypes.SECTION,
             id: sectionId,
             level: currentHeading.level,
-            title: currentHeading.text || "",
+            title: title,
             children: []
           };
           newSection.tags = currentHeading.tags;
@@ -600,13 +534,15 @@ export class ModelPlugin implements IArgdownPlugin {
           newSection.startColumn = node.startColumn;
           newSection.heading = currentHeading;
           newSection.data = currentHeading.data;
-
+          console.log(newSection.data);
+          if(newSection.data && newSection.data.isGroup !== undefined){
+            newSection.isGroup = newSection.data.isGroup;
+            console.log("newSection.isGroup: "+newSection.isGroup);
+          }
+  
           if (newSection.level > 1 && currentSection) {
             let parentSection = currentSection;
-            while (
-              parentSection.parent &&
-              parentSection.level >= newSection.level
-            ) {
+            while (parentSection.parent && parentSection.level >= newSection.level) {
               parentSection = parentSection.parent;
             }
             parentSection.children.push(newSection);
@@ -619,12 +555,7 @@ export class ModelPlugin implements IArgdownPlugin {
           currentHeading = null;
         }
       },
-      [RuleNames.STATEMENT + "Entry"]: (
-        _request,
-        _response,
-        node,
-        parentNode
-      ) => {
+      [RuleNames.STATEMENT + "Entry"]: (_request, _response, node, parentNode) => {
         currentStatement = {
           type: ArgdownTypes.STATEMENT
         };
@@ -649,25 +580,22 @@ export class ModelPlugin implements IArgdownPlugin {
         if (!statement.title || statement.title == "") {
           statement.title = getUniqueTitle();
         }
-        let equivalenceClass = getEquivalenceClass(
-          response.statements!,
-          statement.title
-        );
+        let equivalenceClass = getEquivalenceClass(response.statements!, statement.title);
         node.equivalenceClass = equivalenceClass;
         if (statement.tags) {
           addTags(statement.tags, equivalenceClass);
         }
         if (statement.data) {
-          equivalenceClass.data = _.merge(
-            equivalenceClass.data,
-            statement.data
-          );
+          equivalenceClass.data = _.merge(equivalenceClass.data, statement.data);
         }
         if (currentSection) {
           statement.section = currentSection;
         }
         equivalenceClass.members.push(statement);
-        if (equivalenceClass.section === undefined && !statement.isReference) {
+        const isInGroup = statement.data && statement.data.isInGroup !== undefined? statement.data.isInGroup : undefined;
+        const ecTakesSection = isInGroup === true || (!statement.isReference && isInGroup === undefined && equivalenceClass.section === undefined);
+        const sectionIsGroup = statement.section && statement.section.isGroup !== false;
+        if (sectionIsGroup && ecTakesSection) {
           equivalenceClass.section = statement.section;
         }
         if (statement.role === StatementRole.TOP_LEVEL_STATEMENT) {
@@ -677,58 +605,88 @@ export class ModelPlugin implements IArgdownPlugin {
         }
         currentStatement = null;
       },
-      [RuleNames.PCS + "Entry"]: (
-        _request,
-        response,
-        node,
-        parentNode,
-        childIndex,
-        logger
-      ) => {
+      [RuleNames.ARGUMENT + "Entry"]: (_request, _response, node) => {
+        const desc: IArgumentDescription = {
+          type: ArgdownTypes.STATEMENT,
+          role: StatementRole.ARGUMENT_DESCRIPTION,
+          text: ""
+        };
+        currentStatement = desc;
+        desc.startLine = node.startLine;
+        desc.endLine = node.endLine;
+        desc.startColumn = node.startColumn;
+        desc.endColumn = node.endColumn;
+        if (currentSection) {
+          currentStatement.section = currentSection;
+        }
+        currentRelationParent = currentStatement;
+        node.statement = desc;
+      },
+      [RuleNames.ARGUMENT + "Exit"]: (_request, response, node) => {
+        let desc = node.statement;
+        if (!desc) {
+          throw new ArgdownPluginError(this.name, "Missing argument description.");
+        }
+        desc.startLine = node.startLine;
+        desc.startColumn = node.startColumn;
+        desc.endLine = node.endLine;
+        desc.endColumn = node.endColumn;
+        desc.data = node.data;
+        if (!desc.title || desc.title == "") {
+          desc.title = getUniqueTitle();
+        }
+        const argument = getArgument(response.arguments!, desc.title);
+        node.argument = argument;
+        if (desc.tags) {
+          addTags(desc.tags, argument);
+        }
+        if (desc.data) {
+          argument.data = _.merge(argument.data, desc.data);
+        }
+        if (currentSection) {
+          desc.section = currentSection;
+        }
+        argument.members.push(<IArgumentDescription>desc);
+        const isInGroup = desc.data && desc.data.isInGroup !== undefined? desc.data.isInGroup : undefined;
+        const argumentTakesSection = isInGroup === true || (!desc.isReference && isInGroup === undefined && argument.section === undefined);
+        const sectionIsGroup = desc.section && desc.section.isGroup !== false;
+        if (sectionIsGroup && argumentTakesSection) {
+          argument.section = desc.section;
+        }
+        response.arguments![argument.title!] = argument;
+        currentStatement = null;
+        currentArgument = null;
+      },
+      [RuleNames.PCS + "Entry"]: (_request, response, node, parentNode, childIndex, logger) => {
         let argument = null;
-        if (
-          childIndex !== null &&
-          childIndex > 0 &&
-          parentNode &&
-          parentNode.children
-        ) {
-          const precedingSibling = parentNode.children[childIndex - 1];
-          if (
-            isRuleNode(precedingSibling) &&
-            (precedingSibling.name === RuleNames.ARGUMENT_REFERENCE ||
-              precedingSibling.name === RuleNames.ARGUMENT_DEFINITION)
-          ) {
+        let argumentDescription: IStatement | undefined;
+        if (childIndex !== null && childIndex > 0 && parentNode && parentNode.children) {
+          let precedingSibling = parentNode.children[childIndex - 1];
+          if (isRuleNode(precedingSibling) && precedingSibling.name === RuleNames.ARGUMENT) {
+            argumentDescription = precedingSibling.statement;
             argument = precedingSibling.argument;
-          } else if (
-            isTokenNode(precedingSibling) &&
-            tokenMatcher(precedingSibling, argdownLexer.Emptyline)
-          ) {
-            const precedingSibling2 = parentNode.children[childIndex - 2];
-            if (
-              isRuleNode(precedingSibling2) &&
-              (precedingSibling2.name === RuleNames.ARGUMENT_REFERENCE ||
-                precedingSibling2.name === RuleNames.ARGUMENT_DEFINITION)
-            ) {
-              argument = precedingSibling2.argument;
+          } else if (isTokenNode(precedingSibling) && tokenMatcher(precedingSibling, argdownLexer.Emptyline)) {
+            precedingSibling = parentNode.children[childIndex - 2];
+            if (isRuleNode(precedingSibling) && precedingSibling.name === RuleNames.ARGUMENT) {
+              argumentDescription = precedingSibling.statement;
+              argument = precedingSibling.argument;
             }
           }
         }
         if (!argument) {
-          argument = updateArgument(response.arguments!);
+          argument = getArgument(response.arguments!);
         }
-        if (currentSection) {
+        if (currentSection && currentSection.isGroup !== false) {
           argument.section = currentSection;
         }
         //if there is a previous reconstruction, overwrite it
-        if (!argument.pcs) {
-          argument.pcs = [];
-        }
         if (argument.pcs.length > 0) {
-          logger.log(
-            "warning",
-            "[ModelPlugin]: Overwriting duplicate pcs: " + argument.title
-          );
-          argument.pcs = [];
+          logger.log("warning", "[ModelPlugin]: Overwriting duplicate pcs: " + argument.title);
+        }
+        argument.pcs = [];
+        // Save pcs in description as well, since there can be more than one pcs
+        if (argumentDescription) {
+          (<IArgumentDescription>argumentDescription).pcs = argument.pcs;
         }
         node.argument = argument;
         currentPCS = argument;
@@ -739,21 +697,14 @@ export class ModelPlugin implements IArgdownPlugin {
           throw new ArgdownPluginError(this.name, "Missing argument.");
         }
         if (argument.pcs.length == 0) {
-          throw new ArgdownPluginError(
-            this.name,
-            "Missing argument statements."
-          );
+          throw new ArgdownPluginError(this.name, "Missing argument statements.");
         }
         const lastStatement = argument.pcs[argument.pcs.length - 1];
         if (lastStatement.role === StatementRole.PRELIMINARY_CONCLUSION) {
           lastStatement.role = StatementRole.MAIN_CONCLUSION;
           const ec = response.statements![lastStatement.title!];
           ec.isUsedAsMainConclusion = true;
-          if (
-            !ec.members.find(
-              s => s.role === StatementRole.PRELIMINARY_CONCLUSION
-            )
-          ) {
+          if (!ec.members.find(s => s.role === StatementRole.PRELIMINARY_CONCLUSION)) {
             ec.isUsedAsPreliminaryConclusion = false;
           }
         } else {
@@ -767,38 +718,22 @@ export class ModelPlugin implements IArgdownPlugin {
         currentArgument = null;
         currentPCS = null;
       },
-      [RuleNames.ARGUMENT_STATEMENT + "Exit"]: (
-        _request,
-        response,
-        node,
-        parentNode,
-        childIndex
-      ) => {
+      [RuleNames.ARGUMENT_STATEMENT + "Exit"]: (_request, response, node, parentNode, childIndex) => {
         if (!currentPCS) {
-          throw new ArgdownPluginError(
-            this.name,
-            "Missing argument reconstruction."
-          );
+          throw new ArgdownPluginError(this.name, "Missing argument reconstruction.");
         }
         if (node.children && node.children.length > 1) {
           //first node is ArgumentStatementStart
           let statementNode = node.children[1] as IRuleNode;
-          let statement = statementNode.statement;
+          let statement: IPCSStatement = <IPCSStatement>statementNode.statement;
           if (!statement) {
             throw new ArgdownPluginError(this.name, "Missing statement.");
           }
           let ec = getEquivalenceClass(response.statements!, statement.title!);
           statement.role = StatementRole.PREMISE;
-          (<IArgumentStatement>statement).argumentTitle = currentPCS.title;
-          if (
-            childIndex !== null &&
-            childIndex > 0 &&
-            parentNode &&
-            parentNode.children
-          ) {
-            let precedingSibling = parentNode.children[
-              childIndex - 1
-            ] as IRuleNode;
+          statement.argumentTitle = currentPCS.title;
+          if (childIndex !== null && childIndex > 0 && parentNode && parentNode.children) {
+            let precedingSibling = parentNode.children[childIndex - 1] as IRuleNode;
             if (precedingSibling.name === RuleNames.INFERENCE) {
               // We first assume that this is a preliminary conclusion
               // If we exit the argument we will change the role of the last statement in the pcs
@@ -846,25 +781,6 @@ export class ModelPlugin implements IArgdownPlugin {
             }
           }
         }
-      },
-      [RuleNames.ARGUMENT_DEFINITION + "Exit"]: (_request, _response, node) => {
-        if (node.argument) {
-          let description = _.last(node.argument.descriptions);
-          if (description && description.tags) {
-            addTags(description.tags, node.argument);
-          }
-          node.argument.data = _.merge(node.argument.data, node.data);
-        }
-        currentStatement = null;
-        currentArgument = null;
-      },
-      [RuleNames.ARGUMENT_REFERENCE + "Exit"]: (_request, _response, node) => {
-        const ruleNode = node as IRuleNode;
-        if (ruleNode.argument) {
-          ruleNode.argument.data = _.merge(ruleNode.argument.data, node.data);
-        }
-        currentStatement = null;
-        currentArgument = null;
       },
       [RuleNames.INCOMING_SUPPORT + "Entry"]: (_request, _response, node) => {
         const target = _.last(relationParentsStack);
@@ -928,10 +844,7 @@ export class ModelPlugin implements IArgdownPlugin {
           relationType: RelationType.UNDERCUT,
           occurrences: [node]
         };
-        if (
-          currentRelationParent &&
-          currentRelationParent.type === ArgdownTypes.STATEMENT
-        ) {
+        if (currentRelationParent && currentRelationParent.type === ArgdownTypes.STATEMENT) {
           //const inference = (<Statement>currentRelationParent).inference!; // this is not working as statement has no inference yet
           if (currentInference) {
             currentRelation.to = currentInference;
@@ -957,14 +870,9 @@ export class ModelPlugin implements IArgdownPlugin {
       [RuleNames.INCOMING_UNDERCUT + "Exit"]: onRelationExit,
       [RuleNames.RELATIONS + "Entry"]: (_request, response) => {
         if (!currentRelationParent) {
-          throw new ArgdownPluginError(
-            this.name,
-            "Parent of relation missing."
-          );
+          throw new ArgdownPluginError(this.name, "Parent of relation missing.");
         }
-        relationParentsStack.push(
-          getRelationMember(response, currentRelationParent)
-        );
+        relationParentsStack.push(getRelationMember(response, currentRelationParent));
       },
       [RuleNames.RELATIONS + "Exit"]: () => {
         currentRelation = null;
@@ -1063,10 +971,7 @@ export class ModelPlugin implements IArgdownPlugin {
     };
   }
 }
-const getEquivalenceClass = (
-  statements: { [title: string]: IEquivalenceClass },
-  title: string
-): IEquivalenceClass => {
+const getEquivalenceClass = (statements: { [title: string]: IEquivalenceClass }, title: string): IEquivalenceClass => {
   let ec = null;
   ec = statements[title];
   if (!ec) {

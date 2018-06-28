@@ -1,8 +1,18 @@
 {
-  "name": "argdown-browser",
+  "name": "@argdown/sandbox",
   "version": "1.6.1",
-  "description": "A simple Argdown editor for the browser",
+  "description": "An Argdown editor that runs in the browser",
   "author": "Christian Voigt <1pxsolidblack@googlemail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/christianvoigt/argdown/tree/master/packages/argdown-sandbox"
+  },
+  "keywords": [
+    "argumentation",
+    "argument mapping",
+    "Argdown",
+    "Editor"
+  ],
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --open",

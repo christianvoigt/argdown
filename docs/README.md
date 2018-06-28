@@ -5,92 +5,80 @@ actionText: Get Started →
 actionLink: /guide/
 features:
 - title: Simple
-  details: Writing a pro & contra list in Argdown is as simple as writing a twitter message.
+  details: Writing pro & contra lists in Argdown is as simple as writing a twitter message. You don't have to learn anything new, except a few simple rules that will feel very natural. 
 - title: Expressive
-  details: But you can also logically reconstruct more complex dialectical relations between arguments or dive into the details of their premise-conclusion structures.
+  details: With these simple rules you will be able to precisely define complex dialectical relations between arguments or dive into the details of their logical premise-conclusion structures. What kind, style and depth of logical analysis you choose is completely up to you.
 - title: Powerful
-  details: Finally, you can export Argdown as a graph and create argument maps of whole debates.
+  details: Your document is transformed into an argument map while you are typing. You can export your analysis as HTML, SVG, PDF, PNG or JSON. If that is not enough, you can easily extend the Argdown tool chain with your own plugin.
 
-footer: MIT Licensed | Copyright © 2018-present Evan You
+footer: MIT Licensed | Copyright © 2018-present Christian Voigt
+
 ---
 
-# Argdown
+## Learn Argdown in 3 minutes
 
-Try it out in the [Browser Sandbox](http://christianvoigt.github.io/argdown).
+Argdown's formula consists of three hand-picked ingredients:
 
-Argdown is a simple syntax for defining argumentative
-structures, inspired by Markdown.
-
-- Writing a pro & contra list in Argdown is as
-  simple as writing a twitter message.
-- But you can also
-  **logically reconstruct** more complex dialectical
-  relations between arguments or dive into
-  the details of their premise-conclusion structures.
-- Finally, you can export Argdown as a graph and create
-  **argument maps** of whole debates.
-
-Argdown maps and data can be exported to **.pdf**, **.png**, **.svg**, **.html**, **.dot** and **.json** files.
-
-![Argdown](https://cdn.rawgit.com/christianvoigt/argdown/master/argdown-mark.svg)
-
-## Getting Started
-
-Install [the Argdown extension for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=christianvoigt.argdown-vscode). You can learn [here](https://code.visualstudio.com/docs/editor/extension-gallery) how to install extensions in VS Code. Or you can simply create a file with the `.argdown` extension. VSCode will show you a notification that there are extension that can help you with `.argdown` files. Clicking on the notification will lead you to a list of plugins associated with `.argdown` files. Here you can choose "argdown".
-
-## Example
+### 1. Nested Pro-Contra Lists
 
 ```argdown
-# Example
-
-First we define some relations between statements and arguments:
-
-[statement 1]: A statement
-  + <argument 1>: supporting the statement.
-  - <argument 2>: attacking the statement.
-     + <argument 3>: supporting @<argument 2>.
-     -> <argument 4>: is supported by @<argument 2>.
-        +> [statement 1]
-
-Now we are reconstructing the logical structure of @<argument 1>:
-
-<argument 1>
-
-(1) A premise
-(2) [statement 2]: A premise with a title.
-    - <argument 2>
-----
-(3) A conclusion
-    +> [statement 1]
+// a daring statement with a title:
+[Argdown is the best]: Argdown is the best tool for analyzing complex argumentation
+and creating argument maps.
+  // a well-deserved argument attacking this braggy statement:
+  - <Editors easier>: Argument map editors are easier to use. #pro-editor
+    // an argument supporting "Editors easier":
+    + <WYSIWYG>: In argument map editors what you see during editing
+      is what you get at the end: an argument map. #pro-editor
+  // an argument supporting "Argdown is the best":
+  + <Pure Data>: With Argdown no user interface gets in your way. You can focus on writing
+    without getting distracted.
 ```
 
-To see the resulting graph, paste this code into the [sandbox editor](http://christianvoigt.github.io/argdown) and select "Map" in the menu on the right.
+Click on the **Map** button in the upper right corner to see the resulting argument map.
 
-## Argdown tools
+### 2. Premise-Conclusion-Structures
 
-Argdown tools currently available:
+```argdown
+// Let's start with the little debate from before:
+[Argdown is the best]
+  - <Editors easier> #pro-editor
+    + <WYSIWYG> #pro-editor
+  + <Pure Data>
 
-- A [VS Code extension](https://marketplace.visualstudio.com/items?itemName=christianvoigt.argdown-vscode)
-- A browser based [Editor](http://christianvoigt.github.io/argdown) (this repository contains its source code)
-- A [commandline tool](https://github.com/christianvoigt/argdown-cli) that exports Argdown files to html, json, dot and graphml files
-- [Syntax Highlighting of Argdown code blocks for Pandoc](https://github.com/xylomorph/argdown-pandoc-highlighting)
-- [Atom Editor Syntax Highlighting](https://github.com/christianvoigt/language-argdown)
-- [CodeMirror Syntax Highlighting](https://github.com/christianvoigt/argdown-codemirror-mode)
-- [Argdown Parser](https://github.com/christianvoigt/argdown-parser), the basic tools for building Argdown applications
-- [Argdown MapMaker Plugins](https://github.com/christianvoigt/argdown-map-maker) for creating and exporting argument maps from Argdown code
+// Next comes the argument's title we want to logically reconstruct:
+<Word Analogy>
 
-For further technical details, please visit these repositories.
+// the argument's premise-conclusion structure:
+(1) [Word @#*%!]: // let's give the first premise a nice shoutable title
+    It is much easier to write
+    and format a text with Markdown than it is with Word.
+(2) Markdown and Word are comparable in their ease of use
+    to Argdown and argument map editors respectively.
+----- // the inference
+// And now we come to our (not quite inescapable) conclusion:
+(3) It is much easier to analyze complex argumentation and create argument maps with Argdown
+    than it is with argument map editors.
+    // This conclusion has an outgoing relation:
+    -> <Editors easier>
+```
 
-## Documentation
+Click on the **Map** button in the upper right corner to see the resulting argument map.
 
-Currently, the project is still in its beta phase, so please excuse the lack of documentation. We are working
-on it and our first tutorial will be published soon.
+### 3. Markdown
 
-For now, we started a [FAQ](https://github.com/christianvoigt/argdown/wiki/Argdown-FAQ). If you have any questions
-open a Github issue and we will try to answer as soon as possible.
+```argdown
+# Text formatting
 
-## Credits and license
+You can use __many__  (though not all) *features* of [Markdown](http://commonmark.org/) to format Argdown text.
 
-The development of Argdown and Argdown-related tools is funded by the [DebateLab](http://debatelab.philosophie.kit.edu/) at KIT, Karlsruhe.
+## Headings are used to group statement and arguments in the map
 
-All code is published under the MIT license.
+You can use #hashtags to color statements and arguments in the map.
+```
+
+For this example, no map will be generated, as the Argdown source code contains no statements or arguments connected by support or attack relations.
+
+## Next steps
+
+Now that you have learned the basics of Argdown you can cet started with our [guide](/guide). Or you can directly try out Argdown in the [browser sandbox](https://christianvoigt.github.io/argdown/sandbox).

@@ -12,7 +12,7 @@
   },
   "version": "0.11.9",
   "license": "MIT",
-  "main": "lib/src/cli.js",
+  "main": "dist/src/cli.js",
   "dependencies": {
     "@argdown/core": "^0.8.7",
     "@argdown/node": "^0.11.9",
@@ -22,7 +22,7 @@
     "yargs": "^8.0.1"
   },
   "bin": {
-    "argdown": "./lib/src/cli.js"
+    "argdown": "./dist/src/cli.js"
   },
   "repository": {
     "type": "git",
@@ -40,12 +40,13 @@
     "coverage": "nyc mocha -r ts-node/register --full-trace --bail --require source-map-support/register ./test/**/*.spec.ts",
     "report": "nyc report",
     "prepublish": "npm run-script build",
-    "clean": "rimraf lib/*",
+    "clean": "rimraf dist/*",
     "version:patch": "npm version patch"
   },
   "readmeFilename": "Readme.md",
   "preferGlobal": true,
   "devDependencies": {
+    "@types/chai": "^4.1.4",
     "@types/mocha": "^5.2.3",
     "@types/rimraf": "^2.0.2",
     "chai": "^4.1.2",
@@ -67,8 +68,8 @@
   },
   "nyc": {
     "include": [
-      "lib/src/**/*.js",
-      "lib/src/**/*.jsx"
+      "dist/src/**/*.js",
+      "dist/src/**/*.jsx"
     ],
     "extension": [
       ".js",

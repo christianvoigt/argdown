@@ -41,7 +41,6 @@
       "scope": "markup.list.unordered.support",
       "settings": {
         "foreground": "#04C93F",
-        "background": "#96000014",
         "fontStyle": "bold"
       }
     },
