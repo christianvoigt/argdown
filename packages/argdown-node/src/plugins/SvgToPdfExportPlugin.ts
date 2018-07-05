@@ -5,15 +5,8 @@ let path = require("path");
 let mkdirp = require("mkdirp");
 import * as SVGtoPDF from "svg-to-pdfkit";
 import * as _ from "lodash";
-import {
-  IAsyncArgdownPlugin,
-  IAsyncRequestHandler
-} from "../IAsyncArgdownPlugin";
-import {
-  IArgdownRequest,
-  IRequestHandler,
-  ArgdownPluginError
-} from "@argdown/core";
+import { IAsyncArgdownPlugin, IAsyncRequestHandler } from "../IAsyncArgdownPlugin";
+import { IArgdownRequest, IRequestHandler, ArgdownPluginError } from "@argdown/core";
 import { IFileNameProvider } from "./SaveAsFilePlugin";
 
 export interface IPdfSettings {
@@ -60,17 +53,21 @@ export class SvgToPdfExportPlugin implements IAsyncArgdownPlugin {
     let fileName = "default";
     let outputDir = settings.outputDir;
     if (request.outputPath) {
-      fileName = this.getFileName(request.outputPath);
       outputDir = path.dirname(request.outputPath);
     } else if (request.pdf && request.pdf.outputDir) {
-      fileName = this.getFileName(request.pdf.outputDir);
       outputDir = path.dirname(request.pdf.outputDir);
+    }
+    if (request.outputPath) {
+      fileName = this.getFileName(request.outputPath);
     } else if (_.isFunction(settings.fileName)) {
       fileName = settings.fileName.call(this, request, response);
     } else if (_.isString(settings.fileName)) {
       fileName = settings.fileName;
     } else if (request.inputPath) {
       fileName = this.getFileName(request.inputPath);
+    }
+    if (request.outputSuffix) {
+      fileName = fileName + request.outputSuffix;
     }
     const absoluteOutputDir = path.resolve(process.cwd(), outputDir);
     const filePath = absoluteOutputDir + "/" + fileName + ".pdf";

@@ -29,7 +29,15 @@ import {
 } from "../model/model";
 import { RuleNames } from "../RuleNames";
 import { TokenNames } from "../TokenNames";
+import { stringToClassName } from "../utils";
 
+export interface ITagData{
+  tag:string;
+  cssClass?:string;
+  color?:string;
+  occurrenceIndex?:number;
+  priority?:number;
+}
 export interface IModelPluginSettings {
   removeTagsFromText?: boolean;
 }
@@ -69,6 +77,14 @@ declare module "../index" {
      * Provided by the [[ModelPlugin]]
      */
     sections?: ISection[];
+    /**
+     * All tags used augmented by additional data
+     * 
+     * Provided by the [[ModelPlugin]]
+     * 
+     * Color is provided by the [[ColorPlugin]]
+     */
+    tags?:{[tagName:string]:ITagData}
   }
 }
 const defaultSettings = {
@@ -240,6 +256,7 @@ export class ModelPlugin implements IArgdownPlugin {
     let currentHeading: IRuleNode | null = null;
     let currentSection: ISection | null = null;
     let sectionCounter = 0;
+    let tagCounter = 0;
     const getRelationMember = (
       response: IArgdownResponse,
       relationParent: IStatement | IInference | IArgument
@@ -277,11 +294,11 @@ export class ModelPlugin implements IArgdownPlugin {
       currentRelationParent = currentArgument;
       return currentArgument;
     };
-    const addTags = (tags: string[], object: { tags?: string[] }): void => {
+    const addTags = (newTags: string[], object: { tags?: string[] }): void => {
       if (!object.tags) {
         object.tags = [];
       }
-      object.tags = _.union(object.tags, tags);
+      object.tags = _.union(object.tags, newTags);
     };
     const onRelationExit: IRuleNodeHandler = (_request, response, node) => {
       let relation = node.relation;
@@ -482,8 +499,11 @@ export class ModelPlugin implements IArgdownPlugin {
         if (target.tags.indexOf(tag) === -1) {
           tags.push(tag);
         }
-        if (response.tags!.indexOf(tag) === -1) {
-          response.tags!.push(tag);
+        let tagData = response.tags![tag];
+        if (!tagData) {
+          tagData = {tag: tag, cssClass: stringToClassName("tag-" + tag), occurrenceIndex: tagCounter};
+          response.tags![tag] = tagData;
+          tagCounter++;
         }
       }
     };
@@ -493,7 +513,7 @@ export class ModelPlugin implements IArgdownPlugin {
         response.arguments = {};
         response.sections = [];
         response.relations = [];
-        response.tags = [];
+        response.tags = {};
         uniqueTitleCounter = 0;
         currentHeading = null;
         currentSection = null;
@@ -505,6 +525,7 @@ export class ModelPlugin implements IArgdownPlugin {
         relationParentsStack = [];
         currentRelation = null;
         sectionCounter = 0;
+        tagCounter = 0;
       },
       [RuleNames.HEADING + "Entry"]: (_request, _response, node) => {
         currentHeading = node;
@@ -844,7 +865,7 @@ export class ModelPlugin implements IArgdownPlugin {
           relationType: RelationType.UNDERCUT,
           occurrences: [node]
         };
-        if (currentRelationParent && currentRelationParent.type === ArgdownTypes.STATEMENT) {
+        if (target && target.type === ArgdownTypes.EQUIVALENCE_CLASS) {
           //const inference = (<Statement>currentRelationParent).inference!; // this is not working as statement has no inference yet
           if (currentInference) {
             currentRelation.to = currentInference;

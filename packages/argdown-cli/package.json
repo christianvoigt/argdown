@@ -37,6 +37,7 @@
     "build": "npm run clean && npm run build:src",
     "build:src": "tsc",
     "test": "mocha -r ts-node/register --full-trace --require source-map-support/register ./test/**/*.spec.ts",
+    "test:custom-process": "mocha -r ts-node/register --full-trace --require source-map-support/register ./test/**/*.spec.ts --fgrep \"custom process\"",
     "coverage": "nyc mocha -r ts-node/register --full-trace --bail --require source-map-support/register ./test/**/*.spec.ts",
     "report": "nyc report",
     "prepublish": "npm run-script build",

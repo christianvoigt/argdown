@@ -1,5 +1,5 @@
 "use strict";
-import { cloneDeep, isArray, isString, isEmpty, isFunction, defaults, isObject } from "lodash";
+import { cloneDeep, isArray, isString, isEmpty, isFunction, defaultsDeep, isObject } from "lodash";
 import { ArgdownApplication, IArgdownRequest, IArgdownResponse, ArgdownPluginError } from "@argdown/core";
 import { isAsyncPlugin } from "./IAsyncArgdownPlugin";
 import * as path from "path";
@@ -13,10 +13,10 @@ const readFileAsync = promisify(readFile);
 
 export class AsyncArgdownApplication extends ArgdownApplication {
   async runAsync(request: IArgdownRequest, response?: IArgdownResponse): Promise<IArgdownResponse> {
-    let process: string[] = [];
+    let processorsToRun: string[] = [];
     this.logger.setLevel("error");
     let resp: IArgdownResponse = response || {};
-    const req = defaults({}, request);
+    let req = request;
 
     if (req) {
       if (req.logLevel) {
@@ -24,21 +24,29 @@ export class AsyncArgdownApplication extends ArgdownApplication {
       }
       if (req.process) {
         if (isArray(req.process)) {
-          process = req.process;
-        } else if (isString(req.process) && req.processes) {
-          process = req.processes[req.process];
+          processorsToRun = req.process;
+        } else if (isString(req.process) && req.processes && req.processes[req.process]) {
+          const processObj = req.processes[req.process];
+          req = defaultsDeep({}, processObj, req);
+          if (isString(req.process)) {
+            processorsToRun = this.defaultProcesses[req.process];
+          } else if (req.process && req.process.constructor === Array) {
+            processorsToRun = <string[]>req.process;
+          }
+        } else if (isString(req.process)) {
+          processorsToRun = this.defaultProcesses[req.process];
         }
       }
     }
 
-    if (isEmpty(process)) {
+    if (isEmpty(processorsToRun)) {
       this.logger.log("error", "[AsyncArgdownApplication]: No processors to run.");
       return resp;
     }
     const exceptions: Error[] = [];
     resp.exceptions = exceptions;
 
-    for (let processorId of process) {
+    for (let processorId of processorsToRun) {
       let cancelProcessor = false;
       let processor = this.processors[processorId];
       if (!processor) {
@@ -53,11 +61,15 @@ export class AsyncArgdownApplication extends ArgdownApplication {
           try {
             plugin.prepare(req, resp, this.logger);
           } catch (e) {
-            e.processor = processorId;
-            exceptions.push(e);
-            cancelProcessor = true;
-            this.logger.log("warning", `Processor ${processorId} canceled.`);
-            break;
+            if (req.throwExceptions) {
+              throw e;
+            } else {
+              e.processor = processorId;
+              exceptions.push(e);
+              cancelProcessor = true;
+              this.logger.log("warning", `Processor ${processorId} canceled.`);
+              break;
+            }
           }
         }
       }
@@ -69,10 +81,14 @@ export class AsyncArgdownApplication extends ArgdownApplication {
         try {
           processor.walker.walk(req, resp, this.logger);
         } catch (e) {
-          e.processor = processorId;
-          exceptions.push(e);
-          this.logger.log("warning", `[ArgdownApplication]: Processor ${processorId} canceled.`);
-          break;
+          if (req.throwExceptions) {
+            throw e;
+          } else {
+            e.processor = processorId;
+            exceptions.push(e);
+            this.logger.log("warning", `[ArgdownApplication]: Processor ${processorId} canceled.`);
+            break;
+          }
         }
       }
 
@@ -85,10 +101,14 @@ export class AsyncArgdownApplication extends ArgdownApplication {
             plugin.run(req, resp, this.logger);
           }
         } catch (e) {
-          e.processor = processorId;
-          this.logger.log("warning", `Processor ${processorId} canceled.`);
-          exceptions.push(e);
-          break;
+          if (req.throwExceptions) {
+            throw e;
+          } else {
+            e.processor = processorId;
+            this.logger.log("warning", `Processor ${processorId} canceled.`);
+            exceptions.push(e);
+            break;
+          }
         }
       }
     }
@@ -104,49 +124,54 @@ export class AsyncArgdownApplication extends ArgdownApplication {
     return resp;
   }
   load = async (request: IArgdownRequest): Promise<IArgdownResponse[] | undefined> => {
-    const inputGlob = request.inputPath || "./*.argdown";
-    const ignoreFiles = request.ignore || [
+    const processObj = request.processes && isString(request.process) ? request.processes[request.process] : undefined;
+    let req = request;
+    if (processObj) {
+      req = defaultsDeep({}, processObj, req);
+    }
+    let inputGlob = req.inputPath || "./*.argdown";
+    const ignoreFiles = req.ignore || [
       "**/_*", // Exclude files starting with '_'.
       "**/_*/**" // Exclude entire directories starting with '_'.
     ];
 
-    if (request.logger && isFunction(request.logger.log) && isFunction(request.logger.setLevel)) {
+    if (req.logger && isFunction(req.logger.log) && isFunction(req.logger.setLevel)) {
       if (!this.defaultLogger) {
         this.defaultLogger = this.logger;
       }
-      this.logger = request.logger;
+      this.logger = req.logger;
     } else if (this.defaultLogger) {
       this.logger = this.defaultLogger;
     }
 
-    if (!request.rootPath) {
-      request.rootPath = process.cwd();
+    if (!req.rootPath) {
+      req.rootPath = process.cwd();
     }
-    if (request.logLevel) {
-      this.logger.setLevel(request.logLevel);
+    if (req.logLevel) {
+      this.logger.setLevel(req.logLevel);
     }
-    if (request.plugins) {
-      for (let pluginData of request.plugins) {
+    if (req.plugins) {
+      for (let pluginData of req.plugins) {
         if (isObject(pluginData.plugin) && isString(pluginData.processor)) {
           this.addPlugin(pluginData.plugin, pluginData.processor);
         }
       }
     }
-    if (request.input && !request.inputPath) {
+    if (req.input && !req.inputPath) {
       await this.runAsync(cloneDeep(request));
       return;
     }
 
     const $ = this;
-    let absoluteInputGlob = path.resolve(request.rootPath, inputGlob);
+    let absoluteInputGlob = path.resolve(req.rootPath, inputGlob);
     const loadOptions: chokidar.WatchOptions = {};
     if (ignoreFiles) {
       // error in WatchOptions type declaration: option is called "ignore", not "ignored":
       (<any>loadOptions).ignore = ignoreFiles;
     }
-    if (request.watch) {
+    if (req.watch) {
       const watcher = chokidar.watch(absoluteInputGlob, loadOptions);
-      const watcherRequest = cloneDeep(request);
+      const watcherRequest = cloneDeep(req);
       watcherRequest.watch = false;
 
       watcher
@@ -179,8 +204,8 @@ export class AsyncArgdownApplication extends ArgdownApplication {
         promises.push(this.runAsync(requestForFile));
       }
       // Remove plugins added by request
-      if (request.plugins) {
-        for (let pluginData of request.plugins) {
+      if (req.plugins) {
+        for (let pluginData of req.plugins) {
           this.removePlugin(pluginData.plugin, pluginData.processor);
         }
       }

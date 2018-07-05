@@ -87,6 +87,9 @@ exports.handler = async (argv) => {
     let config = await node_1.argdown.loadConfig(argv.config);
     config.dot = config.dot || {};
     config.map = config.map || {};
+    config.group = config.group || {};
+    config.selection = config.selection || {};
+    config.color = config.color || {};
     const format = argv.format || "pdf";
     if (format === "pdf") {
         config.svgToPdf = config.svgToPdf || {};
@@ -104,10 +107,10 @@ exports.handler = async (argv) => {
         config.map.statementLabelMode = argv.statementLabelMode;
     }
     if (argv.statementSelectionMode) {
-        config.map.statementSelectionMode = argv.statementSelectionMode;
+        config.selection.statementSelectionMode = argv.statementSelectionMode;
     }
     if (argv.inclusive) {
-        config.map.excludeDisconnected = false;
+        config.selection.excludeDisconnected = false;
     }
     if (argv.graphName) {
         config.dot.graphname = argv.graphName;
@@ -116,7 +119,7 @@ exports.handler = async (argv) => {
         config.dot.lineLength = argv.lineLength;
     }
     if (argv.groupColors) {
-        config.dot.groupColors = argv.groupColors;
+        config.color.groupColors = argv.groupColors;
     }
     config.dot.graphVizSettings = config.dot.graphVizSettings || {};
     if (argv.concentration) {

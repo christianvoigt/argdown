@@ -52,7 +52,8 @@ module.exports = {
           var request = {
             input: token.content,
             process: ["parse-input", "build-model", "build-map", "export-dot", "export-svg"],
-            dotToSvg: { removeProlog: true }
+            dotToSvg: { removeProlog: true },
+            logExceptions: false
           };
           var result = argdown.run(request);
           var initialView = "source";
@@ -72,7 +73,8 @@ module.exports = {
         } else if (langName === "argdown-cheatsheet") {
           var request = {
             input: token.content,
-            process: ["parse-input", "build-model"]
+            process: ["parse-input", "build-model"],
+            logExceptions: false
           };
           var result = argdown.run(request);
           var explanation = "";
@@ -100,12 +102,54 @@ module.exports = {
     }
   },
   themeConfig: {
+    sidebar: {
+      "/guide/": [
+        {
+          title: "Getting started",
+          children: ["", "installing-the-vscode-extension", "installing-the-commandline-tool", "a-first-example"]
+        },
+        {
+          title: "Creating argument maps",
+          children: [
+            "creating-argument-maps-introduction",
+            "elements-of-an-argument-map",
+            "how-to-read-an-argument-map",
+            "creating-statement-and-argument-nodes",
+            "creating-edges",
+            "creating-group-nodes",
+            "changing-the-appearance-of-nodes",
+            "colorizing-nodes"
+          ]
+        },
+        {
+          title: "Configuration",
+          children: [
+            "configuration-introduction",
+            "configuration-with-config-files",
+            "configuration-in-the-frontmatter-section",
+            "running-custom-processes",
+            "configuration-cheatsheet"
+          ]
+        },
+        {
+          title: "Extending Argdown",
+          children: [
+            "extending-argdown-introduction",
+            "writing-custom-plugins",
+            "loading-custom-plugins-in-a-config-file",
+            "using-argdown-in-your-application"
+          ]
+        }
+      ],
+      "/syntax/": [""],
+      "": [""]
+    },
     nav: [
       { text: "Home", link: "/" },
       { text: "Guide", link: "/guide/" },
       { text: "Syntax", link: "/syntax/" },
-      { text: "Configuration", link: "/configuration/" },
       { text: "API", link: "/api/" },
+      { text: "Sandbox", link: "https://christianvoigt.github.io/argdown/sandbox/" },
       { text: "Github", link: "https://github.com/christianvoigt/argdown" }
     ]
   }

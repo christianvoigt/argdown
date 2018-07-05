@@ -11,10 +11,18 @@
 </template>
 <style lang="stylus">
 .cheat-sheet-item {
+    box-sizing: border-box;
+
+    @media (max-width: 1024px) and (orientation: portrait) {
+        flex-direction: column;
+    }
+
+    color: #000;
     display: flex;
     flex-direction: row;
     border: 1px solid #eaecef;
     margin-top: -1px;
+    background: #fff;
 
     pre.language-argdown {
         margin: 0;
@@ -22,8 +30,24 @@
     }
 
     .source-view {
-        flex: 1;
+        box-sizing: border-box;
+
+        @media (max-width: 1024px) and (orientation: portrait) {
+            width: 100%;
+            height: auto;
+            flex-basis: inherit;
+            overflow: auto;
+        }
+
+        flex-grow: 1;
+        flex-basis: 0;
+        width: 50%;
         padding: 1rem;
+        overflow: auto;
+
+        pre.language-argdown {
+            overflow: inherit;
+        }
     }
 
     .explanation .title {
@@ -33,7 +57,16 @@
     }
 
     .explanation {
-        flex: 1;
+        box-sizing: border-box;
+
+        @media (max-width: 1024px) and (orientation: portrait) {
+            width: 100%;
+            height: auto;
+        }
+
+        flex-grow: 1;
+        flex-basis: 0;
+        width: 50%;
         border-left: 1px solid #eaecef;
         padding: 1rem;
         line-height: 1.5rem;

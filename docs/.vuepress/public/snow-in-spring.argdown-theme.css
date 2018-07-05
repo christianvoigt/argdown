@@ -35,7 +35,7 @@
 .token.inference.function .punctuation,
 .token.punctuation.argument-statement,
 .token.punctuation.argument-statement .punctuation {
-  color: #103f54;
+  color: #134c66;
   font-weight: bold;
 }
 .token.punctuation.argument-statement,

@@ -8,6 +8,8 @@ import { IArgdownLogger } from "./IArgdownLogger";
 import { IArgdownPlugin } from "./IArgdownPlugin";
 import { Logger } from "./Logger";
 import { IArgdownRequest, IArgdownResponse } from "./index";
+import { defaultsDeep } from "lodash";
+import { isString } from "util";
 
 /**
  * A processor is a "working step" in a process, containing a group of plugins
@@ -103,6 +105,7 @@ export class ArgdownApplication {
   processors: { [name: string]: IArgdownProcessor } = {};
   logger: IArgdownLogger;
   defaultLogger: IArgdownLogger = new Logger();
+  defaultProcesses: { [name: string]: string[] } = {};
   /**
    *
    * @param logger optional parameter to provide a logger different from the default one
@@ -236,31 +239,40 @@ export class ArgdownApplication {
    * @returns the transformed response object after all plugins have added their data.
    */
   run(request: IArgdownRequest, response?: IArgdownResponse): IArgdownResponse {
-    let process: string[] = [];
+    let processorsToRun: string[] = [];
     this.logger.setLevel("error");
     let resp: IArgdownResponse = response || <IArgdownResponse>{};
+    let req: IArgdownRequest = request;
 
-    if (request) {
-      if (request.logLevel) {
-        this.logger.setLevel(request.logLevel);
+    if (req) {
+      if (req.logLevel) {
+        this.logger.setLevel(req.logLevel);
       }
-      if (request.process) {
-        if (_.isArray(request.process)) {
-          process = request.process;
-        } else if (_.isString(request.process) && request.processes) {
-          process = request.processes[request.process];
+      if (req.process) {
+        if (_.isArray(req.process)) {
+          processorsToRun = req.process;
+        } else if (isString(req.process) && req.processes && req.processes[req.process]) {
+          const processObj = req.processes[req.process];
+          req = defaultsDeep(req, processObj);
+          if (isString(processObj.process)) {
+            processorsToRun = this.defaultProcesses[processObj.process];
+          } else if (req.process && req.process.constructor === Array) {
+            processorsToRun = <string[]>req.process;
+          }
+        } else if (isString(req.process)) {
+          processorsToRun = this.defaultProcesses[req.process];
         }
       }
     }
 
-    if (_.isEmpty(process)) {
+    if (_.isEmpty(processorsToRun)) {
       this.logger.log("error", "[ArgdownApplication]: No processors to run.");
       return resp;
     }
     const exceptions: Error[] = [];
     resp.exceptions = exceptions;
 
-    for (let processorId of process) {
+    for (let processorId of processorsToRun) {
       let cancelProcessor = false;
       let processor = this.processors[processorId];
       if (!processor) {
@@ -273,13 +285,17 @@ export class ArgdownApplication {
         if (_.isFunction(plugin.prepare)) {
           this.logger.log("verbose", "[ArgdownApplication]: Preparing plugin: " + plugin.name);
           try {
-            plugin.prepare(request, resp, this.logger);
+            plugin.prepare(req, resp, this.logger);
           } catch (e) {
-            e.processor = processorId;
-            exceptions.push(e);
-            cancelProcessor = true;
-            this.logger.log("warning", `[ArgdownApplication]: Processor ${processorId} canceled.`);
-            break;
+            if (req.throwExceptions) {
+              throw e;
+            } else {
+              e.processor = processorId;
+              exceptions.push(e);
+              cancelProcessor = true;
+              this.logger.log("warning", `[ArgdownApplication]: Processor ${processorId} canceled.`);
+              break;
+            }
           }
         }
       }
@@ -289,12 +305,16 @@ export class ArgdownApplication {
 
       if (resp.ast && processor.walker) {
         try {
-          processor.walker.walk(request, resp, this.logger);
+          processor.walker.walk(req, resp, this.logger);
         } catch (e) {
-          e.processor = processorId;
-          exceptions.push(e);
-          this.logger.log("warning", `[ArgdownApplication]: Processor ${processorId} canceled.`);
-          break;
+          if (req.throwExceptions) {
+            throw e;
+          } else {
+            e.processor = processorId;
+            exceptions.push(e);
+            this.logger.log("warning", `[ArgdownApplication]: Processor ${processorId} canceled.`);
+            break;
+          }
         }
       }
 
@@ -302,17 +322,21 @@ export class ArgdownApplication {
         this.logger.log("verbose", "[ArgdownApplication]: Running plugin: " + plugin.name);
         if (_.isFunction(plugin.run)) {
           try {
-            plugin.run(request, resp, this.logger);
+            plugin.run(req, resp, this.logger);
           } catch (e) {
-            e.processor = processorId;
-            this.logger.log("warning", `Processor ${processorId} canceled.`);
-            exceptions.push(e);
-            break;
+            if (req.throwExceptions) {
+              throw e;
+            } else {
+              e.processor = processorId;
+              this.logger.log("warning", `Processor ${processorId} canceled.`);
+              exceptions.push(e);
+              break;
+            }
           }
         }
       }
     }
-    if (request.logExceptions === undefined || request.logExceptions) {
+    if (req.logExceptions === undefined || req.logExceptions) {
       for (let exception of exceptions) {
         let msg = exception.stack || exception.message;
         if (exception instanceof ArgdownPluginError) {

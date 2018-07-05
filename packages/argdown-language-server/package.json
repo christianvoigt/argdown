@@ -22,7 +22,8 @@
   },
   "scripts": {
     "build": "tsc -p .",
-    "watch": "tsc -w -p ."
+    "watch": "tsc -w -p .",
+    "prepublish": "npm run build"
   },
   "devDependencies": {}
 }

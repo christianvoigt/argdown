@@ -1,14 +1,32 @@
 import { expect } from "chai";
-import { ArgdownApplication, ParserPlugin, ModelPlugin, MapPlugin, DotExportPlugin } from "../src/index";
+import {
+  ArgdownApplication,
+  ParserPlugin,
+  ModelPlugin,
+  MapPlugin,
+  DotExportPlugin,
+  PreselectionPlugin,
+  StatementSelectionPlugin,
+  ArgumentSelectionPlugin,
+  GroupPlugin
+} from "../src/index";
 
 const app = new ArgdownApplication();
 const parserPlugin = new ParserPlugin();
 app.addPlugin(parserPlugin, "parse-input");
 const modelPlugin = new ModelPlugin();
 app.addPlugin(modelPlugin, "build-model");
+const preselectionPlugin = new PreselectionPlugin();
+app.addPlugin(preselectionPlugin, "create-map");
+const statementSelectionPlugin = new StatementSelectionPlugin();
+app.addPlugin(statementSelectionPlugin, "create-map");
+const argumentSelectionPlugin = new ArgumentSelectionPlugin();
+app.addPlugin(argumentSelectionPlugin, "create-map");
 const mapPlugin = new MapPlugin();
-const dotExport = new DotExportPlugin();
 app.addPlugin(mapPlugin, "create-map");
+const groupPlugin = new GroupPlugin();
+app.addPlugin(groupPlugin, "create-map");
+const dotExport = new DotExportPlugin();
 app.addPlugin(dotExport, "export-dot");
 
 describe("DotExport", function() {
@@ -41,6 +59,7 @@ describe("DotExport", function() {
       input: source,
       logLevel: "error"
     });
+    //console.log(result.dot);
     expect(result.dot).to.exist;
   });
 });

@@ -30,6 +30,7 @@ export interface IJSONSettings {
    * Should the JSON data include metaData?
    */
   exportData?: boolean;
+  outputDir?: string; // default is "./json"
 }
 declare module "../index" {
   interface IArgdownRequest {
@@ -107,9 +108,8 @@ export class JSONExportPlugin implements IArgdownPlugin {
     if (settings.exportSections && response.sections) {
       argdown.sections = response.sections;
     }
-    if (settings.exportTags && response.tags && response.tagsDictionary) {
+    if (settings.exportTags && response.tags) {
       argdown.tags = response.tags;
-      argdown.tagsDictionary = response.tagsDictionary;
     }
     response.json = toJSON(
       argdown,

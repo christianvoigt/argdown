@@ -8,7 +8,7 @@ module.exports = {
   input: "Hallo Welt!",
   plugins: [{ plugin: testPlugin, processor: "test-processor" }],
   processes: {
-    test: ["test-processor"]
+    test: { process: ["test-processor"] }
   },
   logLevel: "error"
 };

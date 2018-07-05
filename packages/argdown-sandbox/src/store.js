@@ -5,7 +5,7 @@ import {
   ArgdownApplication,
   ParserPlugin,
   ModelPlugin,
-  TagPlugin,
+  ColorPlugin,
   HtmlExportPlugin,
   JSONExportPlugin,
   DataPlugin,
@@ -21,7 +21,7 @@ const app = new ArgdownApplication();
 const parserPlugin = new ParserPlugin();
 const dataPlugin = new DataPlugin();
 const modelPlugin = new ModelPlugin();
-const tagPlugin = new TagPlugin();
+const colorPlugin = new ColorPlugin();
 
 const htmlExport = new HtmlExportPlugin({
   headless: true
@@ -117,7 +117,7 @@ Some inference rule (Some additional info: 1,2)
 app.addPlugin(parserPlugin, "parse-input");
 app.addPlugin(dataPlugin, "build-model");
 app.addPlugin(modelPlugin, "build-model");
-app.addPlugin(tagPlugin, "build-model");
+app.addPlugin(colorPlugin, "build-model");
 app.addPlugin(mapPlugin, "build-map");
 app.addPlugin(htmlExport, "export-html");
 app.addPlugin(dotExport, "export-dot");
@@ -129,9 +129,11 @@ export default new Vuex.Store({
   state: {
     argdownInput: testInput,
     config: {
-      map: {
+      selection: {
         excludeDisconnected: true,
-        statementSelectionMode: StatementSelectionMode.NOT_USED_IN_ARGUMENT,
+        statementSelectionMode: StatementSelectionMode.WITH_TITLE
+      },
+      map: {
         statementLabelMode: LabelMode.HIDE_UNTITLED,
         argumentLabelMode: LabelMode.HIDE_UNTITLED,
         groupDepth: 2
@@ -258,8 +260,8 @@ export default new Vuex.Store({
       const response = app.run(request, data);
       return response.map;
     },
-    tagsDictionary: (state, getters) => {
-      return getters.argdownData.tagsDictionary;
+    tags: (state, getters) => {
+      return getters.argdownData.tags;
     }
   }
 });
