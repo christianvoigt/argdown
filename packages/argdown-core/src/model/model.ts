@@ -99,7 +99,6 @@ export interface HasRelations {
 }
 export interface HasTags {
   tags?: string[];
-  sortedTags?: string[];
 }
 export interface HasData {
   data?: any;
@@ -113,7 +112,10 @@ export interface HasLocation {
   endColumn?: number;
 }
 export interface HasSection {
-  section?: ISection;
+  section?: ISection | null;
+}
+export interface HasColor {
+  color?: string;
 }
 /**
  * Represents a matched Argdown syntax rule in the abstract syntax tree produced by the [[ParserPlugin]].
@@ -168,7 +170,7 @@ export type IAstNode = IRuleNode | ITokenNode;
  * are transformed by the [[ModelPlugin]] into relations of the argument's main conclusion
  * (the last statement in the argument's pcs).
  */
-export interface IArgument extends HasTitle, HasRelations, HasTags, HasData, HasLocation, HasSection {
+export interface IArgument extends HasTitle, HasRelations, HasTags, HasData, HasLocation, HasSection, HasColor {
   type: ArgdownTypes.ARGUMENT;
   /**
    * If the argument was logically reconstructed, it has a premise conclusion structure (pcs).
@@ -201,13 +203,19 @@ export namespace IArgument {
     if (!a.members || a.members.length <= 0) {
       return undefined;
     }
+    let defaultCanonical = undefined;
     for (let i = a.members.length - 1; i >= 0; i--) {
       const current = a.members[i];
       if (!current.isReference) {
-        return current;
+        if (current.data && current.data.isCanonical) {
+          return current;
+        }
+        if (!defaultCanonical) {
+          defaultCanonical = current;
+        }
       }
     }
-    return;
+    return defaultCanonical;
   };
   export const getCanonicalMemberText = (a: IArgument): string | undefined => {
     const s = getCanonicalMember(a);
@@ -294,7 +302,7 @@ export interface IArgumentDescription extends IStatement {
  * Dialectical relations with arguments or inferences can be of type: support, attack, undercut.
  *
  */
-export interface IEquivalenceClass extends HasTitle, HasRelations, HasTags, HasData, HasLocation, HasSection {
+export interface IEquivalenceClass extends HasTitle, HasRelations, HasTags, HasData, HasLocation, HasSection, HasColor {
   type: ArgdownTypes.EQUIVALENCE_CLASS;
   /**
    * The statements that share the title with this equivalence class and are considered to be logically equivalent.
@@ -339,13 +347,19 @@ export namespace IEquivalenceClass {
     if (!ec.members || ec.members.length <= 0) {
       return undefined;
     }
+    let defaultCanonical = undefined;
     for (let i = ec.members.length - 1; i >= 0; i--) {
       const current = ec.members[i];
       if (!current.isReference) {
-        return current;
+        if (current.data && current.data.isCanonical) {
+          return current;
+        }
+        if (!defaultCanonical) {
+          defaultCanonical = current;
+        }
       }
     }
-    return;
+    return defaultCanonical;
   };
   /**
    * Convenience method that directly returns the text of the equivalence class's canonical statement.
@@ -419,7 +433,7 @@ export namespace IRelation {
  * Sections can contain other sections as children. They are derived from headings
  * and used to derive groups (clusters) in argument maps.
  */
-export interface ISection extends HasTitle, HasTags, HasText, HasLocation, HasData {
+export interface ISection extends HasTitle, HasTags, HasText, HasLocation, HasData, HasColor {
   type: ArgdownTypes.SECTION;
   /**
    * An automatically generated id unique among sections
@@ -453,6 +467,7 @@ export interface IMapNode extends HasTitle, HasTags {
   type: MapNodeType;
   labelTitle?: string;
   labelText?: string;
+  color?: string;
   id: string;
 }
 /**

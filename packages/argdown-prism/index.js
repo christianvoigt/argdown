@@ -12,6 +12,20 @@ Prism.languages.argdown = {
     }
   },
   comment: /(\/\*[\s\S]*?\*\/|<\!--[\s\S]*?-->|(^|\r?\n| )\/\/[\S \t]*)/,
+  "argument-statement": {
+    pattern: /(^\s*)\(\d+\)(?=[\t ].)/m,
+    lookbehind: true,
+    alias: "punctuation"
+  },
+  inference: {
+    pattern: /([ \t]*--+(\n|\r\n)[\S\s]+?(\n|\r\n)--+[ \t]*|[ \t]*----+[ \t]*(?=\r?\n))/,
+    alias: "function",
+    inside: {
+      punctuation: /--+/,
+      data
+    }
+  },
+  data,
   url: {
     // [example](http://example.com "Optional title")
     // [example] [id]
@@ -91,11 +105,6 @@ Prism.languages.argdown = {
     lookbehind: true,
     alias: "operator"
   },
-  "argument-statement": {
-    pattern: /(^\s*)\(\d+\)(?=[\t ].)/m,
-    lookbehind: true,
-    alias: "punctuation"
-  },
   argument: {
     pattern: /(<[^<>]+>\:?|@<[^<>]+>)/,
     alias: "class-name",
@@ -109,16 +118,7 @@ Prism.languages.argdown = {
     inside: {
       punctuation: /[\[\]@:]/
     }
-  },
-  inference: {
-    pattern: /([ \t]*---+(\n|\r\n)[\S\s]+?(\n|\r\n)---+[ \t]*)/,
-    alias: "function",
-    inside: {
-      punctuation: /---+/,
-      data
-    }
-  },
-  data
+  }
 };
 Prism.languages.argdown["bold"].inside["url"] = Prism.languages.argdown["url"];
 Prism.languages.argdown["italic"].inside["url"] = Prism.languages.argdown["url"];

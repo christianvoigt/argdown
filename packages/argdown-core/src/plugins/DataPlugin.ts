@@ -9,10 +9,11 @@ import { IArgdownRequest } from "../index";
  */
 export interface IDataSettings {
   /**
-   * If true the front matter yaml data is merged into the request object.
+   * If true, any settings in the frontmatter will be ignored.
+   * If false or undefined the front matter yaml data is merged into the request object.
    * This makes it possible to configure plugins without using an external argdown.config.js file.
    */
-  mergeFrontMatterIntoRequest?: boolean;
+  ignoreFrontmatterSettings?: boolean;
   /**
    * If false the YAML data of arguments, statements and headings is always parsed with the outer curly brackets.
    * In this case the YAML data has to always be in inline format which looks similar to JSON data.
@@ -40,7 +41,7 @@ declare module "../index" {
  * The default settings of the DataPlugin
  */
 const defaultSettings: IDataSettings = {
-  mergeFrontMatterIntoRequest: true,
+  ignoreFrontmatterSettings: false,
   switchToBlockFormatIfMultiline: true
 };
 const frontMatterStartPattern = /^\s*\={3,}/;
@@ -91,7 +92,7 @@ export class DataPlugin implements IArgdownPlugin {
         }
         response.frontMatter = data;
         const settings = this.getSettings(request);
-        if (data && _.isObject(data) && settings!.mergeFrontMatterIntoRequest) {
+        if (data && _.isObject(data) && !settings!.ignoreFrontmatterSettings) {
           _.merge(request, data);
         }
       }

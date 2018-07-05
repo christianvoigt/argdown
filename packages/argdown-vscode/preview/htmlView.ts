@@ -1,15 +1,7 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-
 import { ActiveLineMarker } from "./activeLineMarker";
 import { onceDocumentLoaded } from "./events";
 import { createPosterForVsCode } from "./messaging";
-import {
-  getEditorLineNumberForPageOffset,
-  scrollToRevealSourceLine
-} from "./scroll-sync";
+import { getEditorLineNumberForPageOffset, scrollToRevealSourceLine } from "./scroll-sync";
 import { getSettings } from "./settings";
 import throttle = require("lodash.throttle");
 import { initMenu } from "./menu";
@@ -90,11 +82,7 @@ document.addEventListener("dblclick", event => {
   }
 
   // Ignore clicks on links
-  for (
-    let node = event.target as HTMLElement;
-    node;
-    node = node.parentNode as HTMLElement
-  ) {
+  for (let node = event.target as HTMLElement; node; node = node.parentNode as HTMLElement) {
     if (node.tagName === "A") {
       return;
     }
@@ -134,16 +122,9 @@ document.addEventListener(
         if (node.getAttribute("href").startsWith("#")) {
           break;
         }
-        if (
-          node.href.startsWith("file://") ||
-          node.href.startsWith("vscode-resource:")
-        ) {
-          const [path, fragment] = node.href
-            .replace(/^(file:\/\/|vscode-resource:)/i, "")
-            .split("#");
-          messagePoster.postCommand("_markdown.openDocumentLink", [
-            { path, fragment }
-          ]);
+        if (node.href.startsWith("file://") || node.href.startsWith("vscode-resource:")) {
+          const [path, fragment] = node.href.replace(/^(file:\/\/|vscode-resource:)/i, "").split("#");
+          messagePoster.postCommand("_markdown.openDocumentLink", [{ path, fragment }]);
           event.preventDefault();
           event.stopPropagation();
           break;

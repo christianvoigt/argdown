@@ -12,6 +12,14 @@ declare module "@argdown/core" {
      */
     outputPath?: string;
     /**
+     * Will be added to the filename of an exported file.
+     *
+     * Example: If suffix is "-map1" and the input file is "my-debate.ad", by default the svg export will save a file called "my-debate-map1.svg".
+     *
+     * This is useful if you use several different selections in your custom processes that should not overwrite each other.
+     */
+    outputSuffix?: string;
+    /**
      * The file or files to be loaded.
      *
      * Use a file "glob" to load more than one file (e.g. "**\/*.argdown").

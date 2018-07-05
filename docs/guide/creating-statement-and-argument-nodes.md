@@ -1,0 +1,415 @@
+# Creating statement and argument nodes
+
+This section describes how the Argdown parser decides which statements and arguments are represented as nodes in the generated argument map and how you can change this behaviour.
+
+In general, all arguments with at least one relation are added as nodes to the argument map. But you can also be more selective. For example you migh want to create a map with arguments from a certain [section](#selecting-nodes-by-section) or with a certain [tag](#selecting-nodes-by-tag).
+
+The default rules that decide which statements will get their own node [are more complicated](#choosing-a-statementselectionmode). The Argdown parser tries to keep the number of statement nodes as low as possible to support visualizing complex debates with many arguments. But if you prefer to insert all statements as nodes to the map, it is [easy](#all-mode) to do so.
+
+The selection process is divided up into two phases:
+
+- In the preselection round, statements and arguments are excluded based on selected [sections](#selecting-nodes-by-section), [tags](#selecting-nodes-by-tag), [titles](#selecting-nodes-by-title) or [flags](#selecting-nodes-with-the-isinmap-data-flag).
+- In the selection round, it is checked in which relations these preselected elements stand to other preselected elements. This is the round in which the [`excludeDisconnected` setting](#the-excludedisconnected-selection-setting) and the [`statementSelectionMode`](#choosing-a-statementselectionmode) are applied. It is also the round in which you can choose to include "extra" statements from the preselection with the [`includeStatements` setting](#selecting-nodes-by-title) or the [`isInMap:true` flag](<(#selecting-nodes-with-the-isinmap-data-flag)>).
+
+Let us start with the latter as this is the round that is excluding arguments and statements by default, even if you do not change any settings.
+
+In contrast, the preselection round will only exclude statements or arguments, if you explicitely tell it to do so by using the selection settings or the `isInMap` data flag.
+
+## The `excludeDisconnected` selection setting
+
+By default only statements and arguments are represented by nodes in the argument map that are considered to be connected to another node in the map.
+
+An argument is considered to be connected if any of the following conditions apply:
+
+- the argument has at least one incoming or outgoing attack or support relation to a preselected argument or statement
+- a premise is supported/attacked by another preselected argument or statement
+- the main conclusion is supporting/attacking another preselected argument or statement
+- an inference is undercut by an preselected argument or statement
+- implicit support: a premise is equivalent with a main conclusion of another preselected argument
+- implicit support: the main conclusion is equivalent with a premise of another preselected argument
+
+A statement is considered to be connected if either one of the following conditions apply:
+
+- it is used in a preselected argument's premise-conclusion-structure as premise or conclusion
+- it has at least one relation to a preselected argument or statement.
+
+Excluding disconnected statements from the map makes it possible to add meta-statements to the Argdown text commenting on your reconstruction, without polluting your argument map with them. If you want to disable this feature you can use the `excludeDisconnected: false` selection setting:
+
+```argdown
+===
+title: Including disconnected nodes
+selection:
+    excludeDisconnected: false
+===
+
+<a>: I am currently in no relation.
+
+<b>: It's complicated.
+
+<c>: I feel disconnected.
+```
+
+Click on the map button in the top right to see these three sad arguments appearing in the map.
+
+## Choosing a `statementSelectionMode`
+
+By default _all_ connected arguments are included as nodes in the argument map. In contrast, not all connected equivalence classes will appear as statement nodes in the map. While you can change this behaviour it is quite important to keep the number of statement nodes in your map low.
+
+If you include all statements of a a complex debate as nodes in your map, it will be overcrowded and readers will have difficulty to keep the orientation. Choosing which statements you visualize as nodes in your map is a crucial method of managing complexity.
+
+The Argdown parser supports several different general methods to exlude further equivalence classes from all members of the preselection. You can change the method used by choosing a `statementSelectionMode` in the selection settings. This sections describes the different modes currently supported.
+
+Note that any equivalence class excluded by the current mode will _still_ appear as a node if any one of the following three conditions apply:
+
+1.  its `isInMap` [data flag](#selecting-nodes-with-the-isinmap-data-flag) is set to true
+2.  its title is included in the `includeStatements` [selection setting](#selecting-nodes-by-title)
+3.  it is an equivalence class that
+    - has relations
+    - and is not used in any preselected argument as premise or conclusion.
+
+The third case may need an explanation: Relations of such equivalence classes can not be represented by edges of argument nodes, so it is important to represent them with statement nodes or they will be lost. In most cases you will want to include them in your map.
+
+If you still want to exclude such equivalence classes you have to use the `excludeStatements` [selection setting](#selecting-nodes-by-title) or set its `isInMap` [data flag](#selecting-nodes-with-the-isinmap-data-flag) to false.
+
+Now let's take a look at what the different modes are doing:
+
+### `all` mode
+
+Includes each equivalence class that is connected to a preselected element (argument or statement).
+
+```argdown
+===
+selection:
+    statementSelectionMode: all
+===
+<a>
+
+(1) [title]: I am selected
+(2) I am selected
+----
+(3) I am selected
+    -> I am selected
+        + <b>
+
+<a>
+    - I am selected
+
+[another title]: not very exciting, isn't it? // not selected
+```
+
+### `not-used-in-argument` mode
+
+Excludes any equivalence class that is used in an argument (as premise or conclusion).
+
+```argdown
+===
+selection:
+    statementSelectionMode: not-used-in-argument
+===
+<a>
+
+(1) [title]: I am not selected
+(2) I am not selected
+----
+(3) I am not selected
+    -> I am selected
+        + <b>
+
+<a>
+    - I am selected
+
+[another title]: I am not selected
+```
+
+### `with-title` mode (default mode)
+
+Excludes any equivalence class that is anonymous (has no title).
+
+```argdown
+===
+selection:
+    statementSelectionMode: with-title
+===
+<a>
+
+(1) [title]: I am selected
+(2) I am not selected
+----
+(3) I am not selected
+    -> I am selected
+
+<a>
+    - I am selected
+        + <b>
+
+[another title]: slightly more interesting. // still not selected
+```
+
+### `with-relations` mode
+
+Excludes any equivalence class that has no relations.
+
+```argdown
+===
+selection:
+    statementSelectionMode: with-relations
+===
+<a>
+
+(1) [title]: I am not selected
+(2) I am selected
+    -> <b>
+----
+(3) I am selected
+    -> I am selected
+
+<a>
+    - I am selected
+        + <b>
+
+[another title]: still not selected
+```
+
+### `with-more-than-one-relation` mode
+
+Excludes any equivalence class that has less than two relations.
+
+```argdown
+===
+selection:
+    statementSelectionMode: with-more-than-one-relation
+===
+<a>
+
+(1) [title]: I am not selected
+(2) I am not selected
+    -> <b>
+----
+(3) I am not selected
+    -> I am selected
+
+<a>
+    - I am selected
+        + <b>
+
+[another title]: still not selected
+```
+
+### `top-level` mode
+
+Excludes any equivalence class that is not used as top-level block element. See the [introduction of the syntax documentation](/syntax/) for the definition of a top-level block element.
+
+```argdown
+===
+selection:
+    statementSelectionMode: top-level
+===
+<a>
+
+(1) [title]
+(2) I am not selected
+----
+(3) I am not selected
+    -> I am selected
+
+<a>
+    - I am selected
+        + <b>
+
+[title]: I am selected.
+
+[another title]: still not selected
+```
+
+## Selecting nodes by tag
+
+You can use the `selectedTags` selection setting to preselect only those arguments and statements for further selection, that are tagged with any of the chosen hashtags.
+
+```argdown
+===
+title: >
+    Preselecting only statements and arguments with the #core tag.
+selection:
+    selectedTags:
+        - core
+===
+
+[t1] #core
+    + <a> #core
+        - <b>
+    - <c> #core
+        - <d>
+            + <e>
+
+<f>
+    + [t1]
+```
+
+Only t1, a and c are selected. You can choose to also include statements or arguments without any tags by using the `selectElementsWithoutTag`:
+
+```argdown
+===
+title: >
+    Preselecting only statements and arguments without tag or with the #pro tag.
+selection:
+    selectedTags:
+        - pro
+    selectElementsWithoutTag: true
+===
+
+[t1] #core #pro
+    + <a> #pro #core
+        - <b> #con
+    - <c> #core
+        - <d> #con
+            + <e> #pro
+
+<f>
+    + [t1]
+```
+
+Now argument f is included in the map, even though it is not tagged as well. You may have noticed that not all arguments with the #pro tag were selected. Argument e is missing from the map.
+
+The reason is once again that disconnected nodes are excluded from the map. Argument e's only connection is to d, but d is neither tagged with the #pro tag nor is it without any tags (it is tagged with the #con tag). As a result it is excluded from the map. This leaves e disconnected. So it is excluded as well.
+
+## Selecting nodes by section
+
+You can use the `selectedSections` selection setting to preselect only those arguments and statements for further selection, that are members of chosen sections. See the section on [creating groups](#creating-groups) to learn more about sections.
+
+```argdown
+===
+title: >
+    Preselecting only statements and arguments within the section H1
+selection:
+    selectedSections:
+        - H1
+===
+
+[t1]: text
+    + <a>
+    - <b>
+
+# H1
+
+<a>: argument description
+    + <c>: argument description
+    - <d>: argument description
+
+# H2
+
+<b>: argument description
+    + <e>: argument description
+    - <f>: argument description
+```
+
+You can choose to also include statements or arguments without any section by using the `selectElementsWithoutSection`:
+
+```argdown
+===
+title: >
+    Preselecting only statements and arguments within the section H1 or without any section
+selection:
+    selectedSections:
+        - H1
+    selectElementsWithoutSection: true
+===
+
+[t1]: text
+    + <a>
+    - <b>
+
+# H1
+
+<a>: argument description
+    + <c>: argument description
+    - <d>: argument description
+
+# H2
+
+<b>: argument description
+    + <e>: argument description
+    - <f>: argument description
+```
+
+Note, that argument b is excluded, even though it is used outside of any section. This is because b is defined first in section H2 and sections are by default assigned by their first definition. For more about how sections are assigned see [creating groups](#creating-groups).
+
+## Selecting nodes by title
+
+You can use the `includeStatements`, `excludeStatements` and `excludeArguments` selection settings to include or exclude elements by title.
+
+```argdown
+===
+title: Including and excluding elements by title
+selection:
+    includeStatements:
+        - t1
+        - t2
+    excludeStatements:
+        - t3
+    excludeArguments:
+        - b
+        - c
+===
+
+<a>
+
+(1) [t1]: s1
+(2) [t2]: s2
+----
+(3) [t3]: s3
+
+[t3]: s3
+    - <b>
+
+<a>
+    - <c>
+    + <d>
+```
+
+Note that argument b, which would normally appear in the map together with t3, is now also excluded, because its only connection was to t3. Because t3 is excluded b is now disconnected and falls victim to the `excludeDisconnected` default policy.
+
+Why is there not also an `includeArguments` setting? It is not needed because by default _all_ connected arguments are added as nodes to the map. In contrast, only connected statements selected by the statementSelectionMode are added by default to the map. The `includeStatements` setting includes additional statements to the map that were not added by the statementSelectionMode. This means it is not an "exclusive" list of all equivalence classes that might be getting their own node in the map.
+
+## Selecting nodes with the `isInMap` data flag
+
+You can achieve can also pick single arguments or statements for the map by using the `isInMap` data flag directly in the Argdown code:
+
+```argdown
+===
+title: Using the isInMap flag to select or deselect single elements.
+hide: true
+===
+
+<a>
+
+(1) s1 {isInMap: true}
+(2) s2
+----
+(3) s3 {isInMap: true}
+
+<b> {isInMap: false}
+    - <a>
+```
+
+The downside of this method is that you add map-specific data to elements in your Argdown document thereby making it more difficult for others to change the selection and generate a different map from the same document. This "tight coupling" of data and visualization is not recommended. If you want to pick single elements you should use the `includeStatements`, `excludeStatements` and `excludeArguments` selection settings instead. See the previous section for further details.
+
+If you still prefer to use the `isInMap` data flag or if you want to override the flags of other authors, you can use the `ignoreIsInMap` selection setting. If set to true, all `isInMap` data flags in your document will be ignored:
+
+```argdown
+===
+title: Ignoring isInMap flags
+selection:
+    ignoreIsInMap: true
+    statementSelectionMode: not-used-in-argument
+===
+
+<a>
+
+(1) s1 {isInMap: true}
+(2) s2
+----
+(3) s3 {isInMap: true}
+
+<b> {isInMap: false}
+    - <a>
+```

@@ -367,6 +367,8 @@ describe("Lexer", function() {
   });
   it("can save correct token location data", function() {
     let source = fs.readFileSync("./test/lexer-token-locations.argdown", "utf8");
+    // ensure LF instead of CLRF on windows
+    source = source.replace(/\r\n/g, "\n");
     const result = lexer.tokenize(source);
     startTest(result.tokens);
     //console.log(lexer.tokenLocationsToString(result.tokens));
@@ -392,6 +394,7 @@ describe("Lexer", function() {
   });
   it("can save correct token location data if first line is empty", function() {
     let source = fs.readFileSync("./test/lexer-token-locations-first-line-empty.argdown", "utf8");
+    source = source.replace(/\r\n/g, "\n");
     const result = lexer.tokenize(source);
     startTest(result.tokens);
     //console.log(lexer.tokenLocationsToString(result.tokens));
@@ -463,16 +466,27 @@ describe("Lexer", function() {
     expectToken(lexer.ArgumentReference);
     expectToken(lexer.Data);
   });
-  // it("can lex statement references, definitions and mentions by number", function () {
-  //   let source = fs.readFileSync("./test/lexer-statements-by-number.argdown", 'utf8');
-  //   const result = lexer.tokenize(source);
-  //   startTest(result.tokens);
-  //   console.log(lexer.tokensToString(result.tokens));
-  //   //expect(result.tokens.length).to.equal(5);
-  //   expectToken(lexer.StatementDefinitionByNumber);
-  //   expectToken(lexer.Freestyle);
-  //   expectToken(lexer.StatementReferenceByNumber);
-  //   expectToken(lexer.StatementMentionByNumber);
-  //   // expectToken(lexer.Dedent);
-  // });
+  it("can lex multiline statements", function () {
+    let source = `
+    I 
+    am 
+    a 
+    multiline 
+    statement.
+    `;
+    const result = lexer.tokenize(source);
+    startTest(result.tokens);
+    // console.log(lexer.tokensToString(result.tokens));
+    //expect(result.tokens.length).to.equal(5);
+    expect(result.tokens[0].image).to.equal("I ");
+    expect(result.tokens[1].image).to.equal("am ");
+    expect(result.tokens[2].image).to.equal("a ");
+    expect(result.tokens[3].image).to.equal("multiline ");
+    expect(result.tokens[4].image).to.equal("statement.");
+    // expectToken(lexer.StatementDefinitionByNumber);
+    // expectToken(lexer.Freestyle);
+    // expectToken(lexer.StatementReferenceByNumber);
+    // expectToken(lexer.StatementMentionByNumber);
+    // expectToken(lexer.Dedent);
+  });
 });

@@ -305,7 +305,14 @@ const matchListItem = (
   if (_.isEmpty(tokens) || afterEmptyline || afterNewline) {
     let match = pattern!.exec(remainingText);
     if (match !== null) {
-      const indentStr = match[1];
+
+      /*
+       dirty hack: 
+       we add an empty space, because emitIndentOrDedent only indents if indentStr.length > 0
+       for lists, starting with no whitespace is allowed, so we have to fake it
+       (the method was written for relations, which need to start with whitespace)
+       */
+      const indentStr = match[1]+" "; 
       emitIndentOrDedent(tokens!, groups!, indentStr);
       return match;
     }
@@ -313,7 +320,7 @@ const matchListItem = (
   return null;
 };
 
-const orderedListItemPattern = /^([' '\t]+)\d+\.(?=\s)/;
+const orderedListItemPattern = /^([' '\t]*)\d+\.(?=\s)/;
 const matchOrderedListItem = _.partialRight(
   matchListItem,
   orderedListItemPattern
@@ -328,7 +335,7 @@ export const OrderedListItem = createToken({
 });
 tokenList.push(OrderedListItem);
 //whitespace + * + whitespace (to distinguish list items from bold and italic ranges)
-const unorderedListItemPattern = /^([' '\t]+)\*(?=\s)/;
+const unorderedListItemPattern = /^([' '\t]*)\*(?=\s)/;
 const matchUnorderedListItem = _.partialRight(
   matchListItem,
   unorderedListItemPattern

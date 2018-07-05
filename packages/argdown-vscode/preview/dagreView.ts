@@ -8,13 +8,7 @@ import * as d3 from "d3";
 import { getSvgForExport, getPngAsString } from "./export";
 import { openScaleDialog } from "./scaleDialog";
 import { convertCoordsL2L } from "./utils";
-import {
-  ArgdownTypes,
-  IMapNode,
-  isGroupMapNode,
-  IArgdownResponse,
-  ITagData
-} from "@argdown/core";
+import { ArgdownTypes, IMapNode, isGroupMapNode, IArgdownResponse, ITagData } from "@argdown/core";
 declare function require(path: string): string;
 const dagreCss = require("!raw-loader!./dagre.css");
 
@@ -64,11 +58,7 @@ const selectNode = (id: string): void => {
   if (state.selectedNode) {
     state.selectedNode.classList.add("selected");
     let positionInfo = state.svg!.node()!.getBoundingClientRect();
-    const point = convertCoordsL2L(
-      state.svg!.node()!,
-      state.selectedNode!,
-      state.svgGraph!.node()!
-    );
+    const point = convertCoordsL2L(state.svg!.node()!, state.selectedNode!, state.svgGraph!.node()!);
     let x = -point.x * state.scale + positionInfo.width / 2;
     let y = -point.y * state.scale + positionInfo.height / 2;
 
@@ -88,13 +78,7 @@ const showAllAndCenterMap = (state: IDagreViewState) => {
   const y = (positionInfo.height - state.graphSize.height * scale) / 2;
   setZoom(x, y, scale, 0, state);
 };
-const setZoom = (
-  x: number,
-  y: number,
-  scale: number,
-  duration: number,
-  state: IDagreViewState
-) => {
+const setZoom = (x: number, y: number, scale: number, duration: number, state: IDagreViewState) => {
   if (!state.svg || !state.zoom) {
     return;
   }
@@ -119,7 +103,7 @@ const sendDidChangeZoom = throttle((state: IDagreViewState) => {
 const addNode = (
   node: IMapNode,
   g: dagreD3.graphlib.Graph,
-  tagsDictionary:
+  tags:
     | {
         [tagName: string]: ITagData;
       }
@@ -144,16 +128,15 @@ const addNode = (
   // eslint-disable-next-line
   if (
     node.labelText &&
-    (node.type === ArgdownTypes.STATEMENT_MAP_NODE ||
-      node.type === ArgdownTypes.ARGUMENT_MAP_NODE)
+    (node.type === ArgdownTypes.STATEMENT_MAP_NODE || node.type === ArgdownTypes.ARGUMENT_MAP_NODE)
   ) {
     nodeProperties.label += "<p>" + node.labelText + "</p>";
   }
-  if (node.tags && tagsDictionary) {
+  if (node.tags && tags) {
     for (let tag of node.tags) {
       nodeProperties.class += " ";
       // eslint-disable-next-line
-      nodeProperties.class += tagsDictionary[tag].cssClass;
+      nodeProperties.class += tags[tag].cssClass;
     }
   }
   nodeProperties.label += "</div>";
@@ -168,18 +151,14 @@ const addNode = (
   }
   if (isGroupMapNode(node)) {
     for (let child of node.children!) {
-      addNode(child, g, tagsDictionary, node);
+      addNode(child, g, tags, node);
     }
   }
 };
 
-const generateSvg = (
-  argdownData: IArgdownResponse,
-  state: IDagreViewState,
-  isUpdate: boolean = false
-): void => {
+const generateSvg = (argdownData: IArgdownResponse, state: IDagreViewState, isUpdate: boolean = false): void => {
   const map = argdownData.map!;
-  const tagsDictionary = argdownData.tagsDictionary;
+  const tags = argdownData.tags;
   // Create the input graph
   const g: dagreD3.graphlib.Graph = new dagreD3.graphlib.Graph({
     compound: true
@@ -196,7 +175,7 @@ const generateSvg = (
     });
 
   for (let node of map.nodes) {
-    addNode(node, g, tagsDictionary);
+    addNode(node, g, tags);
   }
 
   for (let edge of map.edges) {
@@ -285,11 +264,7 @@ document.addEventListener("dblclick", event => {
   }
 
   // Ignore clicks on links
-  for (
-    let node = event.target as HTMLElement;
-    node;
-    node = node.parentNode as HTMLElement
-  ) {
+  for (let node = event.target as HTMLElement; node; node = node.parentNode as HTMLElement) {
     if (node.tagName && node.tagName === "g" && node.classList) {
       if (node.classList.contains("node")) {
         const id = node.id;
@@ -322,46 +297,25 @@ document.addEventListener(
           const command = node.dataset.command;
           if (command === "argdown.exportContentToDagreSvg") {
             var svgString = getSvgForExport(getSvgEl(), state.dagreCssHtml);
-            messagePoster.postCommand(command, [
-              state.settings.source,
-              svgString
-            ]);
+            messagePoster.postCommand(command, [state.settings.source, svgString]);
           } else if (command === "argdown.exportContentToDagrePng") {
             openScaleDialog(scale => {
-              getPngAsString(
-                getSvgEl(),
-                scale,
-                state.dagreCssHtml,
-                pngString => {
-                  messagePoster.postCommand(command, [
-                    state.settings.source,
-                    pngString
-                  ]);
-                }
-              );
+              getPngAsString(getSvgEl(), scale, state.dagreCssHtml, pngString => {
+                messagePoster.postCommand(command, [state.settings.source, pngString]);
+              });
             });
           } else if (command === "argdown.exportContentToDagrePdf") {
             var svgString = getSvgForExport(getSvgEl(), state.dagreCssHtml);
-            messagePoster.postCommand(command, [
-              state.settings.source,
-              svgString
-            ]);
+            messagePoster.postCommand(command, [state.settings.source, svgString]);
           }
           break;
         }
         if (node.getAttribute("href").startsWith("#")) {
           break;
         }
-        if (
-          node.href.startsWith("file://") ||
-          node.href.startsWith("vscode-resource:")
-        ) {
-          const [path, fragment] = node.href
-            .replace(/^(file:\/\/|vscode-resource:)/i, "")
-            .split("#");
-          messagePoster.postCommand("_markdown.openDocumentLink", [
-            { path, fragment }
-          ]);
+        if (node.href.startsWith("file://") || node.href.startsWith("vscode-resource:")) {
+          const [path, fragment] = node.href.replace(/^(file:\/\/|vscode-resource:)/i, "").split("#");
+          messagePoster.postCommand("_markdown.openDocumentLink", [{ path, fragment }]);
           event.preventDefault();
           event.stopPropagation();
           break;

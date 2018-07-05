@@ -6,10 +6,15 @@ import {
   ModelPlugin,
   HtmlExportPlugin,
   JSONExportPlugin,
-  TagPlugin,
+  ColorPlugin,
   MapPlugin,
   DotExportPlugin,
-  DataPlugin
+  DataPlugin,
+  PreselectionPlugin,
+  StatementSelectionPlugin,
+  ArgumentSelectionPlugin,
+  GroupPlugin,
+  RegroupPlugin
 } from "@argdown/core";
 import { SaveAsFilePlugin } from "./plugins/SaveAsFilePlugin";
 import { DotToSvgExportPlugin } from "./plugins/DotToSvgExportPlugin";
@@ -21,82 +26,101 @@ import { IncludePlugin } from "./plugins/IncludePlugin";
 import { LoadFilePlugin } from "./plugins/LoadFilePlugin";
 
 export const argdown = new AsyncArgdownApplication();
-const loadFilePlugin = new LoadFilePlugin();
-const includePlugin = new IncludePlugin();
-const parserPlugin = new ParserPlugin();
-const logParserErrorsPlugin = new LogParserErrorsPlugin();
-const dataPlugin = new DataPlugin();
-const modelPlugin = new ModelPlugin();
-const htmlExport = new HtmlExportPlugin();
-const tagPlugin = new TagPlugin();
-const mapPlugin = new MapPlugin();
-const dotExport = new DotExportPlugin();
-const jsonExport = new JSONExportPlugin();
-const saveAsHtml = new SaveAsFilePlugin({
-  outputDir: "./html",
-  dataKey: "html",
-  extension: ".html"
-});
-const copyDefaultCss = new CopyDefaultCssPlugin();
-const dotToSvgExport = new DotToSvgExportPlugin();
-const saveSvgAsSvg = new SaveAsFilePlugin({
-  outputDir: "./svg",
-  dataKey: "svg",
-  extension: ".svg"
-});
-const saveSvgAsPdf = new SvgToPdfExportPlugin();
 
-const saveAsDot = new SaveAsFilePlugin({
-  outputDir: "./dot",
-  dataKey: "dot",
-  extension: ".dot"
+const loadFilePlugin = new LoadFilePlugin();
+argdown.addPlugin(loadFilePlugin, "load-file");
+const includePlugin = new IncludePlugin();
+argdown.addPlugin(includePlugin, "load-file");
+
+const parserPlugin = new ParserPlugin();
+argdown.addPlugin(parserPlugin, "parse-input");
+const logParserErrorsPlugin = new LogParserErrorsPlugin();
+argdown.addPlugin(logParserErrorsPlugin, "log-parser-errors");
+const dataPlugin = new DataPlugin();
+argdown.addPlugin(dataPlugin, "build-model");
+const modelPlugin = new ModelPlugin();
+argdown.addPlugin(modelPlugin, "build-model");
+const regroupPlugin = new RegroupPlugin();
+argdown.addPlugin(regroupPlugin, "build-model");
+const colorPlugin = new ColorPlugin();
+argdown.addPlugin(colorPlugin, "build-model");
+
+const preselectionPlugin = new PreselectionPlugin();
+argdown.addPlugin(preselectionPlugin, "build-map");
+const statementSelectionPlugin = new StatementSelectionPlugin();
+argdown.addPlugin(statementSelectionPlugin, "build-map");
+const argumentSelectionPlugin = new ArgumentSelectionPlugin();
+argdown.addPlugin(argumentSelectionPlugin, "build-map");
+const mapPlugin = new MapPlugin();
+argdown.addPlugin(mapPlugin, "build-map");
+const groupPlugin = new GroupPlugin();
+argdown.addPlugin(groupPlugin, "build-map");
+
+const stdoutArgdown = new StdOutPlugin({
+  dataKey: "input",
+  isRequestData: true
 });
-const saveAsJSON = new SaveAsFilePlugin({
-  outputDir: "./json",
-  dataKey: "json",
-  extension: ".json"
-});
+argdown.addPlugin(stdoutArgdown, "stdout-argdown");
 const saveAsArgdown = new SaveAsFilePlugin({
   outputDir: "./compiled",
   dataKey: "input",
   extension: ".argdown",
   isRequestData: true
 });
-const stdoutDot = new StdOutPlugin({ dataKey: "dot" });
-const stdoutSvg = new StdOutPlugin({ dataKey: "svg" });
-const stdoutJSON = new StdOutPlugin({ dataKey: "json" });
-const stdoutHtml = new StdOutPlugin({ dataKey: "html" });
-const stdoutArgdown = new StdOutPlugin({
-  dataKey: "input",
-  isRequestData: true
-});
-
-argdown.addPlugin(loadFilePlugin, "load-file");
-argdown.addPlugin(includePlugin, "load-file");
-argdown.addPlugin(parserPlugin, "parse-input");
-argdown.addPlugin(logParserErrorsPlugin, "log-parser-errors");
-argdown.addPlugin(dataPlugin, "build-model");
-argdown.addPlugin(modelPlugin, "build-model");
-argdown.addPlugin(tagPlugin, "build-model");
-
-argdown.addPlugin(mapPlugin, "build-map");
-
-argdown.addPlugin(stdoutArgdown, "stdout-argdown");
 argdown.addPlugin(saveAsArgdown, "save-as-argdown");
 
+const htmlExport = new HtmlExportPlugin();
 argdown.addPlugin(htmlExport, "export-html");
+const copyDefaultCss = new CopyDefaultCssPlugin();
 argdown.addPlugin(copyDefaultCss, "copy-default-css");
+const saveAsHtml = new SaveAsFilePlugin({
+  outputDir: "./html",
+  dataKey: "html",
+  extension: ".html"
+});
 argdown.addPlugin(saveAsHtml, "save-as-html");
+const stdoutHtml = new StdOutPlugin({ dataKey: "html" });
 argdown.addPlugin(stdoutHtml, "stdout-html");
 
+const jsonExport = new JSONExportPlugin();
 argdown.addPlugin(jsonExport, "export-json");
+const saveAsJSON = new SaveAsFilePlugin({
+  outputDir: "./json",
+  dataKey: "json",
+  extension: ".json"
+});
 argdown.addPlugin(saveAsJSON, "save-as-json");
+const stdoutJSON = new StdOutPlugin({ dataKey: "json" });
 argdown.addPlugin(stdoutJSON, "stdout-json");
 
+const dotExport = new DotExportPlugin();
 argdown.addPlugin(dotExport, "export-dot");
+const saveAsDot = new SaveAsFilePlugin({
+  outputDir: "./dot",
+  dataKey: "dot",
+  extension: ".dot"
+});
 argdown.addPlugin(saveAsDot, "save-as-dot");
+const stdoutDot = new StdOutPlugin({ dataKey: "dot" });
 argdown.addPlugin(stdoutDot, "stdout-dot");
+
+const dotToSvgExport = new DotToSvgExportPlugin();
 argdown.addPlugin(dotToSvgExport, "export-svg");
+const saveSvgAsSvg = new SaveAsFilePlugin({
+  outputDir: "./svg",
+  dataKey: "svg",
+  extension: ".svg"
+});
 argdown.addPlugin(saveSvgAsSvg, "save-svg-as-svg");
+const stdoutSvg = new StdOutPlugin({ dataKey: "svg" });
 argdown.addPlugin(stdoutSvg, "stdout-svg");
+const saveSvgAsPdf = new SvgToPdfExportPlugin();
 argdown.addPlugin(saveSvgAsPdf, "save-svg-as-pdf");
+
+argdown.defaultProcesses = {
+  "export-svg": ["load-file", "parse-input", "build-model", "build-map", "export-dot", "export-svg", "save-svg-as-svg"],
+  "export-pdf": ["load-file", "parse-input", "build-model", "build-map", "export-dot", "export-svg", "save-svg-as-pdf"],
+  "export-dot": ["load-file", "parse-input", "build-model", "build-map", "export-dot", "save-as-dot"],
+  "export-json": ["load-file", "parse-input", "build-model", "build-map", "export-json", "save-as-json"],
+  "export-html": ["load-file", "parse-input", "build-model", "export-html", "save-as-html"]
+};

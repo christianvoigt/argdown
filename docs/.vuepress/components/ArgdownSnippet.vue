@@ -1,5 +1,5 @@
 <template>
-<div class="argdown-snippet" :class="fullscreen? 'fullscreen' : 'embedded'">
+<div class="argdown-snippet" :class="snippetClasses">
     <ArgdownMark/>
     <div class="menu">
         <a href="#" v-if="activeView === 'source'" v-on:click.prevent="activeView ='map'" class='button map'>Map</a>
@@ -82,6 +82,13 @@ export default {
       }
     }
   },
+  computed: {
+    snippetClasses: function() {
+      let classes = this.$data.fullscreen ? "fullscreen" : "embedded";
+      classes += " " + this.$data.activeView + "-active";
+      return classes;
+    }
+  },
   methods: {
     onMouseoutMap: function() {
       this.$data.zoomMessage = "";
@@ -152,7 +159,7 @@ export default {
 };
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
 $accentColor = #3e8eaf;
 $textColor = #2c3e50;
 $borderColor = #eaecef;
@@ -165,6 +172,16 @@ $grey = #7a8388;
 .argdown-snippet {
   position: relative;
 
+  // &.source-active {
+  // .argdown-mark {
+  // background-color: #f4f4f4;
+  // }
+  // .source-view{
+  // pre{
+  // border: 0;
+  // }
+  // }
+  // }
   &.fullscreen {
     position: fixed;
     z-index: 10000;
@@ -217,7 +234,6 @@ $grey = #7a8388;
     background: #fff;
     z-index: 10;
     width: 100%;
-    min-height: 200px;
     border: 1px solid $borderColor;
     border-radius: 6px;
 
@@ -228,6 +244,7 @@ $grey = #7a8388;
 
     svg {
       max-width: 100%;
+      min-height: 150px;
       height: auto;
       margin: 0 auto;
     }
@@ -239,7 +256,13 @@ $grey = #7a8388;
   }
 
   .source-view {
+    .lanugage-argdown.extra-class {
+      background-color: transparent;
+    }
+
     pre {
+      // background-color: #f4f4f4;
+      background-color: #fff;
       border: 1px solid $borderColor;
       border-radius: 6px;
       padding-top: 50px;
@@ -265,6 +288,10 @@ $grey = #7a8388;
     box-sizing: border-box;
     border-bottom: 1px solid #38809d;
     margin: 0 3px;
+
+    &:hover {
+      background-color: #387e9c;
+    }
 
     svg {
       height: 0.8rem;

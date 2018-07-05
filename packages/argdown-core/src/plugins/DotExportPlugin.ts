@@ -3,14 +3,17 @@ import { IArgdownPlugin, IRequestHandler } from "../IArgdownPlugin";
 import { ArgdownPluginError } from "../ArgdownPluginError";
 import { RelationType, ArgdownTypes, IMapNode, IGroupMapNode } from "../model/model";
 import { IArgdownRequest, IArgdownResponse } from "../index";
+import { validateColorString } from "../utils";
 
 export interface IDotSettings {
   useHtmlLabels?: boolean;
   graphname?: string;
   lineLength?: number;
-  groupColors?: string[];
   graphVizSettings?: { [name: string]: string };
   colorNodesByTag?: boolean;
+  argumentFontColor?: string;
+  statementFontColor?: string;
+  groupFontColor?: string;
 }
 declare module "../index" {
   interface IArgdownRequest {
@@ -36,7 +39,6 @@ const defaultSettings: IDotSettings = {
   useHtmlLabels: true,
   graphname: "Argument Map",
   lineLength: 25,
-  groupColors: ["#DADADA", "#BABABA", "#AAAAAA"],
   graphVizSettings: {
     rankdir: "BT", //BT | TB | LR | RL
     concentrate: "false",
@@ -78,7 +80,16 @@ export class DotExportPlugin implements IArgdownPlugin {
     if (!response.relations) {
       throw new ArgdownPluginError(this.name, "No relations property in response.");
     }
-    _.defaultsDeep(this.getSettings(request), this.defaults);
+    const settings = this.getSettings(request);
+    _.defaultsDeep(settings, this.defaults);
+    if (request.color) {
+      settings.statementFontColor = settings.statementFontColor || request.color.statementFontColor || "#000000";
+      settings.argumentFontColor = settings.argumentFontColor || request.color.argumentFontColor || "#000000";
+      settings.groupFontColor = settings.groupFontColor || request.color.groupFontColor || "#000000";
+    } else {
+      settings.statementFontColor = settings.statementFontColor || "#000000";
+      settings.argumentFontColor = settings.argumentFontColor || "#000000";
+    }
   };
   run: IRequestHandler = (request, response) => {
     const settings = this.getSettings(request);
@@ -125,19 +136,11 @@ export class DotExportPlugin implements IArgdownPlugin {
       let groupLabel = node.labelTitle || "";
       if (settings.useHtmlLabels) {
         groupLabel = foldAndEscape(groupLabel, settings.lineLength || defaultSettings.lineLength!);
-        groupLabel = '<<FONT FACE="Arial" POINT-SIZE="10">' + groupLabel + "</FONT>>";
+        groupLabel = `<<FONT FACE="Arial" POINT-SIZE="10" COLOR="${settings.groupFontColor}">${groupLabel}</FONT>>`;
       } else {
         groupLabel = '"' + escapeQuotesForDot(groupLabel) + '"';
       }
-      let groupColor = "#CCCCCC";
-      if (settings.groupColors && settings.groupColors.length > 0) {
-        const level = groupNode.level || 0;
-        if (settings.groupColors.length >= level) {
-          groupColor = settings.groupColors[level];
-        } else {
-          groupColor = settings.groupColors[settings.groupColors.length - 1];
-        }
-      }
+      let groupColor = node.color || "#CCCCCC";
 
       dot += "\nsubgraph " + dotGroupId + " {\n";
       dot += "  label = " + groupLabel + ";\n";
@@ -160,37 +163,20 @@ export class DotExportPlugin implements IArgdownPlugin {
     let title = node.labelTitle || "";
     let text = node.labelText || "";
     let label = "";
-    let color = "#63AEF2";
-    if (settings.colorNodesByTag && node.tags && response.tagsDictionary) {
-      const tag = node.tags[0];
-      let tagData = response.tagsDictionary[tag];
-      if (tagData && tagData.color) {
-        color = tagData.color;
-      }
-    }
-    label = getLabel(title, text, settings);
+    let color = node.color && validateColorString(node.color) ? node.color : "#63AEF2";
+    let fontColor =
+      node.type === ArgdownTypes.ARGUMENT_MAP_NODE ? settings.argumentFontColor : settings.statementFontColor;
+    label = getLabel(title, text, fontColor!, settings);
     if (node.type === ArgdownTypes.ARGUMENT_MAP_NODE) {
-      dot +=
-        "  " +
-        node.id +
-        " [label=" +
-        label +
-        ', shape="box", style="filled,rounded", fillcolor="' +
-        color +
-        '",  type="' +
-        node.type +
-        '"];\n';
+      dot += `  ${node.id} [label=${label}, shape="box", style="filled,rounded", fillcolor="${color}", fontcolor="${
+        settings.argumentFontColor
+      }",  type="${node.type}"];\n`;
     } else if (node.type === ArgdownTypes.STATEMENT_MAP_NODE) {
-      dot +=
-        "  " +
-        node.id +
-        " [label=" +
-        label +
-        ', shape="box", style="filled,rounded,bold", color="' +
-        color +
-        '", fillcolor="white", labelfontcolor="white", type="' +
-        node.type +
-        '"];\n';
+      dot += `  ${
+        node.id
+      } [label=${label}, shape="box", style="filled,rounded,bold", color="${color}", fillcolor="white", labelfontcolor="white", fontcolor="${
+        settings.statementFontColor
+      }", type="${node.type}"];\n`;
     }
     return dot;
   }
@@ -236,18 +222,18 @@ const escapeForHtml = (s: string): string => {
 const escapeQuotesForDot = (str: string): string => {
   return str.replace(/\"/g, '\\"');
 };
-const getLabel = (title: string, text: string, settings: IDotSettings): string => {
+const getLabel = (title: string, text: string, color: string, settings: IDotSettings): string => {
   let label = "";
   if (settings.useHtmlLabels) {
-    label += '<<FONT FACE="Arial" POINT-SIZE="8"><TABLE BORDER="0" CELLSPACING="0">';
+    label += `<<FONT FACE="Arial" POINT-SIZE="8" COLOR="${color}"><TABLE BORDER="0" CELLSPACING="0">`;
     if (!_.isEmpty(title)) {
       let titleLabel = foldAndEscape(title, settings.lineLength || defaultSettings.lineLength!);
-      titleLabel = '<TR><TD ALIGN="center"><B>' + titleLabel + "</B></TD></TR>";
+      titleLabel = `<TR><TD ALIGN="center"><B>${titleLabel}</B></TD></TR>`;
       label += titleLabel;
     }
     if (!_.isEmpty(text)) {
       let textLabel = foldAndEscape(text, settings.lineLength || defaultSettings.lineLength!);
-      textLabel = '<TR><TD ALIGN="center">' + textLabel + "</TD></TR>";
+      textLabel = `<TR><TD ALIGN="center">${textLabel}</TD></TR>`;
       label += textLabel;
     }
     label += "</TABLE></FONT>>";

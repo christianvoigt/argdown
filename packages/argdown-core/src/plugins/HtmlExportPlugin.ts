@@ -107,8 +107,8 @@ export class HtmlExportPlugin implements IArgdownPlugin {
         let htmlId = utils.getHtmlId("statement", token.title!, response.htmlIds!);
         response.htmlIds![htmlId] = true;
         let classes = "definition statement-definition definiendum";
-        if (parentNode!.equivalenceClass && parentNode!.equivalenceClass!.sortedTags) {
-          classes += " " + $.getCssClassesFromTags(response, parentNode!.equivalenceClass!.sortedTags!);
+        if (parentNode!.equivalenceClass && parentNode!.equivalenceClass!.tags) {
+          classes += " " + $.getCssClassesFromTags(response, parentNode!.equivalenceClass!.tags!);
         }
         response.html += `<span id="${htmlId}" class="${classes}">[<span class="title statement-title">${_.escape(
           token.title
@@ -117,8 +117,8 @@ export class HtmlExportPlugin implements IArgdownPlugin {
       [TokenNames.STATEMENT_REFERENCE]: (_request, response, token, parentNode) => {
         let htmlId = utils.getHtmlId("statement", token.title!);
         let classes = "reference statement-reference";
-        if (parentNode!.equivalenceClass && parentNode!.equivalenceClass!.sortedTags) {
-          classes += " " + $.getCssClassesFromTags(response, parentNode!.equivalenceClass!.sortedTags!);
+        if (parentNode!.equivalenceClass && parentNode!.equivalenceClass!.tags) {
+          classes += " " + $.getCssClassesFromTags(response, parentNode!.equivalenceClass!.tags!);
         }
         response.html += `<a href="#${htmlId}" class="${classes}">[<span class="title statement-title">${_.escape(
           token.title
@@ -127,8 +127,8 @@ export class HtmlExportPlugin implements IArgdownPlugin {
       [TokenNames.STATEMENT_MENTION]: (_request, response, token) => {
         const equivalenceClass = response.statements![token.title!];
         let classes = "mention statement-mention";
-        if (equivalenceClass.sortedTags) {
-          classes += " " + $.getCssClassesFromTags(response, equivalenceClass.sortedTags);
+        if (equivalenceClass.tags) {
+          classes += " " + $.getCssClassesFromTags(response, equivalenceClass.tags);
         }
         let htmlId = utils.getHtmlId("statement", token.title!);
         response.html += `<a href="#${htmlId}" class="${classes}">@[<span class="title statement-title">${_.escape(
@@ -139,8 +139,8 @@ export class HtmlExportPlugin implements IArgdownPlugin {
         const argument = response.arguments![token.title!];
         let htmlId = utils.getHtmlId("argument", argument.title!);
         let classes = "reference argument-reference";
-        if (argument!.tags && argument!.sortedTags) {
-          classes += " " + $.getCssClassesFromTags(response, argument!.sortedTags!);
+        if (argument!.tags) {
+          classes += " " + $.getCssClassesFromTags(response, argument!.tags!);
         }
         response.html += `<a href="#${htmlId}" data-line="${
           token.startLine
@@ -153,8 +153,8 @@ export class HtmlExportPlugin implements IArgdownPlugin {
         let htmlId = utils.getHtmlId("argument", argument!.title!, response.htmlIds!);
         response.htmlIds![htmlId] = true;
         let classes = "definition argument-definition definiendum";
-        if (argument!.tags && argument!.sortedTags) {
-          classes += " " + $.getCssClassesFromTags(response, argument!.sortedTags!);
+        if (argument!.tags) {
+          classes += " " + $.getCssClassesFromTags(response, argument!.tags!);
         }
         response.html += `<span id="${htmlId}" class="${classes}">&lt;<span class="title argument-title">${_.escape(
           argument!.title
@@ -164,8 +164,8 @@ export class HtmlExportPlugin implements IArgdownPlugin {
         let htmlId = utils.getHtmlId("argument", token.title!);
         let classes = "mention argument-mention";
         const argument = response.arguments![token.title!];
-        if (argument.sortedTags) {
-          classes += " " + $.getCssClassesFromTags(response, argument.sortedTags);
+        if (argument.tags) {
+          classes += " " + $.getCssClassesFromTags(response, argument.tags);
         }
         response.html += `<a href="#${htmlId}" class="${classes}">@&lt;<span class="title argument-title">${_.escape(
           token.title
@@ -211,6 +211,17 @@ export class HtmlExportPlugin implements IArgdownPlugin {
             if (settings.css) {
               head += `<style>${settings.css}</style>`;
             }
+            if (response.tags && (!request.color || request.color.colorizeByTag !== false)) {
+              let tagColorCss = "";
+              for (let tag of Object.values(response.tags)) {
+                if (tag.cssClass && tag.color && utils.validateColorString(tag.color)) {
+                  tagColorCss += `.${tag.cssClass}{color: ${tag.color};}\n`;
+                }
+              }
+              if(tagColorCss.length > 0){
+                head += `<style>${tagColorCss}</style>`;
+              }
+            }
             head += "</head>";
           }
           response.html += head;
@@ -230,16 +241,16 @@ export class HtmlExportPlugin implements IArgdownPlugin {
       },
       [RuleNames.STATEMENT + "Entry"]: (_request, response, node) => {
         let classes = "statement has-line";
-        if (node.equivalenceClass && node.equivalenceClass.tags && node.equivalenceClass.sortedTags) {
-          classes += " " + $.getCssClassesFromTags(response, node.equivalenceClass.sortedTags);
+        if (node.equivalenceClass && node.equivalenceClass.tags && node.equivalenceClass.tags) {
+          classes += " " + $.getCssClassesFromTags(response, node.equivalenceClass.tags);
         }
         response.html += `<div data-line="${node.startLine}" class="${classes}">`;
       },
       [RuleNames.STATEMENT + "Exit"]: (_request, response) => (response.html += "</div>"),
       [RuleNames.ARGUMENT + "Entry"]: (_request, response, node) => {
         let classes = "argument has-line";
-        if (node.argument && node.argument.tags && node.argument.sortedTags) {
-          classes += " " + $.getCssClassesFromTags(response, node.argument.sortedTags);
+        if (node.argument && node.argument.tags && node.argument.tags) {
+          classes += " " + $.getCssClassesFromTags(response, node.argument.tags);
         }
         response.html += `<div data-line="${node.startLine}" class="${classes}">`;
       },
@@ -337,8 +348,8 @@ export class HtmlExportPlugin implements IArgdownPlugin {
       [RuleNames.ITALIC + "Exit"]: (_request, response, node) => (response.html += "</i>" + node.trailingWhitespace),
       [RuleNames.PCS + "Entry"]: (_request, response, node) => {
         let classes = "argument pcs";
-        if (node.argument!.sortedTags) {
-          classes += " " + $.getCssClassesFromTags(response, node.argument!.sortedTags!);
+        if (node.argument!.tags) {
+          classes += " " + $.getCssClassesFromTags(response, node.argument!.tags!);
         }
         response.html += `<div class="${classes}">`;
       },
@@ -374,18 +385,23 @@ export class HtmlExportPlugin implements IArgdownPlugin {
   }
   getCssClassesFromTags(response: IArgdownResponse, tags: string[]): string {
     let classes = "";
-    if (!tags || !response.tagsDictionary) {
+    if (!tags || tags.length === 0|| !response.tags) {
       return classes;
     }
-    let index = 0;
-    for (let tag of tags) {
-      if (index > 0) {
-        classes += " ";
-      }
-      index++;
-      const tagData = response.tagsDictionary[tag];
-      classes += tagData.cssClass;
-    }
+    classes = tags.sort((a,b)=>{
+      const aTagData = response.tags![a];
+      const bTagData = response.tags![b];
+      return (aTagData.priority || 0) - (bTagData.priority || 0);
+    })
+      .map(t => {
+        const tagData = response.tags![t];
+        if (tagData) {
+          return tagData.cssClass;
+        }
+        return undefined;
+      })
+      .filter(cssClass => cssClass !== undefined)
+      .join(" ");
     return classes;
   }
 }

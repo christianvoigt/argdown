@@ -27,6 +27,11 @@ export const escapeHtml = (str: string): string => {
   return str;
 };
 
+const COLOR = /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i;
+export const validateColorString = (str: string): boolean => {
+  return COLOR.test(str);
+};
+
 // taken from https://github.com/markdown-it/markdown-it/blob/master/lib/index.js
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -118,11 +123,7 @@ export const stringToClassName = (str: string): string => stringToHtmlId(str);
 /// If htmlIdsSet is not null, creates an id that is not already a member of the set.
 /// Example: If "statement-s1" is already a member of the set, it will return "statement-s1-occurrence-2".
 /// Note that you still have to add the new id to the set yourself if you want to avoid duplicates.
-export const getHtmlId = (
-  type: string,
-  title: string,
-  htmlIdsSet?: { [id: string]: boolean }
-): string => {
+export const getHtmlId = (type: string, title: string, htmlIdsSet?: { [id: string]: boolean }): string => {
   let id = type + "-" + title;
   id = stringToHtmlId(id);
   if (htmlIdsSet) {
@@ -135,10 +136,7 @@ export const getHtmlId = (
   }
   return id;
 };
-export const reduceToMap = <K, V extends object>(
-  a: V[],
-  idProvider: (curr: V) => K
-): Map<K, V> => {
+export const reduceToMap = <K, V extends object>(a: V[], idProvider: (curr: V) => K): Map<K, V> => {
   return a.reduce((acc, curr): Map<K, V> => {
     acc.set(idProvider(curr), curr);
     return acc;
@@ -183,11 +181,7 @@ export const astToString = (ast: IAstNode): string => {
 export const astToJsonString = (ast: IAstNode[]): string => {
   return JSON.stringify(ast, null, 2);
 };
-const logAstRecursively = (
-  value: IAstNode,
-  pre: string,
-  str: string
-): string => {
+const logAstRecursively = (value: IAstNode, pre: string, str: string): string => {
   if (value === undefined) {
     str += "undefined";
     return str;
@@ -206,4 +200,16 @@ const logAstRecursively = (
     }
   }
   return str;
+};
+
+export const isNumber = (x: any): x is number => {
+  return typeof x === "number";
+};
+
+export const isString = (x: any): x is string => {
+  return typeof x === "string";
+};
+
+export const isObject = (x: any): x is object => {
+  return typeof x === "object";
 };

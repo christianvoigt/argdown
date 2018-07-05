@@ -100,7 +100,7 @@ export default {
         for (let tag of node.tags) {
           nodeProperties.class += " ";
           // eslint-disable-next-line
-          nodeProperties.class += this.$store.getters.tagsDictionary[tag].cssClass;
+          nodeProperties.class += this.$store.getters.tags[tag].cssClass;
         }
       }
       nodeProperties.label += "</div>";

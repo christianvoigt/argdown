@@ -77,6 +77,24 @@ describe("argdown-cli", function() {
       expect(stdout).to.not.equal(null);
     });
   });
+  it("can run custom process defined in config.processes", () => {
+    let svgFolder = path.resolve(__dirname, "./svg/");
+    let filePathToSvg = path.resolve(__dirname, "./svg/test-suffix.svg");
+    let filePathToCli = path.resolve(__dirname, "../dist/src/cli.js");
+    let filePathToConfig = path.resolve(__dirname, "./custom-process.argdown.config.js");
+    const cmd = "node " + filePathToCli + " run test --config " + filePathToConfig;
+    return rimrafPromise(svgFolder)
+      .then(() => {
+        return execPromise(cmd, (error, _stdout, stderr) => {
+          expect(error).to.equal(null);
+          expect(stderr).to.equal("");
+          (<any>expect(filePathToSvg).to.be.a).file();
+        });
+      })
+      .then(() => {
+        return rimrafPromise(svgFolder);
+      });
+  });
   it("can load plugin from config and run process defined in config.processes", () => {
     let filePathToCli = path.resolve(__dirname, "../dist/src/cli.js");
     let filePathToConfig = path.resolve(__dirname, "./add-plugin.argdown.config.js");

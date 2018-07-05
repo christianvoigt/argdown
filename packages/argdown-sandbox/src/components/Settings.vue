@@ -9,12 +9,12 @@
   </fieldset>
   <h4>Map Settings</h4>
   <fieldset>
-  <input type="checkbox" id="excludeDisconnected" v-model="$store.state.config.map.excludeDisconnected">
+  <input type="checkbox" id="excludeDisconnected" v-model="$store.state.config.selection.excludeDisconnected">
   <label for="excludeDisconnected">exclude disconnected</label>  
 </fieldset>
 <fieldset>
   <label for="statementSelectionMode">Statement selection: </label>
-  <select id="statementSelectionMode" v-model="$store.state.config.map.statementSelectionMode">
+  <select id="statementSelectionMode" v-model="$store.state.config.selection.statementSelectionMode">
     <option disabled value="">Please select one</option>
     <option value='all'>all</option>
     <option value='with-title'>titled</option>

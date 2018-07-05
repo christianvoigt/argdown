@@ -23,14 +23,21 @@ describe("Application", function() {
     };
     app.addPlugin(plugin, "test");
     expect(app.getPlugin(plugin.name, "test")).to.equal(plugin);
-    let result = app.run({ process: ["parse-input", "test"], input: source, logExceptions: false });
+    let result = app.run({
+      process: ["parse-input", "test"],
+      input: source,
+      logExceptions: false,
+      throwExceptions: false
+    });
+
+    expect(result).to.not.be.null;
     expect(statements).to.equal(1);
-    expect(result.exceptions!.length).to.equal(1);
-    expect((<ArgdownPluginError>result.exceptions![0]).plugin).to.equal("TestPlugin");
+    expect(result!.exceptions!.length).to.equal(1);
+    expect((<ArgdownPluginError>result!.exceptions![0]).plugin).to.equal("TestPlugin");
     expect((<any>result).testRunCompleted).to.be.true;
     statements = 0;
     app.removePlugin(plugin, "test");
-    result = app.run({ process: ["parse-input", "test"], input: source, logExceptions: false });
+    result = app.run({ process: ["parse-input", "test"], input: source, logExceptions: false, throwExceptions: false });
     expect(statements).to.equal(0);
     expect((<any>result).testRunCompleted).to.be.undefined;
   });
