@@ -1,5 +1,7 @@
 # Installing the VS Code extension
 
+TODO: Insert small screenshot here (or an animated gif)
+
 [Visual Studio Code](https://code.visualstudio.com/) is a great open-source code editor developed by Microsoft. Users can install "extensions" to add support for new programming languages. The VS Code Argdown extension adds support for the Argdown argumentation syntax.
 
 Here are the steps to get you started with VS Code:

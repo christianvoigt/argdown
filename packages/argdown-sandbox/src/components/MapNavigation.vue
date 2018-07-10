@@ -17,7 +17,8 @@
 </template>
 <style lang="scss" scoped>
 .save-map {
-  border-left: 1px solid black;
+  border-left: 1px solid #eee;
+  color: #999;
   padding-left: 1em;
   display: flex;
   align-items: center;

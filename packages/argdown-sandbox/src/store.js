@@ -5,129 +5,77 @@ import {
   ArgdownApplication,
   ParserPlugin,
   ModelPlugin,
+  RegroupPlugin,
   ColorPlugin,
   HtmlExportPlugin,
   JSONExportPlugin,
   DataPlugin,
+  PreselectionPlugin,
+  StatementSelectionPlugin,
+  ArgumentSelectionPlugin,
   MapPlugin,
+  GroupPlugin,
   DotExportPlugin,
   StatementSelectionMode,
   LabelMode,
   tokensToString,
   astToString
 } from "@argdown/core";
+import axios from "axios";
 
 const app = new ArgdownApplication();
 const parserPlugin = new ParserPlugin();
 const dataPlugin = new DataPlugin();
 const modelPlugin = new ModelPlugin();
+const regroupPlugin = new RegroupPlugin();
 const colorPlugin = new ColorPlugin();
 
 const htmlExport = new HtmlExportPlugin({
   headless: true
 });
 const jsonExport = new JSONExportPlugin({ removeEmbeddedRelations: true });
+const preselectionPlugin = new PreselectionPlugin();
+const statementSelectionPlugin = new StatementSelectionPlugin();
+const argumentSelectionPlugin = new ArgumentSelectionPlugin();
 const mapPlugin = new MapPlugin();
+const groupPlugin = new GroupPlugin();
 const dotExport = new DotExportPlugin();
-const testInput = `# Welcome to Argdown!
-
-[Intro]: Argdown is a simple syntax for defining argumentative
-structures, inspired by Markdown.
-  + Writing a *pro & contra list* in Argdown is as
-    simple as writing a twitter message (actually we are
-    right in the middle of one).
-  + But you can also
-    **logically reconstruct** more complex dialectical
-    relations between arguments or dive into
-    the details of their premise-conclusion structures.
-  + Finally, you can export Argdown as a graph and create
-    **argument maps** of whole debates.
-
-## Argdown Basics
-
-This is a normal statement with __bold__ and _italic_ text,
-a #tag and a [link](https://github.com/christianvoigt/argdown-parser).
-
-[Statement 1]: Another statement (after a blank line),
-this time with a title defined in square brackets.
-We can use the title to refer to this statement later
-or mention it in other statements. #(Another tag)
-
-[Statement 2]: Let's do that now: The previous
-statement was @[Statement 1].
-  + <Argument title>: Statements can be supported
-    by __arguments__. Arguments are defined by
-    using angle brackets. #tag
-  - <Another argument>: This arguments attacks @[Statement 2]. #tag
-    - <Yet another argument>: Arguments can also
-      be supported or attacked. #yet-another-tag
-      <!--
-      By the way,
-      this is a multiline comment.
-      -->
-
-We can also do that the other way around:
-
-[Intro]
-  -> <Argument 1>
-
-Headings can be used to group arguments and statements together.
-In the map these groups are visualized as grey boxes.
-
-Tags are visualized by the colors of the arguments and statements in the map.
-
-### Argument reconstructions
-
-So far, we have ignored the internal structure of arguments. Arguments
-consist of premises from which conclusions are inferred. We can precisely
-define this premise-conclusion structure with Argdown:
-
-<Argument 1>
-
-(1) First premise (this is is a normal statement
-    and you can do everything with it, we have done
-    with the statements above).
-(2) [Statement 2]: We have already defined a statement
-    with this title.
-    Argdown allows you to add multiple statements
-    to the same "equivalence class" by giving them
-    the same title. The statements will then be treated
-    as logically equivalent.
---
-Some inference rule (Some additional info: 1,2)
---
-(3) And now the conclusion
-  -> Outgoing relations of the conclusion,
-  are also interpreted as outgoing relations of
-  the whole argument.
-  +> <Yet another argument>
-  <!--
-  The second relation is only "sketched",
-  because it does not declare which premise
-  of @<Argument 2> is supported.
-  (At this point this is not possible,
-  as we have not yet reconstructed @<Argument 2>)
-  -->
-  -> [Statement 1]
-
-  We can also link to headings:
-  [Back to top](#heading-welcome-to-argdown)
-`;
+import primer from "!!raw-loader!../public/examples/argdown-primer.argdown";
 
 app.addPlugin(parserPlugin, "parse-input");
 app.addPlugin(dataPlugin, "build-model");
 app.addPlugin(modelPlugin, "build-model");
+app.addPlugin(regroupPlugin, "build-model");
 app.addPlugin(colorPlugin, "build-model");
+app.addPlugin(preselectionPlugin, "build-map");
+app.addPlugin(statementSelectionPlugin, "build-map");
+app.addPlugin(argumentSelectionPlugin, "build-map");
 app.addPlugin(mapPlugin, "build-map");
+app.addPlugin(groupPlugin, "build-map");
 app.addPlugin(htmlExport, "export-html");
 app.addPlugin(dotExport, "export-dot");
 app.addPlugin(jsonExport, "export-json");
 
 Vue.use(Vuex);
 
+var examples = {
+  "argdown-primer": {
+    id: "argdown-primer",
+    title: "Argdown Primer",
+    url: "/argdown/sandbox/examples/argdown-primer.argdown",
+    cachedContent: primer
+  },
+  test: {
+    id: "test",
+    title: "Second example",
+    url: "/argdown/sandbox/examples/test.argdown"
+  }
+};
+
 export default new Vuex.Store({
   state: {
-    argdownInput: testInput,
+    argdownInput: primer,
+    examples: examples,
     config: {
       selection: {
         excludeDisconnected: true,
@@ -135,7 +83,9 @@ export default new Vuex.Store({
       },
       map: {
         statementLabelMode: LabelMode.HIDE_UNTITLED,
-        argumentLabelMode: LabelMode.HIDE_UNTITLED,
+        argumentLabelMode: LabelMode.HIDE_UNTITLED
+      },
+      group: {
         groupDepth: 2
       },
       dot: {
@@ -167,6 +117,12 @@ export default new Vuex.Store({
     setViewState(state, value) {
       state.viewState = value;
     },
+    cacheExample(state, { id, content }) {
+      var example = state.examples[id];
+      if (example) {
+        example.cachedContent = content;
+      }
+    },
     toggleSettings(state) {
       state.showSettings = !state.showSettings;
     },
@@ -185,6 +141,9 @@ export default new Vuex.Store({
       );
       const response = app.run(request);
       return response;
+    },
+    examples: state => {
+      return Object.values(state.examples);
     },
     html: (state, getters) => {
       const data = getters.argdownData;
@@ -262,6 +221,25 @@ export default new Vuex.Store({
     },
     tags: (state, getters) => {
       return getters.argdownData.tags;
+    }
+  },
+  actions: {
+    loadExample({ commit, state }, payload) {
+      var example = state.examples[payload.id];
+      return new Promise((resolve, reject) => {
+        if (!example) {
+          reject("Could not find example");
+        }
+        if (example.cachedContent) {
+          commit("setArgdownInput", example.cachedContent);
+          resolve();
+        }
+        axios.get(example.url).then(response => {
+          commit("cacheExample", { id: example.id, content: response.data });
+          commit("setArgdownInput", response.data);
+          resolve();
+        });
+      });
     }
   }
 });

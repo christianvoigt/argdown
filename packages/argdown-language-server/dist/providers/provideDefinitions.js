@@ -13,7 +13,7 @@ exports.provideDefinitions = (response, uri, position) => {
         if (tokenName.startsWith("Statement")) {
             // collect locations of all equivalenceClass members
             const equivalenceClass = response.statements[nodeAtPosition.title];
-            const definitions = equivalenceClass.members.map((m) => {
+            const definitions = equivalenceClass.members.filter(m => !m.isReference).map(m => {
                 return utils_1.createLocation(uri, m);
             });
             return definitions;
@@ -21,8 +21,8 @@ exports.provideDefinitions = (response, uri, position) => {
         else if (tokenName.startsWith("Argument")) {
             // collect locations of pcs and all descriptions
             const argument = response.arguments[nodeAtPosition.title];
-            const definitions = argument.descriptions.map((d) => {
-                return utils_1.createLocation(uri, d);
+            const definitions = argument.members.filter(m => !m.isReference).map(m => {
+                return utils_1.createLocation(uri, m);
             });
             if (argument.pcs && argument.pcs.length > 0) {
                 const pcsLocation = utils_1.createLocation(uri, argument);

@@ -41,7 +41,7 @@
     "type-check": "tsc --noEmit",
     "build": "npm run clean && npm run build:src && npm run copy:argdown && npm run copy:css",
     "build:src": "tsc",
-    "build:documentation": "typedoc  --options ./typedoc.js",
+    "docs:build": "typedoc  --options ./typedoc.js",
     "copy:argdown": "copyfiles \"test/**/*.{ad,argdown}\" dist",
     "copy:css": "copyfiles \"src/**/*.css\" dist",
     "test": "mocha -r ts-node/register --full-trace --require source-map-support/register ./test/**/*.spec.ts",

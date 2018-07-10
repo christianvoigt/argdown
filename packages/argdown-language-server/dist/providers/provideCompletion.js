@@ -24,7 +24,7 @@ exports.provideCompletion = (response, char, position, text, offset) => {
             const item = vscode_languageserver_1.CompletionItem.create(`<${title}>`);
             item.textEdit = vscode_languageserver_1.TextEdit.replace(range, `<${title}>`);
             item.kind = vscode_languageserver_1.CompletionItemKind.Variable;
-            const desc = core_1.IArgument.getCanonicalDescriptionText(argument);
+            const desc = core_1.IArgument.getCanonicalMemberText(argument);
             if (desc) {
                 item.detail = desc;
             }
@@ -37,7 +37,7 @@ exports.provideCompletion = (response, char, position, text, offset) => {
         if (statementMatch && statementMatch.length > 1) {
             const title = statementMatch[1];
             const eqClass = response.statements[title];
-            return eqClass.members.map((member) => {
+            return eqClass.members.filter(member => !member.isReference).map(member => {
                 const item = vscode_languageserver_1.CompletionItem.create(member.text);
                 item.kind = vscode_languageserver_1.CompletionItemKind.Value;
                 item.detail = `[${title}]: ${member.text}`;
@@ -51,8 +51,8 @@ exports.provideCompletion = (response, char, position, text, offset) => {
             if (argumentMatch && argumentMatch.length > 1) {
                 const title = argumentMatch[1];
                 const argument = response.arguments[title];
-                if (argument.descriptions) {
-                    return argument.descriptions.map((member) => {
+                if (argument.members) {
+                    return argument.members.filter(member => !member.isReference).map(member => {
                         const item = vscode_languageserver_1.CompletionItem.create(member.text);
                         item.kind = vscode_languageserver_1.CompletionItemKind.Value;
                         item.detail = `<${title}>: ${member.text}`;
@@ -65,8 +65,8 @@ exports.provideCompletion = (response, char, position, text, offset) => {
             }
         }
     }
-    else if (char === "#" && response.tagsDictionary) {
-        return Object.keys(response.tagsDictionary).map((t) => {
+    else if (char === "#" && response.tags) {
+        return Object.keys(response.tags).map((t) => {
             const item = vscode_languageserver_1.CompletionItem.create(`#(${t})`);
             item.insertText = `(${t})`;
             item.kind = vscode_languageserver_1.CompletionItemKind.Keyword;

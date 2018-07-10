@@ -1,4 +1,4 @@
-<template functional>
+<template>
 <div class="cheat-sheet-item">
 <div class="source-view">
 <slot name="source"></slot>    
@@ -12,6 +12,12 @@
 <style lang="stylus">
 .cheat-sheet-item {
     box-sizing: border-box;
+
+    .language-argdown.extra-class {
+        @media (max-width: 419px) {
+            margin: 0;
+        }
+    }
 
     @media (max-width: 1024px) and (orientation: portrait) {
         flex-direction: column;

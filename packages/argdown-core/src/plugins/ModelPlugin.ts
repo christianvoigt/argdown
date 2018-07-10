@@ -555,10 +555,8 @@ export class ModelPlugin implements IArgdownPlugin {
           newSection.startColumn = node.startColumn;
           newSection.heading = currentHeading;
           newSection.data = currentHeading.data;
-          console.log(newSection.data);
           if(newSection.data && newSection.data.isGroup !== undefined){
             newSection.isGroup = newSection.data.isGroup;
-            console.log("newSection.isGroup: "+newSection.isGroup);
           }
   
           if (newSection.level > 1 && currentSection) {

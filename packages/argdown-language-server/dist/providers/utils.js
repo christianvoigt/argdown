@@ -19,9 +19,7 @@ exports.generateMarkdownForStatement = (eqClass) => {
             const isOutgoing = relation.to === eqClass;
             const relationSymbol = getRelationSymbol(relation.relationType, isOutgoing);
             const relationPartner = isOutgoing ? relation.from : relation.to;
-            const relationPartnerStr = relationPartner.type === core_1.ArgdownTypes.ARGUMENT
-                ? `<${relationPartner.title}>`
-                : `[${relationPartner.title}]`;
+            const relationPartnerStr = relationPartner.type === core_1.ArgdownTypes.ARGUMENT ? `<${relationPartner.title}>` : `[${relationPartner.title}]`;
             relationsStr += `
   ${relationSymbol} ${relationPartnerStr}`;
         }
@@ -38,14 +36,12 @@ exports.generateMarkdownForArgument = (argument) => {
             const isOutgoing = relation.to === argument;
             const relationSymbol = getRelationSymbol(relation.relationType, isOutgoing);
             const relationPartner = isOutgoing ? relation.from : relation.to;
-            const relationPartnerStr = relationPartner.type === core_1.ArgdownTypes.ARGUMENT
-                ? `<${relationPartner.title}>`
-                : `[${relationPartner.title}]`;
+            const relationPartnerStr = relationPartner.type === core_1.ArgdownTypes.ARGUMENT ? `<${relationPartner.title}>` : `[${relationPartner.title}]`;
             relationsStr += `
   ${relationSymbol} ${relationPartnerStr}`;
         }
     }
-    let desc = core_1.IArgument.getCanonicalDescriptionText(argument);
+    let desc = core_1.IArgument.getCanonicalMemberText(argument);
     if (desc) {
         desc = ":" + desc;
     }

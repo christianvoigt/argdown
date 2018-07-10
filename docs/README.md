@@ -19,7 +19,7 @@ footer: MIT Licensed | Copyright © 2018-present Christian Voigt | Funded by Deb
 
 Argdown's formula consists of three ingredients:
 
-### 1. Nested pro-contra-lists
+### _1_ Nested pro-contra-lists
 
 Statement titles come in square brackets, argument titles in angle brackets.
 
@@ -39,7 +39,7 @@ and creating argument maps.
 
 Click on the **Map** button in the upper right corner to see the resulting argument map.
 
-### 2. Premise-conclusion-structures
+### _2_ Premise-conclusion-structures
 
 Let's logically reconstruct an additional argument in detail:
 
@@ -65,7 +65,7 @@ Let's logically reconstruct an additional argument in detail:
 
 Click on the **Map** button in the upper right corner to see the resulting argument map.
 
-### 3. Markdown-like text-formatting
+### _3_ Markdown-like text-formatting
 
 ```argdown
 # Headings are used to group statement and arguments in the map
@@ -78,6 +78,12 @@ For this example, no map will be generated, as the Argdown source code contains 
 
 ## Getting started
 
-Now that you have learned the basics of Argdown you can cet started by installing the [VS Code Argdown extension](/guide/installing-the-vscode-extension.html). Or you can directly try out Argdown in the [browser sandbox](https://christianvoigt.github.io/argdown/sandbox/).
+Now that you have learned the basics of Argdown you can:
 
-If you prefer to work with a commandline tool instead, you can jump to [installing the Argdown commandline tool](/guide/installing-the-commandline-tool.html).
+::: buttonlist
+
+* [Browser Sandbox](https://christianvoigt.github.io/argdown/sandbox/) Try out Argdown in your browser. Includes a live preview of the generated map.
+* [VS Code Extension](/guide/installing-the-vscode-extension.html) Install the Argdown VS Code extension for full Argdown language support in one of the best code editors around. Includes a live preview, syntax highlighting, content assist, code linting and export options.
+* [Commandline Tool](/guide/installing-the-commandline-tool.html) If you prefer to work with the commandline install the Argdown commandline tool. You can define custom processes in your config file and use them in a task runner to export several argument maps for the same document at once.
+
+:::

@@ -4,14 +4,11 @@ import Vue from "vue";
 import App from "./App";
 import router from "./router";
 import store from "./store.js";
-import * as chevrotain from "chevrotain";
-
-const getTokenConstructor = chevrotain.getTokenConstructor;
 
 Vue.config.productionTip = false;
 
 Vue.filter("tokenName", function(token) {
-  return getTokenConstructor(token).tokenName;
+  return token.tokenType.tokenName;
 });
 
 /* eslint-disable no-new */

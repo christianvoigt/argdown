@@ -144,6 +144,7 @@ export * from "./plugins/MapPlugin";
 export * from "./plugins/GroupPlugin";
 export * from "./plugins/JSONExportPlugin";
 export * from "./plugins/DotExportPlugin";
+export * from "./plugins/SaysWhoPlugin";
 export * from "./IArgdownPlugin";
 export * from "./IArgdownLogger";
 export * from "./ArgdownPluginError";

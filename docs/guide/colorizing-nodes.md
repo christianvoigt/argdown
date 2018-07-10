@@ -17,7 +17,7 @@ selection:
 <b> #tag-1
 ```
 
-As you can see if you look at c or b, the first tag applied to an element is used to determine its color. Additional tags are ignored.
+As you can see if you look at __c__ or __b__, the first tag applied to an element is used to determine its color. Additional tags are ignored.
 
 ## The `colorScheme` setting
 
@@ -46,27 +46,27 @@ Here are the presets that come shipped with the Argdown parser:
 
 [Color Brewer](http://colorbrewer2.org/) schemes (also used by D3):
 
-- colorbrewer-category10
-- colorbrewer-accent
-- colorbrewer-dark2
-- colorbrewer-paired
-- colorbrewer-set
-- colorbrewer-set2
-- colorbrewer-set3
+- `colorbrewer-category10`
+- `colorbrewer-accent`
+- `colorbrewer-dark2`
+- `colorbrewer-paired`
+- `colorbrewer-set`
+- `colorbrewer-set2`
+- `colorbrewer-set3`
 
 [I want hue](http://tools.medialab.sciences-po.fr/iwanthue/) schemes:
 
-- iwanthue-colorblind-friendly
-- iwanthue-fancy
-- iwanthue-fluo
-- iwanthue-red-roses
-- iwanthue-ochre-sand
-- iwanthue-yellow-lime
-- iwanthue-green-mint
-- iwanthue-ice-cube
-- iwanthue-blue-ocean
-- iwanthue-indigo-night
-- iwanthue-purple-wine
+- `iwanthue-colorblind-friendly`
+- `iwanthue-fancy`
+- `iwanthue-fluo`
+- `iwanthue-red-roses`
+- `iwanthue-ochre-sand`
+- `iwanthue-yellow-lime`
+- `iwanthue-green-mint`
+- `iwanthue-ice-cube`
+- `iwanthue-blue-ocean`
+- `iwanthue-indigo-night`
+- `iwanthue-purple-wine`
 
 If you want a different look you can also define you own custom color theme:
 
@@ -177,7 +177,7 @@ selection:
 <b>: #tag-3
 ```
 
-In this example argument b gets now the color of #tag-1 and statement c gets now the color of #tag-2.
+In this example argument __b__ gets now the color of __#tag-1__ and statement __c__ gets now the color of __#tag-2__.
 
 ## Changing the group color by tag
 

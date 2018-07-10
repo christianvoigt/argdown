@@ -65,8 +65,8 @@ export const provideCompletion = (
         }
       }
     }
-  } else if (char === "#" && response.tagsDictionary) {
-    return Object.keys(response.tagsDictionary).map((t: any) => {
+  } else if (char === "#" && response.tags) {
+    return Object.keys(response.tags).map((t: any) => {
       const item = CompletionItem.create(`#(${t})`);
       item.insertText = `(${t})`;
       item.kind = CompletionItemKind.Keyword;

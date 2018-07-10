@@ -1,12 +1,20 @@
-// module.exports = {
-//   title: "Argdown",
-//   description: "A simple argumentation syntax inspired by Markdown",
-//   base: "argdown",
-//   markdown: {
-//     lineNumbers: true
-//   }
-// };
 var argdown = require("../../packages/argdown-node/dist/src/index.js").argdown;
+var container = require("markdown-it-container");
+
+var domain = "http://1px-solid-black.com/argdown";
+// var domain = "https://christianvoigt.github.io"
+
+var SaysWhoPlugin = require("../../packages/argdown-core/dist/src/plugins/SaysWhoPlugin.js").SaysWhoPlugin;
+argdown.addPlugin(new SaysWhoPlugin(), "add-proponents");
+argdown.defaultProcesses["says-who-map"] = [
+  "load-file", // loads Argdown files (request.input)
+  "parse-input", // parses them (response.ast)
+  "build-model", // builds the data model (response.arguments, response.statements...)
+  "build-map", // creates the map (response.map)
+  "add-proponents", // our new processor with the SaysWhoPlugin
+  "export-dot", // exports the map into dot format
+  "export-svg" // exports the dot file into svg format
+];
 
 require("../../packages/argdown-prism/index.js");
 var UNESCAPE_MD_RE = /\\([!"#$%&'()*+,\-.\/:;<=>?@[\\\]^_`{|}~])/g;
@@ -30,9 +38,11 @@ function removeFrontMatter(str) {
 module.exports = {
   title: "Argdown",
   description: "A simple syntax for complex argumentation",
-  //   base: "argdown",
+  base: "/argdown/",
   markdown: {
     config: md => {
+      md.use(...createContainer("buttonlist"));
+      md.use(...createContainer("definition"));
       var oldFence = md.renderer.rules.fence;
       md.renderer.rules.fence = (tokens, idx, options, env, slf) => {
         var token = tokens[idx];
@@ -63,6 +73,9 @@ module.exports = {
           var mapTitle = "";
           if (result.frontMatter && result.frontMatter.title) {
             mapTitle = result.frontMatter.title;
+          }
+          if (result.frontMatter && result.frontMatter.runSaysWhoPlugin) {
+            result = argdown.run({ process: ["add-proponents", "export-dot", "export-svg"] }, result);
           }
           if (result.frontMatter && result.frontMatter.hide) {
             token.content = removeFrontMatter(token.content);
@@ -141,16 +154,46 @@ module.exports = {
           ]
         }
       ],
-      "/syntax/": [""],
-      "": [""]
+      "/syntax/": [""]
     },
     nav: [
       { text: "Home", link: "/" },
       { text: "Guide", link: "/guide/" },
       { text: "Syntax", link: "/syntax/" },
-      { text: "API", link: "/api/" },
-      { text: "Sandbox", link: "https://christianvoigt.github.io/argdown/sandbox/" },
+      {
+        text: "API",
+        items: [
+          { text: "Overview", link: "/api/" },
+          { text: "@argdown/core", link: domain + "/argdown-core/index.html" },
+          { text: "@argdown/node", link: domain + "/argdown-node/index.html" }
+        ]
+      },
+      { text: "Sandbox", link: domain + "/sandbox/" },
       { text: "Github", link: "https://github.com/christianvoigt/argdown" }
     ]
   }
 };
+function createContainer(klass, defaultTitle) {
+  return [
+    container,
+    klass,
+    {
+      render(tokens, idx) {
+        const token = tokens[idx];
+        const info = token.info
+          .trim()
+          .slice(klass.length)
+          .trim();
+        let title = "";
+        if (info || defaultTitle) {
+          title = `<p class="custom-block-title">${info || defaultTitle}</p>`;
+        }
+        if (token.nesting === 1) {
+          return `<div class="${klass} custom-block">${title}\n`;
+        } else {
+          return `</div>\n`;
+        }
+      }
+    }
+  ];
+}

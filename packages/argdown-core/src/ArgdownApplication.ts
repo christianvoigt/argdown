@@ -70,7 +70,15 @@ export interface IArgdownProcessor {
  * @example
  * ```typescript
  *
- * import {ArgdownApplication, IArgdownRequest, IHtmlResponse, ParserPlugin, ModelPlugin, TagPlugin, HtmlExportPlugin} from "@argdown/core";
+ * import {
+ * ArgdownApplication,
+ * IArgdownRequest,
+ * IHtmlResponse,
+ * ParserPlugin,
+ * ModelPlugin,
+ * ColorPlugin,
+ * HtmlExportPlugin
+ * } from "@argdown/core";
  *
  * const app = new ArgdownApplication();
  *
@@ -80,8 +88,8 @@ export interface IArgdownProcessor {
  * const modelPlugin = new ModelPlugin();
  * app.addPlugin(modelPlugin, "build-model");
  *
- * const tagPlugin = new TagPlugin();
- * app.addPlugin(tagPlugin, "build-model");
+ * const colorPlugin = new ColorPlugin();
+ * app.addPlugin(colorPlugin, "build-model");
  *
  * const htmlExportPlugin = new HtmlExportPlugin();
  * app.addPlugin(htmlExportPlugin, "export-html");
