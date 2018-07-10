@@ -1,22 +1,13 @@
-# Writing custom plugins
-
-In this example, we will write a custom plugin that adds proponent names to argument node labels. The proponent names have to be defined in data elements of the arguments. 
-
-This is our plugin (written in Typescript):
-
-```typescript
-import {
-    ArgdownPluginError,
-    IArgdownPlugin, 
-    IRequestHandler, 
-    IArgdownResponse, 
-    ArgdownTypes, 
-    IMapNode,
-    isGroupMapNode
-} from "@argdown-core";
+import { IArgdownPlugin, IRequestHandler } from "../IArgdownPlugin";
+import { ArgdownPluginError } from "../ArgdownPluginError";
+import { IMapNode, ArgdownTypes, isGroupMapNode } from "../model/model";
+import { IArgdownResponse } from "..";
 
 /**
- * Prepends argument node label text with the argument's proponent name.
+ * Adds proponents to argument node label text.
+ *
+ * This is just a simple toy plugin for demonstration purposes.
+ * It is used in the Argdown documentation to teach how to write custom plugins.
  **/
 export class SaysWhoPlugin implements IArgdownPlugin {
   name: string = "SaysWhoPlugin"; // obligatory plugin name
@@ -53,8 +44,3 @@ const processNodesRecursively = (node: IMapNode, response: IArgdownResponse): vo
     }
   }
 };
-```
-
-The SaysWhoPlugin can actually be found in the @argdown/core package, although it is just added for demonstration purposes.
-
-In the [next section](/guide/loading-custom-plugins-in-a-config-file.html) we will continue by loading the plugin in a config file and then running it with the commandline tool.

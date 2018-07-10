@@ -104,7 +104,7 @@ export default {
   top: 0px;
   left: 100%;
   bottom: 0px;
-  background-color: #a0dde5;
+  background-color: #abd4da;
   padding: 1em;
   overflow: auto;
   height: 100%;

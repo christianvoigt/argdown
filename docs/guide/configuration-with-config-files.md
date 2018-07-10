@@ -43,7 +43,7 @@ module.exports = {
 Instead of putting the settings directly into the module exports you can also export a config object containing the settings (in this example we are using ES6 Javascript syntax, so make sure it is supported):
 
 ```javascript
-module.exports{
+module.exports = {
   config: {
     selection: {
       excludeDisconnected: false,

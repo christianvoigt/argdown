@@ -4,12 +4,16 @@ sidebar: auto
 
 # The Syntax
 
-An Argdown document consists of a sequence of blocks of text separated by empty lines. Each block defines a top-level element. A top-level block element is thus simply an element that is defined in one or more consecutive lines of text and is
+An Argdown document consists of a sequence of blocks of text separated by empty lines. Each block defines a top-level element. 
+
+:::definition Top-level block elements
+A top-level block element is an element that is defined in one or more consecutive lines of text and is
 
 - at the document start or preceded by an empty line
 - at the document end or followed by an empty line.
+:::
 
-Top-level block elements may contain many other elements as child elements. Some of these elements are of types that may never appear as top-level elements themselves. These are called "inline elements". Other possible child elements are of a type that may also appear as top-level block elements themselves. These are simply called "block elements".
+Top-level block elements may contain many other elements as child elements. Some of these elements are of types that may never appear as top-level elements themselves. These are called __inline elements__. Other possible child elements are of a type that may also appear as top-level block elements themselves. These are simply called __block elements__.
 
 All but one of the main sections of this documentation describe the block elements of Argdown. The subsections of each of these main sections describe the different subtypes of each block element and the elements that they may contain as child elements.
 
@@ -58,8 +62,6 @@ a
 
 Statements are used on their own, as members of relations or as premises and conclusions of arguments. They contain the propositional content of an Argdown document. You can also use them to introduce, structure, comment or analyze the argumentation (meta-statements). On the other hand you may prefer to use Argdown comments for that purpose to keep the meta-commentary cleary separated. Which option you choose is up to you.
 
-### Equivalence classes
-
 ```argdown-cheatsheet
 ===
 explanation: >
@@ -77,19 +79,29 @@ I am a statement occurring
 only once in this document.
 ```
 
-Defining statements as non-repeatable string occurrences may seem counter-intuitive at first but it helps keeping Argdown really simple. Interpreting the same string sequence as referring to the same "propositional content" would create many problems. Consider for example statements that refer to different things in the same way ("He is the best football player in the world" referring once to Ronaldo and once to Messi). Both statements contain the same characters but mean different things. Consider on the other hand statements that have the same meaning but express it differently ("Messi is the best football player in the world", "The best football player in the world is Messi."). We need to be able to express that these two statements are logically and semantically equivalent. String identity will not help us here.
+### Equivalence classes
 
-Still one might think it absurd that it is impossible in the Argdown syntax to use the same "statement" twice. For example, how do you express that two arguments share a premise or a conclusion?
+As we have seen at the end of the previous section, __statements__ in Argdown are defined as  __non-repeatable string occurrences__. This may seem counter-intuitive at first but it helps keeping Argdown really simple. Interpreting the same string sequence as referring to the same "propositional content" would create many problems. 
 
-The solution to all these problems is simple: Instead of automatically treating identical strings as logically and semantically equivalent, we explicitly state which string occurrences (which "statements") really are equivalent and which are not. By doing so we sort statements into different sets. In Argdown these sets are called "equivalence classes".
+Consider for example statements that refer to different things in the same way ("He is the best football player in the world." referring once to Ronaldo and once to Messi). Both statements may contain the same characters but mean different things. 
+
+Consider on the other hand statements that have the same meaning but express it differently ("Messi is the best football player in the world.   ", "The best football player in the world is Messi."). We need to be able to express that these two statements are logically and semantically equivalent. String identity will not help us here.
+
+Still, one might think it absurd that it is impossible in the Argdown syntax to use the same "statement" twice. For example, how do you express that two arguments share a premise or a conclusion?
+
+The solution to all these problems is simple: Instead of automatically treating identical strings as logically and semantically equivalent, we explicitly state which string occurrences (which "statements") really are equivalent and which are not. By doing so we sort statements into different sets. In Argdown these sets are called __equivalence classes__.
 
 If you want to express that two arguments share the same premise or conclusion or that two differently formulated statements basically mean the same thing, you put them into the same equivalence class. If you want to express that two identical string occurrences mean two different things, you put them in two different equivalence classes.
 
-Actually, to do the latter, you do not have to do anything. By default, every statement is already put into its own equivalence class. You only have to explicitely create a new equivalence class, if you want to populate it with more than one member. So how do you put two statements into the same equivalence class? You do that by giving them the same title.
+Actually, to do the latter, you do not have to do anything. By default, every statement is already put into its own equivalence class. You only have to explicitely create a new equivalence class, if you want to populate it with more than one member. 
+
+So how do you put two statements into the same equivalence class? You do that by giving them the same title.
 
 ### Statement titles
 
-Statement titles are used to explicitely assign the statement to an equivalence class. Each statement is member of one and only one equivalence class and accordingly can have one and only one title. "Statement titles" thus look like identifiers for statements, but are acutally identifiers of whole equivalence classes with potentially many statements as members. Each statement that does not have a title is automatically member of an untitled equivalence class that can only ever have this one lonely member (because it is impossible to refer to an untitled equivalence class twice).
+Statement titles are used to explicitely assign the statement to an equivalence class. Each statement is member of one and only one equivalence class and accordingly can have one and only one title. 
+
+"Statement titles" look like identifiers for statements, but are actually identifiers of whole equivalence classes with potentially many statements as members. Each statement that does not have a title is automatically member of an untitled equivalence class that can only ever have this one lonely member (because it is impossible to refer to an untitled equivalence class twice).
 
 #### Statement definitions
 
@@ -243,7 +255,7 @@ hide: true
 You can add metadata in the [YAML data format](http://yaml.org) to any statement definition or reference. For a quick introduction to YAML see [here](https://www.codeproject.com/Articles/1214409/Learn-YAML-in-five-minutes) or [here](https://learnxinyminutes.com/docs/yaml/).
 
 :::tip Always add empty spaces after colons
-The most common pitfall with YAML is that you always have to insert an empty space after the colon that divides keys from values. Example:
+The most common pitfall with YAML is that you always have to insert an empty space after the colon that divides a key from its value. 
 
 **Wrong:** `key:value`
 
@@ -304,11 +316,17 @@ While it is just as easy to read the comments for humans like yourself, for a co
 
 Arguments are the second basic block elements of Argdown. What is the conceptual difference between an argument and a statement?
 
-With a statement something is claimed to be true. If you do not know anything about it, this claim alone will not help you much in deciding if you should accept it or not. With an argument it is shown (by logical inference) that if you already accept some other statements (the premises) you should also accept (and believe) the statement in question (the conclusion). So while a statement is structurally simple, an argument always has to consist of at least elements: one (or more) premises, a conclusion and an inference from the premises to the conclusion.
+Somebody who makes a statement claims that something is true. If you do not know anything about it, this claim alone will not help you much in deciding if you should accept it or not. Somebody who makes an argument for a claim, tries to show (by logical inference) that if you already accept some other statements (the premises) you should also accept (and believe) the statement in question (the conclusion). 
 
-This internal structure is called a "premise-conclusion-structure" (pcs) and we will see in this section how you can define it in Argdown. The act of defining an argument's pcs is called "logical reconstruction". An argument for which we have defined its pcs is "reconstructed". If we have not done so yet the argument is still "unreconstructed".
+So while a statement is structurally simple, an argument always has to consist of at least three elements: 
 
-Argdown also supports reconstructing "complex" arguments: A complex argument consists of a sequence of "inferential steps" from premises to conclusions in which each conclusion is used together with new premises to derive the next conclusion. The last conclusion of such a complex argument is called the "main conclusion", the others are called "preliminary conclusions". In contrast a simple argument only contains one inferential step.
+* one (or more) premises, 
+* a conclusion and 
+* an inference from the premises to the conclusion.
+
+This internal structure is called a __premise-conclusion-structure__ (pcs) and we will see in this section how you can define it in Argdown. The act of defining an argument's pcs is called __logical reconstruction__. An argument for which we have defined its pcs is "reconstructed". If we have not done so yet, the argument is still "unreconstructed".
+
+Argdown also supports reconstructing more __complex arguments__: A complex argument consists of a sequence of "inferential steps" from premises to conclusions in which each conclusion is used together with new premises to derive the next conclusion. The last conclusion of such a complex argument is called the __main conclusion__, the others are called __preliminary conclusions__. In contrast, a simple argument only contains one inferential step.
 
 :::tip
 A complex argument is logically equivalent to a series of simple arguments that are connected by support relations. In some cases it may be better to hide the complexity within a complex argument to simplify the argument map. In others it may be better to show the internal workings between the inferential steps in the argument map. This is a question of complexity managment and which style you choose is up to you.
@@ -316,7 +334,7 @@ A complex argument is logically equivalent to a series of simple arguments that 
 
 The process of logical reconstruction is often quite tedious and difficult. If we just want to quickly sketch the different arguments in a debate or the main inferential steps in a complex argumentation, defining the pcs of every argument would be reconstructive overkill. Instead you can start out by giving all arguments a short title and describing their main drift in a sentence or two.
 
-This documentation first describes how to sketch arguments in Argdown. Then it will turn onto the logical reconstruction in Argdown and describe premise-conclusion-structures in detail.
+This documentation first describes how to __sketch arguments__ in Argdown. Then it will turn onto the logical reconstruction in Argdown and describe premise-conclusion-structures in detail.
 
 ### Argument titles
 
@@ -503,16 +521,18 @@ hide: true
 
 ### Premise-conclusion-structures
 
-Sketched arguments are _reconstructed_ by assigning a premise-conclusion-structure (pcs) to them. Premise-conclusion-structures are list-like block elements with pcs-statements as numbered list items. Pcs-statements are normal statements preceded by a pcs index number in round brackets. A pcs may not contain an empty line.
+Sketched arguments are __logically reconstructed__ by assigning a premise-conclusion-structure (pcs) to them. Premise-conclusion-structures are list-like block elements with pcs-statements as numbered list items. Pcs-statements are normal statements preceded by a pcs index number in round brackets. A pcs may not contain an empty line.
 
 There are currently two types of pcs-statements: premises and conclusions. Conclusions look like premises, except that they are preceded by an inference element. An inference element is separating its conclusion from its premises by a series of hyphens.
 
+:::definition Composition of a premise-conclusion-structure 
 A well-formed pcs complies to the following rules:
 
 - it starts with at least one premise
 - it ends with a main conclusion, preceded by an inference
-- it may contain additional "inferential steps", each at least containing a "preliminary conclusion" preceded by an inference
+- it may contain additional "inferential steps", each at least containing a preliminary conclusion preceded by an inference
 - each inferential step may contain additional premises and may make of use of preceding conclusions or premises
+:::
 
 A pcs is a block element that can only occur at the top-level of the document, never inside other block elements. You assign a pcs to an argument, by inserting it as next top-level element directly behind an argument definition or reference.
 
@@ -579,6 +599,7 @@ Universal instantiation, Modus Ponens
 
 Relations can be defined between statements, arguments and inferences. You can express the same relation in different places and in different ways in the Argdown document. The Argdown parser will recognize that you mean the same relation and not draw redundant arrows in the map.
 
+:::definition Composition of a relation tree
 You define a relation for any statement, argument or inference **x** by:
 
 - adding a _new line_ below **x** or below any other relation defined below x as long as you leave no empty line in between
@@ -587,6 +608,7 @@ You define a relation for any statement, argument or inference **x** by:
 - adding the other relation member **y** (statement, argument or inference) directly behind the symbol after an empty space.
 
 For any such relation member **y** you can also add relations beneath it by following the same rules, thus creating a multi-level tree structure of relations.
+:::
 
 Using this syntax you can define an arbitrarily complex non-hierarchical graph of relations within a single tree of Argdown relations.
 
@@ -813,14 +835,19 @@ Arguments are considered as "reconstructed" if they have an internal premise-con
 
 In this case the dialectical attack and support relations can be defined in terms of logical relations between statements:
 
-- Argument a is **supported** by argument b iff a's _main conclusion_ **entails** a _premise_ of b.
-- Argument a is **attacked** by argument b iff a's _main conclusion_ is **contrary** to a _premise_ of b.
+:::definition The logical definition of dialectical relations
+Argument a is **supported** by argument b iff a's main conclusion **entails** a premise of b.
+
+Argument a is **attacked** by argument b iff a's main conclusion is **contrary** to a premise of b.
+:::
 
 Because statement p entails statement q if p is _equivalent_ with q, argument a is also supported by argument b if a's main conclusion is equivalent with a premise of b (which means in Argdown that the two statements share the same title).
 
 Even though it is not as easy to define undercuts in terms of logical relations between statements, an undercut can at least also be defined in terms of an argument's internal premise-conclusion-structure:
 
-- Argument a is an **undercut** of argument b iff a's _main conclusion_ undermines an _inferential step_ of a.
+:::definition Logical definition of an undercut
+Argument a is an **undercut** of argument b iff a's main conclusion __undermines__ an inferential step of a.
+:::
 
 If an argument's premise-conclusion-structure contains several inferential steps, you can define which inferential step is undermined by an undercut.
 
@@ -1003,9 +1030,9 @@ By the way: In this documentation the frontmatter is used extensively to add dat
 
 ## Headings
 
-Markdown-like headings are used in Argdown to structure the text and define a hierarchy of sections. A heading is a top-level block element that can not appear within other block level elements. It begins with one or more hash-characters (#) indicating the heading level. To make it possible to derive a hierarchy of sections from headings, a heading of level `x+1` should always be a sub-heading of a level-x heading.
+Markdown-like headings are used in Argdown to structure the text and define a hierarchy of sections. A heading is a top-level block element that can not appear within other block level elements. It begins with one or more hash-characters (`#`) indicating the heading level. To make it possible to derive a hierarchy of sections from headings, a heading of level `x+1` should always be a sub-heading of a level-x heading.
 
-These sections are then used to derive groups of statement and argument nodes in the argument map. For more information on the relations between headings, sections and groups, see the guide on [creating groups in argument maps](/guide/#creating-groups).
+These sections are then used to derive groups of statement and argument nodes in the argument map. For more information on the relations between headings, sections and groups, see the guide on [creating groups in argument maps](/guide/creating-group-nodes.html).
 
 ```argdown-cheatsheet
 ===
@@ -1041,7 +1068,7 @@ hide: true
 # H1 #tag {isGroup: true}
 ```
 
-In the last example the YAML data is used with the `isGroup` flag. For more information on this flag, see the guide on [creating groups in argument maps](/guide/#creating-groups).
+In the last example the YAML data is used with the `isGroup` flag. For more information on this flag, see the guide on [creating groups in argument maps](/guide/creating-group-nodes.html).
 
 ## Lists
 

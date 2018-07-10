@@ -135,7 +135,7 @@ export class HtmlExportPlugin implements IArgdownPlugin {
           token.title
         )}</span>]</a>${token.trailingWhitespace}`;
       },
-      [TokenNames.ARGUMENT_REFERENCE + "Entry"]: (_request, response, token) => {
+      [TokenNames.ARGUMENT_REFERENCE]: (_request, response, token) => {
         const argument = response.arguments![token.title!];
         let htmlId = utils.getHtmlId("argument", argument.title!);
         let classes = "reference argument-reference";
@@ -247,14 +247,14 @@ export class HtmlExportPlugin implements IArgdownPlugin {
         response.html += `<div data-line="${node.startLine}" class="${classes}">`;
       },
       [RuleNames.STATEMENT + "Exit"]: (_request, response) => (response.html += "</div>"),
-      [RuleNames.ARGUMENT + "Entry"]: (_request, response, node) => {
+      [RuleNames.PCS + "Entry"]: (_request, response, node) => {
         let classes = "argument has-line";
         if (node.argument && node.argument.tags && node.argument.tags) {
           classes += " " + $.getCssClassesFromTags(response, node.argument.tags);
         }
         response.html += `<div data-line="${node.startLine}" class="${classes}">`;
       },
-      [RuleNames.ARGUMENT + "Exit"]: (_request, response) => (response.html += "</div>"),
+      [RuleNames.PCS + "Exit"]: (_request, response) => (response.html += "</div>"),
       [RuleNames.INCOMING_SUPPORT + "Entry"]: (_request, response, node) => {
         response.html += `<div data-line="${
           node.startLine
@@ -346,14 +346,6 @@ export class HtmlExportPlugin implements IArgdownPlugin {
       [RuleNames.BOLD + "Exit"]: (_request, response, node) => (response.html += "</b>" + node.trailingWhitespace),
       [RuleNames.ITALIC + "Entry"]: (_request, response) => (response.html += "<i>"),
       [RuleNames.ITALIC + "Exit"]: (_request, response, node) => (response.html += "</i>" + node.trailingWhitespace),
-      [RuleNames.PCS + "Entry"]: (_request, response, node) => {
-        let classes = "argument pcs";
-        if (node.argument!.tags) {
-          classes += " " + $.getCssClassesFromTags(response, node.argument!.tags!);
-        }
-        response.html += `<div class="${classes}">`;
-      },
-      [RuleNames.PCS + "Exit"]: (_request, response) => (response.html += "</div>"),
       [RuleNames.ARGUMENT_STATEMENT + "Entry"]: (_request, response, node) => {
         const statement = node.statement;
         if (statement && isConclusion(statement) && statement.inference) {

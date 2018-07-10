@@ -4,12 +4,17 @@ This section describes how the Argdown parser decides which statements and argum
 
 In general, all arguments with at least one relation are added as nodes to the argument map. But you can also be more selective. For example you migh want to create a map with arguments from a certain [section](#selecting-nodes-by-section) or with a certain [tag](#selecting-nodes-by-tag).
 
-The default rules that decide which statements will get their own node [are more complicated](#choosing-a-statementselectionmode). The Argdown parser tries to keep the number of statement nodes as low as possible to support visualizing complex debates with many arguments. But if you prefer to insert all statements as nodes to the map, it is [easy](#all-mode) to do so.
+The default rules that decide which _statements_ will get their own node [are more complicated](#choosing-a-statementselectionmode). The Argdown parser tries to keep the number of statement nodes as low as possible to support visualizing complex debates with many arguments. But if you prefer to insert all statements as nodes to the map, it is [easy](#all-mode) to do so.
 
 The selection process is divided up into two phases:
 
-- In the preselection round, statements and arguments are excluded based on selected [sections](#selecting-nodes-by-section), [tags](#selecting-nodes-by-tag), [titles](#selecting-nodes-by-title) or [flags](#selecting-nodes-with-the-isinmap-data-flag).
-- In the selection round, it is checked in which relations these preselected elements stand to other preselected elements. This is the round in which the [`excludeDisconnected` setting](#the-excludedisconnected-selection-setting) and the [`statementSelectionMode`](#choosing-a-statementselectionmode) are applied. It is also the round in which you can choose to include "extra" statements from the preselection with the [`includeStatements` setting](#selecting-nodes-by-title) or the [`isInMap:true` flag](<(#selecting-nodes-with-the-isinmap-data-flag)>).
+:::definition
+
+__Preselection round:__ In the preselection round, statements and arguments are excluded based on selected [sections](#selecting-nodes-by-section), [tags](#selecting-nodes-by-tag), [titles](#selecting-nodes-by-title) or [flags](#selecting-nodes-with-the-isinmap-data-flag).
+
+__Selection round:__ In the selection round, it is checked in which relations these preselected elements stand to other preselected elements. This is the round in which the [`excludeDisconnected` setting](#the-excludedisconnected-selection-setting) and the [`statementSelectionMode`](#choosing-a-statementselectionmode) are applied. It is also the round in which you can choose to include "extra" statements from the preselection with the [`includeStatements` setting](#selecting-nodes-by-title) or the [`isInMap:true` flag](<(#selecting-nodes-with-the-isinmap-data-flag)>).
+
+:::
 
 Let us start with the latter as this is the round that is excluding arguments and statements by default, even if you do not change any settings.
 
@@ -17,21 +22,23 @@ In contrast, the preselection round will only exclude statements or arguments, i
 
 ## The `excludeDisconnected` selection setting
 
-By default only statements and arguments are represented by nodes in the argument map that are considered to be connected to another node in the map.
+By default only statements and arguments are represented by nodes in the argument map that are considered to be _connected_ to another node in the map. A statement counts as connected, if its [equivalence class](/syntax/#equivalence-classes) is.
 
-An argument is considered to be connected if any of the following conditions apply:
+:::definition Connected elements
 
-- the argument has at least one incoming or outgoing attack or support relation to a preselected argument or statement
-- a premise is supported/attacked by another preselected argument or statement
-- the main conclusion is supporting/attacking another preselected argument or statement
-- an inference is undercut by an preselected argument or statement
-- implicit support: a premise is equivalent with a main conclusion of another preselected argument
-- implicit support: the main conclusion is equivalent with a premise of another preselected argument
+An equivalence class is considered to be __connected__ if either one of the following conditions apply:
 
-A statement is considered to be connected if either one of the following conditions apply:
+- It is used in a preselected argument's premise-conclusion-structure as __premise__ or __conclusion__.
+- It has __at least one relation__ to a preselected element.
 
-- it is used in a preselected argument's premise-conclusion-structure as premise or conclusion
-- it has at least one relation to a preselected argument or statement.
+An argument is considered to be __connected__ if any of the following conditions apply:
+
+- The __argument__ itself has logically unreconstructed relations.
+- A __premise is supported/attacked__ by another preselected element.
+- The __main conclusion is supporting/attacking__ another preselected element.
+- An __inference is undercut__ by a preselected element.
+- __Support by equivalence:__ a premise is equivalent with a main conclusion or the main conclusion is equivalent with a premise of another preselected argument.
+:::
 
 Excluding disconnected statements from the map makes it possible to add meta-statements to the Argdown text commenting on your reconstruction, without polluting your argument map with them. If you want to disable this feature you can use the `excludeDisconnected: false` selection setting:
 
@@ -53,19 +60,24 @@ Click on the map button in the top right to see these three sad arguments appear
 
 ## Choosing a `statementSelectionMode`
 
-By default _all_ connected arguments are included as nodes in the argument map. In contrast, not all connected equivalence classes will appear as statement nodes in the map. While you can change this behaviour it is quite important to keep the number of statement nodes in your map low.
+The Argdown parser supports several different general methods to exlude equivalence classes from the selection. You can change the method used by choosing a `statementSelectionMode` in the selection settings. This sections describes the different modes currently supported.
 
-If you include all statements of a a complex debate as nodes in your map, it will be overcrowded and readers will have difficulty to keep the orientation. Choosing which statements you visualize as nodes in your map is a crucial method of managing complexity.
+:::tip Managing complexity in your map
+In contrast to arguments, not all preselected and connected equivalence classes will appear as statement nodes in the map. While you can easily change this behaviour it is quite important to keep the number of statement nodes in your map as low as possible. 
 
-The Argdown parser supports several different general methods to exlude further equivalence classes from all members of the preselection. You can change the method used by choosing a `statementSelectionMode` in the selection settings. This sections describes the different modes currently supported.
+If you include all statements of a a complex debate as nodes in your map, it will become overcrowded and readers will have difficulty to keep the orientation. Choosing which statements you visualize as nodes in your map is a crucial method of managing complexity.
+:::
 
-Note that any equivalence class excluded by the current mode will _still_ appear as a node if any one of the following three conditions apply:
+In three special cases any of the following modes will __not__ exclude equivalence classes:
 
-1.  its `isInMap` [data flag](#selecting-nodes-with-the-isinmap-data-flag) is set to true
-2.  its title is included in the `includeStatements` [selection setting](#selecting-nodes-by-title)
-3.  it is an equivalence class that
+:::definition Equivalence classes that will be selected as nodes by all modes
+
+1.  The `isInMap` [data flag](#selecting-nodes-with-the-isinmap-data-flag) is set to true.
+2.  The statement title is included in the `includeStatements` [selection setting](#selecting-nodes-by-title).
+3.  The equivalence class
     - has relations
     - and is not used in any preselected argument as premise or conclusion.
+:::
 
 The third case may need an explanation: Relations of such equivalence classes can not be represented by edges of argument nodes, so it is important to represent them with statement nodes or they will be lost. In most cases you will want to include them in your map.
 
@@ -268,9 +280,9 @@ selection:
     + [t1]
 ```
 
-Now argument f is included in the map, even though it is not tagged as well. You may have noticed that not all arguments with the #pro tag were selected. Argument e is missing from the map.
+Now argument __f__ is included in the map, even though it is not tagged as well. You may have noticed that not all arguments with the __#pro__ tag were selected. Argument __e__ is missing from the map.
 
-The reason is once again that disconnected nodes are excluded from the map. Argument e's only connection is to d, but d is neither tagged with the #pro tag nor is it without any tags (it is tagged with the #con tag). As a result it is excluded from the map. This leaves e disconnected. So it is excluded as well.
+The reason is once again that disconnected nodes are excluded from the map. Argument __e's__ only connection is to __d__, but __d__ is neither tagged with the __#pro__ tag nor is it without any tags (it is tagged with the __#con__ tag). As a result it is excluded from the map. This leaves __e__ disconnected. So it is excluded as well.
 
 ## Selecting nodes by section
 
@@ -331,7 +343,7 @@ selection:
     - <f>: argument description
 ```
 
-Note, that argument b is excluded, even though it is used outside of any section. This is because b is defined first in section H2 and sections are by default assigned by their first definition. For more about how sections are assigned see [creating groups](#creating-groups).
+Note, that argument __b__ is excluded, even though it is used outside of any section. This is because __b__ is defined first in section __H2__ and sections are by default assigned by their first definition. For more about how sections are assigned see [creating groups](#creating-groups).
 
 ## Selecting nodes by title
 
@@ -366,7 +378,7 @@ selection:
     + <d>
 ```
 
-Note that argument b, which would normally appear in the map together with t3, is now also excluded, because its only connection was to t3. Because t3 is excluded b is now disconnected and falls victim to the `excludeDisconnected` default policy.
+Note that argument __b__, which would normally appear in the map together with __t3__, is now also excluded, because its only connection was to __t3__. Because __t3__ is excluded __b__ is now disconnected and falls victim to the `excludeDisconnected` default policy.
 
 Why is there not also an `includeArguments` setting? It is not needed because by default _all_ connected arguments are added as nodes to the map. In contrast, only connected statements selected by the statementSelectionMode are added by default to the map. The `includeStatements` setting includes additional statements to the map that were not added by the statementSelectionMode. This means it is not an "exclusive" list of all equivalence classes that might be getting their own node in the map.
 

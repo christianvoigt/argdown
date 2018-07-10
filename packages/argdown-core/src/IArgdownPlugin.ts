@@ -22,6 +22,8 @@ export interface IRequestHandler {
  * the provided request object for configuration and the provided response object for returning any produced or transformed data.
  * The only exceptions are I/O operations (e.g. loading or saving files).
  *
+ * See the [guide on writing custom plugins](https://christianvoigt.github.io/argdown/guide/writing-custom-plugins.html) for more information.
+ *
  * @example
  * ```typescript
  *
@@ -30,11 +32,15 @@ export interface IRequestHandler {
  * export interface IGreetingSettings{
  *  addHello?:boolean;
  * }
- * export interface IGreetingRequest extends IArgdownRequest{
- *  greeting?:IGreetingSettings;
- * }
- * export interface IGreetingResponse extends IArgdownResponse{
- *  greeting:string;
+ * // We augment the request and response types from @argdown/core
+ * // to add our plugin settings and data:
+ * declare module "@argdown/core"{
+ *  interface IArgdownRequest{
+ *    greeting?:IGreetingSettings;
+ *  }
+ *  interface IArgdownResponse{
+ *    greeting:string;
+ *  }
  * }
  *
  * export class GreetingPlugin implements IArgdownPlugin{
@@ -45,19 +51,17 @@ export interface IRequestHandler {
  *      throw new ArgdownPluginError(this.name, "No ast found in response.");
  *    }
  *    // create default settings
- *    const gRequest = <IGreetingRequest>request;
- *    if(!gRequest.greeting){
- *      gRequest.greeting = {};
+ *    if(!request.greeting){
+ *      request.greeting = {};
  *    }
- *    if(gRequest.greeting.sayHello === undefined){
- *      gRequest.greeting.sayHello = true;
+ *    if(request.greeting.sayHello === undefined){
+ *      request.greeting.sayHello = true;
  *    }
  *  };
  *  run:IRequestHandler = (request, response)=>{
- *    const r = <IGreetingRequest>request;
- *    if(r.greeting && r.greeting.addHello){
+ *    if(request.greeting && request.greeting.addHello){
  *      // adding data to response object
- *      (<IGreetingResponse>response).greeting = "Hallo World!";
+ *      response.greeting = "Hallo World!";
  *    }
  *  };
  *  ruleListeners = {

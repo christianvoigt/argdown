@@ -15,14 +15,15 @@
   ],
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve --open",
-    "build": "vue-cli-service build --dest ../../docs/.vuepress/dist/sandbox",
+    "serve": "npm run copy-examples && vue-cli-service serve --open",
+    "build": "npm run copy-examples && vue-cli-service build --dest ../../docs/.vuepress/dist/sandbox",
     "lint": "vue-cli-service lint",
-    "deploy": "git push origin --tags HEAD:master && git subtree push --prefix dist origin gh-pages"
+    "copy-examples": "rimraf ./public/examples/*.argdown && copyfiles -f \"../../examples/*.argdown\" ./public/examples"
   },
   "dependencies": {
     "@argdown/codemirror-mode": "^0.1.1",
     "@argdown/core": "^0.8.7",
+    "axios": "^0.18.0",
     "d3": "^5.0.0",
     "dagre-d3": "^0.6.1",
     "file-saver": "^1.3.8",
@@ -40,9 +41,11 @@
     "@vue/eslint-config-prettier": "^3.0.0-beta.6",
     "babel-plugin-dynamic-import-node": "^1.2.0",
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
+    "copyfiles": "^2.0.0",
     "css-loader": "^0.28.11",
     "node-sass": "^4.9.0",
     "raw-loader": "^0.5.1",
+    "rimraf": "^2.6.2",
     "sass-loader": "^6.0.6",
     "vue-template-compiler": "^2.5.13"
   },

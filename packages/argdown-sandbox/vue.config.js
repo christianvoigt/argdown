@@ -1,1 +1,3 @@
-export const baseUrl = "/argdown/sandbox/";
+module.exports = {
+  baseUrl: "/argdown/sandbox/"
+};
