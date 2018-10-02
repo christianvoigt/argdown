@@ -198,7 +198,7 @@ describe("argdown-cli", function () {
         });
     });
     it("can include files", () => {
-        let globPath = "./test/include-test.argdown";
+        let globPath = path.resolve(__dirname, "./test/include-test.argdown");
         let expectedResult = fs.readFileSync(path.resolve(__dirname, "./include-test-expected-result.txt"), "utf8");
         let filePathToCli = path.resolve(__dirname, "../dist/src/cli.js");
         const cmd = "node " + filePathToCli + " compile " + globPath + " --stdout";
@@ -211,7 +211,7 @@ describe("argdown-cli", function () {
     });
     it("can load glob input", () => {
         let jsonFolder = path.resolve(__dirname, "./json");
-        let globPath = "./test/*.argdown";
+        let globPath = path.resolve(__dirname, "./test/*.argdown");
         let filePathToJson1 = path.resolve(__dirname, "./json/test.json");
         let filePathToJson2 = path.resolve(__dirname, "./json/include-test.json");
         let filePathToJson3 = path.resolve(__dirname, "./json/_partial1.json");

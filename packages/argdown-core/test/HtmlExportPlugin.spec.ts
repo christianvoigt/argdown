@@ -14,9 +14,15 @@ describe("HtmlExport", function() {
   let htmlExport = new HtmlExportPlugin();
   app.addPlugin(htmlExport, "export-html");
   it("can export Argdown", function() {
+    const input = `# Title
+      
+    [Statement]: Hello World!
+      +<Argument>
+      
+    <Argument>: Description 1 < 2`;
     let request = {
       process: ["parse-input", "build-model", "export-html"],
-      input: "# Title\n\n[Statement]: Hello World!\n +<Argument>\n\n<Argument>: Description 1 < 2"
+      input
     };
     let result = app.run(request);
     //console.log(result.html);
