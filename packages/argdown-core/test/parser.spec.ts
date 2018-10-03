@@ -3,6 +3,11 @@ import { expect } from "chai";
 import * as fs from "fs";
 import { tokenize, parser, ArgdownTreeWalker } from "../src/index";
 import { Logger } from "../src/index";
+import {
+  INVALID_PCS_POSITION_ERROR,
+  MISSING_INFERENCE_END_ERROR,
+  errorMessageProvider
+} from "../src/ArgdownErrorMessageProvider";
 
 const walker = new ArgdownTreeWalker();
 
@@ -31,14 +36,52 @@ describe("Parser", function() {
     expect(lexResult.errors).to.be.empty;
     expect(parser.errors).to.be.empty;
   });
-  it("can return errors", function() {
-    let source = "Text <Title>:\n\n+ text";
+  it("can return Argdown error on title preceded by text", function() {
+    let source = `Text <Title>:`;
+    let lexResult = tokenize(source);
+    parser.input = lexResult.tokens;
+    parser.argdown();
+    expect(parser.errors).to.exist;
+    expect(parser.errors.length).to.equal(1);
+    const error = parser.errors[0];
+    expect(error.name).to.equal("NotAllInputParsedException");
+    expect(error.message).to.equal(errorMessageProvider.buildInvalidElementPositionError(error.token));
+    expect(error.token.startLine).to.equal(1);
+    expect(error.token.startColumn).to.equal(6);
+  });
+  it("can return Argdown error on pcs without preceding emptyline", function() {
+    let source = `A
+    (1)`;
     let lexResult = tokenize(source);
     parser.input = lexResult.tokens;
     parser.argdown();
     //console.log(parser.errors[0]);
-    expect(lexResult.errors).to.be.empty;
     expect(parser.errors).to.exist;
+    expect(parser.errors.length).to.equal(1);
+    const error = parser.errors[0];
+    expect(error.name).to.equal("NotAllInputParsedException");
+    expect(error.message).to.equal(INVALID_PCS_POSITION_ERROR);
+    expect(error.token.startLine).to.equal(2);
+    expect(error.token.startColumn).to.equal(1);
+  });
+  it("can return Argdown error on incomplete inference", function() {
+    let source = `(1) a
+    (2) b
+    --
+    (3) c`;
+    let lexResult = tokenize(source);
+    parser.input = lexResult.tokens;
+    parser.argdown();
+    expect(parser.errors).to.exist;
+    expect(parser.errors.length).to.equal(1);
+    const error = parser.errors[0];
+    expect(error.name).to.equal("MismatchedTokenException");
+    expect(error.message).to.equal(MISSING_INFERENCE_END_ERROR);
+    // error.token is EOF without token position
+    // This is fixed in the ParserPlugin where the last token's position will be added to the EOF token.
+    // This should be identical to the location of error.previousToken, but for some unknown reason it is not:
+    // expect((<any>error).previousToken!.startLine).to.equal(4);
+    // expect((<any>error).previousToken!.startColumn).to.equal(5);
   });
   it("can escape characters", function() {
     let source = "<Title>: text \\[text\\]";
