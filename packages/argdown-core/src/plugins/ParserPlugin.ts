@@ -5,7 +5,8 @@ import { IArgdownLogger } from "../IArgdownLogger";
 import { ArgdownPluginError } from "../ArgdownPluginError";
 import { IArgdownRequest, IArgdownResponse } from "../index";
 import { IAstNode } from "../model/model";
-import { IToken, ILexingError, IRecognitionException } from "chevrotain";
+import { IToken, ILexingError, IRecognitionException, tokenMatcher, EOF, createTokenInstance } from "chevrotain";
+import { last } from "lodash";
 
 declare module "../index" {
   interface IArgdownResponse {
@@ -72,31 +73,31 @@ export class ParserPlugin implements IArgdownPlugin {
     if (response.parserErrors && response.parserErrors.length > 0) {
       logger.log("verbose", "[ParserPlugin]: Parser returned errors.\n" + JSON.stringify(response.parserErrors));
     }
-    // if (response.parserErrors && response.parserErrors.length > 0) {
-    //   // //add location if token is EOF
-    //   var lastToken = _.last(response.tokens);
-    //   for (let error of response.parserErrors) {
-    //     if (error.token && tokenMatcher(error.token, chevrotain.EOF)) {
-    //       const startLine = lastToken.endLine;
-    //       const endLine = startLine;
-    //       const startOffset = lastToken.endOffset;
-    //       const endOffset = startOffset;
-    //       const startColumn = lastToken.endColumn;
-    //       const endColumn = startColumn;
-    //       const newToken = chevrotain.createTokenInstance(
-    //         chevrotain.EOF,
-    //         "",
-    //         startOffset,
-    //         endOffset,
-    //         startLine,
-    //         endLine,
-    //         startColumn,
-    //         endColumn
-    //       );
-    //       error.token = newToken;
-    //     }
-    //   }
-    // }
+    if (response.parserErrors && response.parserErrors.length > 0) {
+      // //add location if token is EOF
+      var lastToken = last(response.tokens);
+      for (let error of response.parserErrors) {
+        if (error.token && tokenMatcher(error.token, EOF)) {
+          const startLine = lastToken!.endLine || 1;
+          const endLine = startLine;
+          const startOffset = lastToken!.endOffset || 1;
+          const endOffset = startOffset;
+          const startColumn = lastToken!.endColumn || 1;
+          const endColumn = startColumn;
+          const newToken = createTokenInstance(
+            EOF,
+            "",
+            startOffset,
+            endOffset,
+            startLine,
+            endLine,
+            startColumn,
+            endColumn
+          );
+          error.token = newToken;
+        }
+      }
+    }
     return response;
   }
 }

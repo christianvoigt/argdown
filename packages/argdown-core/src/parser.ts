@@ -2,15 +2,16 @@
 
 import { Parser } from "chevrotain";
 import * as lexer from "./lexer";
-import { ArgdownErrorMessageProvider } from "./ArgdownErrorMessageProvider";
+import { errorMessageProvider } from "./ArgdownErrorMessageProvider";
 import { IAstNode, IRuleNode } from "./model/model";
 import { RuleNames } from "./RuleNames";
 
 class ArgdownParser extends Parser {
   constructor() {
-    super([], lexer.tokenList, {
-      errorMessageProvider: new ArgdownErrorMessageProvider(),
-      recoveryEnabled: true
+    super(lexer.tokenList, {
+      errorMessageProvider: errorMessageProvider,
+      recoveryEnabled: true,
+      outputCst: false
     });
     // very important to call this after all the rules have been defined.
     // otherwise the parser may not work correctly as it will lack information
@@ -32,34 +33,38 @@ class ArgdownParser extends Parser {
       this.CONSUME2(lexer.Emptyline);
     });
     // OR caching. see: http://sap.github.io/chevrotain/docs/FAQ.html#major-performance-benefits
-    let atLeastOne = this.AT_LEAST_ONE_SEP<IAstNode>({
+    const atLeastOne: IAstNode[] = [];
+    this.AT_LEAST_ONE_SEP({
       SEP: lexer.Emptyline,
-      DEF: () =>
-        this.OR(
-          this.c1 ||
-            (this.c1 = [
-              {
-                ALT: () => this.SUBRULE(this.heading)
-              },
-              {
-                ALT: () => this.SUBRULE(this.statement)
-              },
-              {
-                ALT: () => this.SUBRULE(this.pcs)
-              },
-              {
-                ALT: () => this.SUBRULE(this.argument)
-              },
-              {
-                ALT: () => this.SUBRULE(this.orderedList)
-              },
-              {
-                ALT: () => this.SUBRULE(this.unorderedList)
-              }
-            ])
-        )
+      DEF: () => {
+        atLeastOne.push(
+          this.OR(
+            this.c1 ||
+              (this.c1 = [
+                {
+                  ALT: () => this.SUBRULE(this.heading)
+                },
+                {
+                  ALT: () => this.SUBRULE(this.statement)
+                },
+                {
+                  ALT: () => this.SUBRULE(this.pcs)
+                },
+                {
+                  ALT: () => this.SUBRULE(this.argument)
+                },
+                {
+                  ALT: () => this.SUBRULE(this.orderedList)
+                },
+                {
+                  ALT: () => this.SUBRULE(this.unorderedList)
+                }
+              ])
+          )
+        );
+      }
     });
-    children.push(...atLeastOne.values);
+    children.push(...atLeastOne);
 
     return IRuleNode.create(RuleNames.ARGDOWN, children);
   });
@@ -218,8 +223,9 @@ class ArgdownParser extends Parser {
     let children: IAstNode[] = [];
     children.push(this.CONSUME(lexer.Indent));
     // OR caching. see: http://sap.github.io/chevrotain/docs/FAQ.html#major-performance-benefits
-    let atLeastOne = this.AT_LEAST_ONE<IAstNode>(() => this.SUBRULE(this.outgoingUndercut));
-    children = children.concat(atLeastOne);
+    this.AT_LEAST_ONE(() => {
+      children.push(this.SUBRULE(this.outgoingUndercut));
+    });
     children.push(this.CONSUME(lexer.Dedent));
     return IRuleNode.create(RuleNames.RELATIONS, children);
   });
@@ -227,35 +233,36 @@ class ArgdownParser extends Parser {
     let children: IAstNode[] = [];
     children.push(this.CONSUME(lexer.Indent));
     // OR caching. see: http://sap.github.io/chevrotain/docs/FAQ.html#major-performance-benefits
-    let atLeastOne = <IAstNode[]>this.AT_LEAST_ONE(() =>
-      this.OR(
-        this.c2 ||
-          (this.c2 = [
-            {
-              ALT: () => this.SUBRULE(this.incomingSupport)
-            },
-            {
-              ALT: () => this.SUBRULE(this.incomingAttack)
-            },
-            {
-              ALT: () => this.SUBRULE(this.outgoingSupport)
-            },
-            {
-              ALT: () => this.SUBRULE(this.outgoingAttack)
-            },
-            {
-              ALT: () => this.SUBRULE(this.contradiction)
-            },
-            {
-              ALT: () => this.SUBRULE(this.incomingUndercut)
-            },
-            {
-              ALT: () => this.SUBRULE(this.outgoingUndercut)
-            }
-          ])
-      )
-    );
-    children = children.concat(atLeastOne);
+    this.AT_LEAST_ONE(() => {
+      children.push(
+        this.OR(
+          this.c2 ||
+            (this.c2 = [
+              {
+                ALT: () => this.SUBRULE(this.incomingSupport)
+              },
+              {
+                ALT: () => this.SUBRULE(this.incomingAttack)
+              },
+              {
+                ALT: () => this.SUBRULE(this.outgoingSupport)
+              },
+              {
+                ALT: () => this.SUBRULE(this.outgoingAttack)
+              },
+              {
+                ALT: () => this.SUBRULE(this.contradiction)
+              },
+              {
+                ALT: () => this.SUBRULE(this.incomingUndercut)
+              },
+              {
+                ALT: () => this.SUBRULE(this.outgoingUndercut)
+              }
+            ])
+        )
+      );
+    });
     children.push(this.CONSUME(lexer.Dedent));
     return IRuleNode.create(RuleNames.RELATIONS, children);
   });
@@ -372,38 +379,39 @@ class ArgdownParser extends Parser {
   private statementContent = this.RULE(RuleNames.STATEMENT_CONTENT, () => {
     let children: IAstNode[] = [];
     // OR caching. see: http://sap.github.io/chevrotain/docs/FAQ.html#major-performance-benefits
-    let atLeastOne = <IAstNode[]>this.AT_LEAST_ONE(() =>
-      this.OR(
-        this.c3 ||
-          (this.c3 = [
-            {
-              ALT: () => this.SUBRULE(this.freestyleText)
-            },
-            {
-              ALT: () => this.CONSUME(lexer.Link)
-            },
-            {
-              ALT: () => this.SUBRULE(this.bold)
-            },
-            {
-              ALT: () => this.SUBRULE(this.italic)
-            },
-            {
-              ALT: () => this.CONSUME(lexer.Tag)
-            },
-            {
-              ALT: () => this.CONSUME(lexer.ArgumentMention)
-            },
-            {
-              ALT: () => this.CONSUME(lexer.StatementMention)
-            }
-            // , {
-            //     ALT: () => children.push(this.CONSUME(lexer.StatementMentionByNumber))
-            // }
-          ])
-      )
-    );
-    children = atLeastOne;
+    this.AT_LEAST_ONE(() => {
+      children.push(
+        this.OR(
+          this.c3 ||
+            (this.c3 = [
+              {
+                ALT: () => this.SUBRULE(this.freestyleText)
+              },
+              {
+                ALT: () => this.CONSUME(lexer.Link)
+              },
+              {
+                ALT: () => this.SUBRULE(this.bold)
+              },
+              {
+                ALT: () => this.SUBRULE(this.italic)
+              },
+              {
+                ALT: () => this.CONSUME(lexer.Tag)
+              },
+              {
+                ALT: () => this.CONSUME(lexer.ArgumentMention)
+              },
+              {
+                ALT: () => this.CONSUME(lexer.StatementMention)
+              }
+              // , {
+              //     ALT: () => children.push(this.CONSUME(lexer.StatementMentionByNumber))
+              // }
+            ])
+        )
+      );
+    });
     return IRuleNode.create(RuleNames.STATEMENT_CONTENT, children);
   });
 
