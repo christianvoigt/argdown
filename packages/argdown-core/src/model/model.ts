@@ -427,6 +427,9 @@ export namespace IRelation {
   export const relationToString = (r: IRelation) => {
     return `Relation(from: ${r.from!.title}, to: ${r.to!.title}, type: ${r.type})`;
   };
+  export const isSymmetric = (r: IRelation) => {
+    return r.relationType === RelationType.CONTRARY || r.relationType === RelationType.CONTRADICTORY;
+  };
 }
 /**
  * A section in an Argdown document.

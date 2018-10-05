@@ -26,6 +26,7 @@ export const relationMemberIsInSelection = (
     if (selectedStatements.get(relationMember.title!)) {
       return true;
     }
+    const isSymmetric = IRelation.isSymmetric(relation);
     let role = StatementRole.MAIN_CONCLUSION;
     if (relation.to === relationMember) {
       role = StatementRole.PREMISE;
@@ -33,7 +34,7 @@ export const relationMemberIsInSelection = (
     return (
       undefined !==
       relationMember.members.find(
-        s => s.role === role && selectedArguments.get((<IPCSStatement>s).argumentTitle!) !== undefined
+        s => (isSymmetric || s.role === role) && selectedArguments.get((<IPCSStatement>s).argumentTitle!) !== undefined
       )
     );
   } else if (relationMember.type === ArgdownTypes.ARGUMENT && selectedArguments.get(relationMember.title!)) {

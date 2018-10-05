@@ -45,6 +45,7 @@
     "copy:argdown": "copyfiles \"test/**/*.{ad,argdown}\" dist",
     "copy:css": "copyfiles \"src/**/*.css\" dist",
     "test": "mocha -r ts-node/register --full-trace --require source-map-support/register ./test/**/*.spec.ts",
+    "test:map": "mocha -r ts-node/register --full-trace --require source-map-support/register ./test/MapPlugin.spec.ts",
     "coverage": "nyc mocha -r ts-node/register --full-trace --bail --require source-map-support/register ./test/**/*.spec.ts",
     "report": "nyc report",
     "clean": "rimraf dist/*",

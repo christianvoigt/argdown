@@ -3,7 +3,15 @@ import { IArgdownPlugin, IRequestHandler } from "../IArgdownPlugin";
 import { ArgdownPluginError } from "../ArgdownPluginError";
 import { reduceToMap } from "../utils";
 import { IArgdownRequest, IArgdownResponse, ISelectionSettings } from "../index";
-import { IEquivalenceClass, IArgument, StatementRole, IPCSStatement, IConclusion, isConclusion } from "../model/model";
+import {
+  IEquivalenceClass,
+  IArgument,
+  StatementRole,
+  IPCSStatement,
+  IConclusion,
+  isConclusion,
+  IRelation
+} from "../model/model";
 import { otherRelationMemberIsInSelection } from "./utils";
 declare module "../index" {
   interface ISelectionSettings {
@@ -124,11 +132,12 @@ const isArgumentSelected = (
           hasConnections =
             undefined !==
             equivalenceClass.relations.find(r => {
+              const isSymmetric = IRelation.isSymmetric(r);
               if (s.role === StatementRole.PRELIMINARY_CONCLUSION) {
                 return false;
-              } else if (s.role === StatementRole.PREMISE && r.from! === equivalenceClass) {
+              } else if (!isSymmetric && s.role === StatementRole.PREMISE && r.from! === equivalenceClass) {
                 return false;
-              } else if (s.role === StatementRole.MAIN_CONCLUSION && r.to === equivalenceClass) {
+              } else if (!isSymmetric && s.role === StatementRole.MAIN_CONCLUSION && r.to === equivalenceClass) {
                 return false;
               }
               return otherRelationMemberIsInSelection(r, equivalenceClass, selectedStatements, selectedArguments);

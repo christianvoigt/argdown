@@ -111,16 +111,29 @@ export class DotExportPlugin implements IArgdownPlugin {
     dot += "\n\n";
     const edges = response.map!.edges;
     for (let edge of edges) {
-      let color = "green";
-      if (edge.relationType == RelationType.ATTACK) {
-        color = "red";
-      } else if (edge.relationType == RelationType.UNDERCUT) {
-        color = "purple";
+      let attributes = `type="${edge.relationType}", `;
+      switch (edge.relationType) {
+        case RelationType.SUPPORT:
+          attributes += `color="green"`;
+          break;
+        case RelationType.ENTAILS:
+          attributes += `color="green"`;
+          break;
+        case RelationType.UNDERCUT:
+          attributes += `color="purple"`;
+          break;
+        case RelationType.ATTACK:
+          attributes += `color="red"`;
+          break;
+        case RelationType.CONTRARY:
+          attributes += `color="red", dir="both"`;
+          break;
+        case RelationType.CONTRADICTORY:
+          attributes += ` color="red", dir="both", arrowtail="diamond" arrowhead="diamond"`;
+          break;
       }
-      let attributes = 'color="' + color + '", type="' + edge.type + '"';
-      dot += "  " + edge.from.id + " -> " + edge.to.id + " [" + attributes + "];\n";
+      dot += `  ${edge.from.id} -> ${edge.to.id} [${attributes}];\n`;
     }
-
     dot += "\n}";
 
     response.dot = dot;

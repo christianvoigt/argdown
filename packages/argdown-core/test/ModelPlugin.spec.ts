@@ -82,7 +82,10 @@ describe("ModelPlugin", function() {
     `;
     let result = app.run({
       process: ["parse-input", "build-model"],
-      input: source
+      input: source,
+      model: {
+        transformStatementRelations: true
+      }
     });
 
     expect(Object.keys(result.statements!).length).to.equal(2);
@@ -125,6 +128,7 @@ describe("ModelPlugin", function() {
     });
     expect(Object.keys(result.statements!).length).to.equal(4);
     expect(Object.keys(result.arguments!).length).to.equal(1);
+    console.log(result.relations);
     expect(result.relations!.length).to.equal(1);
   });
   it("can create sketched argument relations", function() {
@@ -195,7 +199,7 @@ describe("ModelPlugin", function() {
     expect(result.statements!["s3"]).to.exist;
   });
 
-  it("can create premise conclusion structures", function() {
+  it("can create premise-conclusion-structures", function() {
     let source = `
   <Reconstructed Argument>
   
@@ -215,7 +219,10 @@ describe("ModelPlugin", function() {
   +><Sketched Argument 2>`;
     let result = app.run({
       process: ["parse-input", "build-model"],
-      input: source
+      input: source,
+      model:{
+        transformStatementRelations: true
+      }
     });
     expect(Object.keys(result.arguments!).length).to.equal(3);
     expect(Object.keys(result.statements!).length).to.equal(6);
@@ -657,5 +664,46 @@ describe("ModelPlugin", function() {
     });
     expect(result.statements!["Untitled 1"].members[0].text).to.equal("I am a multiline statement.");
 
+  });
+  it("behaves correctly if transformStatementRelations is false", ()=>{
+    const input = `
+    [A]
+      - [B]
+      + [C]
+
+    [B]
+      - [A]
+    `;
+    const response = app.run({
+      process: ["parse-input", "build-model"],
+      input,
+      model: {
+        transformStatementRelations: false
+      }
+    });
+    expect(response.relations!.length).to.equal(3);
+    expect(response.relations![0].relationType).to.equal(RelationType.ATTACK);
+    expect(response.relations![1].relationType).to.equal(RelationType.SUPPORT);
+    expect(response.relations![2].relationType).to.equal(RelationType.ATTACK);
+  });
+  it("behaves correctly if transformStatementRelations is true", ()=>{
+    const input = `
+    [A]
+      - [B]
+      + [C]
+
+    [B]
+      - [A]
+    `;
+    const response = app.run({
+      process: ["parse-input", "build-model"],
+      input,
+      model: {
+        transformStatementRelations: true
+      }
+    });
+    expect(response.relations!.length).to.equal(2);
+    expect(response.relations![0].relationType).to.equal(RelationType.CONTRARY);
+    expect(response.relations![1].relationType).to.equal(RelationType.ENTAILS);
   });
 });

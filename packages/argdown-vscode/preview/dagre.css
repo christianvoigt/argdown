@@ -39,16 +39,38 @@
   stroke: #333;
   stroke-width: 1.5px;
 }
+.dagre .edgePath marker {
+  stroke-width: 0;
+}
 .dagre .edgePath.attack path {
   stroke: red;
 }
 .dagre .edgePath.attack marker {
   fill: red;
 }
+.dagre .edgePath.contrary path {
+  stroke: red;
+}
+.dagre .edgePath.contrary marker {
+  fill: red;
+}
+.dagre .edgePath.contradictory path {
+  stroke: red;
+}
+.dagre .edgePath.contradictory marker {
+  fill: red;
+}
+
 .dagre .edgePath.support path {
   stroke: green;
 }
 .dagre .edgePath.support marker {
+  fill: green;
+}
+.dagre .edgePath.entails path {
+  stroke: green;
+}
+.dagre .edgePath.entails marker {
   fill: green;
 }
 .dagre .edgePath.undercut path {

@@ -377,27 +377,56 @@ a.unlock-menu {
   font-family: Arial, sans-serif;
   font-weight: normal;
 }
-.dagre .edgePath path {
+.dagre .edgePath {
   stroke: #333;
   stroke-width: 1.5px;
 }
-.dagre .edgePath.attack path {
+.dagre .edgePath marker path {
+  stroke-width: 0;
+  stroke: none;
+}
+.dagre .edgePath.attack {
   stroke: red;
 }
 .dagre .edgePath.attack marker {
   fill: red;
+  stroke: none;
 }
-.dagre .edgePath.support path {
+.dagre .edgePath.contrary {
+  stroke: red;
+}
+.dagre .edgePath.contrary marker {
+  fill: red;
+  stroke: none;
+}
+.dagre .edgePath.contradictory {
+  stroke: red;
+}
+.dagre .edgePath.contradictory marker {
+  fill: red;
+  stroke: none;
+}
+
+.dagre .edgePath.support {
   stroke: green;
 }
 .dagre .edgePath.support marker {
   fill: green;
+  stroke: none;
 }
-.dagre .edgePath.undercut path {
+.dagre .edgePath.entails {
+  stroke: green;
+}
+.dagre .edgePath.entails marker {
+  fill: green;
+  stroke: none;
+}
+.dagre .edgePath.undercut {
   stroke: purple;
 }
 .dagre .edgePath.undercut marker {
   fill: purple;
+  stroke: none;
 }
 .dagre .node {
   cursor: pointer;
@@ -431,7 +460,7 @@ a.unlock-menu {
   margin: 0;
   font-size: 14px;
   font-weight: normal;
-  color: #264260;
+  color: #000;
   display: block;
 }
 .dagre .node.argument-map-node rect {
