@@ -40,7 +40,8 @@ const prepareMapNodeForJSON = (n: IMapNode) => {
     type: n.type,
     labelTitle: n.labelTitle,
     labelText: n.labelText,
-    tags: n.tags
+    tags: n.tags,
+    color: n.color
   };
   return node;
 };

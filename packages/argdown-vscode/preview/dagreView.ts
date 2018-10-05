@@ -8,7 +8,7 @@ import * as d3 from "d3";
 import { getSvgForExport, getPngAsString } from "./export";
 import { openScaleDialog } from "./scaleDialog";
 import { convertCoordsL2L } from "./utils";
-import { ArgdownTypes, IMapNode, isGroupMapNode, IArgdownResponse, ITagData } from "@argdown/core";
+import { RelationType, ArgdownTypes, IMapNode, isGroupMapNode, IArgdownResponse, ITagData } from "@argdown/core";
 declare function require(path: string): string;
 const dagreCss = require("!raw-loader!./dagre.css");
 
@@ -139,6 +139,13 @@ const addNode = (
       nodeProperties.class += tags[tag].cssClass;
     }
   }
+  if (node.color) {
+    if (node.type === ArgdownTypes.STATEMENT_MAP_NODE) {
+      nodeProperties.style = `stroke:${node.color};`;
+    } else {
+      nodeProperties.style = `fill:${node.color};`;
+    }
+  }
   nodeProperties.label += "</div>";
 
   if (isGroupMapNode(node)) {
@@ -179,7 +186,14 @@ const generateSvg = (argdownData: IArgdownResponse, state: IDagreViewState, isUp
   }
 
   for (let edge of map.edges) {
-    g.setEdge((<any>edge).from, (<any>edge).to!, { class: edge.relationType });
+    const props: any = {
+      class: edge.relationType
+    };
+    if (edge.relationType === RelationType.CONTRADICTORY) {
+      props.arrowhead = "diamond";
+      props.arrowtail = "diamond";
+    }
+    g.setEdge((<any>edge).from, (<any>edge).to!, props);
   }
 
   const nodes = g.nodes();
@@ -192,7 +206,28 @@ const generateSvg = (argdownData: IArgdownResponse, state: IDagreViewState, isUp
 
   // Create the renderer
   const render = new dagreD3.render(); // eslint-disable-line new-cap
-
+  // Add our custom arrow
+  render.arrows().diamond = function normal(parent, id, edge, type) {
+    var marker = parent
+      .append("marker")
+      .attr("id", id)
+      .attr("viewBox", "0 0 10 10")
+      .attr("refX", 9)
+      .attr("refY", 5)
+      .attr("markerUnits", "strokeWidth")
+      .attr("markerWidth", 10)
+      .attr("markerHeight", 10)
+      .attr("orient", "auto");
+    var path = marker
+      .append("path")
+      .attr("d", "M 0 5 L 5 2 L 10 5 L 5 8 z")
+      .style("stroke-width", 0)
+      .style("stroke-dasharray", "1,0");
+    (<any>dagreD3).util!.applyStyle(path, (<any>edge)[type + "Style"]);
+    if ((<any>edge)[type + "Class"]) {
+      path.attr("class", (<any>edge)[type + "Class"]);
+    }
+  };
   // const layout = dagreD3.layout().rankSep(50).rankDir('BT')
 
   // Set up an SVG group so that we can translate the final graph.

@@ -31,15 +31,17 @@ import { RuleNames } from "../RuleNames";
 import { TokenNames } from "../TokenNames";
 import { stringToClassName } from "../utils";
 
-export interface ITagData{
-  tag:string;
-  cssClass?:string;
-  color?:string;
-  occurrenceIndex?:number;
-  priority?:number;
+export interface ITagData {
+  tag: string;
+  cssClass?: string;
+  color?: string;
+  occurrenceIndex?: number;
+  priority?: number;
 }
 export interface IModelPluginSettings {
   removeTagsFromText?: boolean;
+  transformArgumentRelations?: boolean;
+  transformStatementRelations?: boolean;
 }
 declare module "../index" {
   interface IArgdownRequest {
@@ -79,16 +81,18 @@ declare module "../index" {
     sections?: ISection[];
     /**
      * All tags used augmented by additional data
-     * 
+     *
      * Provided by the [[ModelPlugin]]
-     * 
+     *
      * Color is provided by the [[ColorPlugin]]
      */
-    tags?:{[tagName:string]:ITagData}
+    tags?: { [tagName: string]: ITagData };
   }
 }
 const defaultSettings = {
-  removeTagsFromText: false
+  removeTagsFromText: false,
+  transformArgumentRelations: true,
+  transformStatementRelations: false
 };
 /**
  * The ModelPlugin builds the basic data model from the abstract syntax tree (AST) in the [[IArgdownResponse.ast]] response property that is provided by the [[ParserPlugin]].
@@ -118,20 +122,14 @@ export class ModelPlugin implements IArgdownPlugin {
   prepare: IRequestHandler = request => {
     _.defaultsDeep(this.getSettings(request), this.defaults);
   };
-  run: IRequestHandler = (_request, response) => {
-    if (!response.ast) {
-      throw new ArgdownPluginError(this.name, "No AST field in response.");
-    }
-    if (!response.statements) {
-      throw new ArgdownPluginError(this.name, "No statements field in response.");
-    }
-    if (!response.arguments) {
-      throw new ArgdownPluginError(this.name, "No arguments field in response.");
-    }
-    if (!response.relations) {
-      throw new ArgdownPluginError(this.name, "No relations field in response.");
-    }
-    for (let relation of response.relations) {
+  /**
+   * Transforms outgoing relations of arguments with an assigned pcs into outgoing relations of the pcs's main conclusion.
+   * Transforms incoming undercut relations of arguments with an assigned pcs into undercut relations of the pcs's last inference.
+   */
+  transformArgumentRelations = (response: IArgdownResponse) => {
+    const newRelations: IRelation[] = [];
+    for (let relation of response.relations!) {
+      let addRelation = true;
       if (!relation.from) {
         throw new ArgdownPluginError(this.name, "Relation without source.");
       }
@@ -153,7 +151,7 @@ export class ModelPlugin implements IArgdownPlugin {
         argument.relations!.splice(index, 1);
 
         let conclusionStatement = argument.pcs![argument.pcs!.length - 1];
-        let equivalenceClass = response.statements[conclusionStatement.title!];
+        let equivalenceClass = response.statements![conclusionStatement.title!];
         //change to relation of main conclusion
         relation.from = equivalenceClass;
 
@@ -172,9 +170,7 @@ export class ModelPlugin implements IArgdownPlugin {
           //remove relation from target
           let index = _.indexOf(relation.to.relations, relation);
           relation.to.relations!.splice(index, 1);
-          //remove relation from relations
-          index = _.indexOf(response.relations, relation);
-          response.relations.splice(index, 1);
+          addRelation = false;
         }
       }
       // For reconstructed arguments: change incoming undercut relations
@@ -202,23 +198,75 @@ export class ModelPlugin implements IArgdownPlugin {
           let index = _.indexOf(relation.from.relations, relation);
           relation.from.relations!.splice(index, 1);
           //remove relation from relations
-          index = _.indexOf(response.relations, relation);
-          response.relations.splice(index, 1);
+          addRelation = false;
         }
       }
+      if (addRelation) {
+        newRelations.push(relation);
+      }
     }
-    //Change dialectical types of statement-to-statement relations to semantic types
-    //Doing this in a separate loop makes it easier to identify duplicates in the previous loop,
-    //even though it is less efficient.
-    for (let relation of response.relations) {
-      if (relation.from!.type === ArgdownTypes.ARGUMENT || relation.to!.type === ArgdownTypes.ARGUMENT) {
-        continue;
+    response.relations = newRelations;
+  };
+  /**
+   * Change dialectical types of statement-to-statement relations to semantic types.
+   * Support relations become entails relations.
+   * Attack relations become contrary relations.
+   * Equivalent contrary relations are merged (e.g. [A] - [B] and [B] - [A]).
+   */
+  transformStatementRelations = (response: IArgdownResponse) => {
+    const newRelations: IRelation[] = [];
+    for (let relation of response.relations!) {
+      let addRelation = true;
+      const isS2SRelation =
+        relation.from!.type === ArgdownTypes.EQUIVALENCE_CLASS && relation.to!.type === ArgdownTypes.EQUIVALENCE_CLASS;
+      if (isS2SRelation) {
+        if (relation.relationType === RelationType.SUPPORT) {
+          relation.relationType = RelationType.ENTAILS;
+        } else if (relation.relationType === RelationType.ATTACK) {
+          const relationExists = relation.from!.relations!.find(r => {
+            return (
+              r.relationType === RelationType.CONTRARY &&
+              ((r.from === relation.from && r.to === relation.to) || (r.from === relation.to && r.to === relation.from))
+            );
+          });
+          if (relationExists !== undefined) {
+            //remove relation from source
+            let indexSource = _.indexOf(relation.from!.relations, relation);
+            relation.from!.relations!.splice(indexSource, 1);
+            //remove relation from target
+            let indexTarget = _.indexOf(relation.from!.relations, relation);
+            relation.from!.relations!.splice(indexTarget, 1);
+            addRelation = false;
+          } else {
+            relation.relationType = RelationType.CONTRARY;
+          }
+        }
       }
-      if (relation.relationType === RelationType.SUPPORT) {
-        relation.relationType = RelationType.ENTAILS;
-      } else if (relation.relationType === RelationType.ATTACK) {
-        relation.relationType = RelationType.CONTRARY;
+      if (addRelation) {
+        newRelations.push(relation);
       }
+    }
+    response.relations = newRelations;
+  };
+  run: IRequestHandler = (request, response) => {
+    if (!response.ast) {
+      throw new ArgdownPluginError(this.name, "No AST field in response.");
+    }
+    if (!response.statements) {
+      throw new ArgdownPluginError(this.name, "No statements field in response.");
+    }
+    if (!response.arguments) {
+      throw new ArgdownPluginError(this.name, "No arguments field in response.");
+    }
+    if (!response.relations) {
+      throw new ArgdownPluginError(this.name, "No relations field in response.");
+    }
+    const settings = this.getSettings(request);
+    if (settings.transformArgumentRelations) {
+      this.transformArgumentRelations(response);
+    }
+    if (settings.transformStatementRelations) {
+      this.transformStatementRelations(response);
     }
     return response;
   };
@@ -264,9 +312,9 @@ export class ModelPlugin implements IArgdownPlugin {
       let target = relationParent;
       if (relationParent.type === ArgdownTypes.STATEMENT) {
         if (!relationParent.title) relationParent.title = getUniqueTitle();
-        if(relationParent.role === StatementRole.ARGUMENT_DESCRIPTION){
+        if (relationParent.role === StatementRole.ARGUMENT_DESCRIPTION) {
           return getArgument(response.arguments!, relationParent.title);
-        }else{
+        } else {
           return getEquivalenceClass(response.statements!, relationParent.title);
         }
       } else {
@@ -501,7 +549,7 @@ export class ModelPlugin implements IArgdownPlugin {
         }
         let tagData = response.tags![tag];
         if (!tagData) {
-          tagData = {tag: tag, cssClass: stringToClassName("tag-" + tag), occurrenceIndex: tagCounter};
+          tagData = { tag: tag, cssClass: stringToClassName("tag-" + tag), occurrenceIndex: tagCounter };
           response.tags![tag] = tagData;
           tagCounter++;
         }
@@ -541,7 +589,7 @@ export class ModelPlugin implements IArgdownPlugin {
           currentHeading.level = headingStart.image.length - 1; //number of # - whitespace
           sectionCounter++;
           let sectionId = "s" + sectionCounter;
-          const title = currentHeading.text? currentHeading.text.trim() : "";
+          const title = currentHeading.text ? currentHeading.text.trim() : "";
           let newSection: ISection = {
             type: ArgdownTypes.SECTION,
             id: sectionId,
@@ -555,10 +603,10 @@ export class ModelPlugin implements IArgdownPlugin {
           newSection.startColumn = node.startColumn;
           newSection.heading = currentHeading;
           newSection.data = currentHeading.data;
-          if(newSection.data && newSection.data.isGroup !== undefined){
+          if (newSection.data && newSection.data.isGroup !== undefined) {
             newSection.isGroup = newSection.data.isGroup;
           }
-  
+
           if (newSection.level > 1 && currentSection) {
             let parentSection = currentSection;
             while (parentSection.parent && parentSection.level >= newSection.level) {
@@ -611,8 +659,11 @@ export class ModelPlugin implements IArgdownPlugin {
           statement.section = currentSection;
         }
         equivalenceClass.members.push(statement);
-        const isInGroup = statement.data && statement.data.isInGroup !== undefined? statement.data.isInGroup : undefined;
-        const ecTakesSection = isInGroup === true || (!statement.isReference && isInGroup === undefined && equivalenceClass.section === undefined);
+        const isInGroup =
+          statement.data && statement.data.isInGroup !== undefined ? statement.data.isInGroup : undefined;
+        const ecTakesSection =
+          isInGroup === true ||
+          (!statement.isReference && isInGroup === undefined && equivalenceClass.section === undefined);
         const sectionIsGroup = statement.section && statement.section.isGroup !== false;
         if (sectionIsGroup && ecTakesSection) {
           equivalenceClass.section = statement.section;
@@ -666,8 +717,9 @@ export class ModelPlugin implements IArgdownPlugin {
           desc.section = currentSection;
         }
         argument.members.push(<IArgumentDescription>desc);
-        const isInGroup = desc.data && desc.data.isInGroup !== undefined? desc.data.isInGroup : undefined;
-        const argumentTakesSection = isInGroup === true || (!desc.isReference && isInGroup === undefined && argument.section === undefined);
+        const isInGroup = desc.data && desc.data.isInGroup !== undefined ? desc.data.isInGroup : undefined;
+        const argumentTakesSection =
+          isInGroup === true || (!desc.isReference && isInGroup === undefined && argument.section === undefined);
         const sectionIsGroup = desc.section && desc.section.isGroup !== false;
         if (sectionIsGroup && argumentTakesSection) {
           argument.section = desc.section;

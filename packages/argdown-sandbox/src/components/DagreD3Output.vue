@@ -12,6 +12,7 @@
 </template>
 
 <script>
+/*eslint-disable */
 import * as dagreD3 from "dagre-d3";
 import * as d3 from "d3";
 import { EventBus } from "../event-bus.js";
@@ -103,6 +104,13 @@ export default {
           nodeProperties.class += this.$store.getters.tags[tag].cssClass;
         }
       }
+      if (node.color) {
+        if (node.type === ArgdownTypes.STATEMENT_MAP_NODE) {
+          nodeProperties.style = `stroke:${node.color};`;
+        } else {
+          nodeProperties.style = `fill:${node.color};`;
+        }
+      }
       nodeProperties.label += "</div>";
 
       if (node.type === ArgdownTypes.GROUP_MAP_NODE) {
@@ -147,7 +155,14 @@ export default {
       }
 
       for (let edge of map.edges) {
-        g.setEdge(edge.from.id, edge.to.id, { class: edge.relationType });
+        const props = {
+          class: edge.relationType
+        };
+        if (edge.relationType === "contradictory") {
+          props.arrowhead = "diamond";
+          props.arrowtail = "diamond";
+        }
+        g.setEdge(edge.from.id, edge.to.id, props);
       }
 
       const nodes = g.nodes();
@@ -160,6 +175,29 @@ export default {
 
       // Create the renderer
       const render = new dagreD3.render(); // eslint-disable-line new-cap
+      // Add our custom arrow
+      render.arrows().diamond = function normal(parent, id, edge, type) {
+        var marker = parent
+          .append("marker")
+          .attr("id", id)
+          .attr("viewBox", "0 0 10 10")
+          .attr("refX", 9)
+          .attr("refY", 5)
+          .attr("markerUnits", "strokeWidth")
+          .attr("markerWidth", 10)
+          .attr("markerHeight", 10)
+          .attr("orient", "auto");
+
+        var path = marker
+          .append("path")
+          .attr("d", "M 0 5 L 5 2 L 10 5 L 5 8 z")
+          .style("stroke-width", 0)
+          .style("stroke-dasharray", "1,0");
+        dagreD3.util.applyStyle(path, edge[type + "Style"]);
+        if (edge[type + "Class"]) {
+          path.attr("class", edge[type + "Class"]);
+        }
+      };
 
       // const layout = dagreD3.layout().rankSep(50).rankDir('BT')
 

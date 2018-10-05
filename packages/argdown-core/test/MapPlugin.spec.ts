@@ -148,6 +148,9 @@ describe("MapPlugin", function() {
       }
     };
     let result = app.run(request);
+    //console.log(result.map!.nodes);
+    // console.log(result.relations);
+    // console.log(result.map!.edges);
     expect(result.map!.nodes.length).to.equal(3);
     expect(result.map!.edges.length).to.equal(2);
   });
@@ -169,7 +172,7 @@ describe("MapPlugin", function() {
     };
     let result = app.run(request);
     //console.log(toJSON(result.map!, null, 2));
-    expect(result.map!.edges.length).to.equal(3);
+    expect(result.map!.edges.length).to.equal(2);
     expect(result.map!.nodes.length).to.equal(3);
   });
   it("can create edges from undercuts", function() {

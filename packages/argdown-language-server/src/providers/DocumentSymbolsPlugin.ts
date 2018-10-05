@@ -1,4 +1,4 @@
-import { Location, SymbolKind, SymbolInformation } from "vscode-languageserver";
+import { DocumentSymbol, Location, Range, SymbolKind, SymbolInformation } from "vscode-languageserver";
 import Uri from "vscode-uri";
 import {
   IArgdownPlugin,
@@ -14,7 +14,7 @@ import {
 
 declare module "@argdown/core" {
   interface IArgdownResponse {
-    documentSymbols?: SymbolInformation[];
+    documentSymbols?: DocumentSymbol[];
     inputUri?: string;
   }
 }
@@ -26,12 +26,14 @@ export const enum ArgdownSymbolKind {
   Heading
 }
 
-export class ArgdownSymbolInformation implements SymbolInformation {
+export class ArgdownSymbolInformation implements DocumentSymbol {
   public name: string;
   public kind: SymbolKind;
   public location: Location;
   public argdownKind: ArgdownSymbolKind;
   public argdownId: string;
+  public range: Range;
+  public selectionRange: Range;
 }
 
 const addSymbol = (
@@ -40,13 +42,17 @@ const addSymbol = (
   node: IAstNode,
   name: string,
   argdownKind: ArgdownSymbolKind,
-  argdownId: string
+  argdownId: string,
+  range: Range,
+  selectionRange: Range
 ) => {
   const symbolInfo: ArgdownSymbolInformation = {
     name,
     kind: SymbolKind.Variable,
     argdownKind,
     argdownId,
+    range,
+    selectionRange,
     location: {
       uri: response.inputUri,
       range: {
@@ -63,33 +69,11 @@ export const documentSymbolsPlugin: IArgdownPlugin = {
     response.inputUri = Uri.file(request.inputPath).toString();
   },
   tokenListeners: {
-    [TokenNames.STATEMENT_DEFINITION]: <ITokenNodeHandler>((
-      request,
-      response,
-      token
-    ) => {
-      addSymbol(
-        request,
-        response,
-        token,
-        `[${token.title}]`,
-        ArgdownSymbolKind.StatementDefinition,
-        token.title
-      );
+    [TokenNames.STATEMENT_DEFINITION]: <ITokenNodeHandler>((request, response, token) => {
+      addSymbol(request, response, token, `[${token.title}]`, ArgdownSymbolKind.StatementDefinition, token.title);
     }),
-    [TokenNames.ARGUMENT_DEFINITION]: <ITokenNodeHandler>((
-      request,
-      response,
-      token
-    ) => {
-      addSymbol(
-        request,
-        response,
-        token,
-        `<${token.title}>`,
-        ArgdownSymbolKind.ArgumentDefinition,
-        token.title
-      );
+    [TokenNames.ARGUMENT_DEFINITION]: <ITokenNodeHandler>((request, response, token) => {
+      addSymbol(request, response, token, `<${token.title}>`, ArgdownSymbolKind.ArgumentDefinition, token.title);
     })
   },
   ruleListeners: {
@@ -97,20 +81,9 @@ export const documentSymbolsPlugin: IArgdownPlugin = {
       response.documentSymbols = <SymbolInformation[]>[];
     }),
     [RuleNames.PCS + "Entry"]: <IRuleNodeHandler>((request, response, node) => {
-      addSymbol(
-        request,
-        response,
-        node,
-        `PCS <${node.argument.title}>`,
-        ArgdownSymbolKind.PCS,
-        node.argument.title
-      );
+      addSymbol(request, response, node, `PCS <${node.argument.title}>`, ArgdownSymbolKind.PCS, node.argument.title);
     }),
-    [RuleNames.HEADING + "Entry"]: <IRuleNodeHandler>((
-      request,
-      response,
-      node
-    ) => {
+    [RuleNames.HEADING + "Entry"]: <IRuleNodeHandler>((request, response, node) => {
       const sectionId = node.section ? node.section.id : node.text;
       addSymbol(
         request,

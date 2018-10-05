@@ -196,7 +196,8 @@ const createEdgesFromRelation = (statementNodesMap: Map<string, IMapNode>, argum
     } else {
       const ec = <IEquivalenceClass>rel.from!;
       ec.members.reduce((acc, s) => {
-        if (s.role === StatementRole.MAIN_CONCLUSION) {
+        const isSymmetricPremiseRelation = IRelation.isSymmetric(rel) && s.role === StatementRole.PREMISE;
+        if (s.role === StatementRole.MAIN_CONCLUSION || isSymmetricPremiseRelation) {
           const node = argumentNodesMap.get((<IPCSStatement>s).argumentTitle!);
           if (node) {
             acc.push(node);
@@ -218,7 +219,8 @@ const createEdgesFromRelation = (statementNodesMap: Map<string, IMapNode>, argum
     } else {
       const ec = <IEquivalenceClass>rel.to;
       ec.members.reduce((acc, s) => {
-        if (s.role === StatementRole.PREMISE) {
+        const isSymmetricConclusionRelation = IRelation.isSymmetric(rel) && s.role === StatementRole.MAIN_CONCLUSION;
+        if (s.role === StatementRole.PREMISE || isSymmetricConclusionRelation) {
           const node = argumentNodesMap.get((<IPCSStatement>s).argumentTitle!);
           if (node) {
             acc.push(node);
@@ -230,36 +232,30 @@ const createEdgesFromRelation = (statementNodesMap: Map<string, IMapNode>, argum
   }
   for (let from of froms) {
     for (let to of tos) {
-      const edge1: IMapEdge = {
+      const edge: IMapEdge = {
         type: ArgdownTypes.MAP_EDGE,
         from: from,
         to: to,
         id: "e" + Number(acc.length + 1),
         relationType: rel.relationType
       };
-      acc.push(edge1);
+      acc.push(edge);
       if (rel.from!.type === ArgdownTypes.EQUIVALENCE_CLASS) {
-        edge1.fromEquivalenceClass = <IEquivalenceClass>rel.from;
+        edge.fromEquivalenceClass = <IEquivalenceClass>rel.from;
       }
       if (rel.to!.type === ArgdownTypes.EQUIVALENCE_CLASS) {
-        edge1.toEquivalenceClass = <IEquivalenceClass>rel.to;
+        edge.toEquivalenceClass = <IEquivalenceClass>rel.to;
       }
-      if (rel.relationType === RelationType.CONTRADICTORY) {
-        edge1.relationType = RelationType.ATTACK;
-        const edge2: IMapEdge = {
-          type: ArgdownTypes.MAP_EDGE,
-          from: to,
-          to: from,
-          id: "e" + Number(acc.length + 1),
-          relationType: RelationType.ATTACK,
-          fromEquivalenceClass: edge1.toEquivalenceClass,
-          toEquivalenceClass: edge1.fromEquivalenceClass
-        };
-        acc.push(edge2);
-      } else if (rel.relationType === RelationType.CONTRARY) {
-        edge1.relationType = RelationType.ATTACK;
-      } else if (rel.relationType === RelationType.ENTAILS) {
-        edge1.relationType = RelationType.SUPPORT;
+      // If the relation is ec2ec, but the edge is s2a or a2s, we have to change the relation type to SUPPORT or ATTACK.
+      let s2sEdge = from.type === ArgdownTypes.STATEMENT_MAP_NODE && to.type === ArgdownTypes.STATEMENT_MAP_NODE;
+      if (!s2sEdge) {
+        if (rel.relationType === RelationType.CONTRADICTORY) {
+          edge.relationType = RelationType.ATTACK;
+        } else if (rel.relationType === RelationType.CONTRARY) {
+          edge.relationType = RelationType.ATTACK;
+        } else if (rel.relationType === RelationType.ENTAILS) {
+          edge.relationType = RelationType.SUPPORT;
+        }
       }
     }
   }
