@@ -21,7 +21,7 @@ export const generateMarkdownForStatement = (eqClass: IEquivalenceClass): string
       const relationSymbol = getRelationSymbol(relation.relationType, isOutgoing);
       const relationPartner = isOutgoing ? relation.from : relation.to;
       const relationPartnerStr =
-        relationPartner.type === ArgdownTypes.ARGUMENT ? `<${relationPartner.title}>` : `[${relationPartner.title}]`;
+        relationPartner!.type === ArgdownTypes.ARGUMENT ? `<${relationPartner!.title}>` : `[${relationPartner!.title}]`;
       relationsStr += `
   ${relationSymbol} ${relationPartnerStr}`;
     }

@@ -18,10 +18,7 @@ import { ArgdownEngine } from "./preview/ArgdownEngine";
 import { ArgdownPreviewManager } from "./preview/ArgdownPreviewManager";
 import { Logger } from "./preview/Logger";
 import { ArgdownContentProvider } from "./preview/ArgdownContentProvider";
-import {
-  ExtensionContentSecurityPolicyArbiter,
-  PreviewSecuritySelector
-} from "./preview/security";
+import { ExtensionContentSecurityPolicyArbiter, PreviewSecuritySelector } from "./preview/security";
 import { ArgdownExtensionContributions } from "./preview/ArgdownExtensionContributions";
 import { ForkOptions } from "vscode-languageclient/lib/client";
 
@@ -35,48 +32,22 @@ export function activate(context: vscode.ExtensionContext) {
   // -- PREVIEW --
   const logger = new Logger();
   const argdownEngine = new ArgdownEngine();
-  const cspArbiter = new ExtensionContentSecurityPolicyArbiter(
-    context.globalState,
-    context.workspaceState
-  );
+  const cspArbiter = new ExtensionContentSecurityPolicyArbiter(context.globalState, context.workspaceState);
   const contributions = new ArgdownExtensionContributions();
-  const contentProvider = new ArgdownContentProvider(
-    argdownEngine,
-    context,
-    cspArbiter,
-    contributions,
-    logger
-  );
+  const contentProvider = new ArgdownContentProvider(argdownEngine, context, cspArbiter, contributions, logger);
 
-  const previewManager = new ArgdownPreviewManager(
-    contentProvider,
-    logger,
-    contributions,
-    argdownEngine
-  );
-  const previewSecuritySelector = new PreviewSecuritySelector(
-    cspArbiter,
-    previewManager
-  );
+  const previewManager = new ArgdownPreviewManager(contentProvider, logger, contributions, argdownEngine);
+  const previewSecuritySelector = new PreviewSecuritySelector(cspArbiter, previewManager);
 
   const commandManager = new CommandManager();
   context.subscriptions.push(commandManager);
   commandManager.register(new commands.ShowPreviewCommand(previewManager));
-  commandManager.register(
-    new commands.ShowPreviewToSideCommand(previewManager)
-  );
-  commandManager.register(
-    new commands.ShowLockedPreviewToSideCommand(previewManager)
-  );
+  commandManager.register(new commands.ShowPreviewToSideCommand(previewManager));
+  commandManager.register(new commands.ShowLockedPreviewToSideCommand(previewManager));
   commandManager.register(new commands.ShowSourceCommand(previewManager));
   commandManager.register(new commands.RefreshPreviewCommand(previewManager));
   commandManager.register(new commands.MoveCursorToPositionCommand());
-  commandManager.register(
-    new commands.ShowPreviewSecuritySelectorCommand(
-      previewSecuritySelector,
-      previewManager
-    )
-  );
+  commandManager.register(new commands.ShowPreviewSecuritySelectorCommand(previewSecuritySelector, previewManager));
   commandManager.register(new commands.OnPreviewStyleLoadErrorCommand());
   commandManager.register(new commands.OpenDocumentLinkCommand());
   commandManager.register(new commands.ToggleLockCommand(previewManager));
@@ -138,12 +109,7 @@ export function activate(context: vscode.ExtensionContext) {
     outputChannelName: "Argdown Language Server"
   };
   // Create the language client and start the client.
-  client = new LanguageClient(
-    "argdownLanguageServer",
-    "Argdown Language Server",
-    serverOptions,
-    clientOptions
-  );
+  client = new LanguageClient("argdownLanguageServer", "Argdown Language Server", serverOptions, clientOptions);
   // Register new proposed protocol if available.
   client.registerProposedFeatures();
   client.onReady().then(() => {

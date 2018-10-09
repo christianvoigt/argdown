@@ -11,8 +11,8 @@ export const provideCompletion = (
 ) => {
   const range = Range.create(position.line, position.character - 1, position.line, position.character + 1);
   if (char === "[") {
-    return Object.keys(response.statements).map((k: any) => {
-      const eqClass = response.statements[k];
+    return Object.keys(response.statements!).map((k: any) => {
+      const eqClass = response.statements![k];
       const title = eqClass.title;
       const item = CompletionItem.create(`[${title}]`);
       item.textEdit = TextEdit.replace(range, `[${title}]`);
@@ -21,8 +21,8 @@ export const provideCompletion = (
       return item;
     });
   } else if (char === "<") {
-    return Object.keys(response.arguments).map((k: any) => {
-      const argument = response.arguments[k];
+    return Object.keys(response.arguments!).map((k: any) => {
+      const argument = response.arguments![k];
       const title = argument.title;
       const item = CompletionItem.create(`<${title}>`);
       item.textEdit = TextEdit.replace(range, `<${title}>`);
@@ -38,9 +38,9 @@ export const provideCompletion = (
     const statementMatch = textBefore.match(statementPattern);
     if (statementMatch && statementMatch.length > 1) {
       const title = statementMatch[1];
-      const eqClass = response.statements[title];
+      const eqClass = response.statements![title];
       return eqClass.members.filter(member => !member.isReference).map(member => {
-        const item = CompletionItem.create(member.text);
+        const item = CompletionItem.create(member.text!);
         item.kind = CompletionItemKind.Value;
         item.detail = `[${title}]: ${member.text}`;
         item.insertText = ` ${member.text}
@@ -51,10 +51,10 @@ export const provideCompletion = (
       const argumentMatch = textBefore.match(argumentPattern);
       if (argumentMatch && argumentMatch.length > 1) {
         const title = argumentMatch[1];
-        const argument = response.arguments[title];
+        const argument = response.arguments![title];
         if (argument.members) {
           return argument.members.filter(member => !member.isReference).map(member => {
-            const item = CompletionItem.create(member.text);
+            const item = CompletionItem.create(member.text!);
             item.kind = CompletionItemKind.Value;
             item.detail = `<${title}>: ${member.text}`;
             item.insertText = ` ${member.text}

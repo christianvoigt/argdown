@@ -9,17 +9,17 @@ export const provideDefinitions = (response: IArgdownResponse, uri: string, posi
   const character = position.character + 1;
   const nodeAtPosition = findNodeAtPosition(response, line, character);
   if (nodeAtPosition && isTokenNode(nodeAtPosition)) {
-    const tokenName = nodeAtPosition.tokenType.tokenName;
-    if (tokenName.startsWith("Statement")) {
+    const tokenName = nodeAtPosition.tokenType!.tokenName;
+    if (tokenName!.startsWith("Statement")) {
       // collect locations of all equivalenceClass members
-      const equivalenceClass = response.statements[nodeAtPosition.title];
+      const equivalenceClass = response.statements![nodeAtPosition.title!];
       const definitions: Location[] = equivalenceClass.members.filter(m => !m.isReference).map(m => {
         return createLocation(uri, m);
       });
       return definitions;
-    } else if (tokenName.startsWith("Argument")) {
+    } else if (tokenName!.startsWith("Argument")) {
       // collect locations of pcs and all descriptions
-      const argument = response.arguments[nodeAtPosition.title];
+      const argument = response.arguments![nodeAtPosition.title!];
       const definitions: Location[] = argument.members.filter(m => !m.isReference).map(m => {
         return createLocation(uri, m);
       });

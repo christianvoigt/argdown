@@ -575,6 +575,15 @@ export class ModelPlugin implements IArgdownPlugin {
         sectionCounter = 0;
         tagCounter = 0;
       },
+      [RuleNames.ARGDOWN+"Exit"]: (_req, _resp, token)=>{
+        const lastChild = token.children && token.children.length > 0? token.children[token.children.length - 1]: null;
+        while(currentSection && lastChild && lastChild.endLine){
+          currentSection.endLine = lastChild.endLine;
+          currentSection.endOffset = lastChild.endOffset;
+          currentSection.endColumn = lastChild.endColumn;
+          currentSection = currentSection.parent || null;
+        }
+      },
       [RuleNames.HEADING + "Entry"]: (_request, _response, node) => {
         currentHeading = node;
         currentHeading.text = "";
@@ -607,15 +616,22 @@ export class ModelPlugin implements IArgdownPlugin {
             newSection.isGroup = newSection.data.isGroup;
           }
 
-          if (newSection.level > 1 && currentSection) {
-            let parentSection = currentSection;
-            while (parentSection.parent && parentSection.level >= newSection.level) {
-              parentSection = parentSection.parent;
-            }
-            parentSection.children.push(newSection);
-            newSection.parent = parentSection;
-          } else {
+          if(!currentSection){
             response.sections!.push(newSection);
+          }else{
+            let previous:ISection|null = currentSection;
+            while(previous && previous.level >= newSection.level){
+              previous.endOffset = newSection.startOffset! - 1;
+              previous.endLine = newSection.startLine! - 1;
+              previous.endColumn = 0;
+              previous = previous.parent || null;  
+            }
+            if(previous && previous.level < newSection.level){
+              previous.children.push(newSection);
+              newSection.parent = previous;    
+            }else{
+              response.sections!.push(newSection);
+            }
           }
           currentSection = newSection;
           currentHeading.section = newSection;

@@ -124,7 +124,9 @@ export interface ISelectionSettings {
   ignoreIsInMap?: boolean;
 }
 
-export { tokenize } from "./lexer";
+//export { tokenize } from "./lexer";
+export * from "./lexer";
+export { tokenMatcher } from "chevrotain";
 export * from "./RuleNames";
 export * from "./TokenNames";
 export * from "./parser";
