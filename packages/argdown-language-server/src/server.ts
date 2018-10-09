@@ -13,22 +13,17 @@ import {
   InitializeResult,
   Location,
   ProposedFeatures,
-  Proposed,
   RenameParams,
   ReferenceParams,
-  SymbolInformation,
   TextDocumentIdentifier,
-  WorkspaceSymbolParams
+  WorkspaceFolder,
+  DocumentSymbolParams,
+  FoldingRangeParams
 } from "vscode-languageserver";
 import Uri from "vscode-uri";
 import { IArgdownSettings } from "./IArgdownSettings";
-import {
-  exportDocument,
-  exportContent,
-  ExportContentArgs,
-  ExportDocumentArgs
-} from "./commands/Export";
-import { documentSymbolsPlugin } from "./providers/DocumentSymbolsPlugin";
+import { exportDocument, exportContent, ExportContentArgs, ExportDocumentArgs } from "./commands/Export";
+import { DocumentSymbolPlugin } from "./providers/DocumentSymbolPlugin";
 import {
   provideDefinitions,
   provideReferences,
@@ -37,6 +32,13 @@ import {
   provideRenameWorkspaceEdit
 } from "./providers/index";
 import { argdown } from "@argdown/node";
+import {
+  WorkspaceFoldersInitializeParams,
+  WorkspaceFoldersClientCapabilities
+} from "vscode-languageserver-protocol/lib/protocol.workspaceFolders";
+import { ConfigurationClientCapabilities } from "vscode-languageserver-protocol/lib/protocol.configuration";
+import { IArgdownResponse } from "@argdown/core";
+import { FoldingRangesPlugin } from "./providers/FoldingRangesPlugin";
 
 const EXPORT_CONTENT_COMMAND = "argdown.server.exportContent";
 const EXPORT_DOCUMENT_COMMAND = "argdown.server.exportDocument";
@@ -44,9 +46,15 @@ const RUN_COMMAND = "argdown.run";
 
 // Create a connection for the server. The connection uses Node's IPC as a transport
 let connection = createConnection(ProposedFeatures.all);
-argdown.logger.log = function(level: string, message: string) {
-  if (level != "verbose" || this.logLevel == "verbose") {
-    connection.console.log(message);
+let logLevel = "verbose";
+argdown.logger = {
+  setLevel: (level: string) => {
+    logLevel = level;
+  },
+  log: (level: string, message: string) => {
+    if (level != "verbose" || logLevel == "verbose") {
+      connection.console.log(message);
+    }
   }
 };
 
@@ -56,27 +64,22 @@ let hasWorkspaceFolderCapability = false;
 // Create a simple text document manager. The text document manager
 // supports full document sync only
 let documents: TextDocuments = new TextDocuments();
-let workspaceFolders: Proposed.WorkspaceFolder[];
+let workspaceFolders: WorkspaceFolder[];
 
 // After the server has started the client sends an initilize request. The server receives
 // in the passed params the rootPath of the workspace plus the client capabilites.
 connection.onInitialize(
-  (
-    params: InitializeParams & Proposed.WorkspaceFoldersInitializeParams
-  ): InitializeResult => {
+  (params: InitializeParams & WorkspaceFoldersInitializeParams): InitializeResult => {
     let capabilities = params.capabilities;
-    connection.console.log("Node version: " + process.version);
 
     // Does the client support the `workspace/configuration` request?
     // If not, we will fall back using global settings
     hasWorkspaceFolderCapability =
-      (capabilities as Proposed.WorkspaceFoldersClientCapabilities).workspace &&
-      !!(capabilities as Proposed.WorkspaceFoldersClientCapabilities).workspace
-        .workspaceFolders;
+      !!(capabilities as WorkspaceFoldersClientCapabilities).workspace &&
+      !!(capabilities as WorkspaceFoldersClientCapabilities).workspace!.workspaceFolders;
     hasConfigurationCapability =
-      (capabilities as Proposed.ConfigurationClientCapabilities).workspace &&
-      !!(capabilities as Proposed.ConfigurationClientCapabilities).workspace
-        .configuration;
+      !!(capabilities as ConfigurationClientCapabilities).workspace &&
+      !!(capabilities as ConfigurationClientCapabilities).workspace!.configuration;
 
     if (params.workspaceFolders) {
       workspaceFolders = params.workspaceFolders;
@@ -93,6 +96,7 @@ connection.onInitialize(
         // 	resolveProvider: true,
         // },
         documentSymbolProvider: true,
+        foldingRangeProvider: true,
         workspaceSymbolProvider: true,
         definitionProvider: true,
         referencesProvider: true,
@@ -103,11 +107,7 @@ connection.onInitialize(
           triggerCharacters: ["[", "<", ":", "#"]
         },
         executeCommandProvider: {
-          commands: [
-            EXPORT_DOCUMENT_COMMAND,
-            EXPORT_CONTENT_COMMAND,
-            RUN_COMMAND
-          ]
+          commands: [EXPORT_DOCUMENT_COMMAND, EXPORT_CONTENT_COMMAND, RUN_COMMAND]
         }
       }
     };
@@ -115,16 +115,12 @@ connection.onInitialize(
 );
 
 connection.onInitialized(() => {
-  connection.console.log(
-    "Argdown language server initialized. Node version: " + process.version
-  );
+  connection.console.log("Argdown language server initialized.");
   if (hasWorkspaceFolderCapability) {
     connection.workspace.onDidChangeWorkspaceFolders(event => {
       // Removed folders.
       for (const workspaceFolder of event.removed) {
-        const index = workspaceFolders.findIndex(
-          folder => folder.uri === workspaceFolder.uri
-        );
+        const index = workspaceFolders.findIndex(folder => folder.uri === workspaceFolder.uri);
 
         if (index !== -1) {
           workspaceFolders.splice(index, 1);
@@ -175,9 +171,7 @@ connection.onDidChangeConfiguration(change => {
     // Reset all cached document settings
     documentSettings.clear();
   } else {
-    globalSettings = <IArgdownSettings>(
-      (change.settings.lspMultiRootSample || defaultSettings)
-    );
+    globalSettings = <IArgdownSettings>(change.settings.lspMultiRootSample || defaultSettings);
   }
 
   // Revalidate all open text documents
@@ -234,12 +228,12 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
   if (result.parserErrors && result.parserErrors.length > 0) {
     for (var error of result.parserErrors) {
       var start = {
-        line: error.token.startLine - 1,
-        character: error.token.startColumn - 1
+        line: error.token.startLine! - 1,
+        character: error.token.startColumn! - 1
       };
       var end = {
-        line: error.token.endLine - 1,
-        character: error.token.endColumn
+        line: error.token.endLine! - 1,
+        character: error.token.endColumn!
       }; //end character is zero based, exclusive
       var range = Range.create(start, end);
       var message = error.message;
@@ -310,9 +304,12 @@ connection.onDidCloseTextDocument((params) => {
 */
 const processDocForProviders = async (textDocument: TextDocumentIdentifier) => {
   const doc = documents.get(textDocument.uri);
-  const text = doc.getText();
-  const path = Uri.parse(textDocument.uri).fsPath;
-  return await processTextForProviders(text, path);
+  if (doc) {
+    const text = doc.getText();
+    const path = Uri.parse(textDocument.uri).fsPath;
+    return await processTextForProviders(text, path);
+  }
+  return null;
 };
 const processTextForProviders = async (text: string, path: string) => {
   const request = {
@@ -325,13 +322,19 @@ const processTextForProviders = async (text: string, path: string) => {
 connection.onRenameRequest(async (params: RenameParams) => {
   const { newName, position, textDocument } = params;
   const doc = documents.get(textDocument.uri);
-  const response = await processDocForProviders(doc);
+  let response: IArgdownResponse | null = null;
+  if (doc) {
+    response = await processDocForProviders(doc);
+  }
   return provideRenameWorkspaceEdit(response, newName, position, textDocument);
 });
 connection.onHover(async (params: TextDocumentPositionParams) => {
   const { textDocument, position } = params;
   const response = await processDocForProviders(textDocument);
-  return provideHover(response, position);
+  if (response) {
+    return provideHover(response, position);
+  }
+  return null;
 });
 
 const onlyWhitespacePattern = /^\s*$/;
@@ -339,76 +342,106 @@ connection.onCompletion(async (params: TextDocumentPositionParams) => {
   const { textDocument, position } = params;
   const path = Uri.parse(textDocument.uri).fsPath;
   const doc = documents.get(textDocument.uri);
-  const txt = doc.getText();
-  const offset = doc.offsetAt(position);
-  const char = txt.charAt(offset - 1);
-  /**
-   * --- Dirty Hack: ---
-   * We have to check if we are at the end of the document and if char equals ':'.
-   * In this case the parser won't produce an ast, but only return a parser error.
-   * To avoid this, we have to remove the ':' from the parsed text.
-   **/
-  let input = txt;
-  if (char === ":") {
-    const txtAfter = txt.substr(offset);
-    if (onlyWhitespacePattern.test(txtAfter)) {
-      input = txt.substr(0, offset - 1) + txtAfter;
+  if (doc) {
+    const txt = doc.getText();
+    const offset = doc.offsetAt(position);
+    const char = txt.charAt(offset - 1);
+    /**
+     * --- Dirty Hack: ---
+     * We have to check if we are at the end of the document and if char equals ':'.
+     * In this case the parser won't produce an ast, but only return a parser error.
+     * To avoid this, we have to remove the ':' from the parsed text.
+     **/
+    let input = txt;
+    if (char === ":") {
+      const txtAfter = txt.substr(offset);
+      if (onlyWhitespacePattern.test(txtAfter)) {
+        input = txt.substr(0, offset - 1) + txtAfter;
+      }
     }
+    const response = await processTextForProviders(input, path);
+    return provideCompletion(response, char, position, txt, offset);
   }
-  const response = await processTextForProviders(input, path);
-  return provideCompletion(response, char, position, txt, offset);
+  return null;
 });
 connection.onDocumentHighlight(async (params: TextDocumentPositionParams) => {
   const { textDocument, position } = params;
   const response = await processDocForProviders(textDocument);
-  return provideReferences(response, textDocument.uri, position).map(
-    (l: Location) => DocumentHighlight.create(l.range, 1)
-  );
+  if (response) {
+    return provideReferences(response, textDocument.uri, position).map((l: Location) =>
+      DocumentHighlight.create(l.range, 1)
+    );
+  }
+  return null;
 });
 connection.onReferences(async (params: ReferenceParams) => {
   const { context, position, textDocument } = params;
   const response = await processDocForProviders(textDocument);
-  return provideReferences(response, textDocument.uri, position, context);
+  if (response) {
+    return provideReferences(response, textDocument.uri, position, context);
+  }
+  return null;
 });
 
 connection.onDefinition(async (params: TextDocumentPositionParams) => {
   const { textDocument, position } = params;
   const response = await processDocForProviders(textDocument);
-  return provideDefinitions(response, textDocument.uri, position);
+  if (response) {
+    return provideDefinitions(response, textDocument.uri, position);
+  }
+  return null;
 });
 
-argdown.addPlugin(documentSymbolsPlugin, "add-document-symbols");
+argdown.addPlugin(new DocumentSymbolPlugin(), "add-document-symbols");
 
-connection.onDocumentSymbol(async (params: TextDocumentPositionParams) => {
+connection.onDocumentSymbol(async (params: DocumentSymbolParams) => {
   const path = Uri.parse(params.textDocument.uri).fsPath;
   const doc = documents.get(params.textDocument.uri);
-  const request = {
-    inputPath: path,
-    input: doc.getText(),
-    process: ["parse-input", "build-model", "add-document-symbols"],
-    inputUri: params.textDocument.uri
-  };
-  const response = await argdown.runAsync(request);
-  return response.documentSymbols;
-});
-connection.onWorkspaceSymbol(async (params: WorkspaceSymbolParams) => {
-  const workspaceSymbols: SymbolInformation[] = <SymbolInformation[]>[];
-  const query = params.query;
-  for (var workspaceFolder of workspaceFolders) {
-    const rootPath = Uri.parse(workspaceFolder.uri).fsPath;
-    const inputPath = rootPath + "/**/*.{ad,argdown}";
+  if (doc) {
     const request = {
-      inputPath,
-      process: ["parse-input", "build-model", "add-document-symbols"]
+      inputPath: path,
+      input: doc.getText(),
+      process: ["parse-input", "build-model", "add-document-symbols"],
+      inputUri: params.textDocument.uri
     };
-    const responses: any[] = await argdown.load(request);
-    const folderSymbols = responses
-      .map<SymbolInformation[]>(r => <SymbolInformation[]>r.documentSymbols)
-      .reduce((acc, val) => acc.concat(val), []);
-    workspaceSymbols.push(...folderSymbols);
+    const response = await argdown.runAsync(request);
+    return response.documentSymbols;
   }
-  return workspaceSymbols.filter(s => s && s.name.indexOf(query) !== -1);
+  return null;
 });
+
+argdown.addPlugin(new FoldingRangesPlugin(), "add-folding-ranges");
+connection.onFoldingRanges(async (params: FoldingRangeParams)=>{
+  const doc = documents.get(params.textDocument.uri);
+  if (doc) {
+    const request = {
+      input: doc.getText(),
+      process: ["parse-input", "build-model", "add-folding-ranges"],
+      inputUri: params.textDocument.uri
+    };
+    const response = await argdown.runAsync(request);
+    return response.foldingRanges;
+  }
+  return null;
+});
+// connection.onWorkspaceSymbol(async (params: WorkspaceSymbolParams) => {
+//   const workspaceSymbols: SymbolInformation[] = <SymbolInformation[]>[];
+//   const query = params.query;
+//   for (var workspaceFolder of workspaceFolders) {
+//     const rootPath = Uri.parse(workspaceFolder.uri).fsPath;
+//     const inputPath = rootPath + "/**/*.{ad,argdown}";
+//     const request = {
+//       inputPath,
+//       process: ["parse-input", "build-model", "add-document-symbols"]
+//     };
+//     const responses: any[] = await argdown.load(request);
+//     const folderSymbols = responses
+//       .map<SymbolInformation[]>(r => <SymbolInformation[]>r.documentSymbols)
+//       .reduce((acc, val) => acc.concat(val), []);
+//     workspaceSymbols.push(...folderSymbols);
+//   }
+//   return workspaceSymbols.filter(s => s && s.name.indexOf(query) !== -1);
+// });
 connection.onExecuteCommand(async params => {
   if (params.command === EXPORT_CONTENT_COMMAND) {
     if (!params.arguments) {

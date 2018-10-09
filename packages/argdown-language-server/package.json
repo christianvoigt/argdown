@@ -4,8 +4,8 @@
   "version": "0.0.1",
   "author": "Christian Voigt",
   "license": "MIT",
-  "main": "dist/server.js",
-  "types": "dist/server.d.ts",
+  "main": "dist/src/server.js",
+  "types": "dist/src/server.d.ts",
   "engines": {
     "node": ">= 8.0.0"
   },
@@ -14,16 +14,24 @@
     "url": "https://github.com/christianvoigt/argdown/tree/master/packages/argdown-language-server"
   },
   "dependencies": {
-    "@types/node": "^8.0.53",
-    "@argdown/node": "^0.11.9",
     "@argdown/core": "^0.8.7",
+    "@argdown/node": "^0.11.9",
+    "@types/node": "^8.0.53",
     "vscode-languageserver": "^5.1.0",
     "vscode-uri": "^1.0.6"
   },
   "scripts": {
     "build": "tsc -p .",
     "watch": "tsc -w -p .",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "test": "mocha -r ts-node/register --full-trace --require source-map-support/register ./test/**/*.spec.ts"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/chai": "^4.1.6",
+    "@types/mocha": "^5.2.5",
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.1.1"
+  }
 }

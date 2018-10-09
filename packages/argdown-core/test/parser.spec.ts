@@ -125,7 +125,8 @@ Statement
     let ast = parser.argdown();
     expect(lexResult.errors).to.be.empty;
     expect(parser.errors).to.be.empty;
-    //console.log(parser.astToJsonString(ast));
+    //console.log(astToString(ast));
+    //console.log(astToJsonString(ast));
     expect(ast.children[0].startLine).to.equal(1); // Heading
     expect(ast.children[1].startLine).to.equal(3); // Statement
     expect(ast.children[2].startLine).to.equal(5); // Statement Definition
@@ -134,7 +135,7 @@ Statement
     expect(ast.children[2].children[1].children[3].startLine).to.equal(8); // Incoming Support
     expect(ast.children[2].children[1].children[4].startLine).to.equal(9); // Incoming Attack
     expect(ast.children[3].startLine).to.equal(11); // Statement Reference
-    expect(ast.children[3].children[1].children[2].startLine).to.equal(12); // Contradiction
+    expect(ast.children[3].children[1].children[1].startLine).to.equal(12); // Contradiction
     expect(ast.children[4].startLine).to.equal(14); // Argument Definition
     expect(ast.children[5].startLine).to.equal(16); // Argument Reference
     expect(ast.children[6].children[0].startLine).to.equal(18); // Argument Statement 1

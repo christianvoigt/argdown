@@ -5472,9 +5472,9 @@ url-parse-lax@^3.0.0:
   dependencies:
     prepend-http "^2.0.0"
 
-url-parse@^1.1.9:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/url-parse/-/url-parse-1.4.1.tgz#4dec9dad3dc8585f862fed461d2e19bbf623df30"
+url-parse@^1.4.3:
+  version "1.4.3"
+  resolved "https://registry.yarnpkg.com/url-parse/-/url-parse-1.4.3.tgz#bfaee455c889023219d757e045fa6a684ec36c15"
   dependencies:
     querystringify "^2.0.0"
     requires-port "^1.0.0"
@@ -5611,30 +5611,31 @@ vm-browserify@0.0.4:
   dependencies:
     indexof "0.0.1"
 
-vscode-jsonrpc@3.5.0:
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/vscode-jsonrpc/-/vscode-jsonrpc-3.5.0.tgz#87239d9e166b2d7352245b8a813597804c1d63aa"
+vscode-jsonrpc@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/vscode-jsonrpc/-/vscode-jsonrpc-4.0.0.tgz#a7bf74ef3254d0a0c272fab15c82128e378b3be9"
 
-vscode-languageclient@^3.4.2:
-  version "3.5.1"
-  resolved "https://registry.yarnpkg.com/vscode-languageclient/-/vscode-languageclient-3.5.1.tgz#c78e582459c24e58f88020dfa34065e976186a98"
+vscode-languageclient@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/vscode-languageclient/-/vscode-languageclient-5.1.0.tgz#650ab0dc9fd0daaade058a8471aaff5bc3f9580e"
   dependencies:
-    vscode-languageserver-protocol "3.5.1"
+    semver "^5.5.0"
+    vscode-languageserver-protocol "3.13.0"
 
-vscode-languageserver-protocol@3.5.1:
-  version "3.5.1"
-  resolved "https://registry.yarnpkg.com/vscode-languageserver-protocol/-/vscode-languageserver-protocol-3.5.1.tgz#5144a3a9eeccbd83fe2745bd4ed75fad6cc45f0d"
+vscode-languageserver-protocol@3.13.0:
+  version "3.13.0"
+  resolved "https://registry.yarnpkg.com/vscode-languageserver-protocol/-/vscode-languageserver-protocol-3.13.0.tgz#710d8e42119bb3affb1416e1e104bd6b4d503595"
   dependencies:
-    vscode-jsonrpc "3.5.0"
-    vscode-languageserver-types "3.5.0"
+    vscode-jsonrpc "^4.0.0"
+    vscode-languageserver-types "3.13.0"
 
-vscode-languageserver-types@3.5.0:
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/vscode-languageserver-types/-/vscode-languageserver-types-3.5.0.tgz#e48d79962f0b8e02de955e3f524908e2b19c0374"
+vscode-languageserver-types@3.13.0:
+  version "3.13.0"
+  resolved "https://registry.yarnpkg.com/vscode-languageserver-types/-/vscode-languageserver-types-3.13.0.tgz#b704b024cef059f7b326611c99b9c8753c0a18b4"
 
-vscode@^1.1.18:
-  version "1.1.18"
-  resolved "https://registry.yarnpkg.com/vscode/-/vscode-1.1.18.tgz#e9227265dc72fc826bd6cd7bd21193f4e48fa671"
+vscode@^1.1.21:
+  version "1.1.21"
+  resolved "https://registry.yarnpkg.com/vscode/-/vscode-1.1.21.tgz#1c8253d6238aefb4112d6e58cf975ad25313dafc"
   dependencies:
     glob "^7.1.2"
     gulp-chmod "^2.0.0"
@@ -5648,7 +5649,7 @@ vscode@^1.1.18:
     request "^2.83.0"
     semver "^5.4.1"
     source-map-support "^0.5.0"
-    url-parse "^1.1.9"
+    url-parse "^1.4.3"
     vinyl-source-stream "^1.1.0"
 
 watchpack@^1.5.0:

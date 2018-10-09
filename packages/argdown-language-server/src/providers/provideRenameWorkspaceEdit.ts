@@ -1,9 +1,4 @@
-import {
-  Position,
-  TextDocumentIdentifier,
-  TextEdit,
-  WorkspaceEdit
-} from "vscode-languageserver";
+import { Position, TextDocumentIdentifier, TextEdit, WorkspaceEdit } from "vscode-languageserver";
 import { createRange } from "./utils";
 import { findReferences } from "./findReferences";
 import { findNodeAtPosition } from "./findNodeAtPosition";
@@ -35,18 +30,25 @@ export const provideRenameWorkspaceEdit = (
   position: Position,
   textDocument: TextDocumentIdentifier
 ): WorkspaceEdit => {
+  const wsEdit: WorkspaceEdit = {
+    changes: {}
+  };
   const line = position.line + 1;
   const character = position.character + 1;
   const nodeAtPosition = findNodeAtPosition(response, line, character);
+  if (!nodeAtPosition) {
+    return wsEdit;
+  }
   const nodes: IAstNode[] = findReferences(response, nodeAtPosition, true);
   if (nodes) {
-    const edits = nodes
-      .map(n => createTextEdit(n, newName))
-      .filter(e => e !== null);
-    const wsEdit: WorkspaceEdit = {
-      changes: {}
-    };
-    wsEdit.changes[textDocument.uri] = edits;
+    const edits: TextEdit[] = nodes.reduce<TextEdit[]>((acc, curr) => {
+      const edit = createTextEdit(curr, newName);
+      if (edit) {
+        acc.push(edit);
+      }
+      return acc;
+    }, []);
+    wsEdit.changes![textDocument.uri] = edits;
     return wsEdit;
   }
   return {};

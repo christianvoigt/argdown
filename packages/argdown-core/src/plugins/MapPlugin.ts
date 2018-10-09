@@ -116,7 +116,7 @@ export class MapPlugin implements IArgdownPlugin {
     // Create edges
     // a) Create edges from relations
     const edges = selectedRelations.reduce<IMapEdge[]>(
-      createEdgesFromRelation(statementNodesMap, argumentNodesMap),
+      createEdgesFromRelation(statementNodesMap, argumentNodesMap, response),
       []
     );
     // b) Create edges from equivalences
@@ -181,10 +181,12 @@ const createArgumentNode = (settings: IMapSettings, initialNodeCount: number) =>
   }
   return node;
 };
-const createEdgesFromRelation = (statementNodesMap: Map<string, IMapNode>, argumentNodesMap: Map<string, IMapNode>) => (
-  acc: IMapEdge[],
-  rel: IRelation
-): IMapEdge[] => {
+const createEdgesFromRelation = (
+  statementNodesMap: Map<string, IMapNode>,
+  argumentNodesMap: Map<string, IMapNode>,
+  response: IArgdownResponse
+) => (acc: IMapEdge[], rel: IRelation): IMapEdge[] => {
+  const isSymmetric = IRelation.isSymmetric(rel);
   const froms: IMapNode[] = [];
   const tos: IMapNode[] = [];
   if (rel.from!.type === ArgdownTypes.ARGUMENT) {
@@ -196,7 +198,7 @@ const createEdgesFromRelation = (statementNodesMap: Map<string, IMapNode>, argum
     } else {
       const ec = <IEquivalenceClass>rel.from!;
       ec.members.reduce((acc, s) => {
-        const isSymmetricPremiseRelation = IRelation.isSymmetric(rel) && s.role === StatementRole.PREMISE;
+        const isSymmetricPremiseRelation = isSymmetric && s.role === StatementRole.PREMISE;
         if (s.role === StatementRole.MAIN_CONCLUSION || isSymmetricPremiseRelation) {
           const node = argumentNodesMap.get((<IPCSStatement>s).argumentTitle!);
           if (node) {
@@ -219,7 +221,7 @@ const createEdgesFromRelation = (statementNodesMap: Map<string, IMapNode>, argum
     } else {
       const ec = <IEquivalenceClass>rel.to;
       ec.members.reduce((acc, s) => {
-        const isSymmetricConclusionRelation = IRelation.isSymmetric(rel) && s.role === StatementRole.MAIN_CONCLUSION;
+        const isSymmetricConclusionRelation = isSymmetric && s.role === StatementRole.MAIN_CONCLUSION;
         if (s.role === StatementRole.PREMISE || isSymmetricConclusionRelation) {
           const node = argumentNodesMap.get((<IPCSStatement>s).argumentTitle!);
           if (node) {
@@ -232,6 +234,7 @@ const createEdgesFromRelation = (statementNodesMap: Map<string, IMapNode>, argum
   }
   for (let from of froms) {
     for (let to of tos) {
+      let addEdge = true;
       const edge: IMapEdge = {
         type: ArgdownTypes.MAP_EDGE,
         from: from,
@@ -239,7 +242,6 @@ const createEdgesFromRelation = (statementNodesMap: Map<string, IMapNode>, argum
         id: "e" + Number(acc.length + 1),
         relationType: rel.relationType
       };
-      acc.push(edge);
       if (rel.from!.type === ArgdownTypes.EQUIVALENCE_CLASS) {
         edge.fromEquivalenceClass = <IEquivalenceClass>rel.from;
       }
@@ -249,6 +251,28 @@ const createEdgesFromRelation = (statementNodesMap: Map<string, IMapNode>, argum
       // If the relation is ec2ec, but the edge is s2a or a2s, we have to change the relation type to SUPPORT or ATTACK.
       let s2sEdge = from.type === ArgdownTypes.STATEMENT_MAP_NODE && to.type === ArgdownTypes.STATEMENT_MAP_NODE;
       if (!s2sEdge) {
+        // Check if we have to reverse the edge direction or dismiss the edge entirely
+        if (isSymmetric) {
+          let fromIsPremise = false;
+          let toIsPremise = false;
+          let toIsConclusion = false;
+          if (from.type === ArgdownTypes.ARGUMENT_MAP_NODE) {
+            const fromArgument = response.arguments![from.title!];
+            fromIsPremise = fromArgument.pcs[fromArgument.pcs.length - 1].title !== rel.from!.title;
+          }
+          if (to.type === ArgdownTypes.ARGUMENT_MAP_NODE) {
+            const toArgument = response.arguments![to.title!];
+            toIsPremise = toArgument.pcs[toArgument.pcs.length - 1].title !== rel.to!.title;
+            toIsConclusion = !toIsPremise;
+          }
+          if (fromIsPremise && toIsPremise) {
+            // ignore relations from premise to premise
+            addEdge = false;
+          } else if (fromIsPremise || toIsConclusion) {
+            edge.from = to;
+            edge.to = from;
+          }
+        }
         if (rel.relationType === RelationType.CONTRADICTORY) {
           edge.relationType = RelationType.ATTACK;
         } else if (rel.relationType === RelationType.CONTRARY) {
@@ -256,6 +280,9 @@ const createEdgesFromRelation = (statementNodesMap: Map<string, IMapNode>, argum
         } else if (rel.relationType === RelationType.ENTAILS) {
           edge.relationType = RelationType.SUPPORT;
         }
+      }
+      if (addEdge) {
+        acc.push(edge);
       }
     }
   }

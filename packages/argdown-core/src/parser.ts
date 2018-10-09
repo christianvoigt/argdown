@@ -135,14 +135,16 @@ class ArgdownParser extends Parser {
     let children: IAstNode[] = [];
     children.push(this.CONSUME(lexer.Indent));
     this.AT_LEAST_ONE(() => children.push(this.SUBRULE(this.orderedListItem)));
-    children.push(this.CONSUME(lexer.Dedent));
+    this.CONSUME(lexer.Dedent); // Dedent is removed from AST
+    //children.push(this.CONSUME(lexer.Dedent));
     return IRuleNode.create(RuleNames.ORDERED_LIST, children);
   });
   private unorderedList = this.RULE(RuleNames.UNORDERED_LIST, () => {
     let children: IAstNode[] = [];
     children.push(this.CONSUME(lexer.Indent));
     this.AT_LEAST_ONE(() => children.push(this.SUBRULE(this.unorderedListItem)));
-    children.push(this.CONSUME(lexer.Dedent));
+    this.CONSUME(lexer.Dedent); // Dedent is removed from AST
+    // children.push(this.CONSUME(lexer.Dedent));
     return IRuleNode.create(RuleNames.ORDERED_LIST, children);
   });
 
@@ -226,7 +228,8 @@ class ArgdownParser extends Parser {
     this.AT_LEAST_ONE(() => {
       children.push(this.SUBRULE(this.outgoingUndercut));
     });
-    children.push(this.CONSUME(lexer.Dedent));
+    this.CONSUME(lexer.Dedent); // Dedent is removed from AST
+    // children.push(this.CONSUME(lexer.Dedent));
     return IRuleNode.create(RuleNames.RELATIONS, children);
   });
   private relations = this.RULE(RuleNames.RELATIONS, () => {
@@ -263,7 +266,8 @@ class ArgdownParser extends Parser {
         )
       );
     });
-    children.push(this.CONSUME(lexer.Dedent));
+    this.CONSUME(lexer.Dedent); // Dedent is removed from AST
+    // children.push(this.CONSUME(lexer.Dedent));
     return IRuleNode.create(RuleNames.RELATIONS, children);
   });
   private incomingSupport = this.RULE(RuleNames.INCOMING_SUPPORT, () => {
