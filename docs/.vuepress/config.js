@@ -116,6 +116,19 @@ module.exports = {
   },
   themeConfig: {
     sidebar: {
+      "/changes/": [
+        {
+          title: "Changes",
+          children: [
+            "argdown-vscode",
+            "argdown-core",
+            "argdown-node",
+            "argdown-cli",
+            "argdown-language-server",
+            "argdown-sandbox"
+          ]
+        }
+      ],
       "/guide/": [
         {
           title: "Getting started",
@@ -126,7 +139,6 @@ module.exports = {
           children: [
             "creating-argument-maps-introduction",
             "elements-of-an-argument-map",
-            "how-to-read-an-argument-map",
             "creating-statement-and-argument-nodes",
             "creating-edges",
             "creating-group-nodes",
@@ -168,6 +180,7 @@ module.exports = {
           { text: "@argdown/node", link: domain + "/argdown-node/index.html" }
         ]
       },
+      { text: "Changes", link: "/changes/" },
       { text: "Sandbox", link: domain + "/sandbox/" },
       { text: "Github", link: "https://github.com/christianvoigt/argdown" }
     ]

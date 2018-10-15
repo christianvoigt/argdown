@@ -1,12 +1,12 @@
-# argdown-codemirror-mode
+# @argdown/codemirror-mode
+
+![Argdown logo](../../argdown-arrow.png?raw=true "Argdown logo")
 
 A simple Codemirror syntax highlighting mode for the Argdown argumentation syntax.
 
-![Argdown](https://cdn.rawgit.com/christianvoigt/argdown/master/argdown-mark.svg)
+For a live demo of this mode see the [Argdown Demo](https://christianvoigt.github.io/argdown/sandbox).
 
-For a live demo of this mode see the [Argdown Demo](http://christianvoigt.github.io/argdown).
-
-For more information on Argdown visit the [Argdown repository](https://github.com/christianvoigt/argdown).
+This package is part of the [Argdown project](https://christianvoigt.github.io/argdown).
 
 # how to register the mode with CodeMirror:
 

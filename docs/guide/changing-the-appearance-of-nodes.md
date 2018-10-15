@@ -2,7 +2,7 @@
 
 ## The canonical member
 
-Equivalence classes can have multiple statements as members. Arguments can have multiple descriptions as members. The Argdown parser has to pick one of these statements or descriptions to represent the equivalence class or argument in the argument map. The member that is picked to officially represent an equivalence class or argument is called the _"canonical member"_.
+[Equivalence classes](/syntax/#equivalence-classes) can have multiple statements as members. [Arguments](/syntax/#arguments) can have multiple descriptions as members. The Argdown parser has to pick one of these statements or descriptions to represent the equivalence class or the argument in the argument map. The member that is picked to officially represent an equivalence class or an argument is called the _"canonical member"_.
 
 By default the Argdown parser simply picks the statement or description from the last definition in the document. Let's take a look at how this works:
 
@@ -36,9 +36,9 @@ Note that it makes only sense to use this flag once. If you use it a second time
 
 You can use the `argumentLabelMode` and `statementLabelMode` map settings to change the label type of argument and statement nodes:
 
-- `title`: Show only the title of the statement or argument
+- `title`: Show only the title of the statement or argument.
 - `text`: Show only the text of the canonical statement or argument description.
-- `hide-untitled` (default): Show title and text, but hide titles if the argument or equivalence class are anonoymous.
+- `hide-untitled` (default): Show title and text, but hide titles if the argument or equivalence class is anonoymous (has no manually defined title).
 
 In the following example we use `title` for arguments and `text` for statements:
 

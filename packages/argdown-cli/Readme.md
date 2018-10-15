@@ -1,17 +1,20 @@
-# Argdown CLI
+# @argdown/cli
+
+![Argdown logo](../../argdown-arrow.png?raw=true "Argdown logo")
 
 A commandline interface to process Argdown data.
 
-For more information about the Argdown argumentation syntax, visit the [Argdown repository](https://github.com/christianvoigt/argdown).
+To learn more about the Argdown argumentation syntax, visit the [Argdown documentation](https://christianvoigt.github.io/argdown).
 
-![Argdown](https://cdn.rawgit.com/christianvoigt/argdown-cli/master/argdown-mark.svg)
-
-Current features of argdown-cli:
+## Features
 
 * export text document to html with `argdown html`
 * export argument map to pdf, svg or dot with `argdown map`
 * export data to json with `argdown json`
+* returns code diagnostics
 * extend argdown-cli with custom plugins and processes in a `argdown.config.js` file and run them with `argdown run [processName]`
+
+For a better editing experience we recommend to additionally install the [VS Code extension](https://christianvoigt.github.io/argdown/guide/installing-the-vscode-extension.html).
 
 ## Installation
 
@@ -79,8 +82,4 @@ The cli can be configured with a config file. This allows you to change the beha
 
 Argdown-cli will automatically look for a `argdown.config.js` in the current working directory. If you want to use a different name or path you can use `argdown --config [name-of-my-config-file].js`.
 
-[Visit the config documentation](https://github.com/christianvoigt/argdown/tree/master/docs/Configuration.md) at the central Argdown repository to learn more about the format of the config file and how to add plugins to argdown-cli.
-
-## PNG Export
-
-The png export has been removed from argdown-cli after causing installation problems on some operating systems. You can still install it as a plugin in your config file. For details, read the Readme of the [argdown-png-export](https://github.com/christianvoigt/argdown-png-export).
+[Visit the config documentation](https://christianvoigt.github.io/argdown/guide/configuration-introduction.html) to learn more about the format of the config file and how to add plugins to argdown-cli.
