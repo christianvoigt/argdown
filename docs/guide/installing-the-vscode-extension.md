@@ -14,7 +14,7 @@ Here are the steps to get you started with VS Code:
 
 ## Activating the Argdown theme in VS Code
 
-You need to activate a custom VS Code theme, to get full support of the Argdown syntax highlighting. To activate the Argdown custom theme, do the following:
+You need to activate a custom VS Code theme in order to get full support of the Argdown syntax highlighting. To activate the Argdown custom theme, do the following:
 
 1.  Press `CTRL + SHIFT + P` (`CMD + SHIFT + P` on OSX) to open the command palette.
 2.  Enter `Preferences: Color Theme` and select the search result.

@@ -1,6 +1,6 @@
 # Using Argdown in your application
 
-So far, we have only extended Argdown through config files. If you want to use Argdown in your own application, it is also easy to do so. If you are writing a node application, you can use the `@argdown/node` package, that provides you with the pre-built `AsyncArgdownApplication` instance that is used in the VS Code extension and the commandline tool.
+So far, we have only extended Argdown through config files. If you want to use Argdown in your own application, it is also easy to do so. If you are writing a node application, you can use the `@argdown/node` package which provides you with the pre-built `AsyncArgdownApplication` instance that is used in the VS Code extension and in the commandline tool.
 
 We will add our toy plugin from the [previous sections](/guide/writing-custom-plugins.html) to the argdown app and run it. We are adding the same process we have defined previously in a config file to the argdown application itself.
 

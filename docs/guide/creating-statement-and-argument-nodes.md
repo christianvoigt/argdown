@@ -2,9 +2,16 @@
 
 This section describes how the Argdown parser decides which statements and arguments are represented as nodes in the generated argument map and how you can change this behaviour.
 
-In general, all arguments with at least one relation are added as nodes to the argument map. But you can also be more selective. For example you migh want to create a map with arguments from a certain [section](#selecting-nodes-by-section) or with a certain [tag](#selecting-nodes-by-tag).
+In general, all arguments with at least one relation are added as nodes to the argument map. But you can also be more selective. For example, you might want to create a map with arguments from a certain [section](#selecting-nodes-by-section) or with a certain [tag](#selecting-nodes-by-tag).
 
-The default rules that decide which _statements_ will get their own node [are more complicated](#choosing-a-statementselectionmode). The Argdown parser tries to keep the number of statement nodes as low as possible to support visualizing complex debates with many arguments. But if you prefer to insert all statements as nodes to the map, it is [easy](#all-mode) to do so.
+The default rules that decide which _statements_ will get their own node [are more complicated](#choosing-a-statementselectionmode). The Argdown parser tries to keep the number of statement nodes as low as possible to support visualizing complex debates with many arguments in comparartively compact maps. For example, this allows you to "hide" unimportant premises in your arguments and only introduce the premises you really care about as nodes in your map.
+
+:::tip Choose your own style
+
+In this respect Argdown distinguishes itself from many argument mapping tools that represent arguments only as "inference nodes" that link different premises together. Such tools force you to represent every statement as a node in your map. This becomes quickly overwhelming and unmanagable in complex debates (at least if you reconstruct every argument's premise-conclusion-structure in detail). 
+
+In contrast, Argdown lets you choose what you want to emphasize in your map. You can even choose to only add the central thesis of the debate to your map and otherwise only visualize arguments. This is a good choice for complex debates. On the other hand, for small debates, you might prefer the "oldschool" style of argument mapping that represents each statement as its own node in the map. By using the [all-mode](#all-mode) it is easy to do so.
+:::
 
 The selection process is divided up into two phases:
 
@@ -16,7 +23,7 @@ __Selection round:__ In the selection round, it is checked in which relations th
 
 :::
 
-Let us start with the latter as this is the round that is excluding arguments and statements by default, even if you do not change any settings.
+Let us start with the latter, as this is the round that is excluding arguments and statements by default, even if you do not change any settings.
 
 In contrast, the preselection round will only exclude statements or arguments, if you explicitely tell it to do so by using the selection settings or the `isInMap` data flag.
 
@@ -26,21 +33,21 @@ By default only statements and arguments are represented by nodes in the argumen
 
 :::definition Connected elements
 
-An equivalence class is considered to be __connected__ if either one of the following conditions apply:
+An equivalence class is considered to be __connected__ if at least one of the following conditions applies:
 
 - It is used in a preselected argument's premise-conclusion-structure as __premise__ or __conclusion__.
 - It has __at least one relation__ to a preselected element.
 
-An argument is considered to be __connected__ if any of the following conditions apply:
+An argument is considered to be __connected__ if at least one of the following conditions applies:
 
-- The __argument__ itself has logically unreconstructed relations.
+- The __argument__ itself is directly related to another preselected element.<!-- versteht man nicht: "has logically unreconstructed relations."-->
 - A __premise is supported/attacked__ by another preselected element.
 - The __main conclusion is supporting/attacking__ another preselected element.
 - An __inference is undercut__ by a preselected element.
 - __Support by equivalence:__ a premise is equivalent with a main conclusion or the main conclusion is equivalent with a premise of another preselected argument.
 :::
 
-Excluding disconnected statements from the map makes it possible to add meta-statements to the Argdown text commenting on your reconstruction, without polluting your argument map with them. If you want to disable this feature you can use the `excludeDisconnected: false` selection setting:
+The exclusion of disconnected statements from the map allows you to comment on your reconstruction by adding meta-statements in the Argdown text without 'polluting' your argument map with them. If you want to disable this feature you can use the `excludeDisconnected: false` selection setting:
 
 ```argdown
 ===
@@ -63,12 +70,12 @@ Click on the map button in the top right to see these three sad arguments appear
 The Argdown parser supports several different general methods to exlude equivalence classes from the selection. You can change the method used by choosing a `statementSelectionMode` in the selection settings. This sections describes the different modes currently supported.
 
 :::tip Managing complexity in your map
-In contrast to arguments, not all preselected and connected equivalence classes will appear as statement nodes in the map. While you can easily change this behaviour it is quite important to keep the number of statement nodes in your map as low as possible. 
+In contrast to arguments, not all preselected and connected equivalence classes will appear as statement nodes in the map. While you can easily change this behaviour, it is quite important to keep the number of statement nodes in your map as low as possible. 
 
-If you include all statements of a a complex debate as nodes in your map, it will become overcrowded and readers will have difficulty to keep the orientation. Choosing which statements you visualize as nodes in your map is a crucial method of managing complexity.
+If you include all statements of a a complex debate as nodes in your map, it will become overcrowded and readers will have difficulty to stay orientated. Choosing which statements you visualize as nodes in your map is a crucial method of managing complexity.
 :::
 
-In three special cases any of the following modes will __not__ exclude equivalence classes:
+In three special cases, any of the modes described further below will __not__ exclude equivalence classes:
 
 :::definition Equivalence classes that will be selected as nodes by all modes
 
@@ -235,7 +242,7 @@ selection:
 
 ## Selecting nodes by tag
 
-You can use the `selectedTags` selection setting to preselect only those arguments and statements for further selection, that are tagged with any of the chosen hashtags.
+You can use the `selectedTags` selection setting to preselect only those arguments and statements for further selection which are tagged with any of the chosen hashtags.
 
 ```argdown
 ===
@@ -282,7 +289,7 @@ selection:
 
 Now argument __f__ is included in the map, even though it is not tagged as well. You may have noticed that not all arguments with the __#pro__ tag were selected. Argument __e__ is missing from the map.
 
-The reason is once again that disconnected nodes are excluded from the map. Argument __e's__ only connection is to __d__, but __d__ is neither tagged with the __#pro__ tag nor is it without any tags (it is tagged with the __#con__ tag). As a result it is excluded from the map. This leaves __e__ disconnected. So it is excluded as well.
+The reason is once again that disconnected nodes are excluded from the map. Argument __e's__ only connection is to __d__, but __d__ is neither tagged with the __#pro__ tag nor is it without any tags (it is tagged with the __#con__ tag). As a result, it is excluded from the map. This leaves __e__ disconnected. So it is excluded as well.
 
 ## Selecting nodes by section
 
@@ -380,11 +387,11 @@ selection:
 
 Note that argument __b__, which would normally appear in the map together with __t3__, is now also excluded, because its only connection was to __t3__. Because __t3__ is excluded __b__ is now disconnected and falls victim to the `excludeDisconnected` default policy.
 
-Why is there not also an `includeArguments` setting? It is not needed because by default _all_ connected arguments are added as nodes to the map. In contrast, only connected statements selected by the statementSelectionMode are added by default to the map. The `includeStatements` setting includes additional statements to the map that were not added by the statementSelectionMode. This means it is not an "exclusive" list of all equivalence classes that might be getting their own node in the map.
+Why is there not also an `includeArguments` setting? It is not needed because by default _all_ connected arguments are added as nodes to the map. In contrast, only connected statements selected by the statementSelectionMode are added by default to the map. The `includeStatements` setting includes additional statements to the map that were not added by the statementSelectionMode. <!-- Unklar, streichen?: This means it is not an "exclusive" list of all equivalence classes that might be getting their own node in the map.-->
 
 ## Selecting nodes with the `isInMap` data flag
 
-You can achieve can also pick single arguments or statements for the map by using the `isInMap` data flag directly in the Argdown code:
+You can also pick single arguments or statements for the map by using the `isInMap` data flag directly in the Argdown code:
 
 ```argdown
 ===
@@ -403,7 +410,7 @@ hide: true
     - <a>
 ```
 
-The downside of this method is that you add map-specific data to elements in your Argdown document thereby making it more difficult for others to change the selection and generate a different map from the same document. This "tight coupling" of data and visualization is not recommended. If you want to pick single elements you should use the `includeStatements`, `excludeStatements` and `excludeArguments` selection settings instead. See the previous section for further details.
+The downside of this method is that you add map-specific data to elements in your Argdown document, thereby making it more difficult for others to change the selection and to generate a different map from the same document. This "tight coupling" of data and visualization is not recommended. If you want to pick single elements you should use the `includeStatements`, `excludeStatements` and `excludeArguments` selection settings instead. See the previous section for further details.
 
 If you still prefer to use the `isInMap` data flag or if you want to override the flags of other authors, you can use the `ignoreIsInMap` selection setting. If set to true, all `isInMap` data flags in your document will be ignored:
 

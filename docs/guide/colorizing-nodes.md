@@ -1,6 +1,6 @@
 # Colorizing nodes
 
-By default argument and statement nodes are colorized by giving them tags:
+You can colorize argument and statement nodes by giving them tags:
 
 ```argdown
 ===
@@ -17,7 +17,7 @@ selection:
 <b> #tag-1
 ```
 
-As you can see if you look at __c__ or __b__, the first tag applied to an element is used to determine its color. Additional tags are ignored.
+As the example shows, the first tag applied to an element is used to determine its color. Additional tags are ignored.
 
 ## The `colorScheme` setting
 
@@ -154,7 +154,7 @@ selection:
 
 ## Changing the tag priority
 
-If some tag should always be used for colorizing, regardless of its position, you can use an object in the tagColors map and add color and priority fields to it. Higher priority numbers will get precedence:
+If some tag should always be used for colorizing, regardless of its position in a statement or description, you can use an object in the tagColors map and add color and priority fields to it. Higher priority numbers will get precedence:
 
 ```argdown
 ===
@@ -181,7 +181,7 @@ In this example argument __b__ gets now the color of __#tag-1__ and statement __
 
 ## Changing the group color by tag
 
-You can also color groups by tag. By default this is disabled to avoid confusion with the different color scheme indices: If a tag gets applied to statements or arguments  the index number will refer to the normal color scheme. But if it gets applied to a group the index number will refer to the group color scheme.
+You can also color groups by tag. By default this is disabled to avoid confusion with the different color scheme indices: If a tag gets applied to statements or arguments, the index number will refer to the normal color scheme. But if it gets applied to a group, the index number will refer to the group color scheme.
 
 You can enable this mode with the `colorizeGroupsByTag` setting. It is probably a good idea to disable `colorizeByTag` for statements and arguments if you do so.
 
@@ -292,9 +292,9 @@ selection:
 <b>: #tag-3
 ```
 
-While this might seem comfortable it will clutter your Argdown code with data elements and tightly couple data and representation.
+While this might seem comfortable, it will clutter your Argdown code with data elements and tightly couple data and representation.
 
-Because of this, it is recommended to use the other options available. For cases in which other people have assigned color with data elements in their Argdown documents, you can use the `ignoreColorData` setting.
+Because of this, it is recommended to use the other options available. For cases in which other authors have assigned color with data elements in their Argdown documents, you can use the `ignoreColorData` setting.
 
 ## The `ignoreColorData` setting
 

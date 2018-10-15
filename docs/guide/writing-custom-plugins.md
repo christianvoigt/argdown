@@ -57,4 +57,4 @@ const processNodesRecursively = (node: IMapNode, response: IArgdownResponse): vo
 
 The SaysWhoPlugin can actually be found in the @argdown/core package, although it is just added for demonstration purposes.
 
-In the [next section](/guide/loading-custom-plugins-in-a-config-file.html) we will continue by loading the plugin in a config file and then running it with the commandline tool.
+In the [next section](/guide/loading-custom-plugins-in-a-config-file.html), we will continue by loading the plugin in a config file and then running it with the commandline tool.

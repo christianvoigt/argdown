@@ -1,6 +1,6 @@
 # Creating group nodes
 
-Headings define sections in the Argdown document. In the argument map sections are represented as groups of arguments and statements (visualized as grey boxes). By default, the following rules decide, to which group a statement or argument belongs:
+Headings define sections in the Argdown document. In the argument map, sections are represented as groups of arguments and statements (visualized as grey boxes). By default, the following rules decide to which group a statement or argument belongs:
 
 :::definition How groups are assigned to statements and arguments
 
@@ -146,7 +146,7 @@ hide: true
 
 ## Regrouping
 
-With the `regroup` group setting you can completely overwrite the groups derived from headings. Using this method in your config files you can apply as many arbitrary groupings to the same Argdown document as you like.
+With the `regroup` group setting you can completely overwrite the groups derived from headings. By using this method in your config files, you can apply as many arbitrary groupings to the same Argdown document as you like.
 
 ```argdown-map
 ===

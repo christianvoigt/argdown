@@ -40,7 +40,7 @@ module.exports = {
 };
 ```
 
-Instead of putting the settings directly into the module exports you can also export a config object containing the settings (in this example we are using ES6 Javascript syntax, so make sure it is supported):
+Instead of putting the settings directly into the module exports, you can also export a config object containing the settings (in this example we are using ES6 Javascript syntax, so make sure it is supported):
 
 ```javascript
 module.exports = {
@@ -63,4 +63,4 @@ module.exports = {
 Using Javascript instead of JSON brings you all the power of a full programming language.
 You can use this for example to add custom plugins and [processes](/guide/running-custom-processes.html) on the fly to your Argdown application.
 
-If you are unfamiliar with Javascript it might be safer to stick with JSON which also brings you performance benefits if you process a lot of Argdown documents at once (JSON files are loaded asynchronously, while Javascript files are currently loaded synchronously).
+If you are unfamiliar with Javascript it might be safer to stick with JSON, which also brings you performance benefits in case you process a lot of Argdown documents at once (JSON files are loaded asynchronously, while Javascript files are currently loaded synchronously).

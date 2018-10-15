@@ -2,24 +2,31 @@
 sidebar: auto
 ---
 
+<!--ToDo: Verlinkung innerhalb des Dokuments, z.B. equivalence class, relation, etc. -->
+
 # The Syntax
 
-An Argdown document consists of a sequence of blocks of text separated by empty lines. Each block defines a top-level element. 
+An Argdown document is separated by empty lines into succesive segments of text. Each such segment is a so-called top-level block element. 
 
 :::definition Top-level block elements
 A top-level block element is an element that is defined in one or more consecutive lines of text and is
 
-- at the document start or preceded by an empty line
+- at the document start or preceded by an empty line, and 
 - at the document end or followed by an empty line.
 :::
 
-Top-level block elements may contain many other elements as child elements. Some of these elements are of types that may never appear as top-level elements themselves. These are called __inline elements__. Other possible child elements are of a type that may also appear as top-level block elements themselves. These are simply called __block elements__.
+__Block elements__ may also be used as children of other block elements. In this case they are not separated from their parent element or their siblings by empty lines. Instead they are preceded by a simple line break, indentation and a list item or relation symbol (for example (1) or +). 
 
-All but one of the main sections of this documentation describe the block elements of Argdown. The subsections of each of these main sections describe the different subtypes of each block element and the elements that they may contain as child elements.
+Each block element that is a child of another block element may have its own children. These are assigned to it by increasing their indentation level by one step. A top level block element may thus have several levels of descendant block elements attached to it.
 
-The one main section that does not describe a block element, is the section about Argdown relations. Argdown relations may _not_ be preceded by an empty line. Instead they are always part of a block of text defining a different type of top-level element (a statement or an argument). But it makes sense to give them their own section to avoid repetition and because of their fundamental importance.
+Other Argdown elements may never be used on their own as top-level elements or as child elements separated by list item or relations symbols. They only appear within a block element and are only separated from other elements by empty spaces. Because they only appear within other block elements they are called __inline elements__. 
+
+All but one of the main sections of this documentation describe the block elements of Argdown (of which __statements__ and __arguments__ are the most important ones ). The subsections of each of these main sections describe the different subtypes of each block element and the elements that they may contain as child elements.
+
+The one main section that does not describe a block element, is the section about Argdown relations. Argdown relations do not occur at the top level and may _not_ be preceded by an empty line. They always connect a new child block element (a statement or an argument) to a preceding parent block element. But it makes sense to give them their own section to avoid repetition and because of their fundamental importance.
 
 ## Statements
+
 
 ```argdown-cheatsheet
 ===
@@ -60,23 +67,28 @@ a
 !
 ```
 
-Statements are used on their own, as members of relations or as premises and conclusions of arguments. They contain the propositional content of an Argdown document. You can also use them to introduce, structure, comment or analyze the argumentation (meta-statements). On the other hand you may prefer to use Argdown comments for that purpose to keep the meta-commentary cleary separated. Which option you choose is up to you.
+Statements are used on their own, as members of relations or as premises and conclusions of arguments. They contain the propositional content of an Argdown document. You can also use them to introduce, structure, comment or analyze the argumentation (meta-statements). On the other hand, you may prefer to use Argdown comments for that purpose to keep the meta-commentary clearly separated. Which option you choose is up to you.
 
 ```argdown-cheatsheet
 ===
 explanation: >
-    A statement in Argdown is not a repeatable sequence of character tokens. Instead it is a non-repeatable occurrence of characters at a specific location within the Argdown document. It is a sequence of token instances. If you type the same characters twice, separated by an empty line, you will have defined two different Argdown statements.
+    A statement in Argdown is a non-repeatable occurrence of characters at a
+    specific location within the Argdown document. It is a sequence of token
+    instances. That means, for instance, if you copy & paste a statement, you
+    define a new statement.
 hide: true
 ===
 The following two paragraphs
-contain two different true
-statements.
+contain two different Argdown
+statements:
 
-I am a statement occurring
-only once in this document.
+I am a statement which is 
+string-identical with another
+statement in this document.
 
-I am a statement occurring
-only once in this document.
+I am a statement which is 
+string-identical with another
+statement in this document.
 ```
 
 ### Equivalence classes
@@ -85,21 +97,21 @@ As we have seen at the end of the previous section, __statements__ in Argdown ar
 
 Consider for example statements that refer to different things in the same way ("He is the best football player in the world." referring once to Ronaldo and once to Messi). Both statements may contain the same characters but mean different things. 
 
-Consider on the other hand statements that have the same meaning but express it differently ("Messi is the best football player in the world.   ", "The best football player in the world is Messi."). We need to be able to express that these two statements are logically and semantically equivalent. String identity will not help us here.
+Consider on the other hand statements that have the same meaning but express it differently ("Messi is the best football player in the world.", "The best football player in the world is Messi."). We need to be able to express that these two statements are logically and semantically equivalent. String identity will not help us here.
 
 Still, one might think it absurd that it is impossible in the Argdown syntax to use the same "statement" twice. For example, how do you express that two arguments share a premise or a conclusion?
 
-The solution to all these problems is simple: Instead of automatically treating identical strings as logically and semantically equivalent, we explicitly state which string occurrences (which "statements") really are equivalent and which are not. By doing so we sort statements into different sets. In Argdown these sets are called __equivalence classes__.
+The solution is simple: Instead of automatically treating identical strings as logically and semantically equivalent, we explicitly state which string occurrences (which "statements") really are equivalent and which are not. By doing so we sort statements into different sets. In Argdown these sets are called __equivalence classes__.
 
 If you want to express that two arguments share the same premise or conclusion or that two differently formulated statements basically mean the same thing, you put them into the same equivalence class. If you want to express that two identical string occurrences mean two different things, you put them in two different equivalence classes.
 
-Actually, to do the latter, you do not have to do anything. By default, every statement is already put into its own equivalence class. You only have to explicitely create a new equivalence class, if you want to populate it with more than one member. 
+Actually, to do the latter, you do not have to do anything. By default, every statement is already put into its own equivalence class. You only have to explicitly create a new equivalence class, if you want to populate it with more than one member. 
 
 So how do you put two statements into the same equivalence class? You do that by giving them the same title.
 
 ### Statement titles
 
-Statement titles are used to explicitely assign the statement to an equivalence class. Each statement is member of one and only one equivalence class and accordingly can have one and only one title. 
+Statement titles are used to explicitly assign the statement to an equivalence class. Each statement is member of one and only one equivalence class and accordingly can have one and only one title. 
 
 "Statement titles" look like identifiers for statements, but are actually identifiers of whole equivalence classes with potentially many statements as members. Each statement that does not have a title is automatically member of an untitled equivalence class that can only ever have this one lonely member (because it is impossible to refer to an untitled equivalence class twice).
 
@@ -110,7 +122,7 @@ A statement title followed by a statement text is called a "statement definition
 ```argdown-cheatsheet
 ===
 explanation: >
-    Statements are given titles by putting the title in square brackets in front of the statement, followed by a colon. If the title is used the first time for a statement, a new equivalence class is created with this title as identifier. If another statement already has the same title, the new statement is put as a new member into the same equivalence class. Argdown can not and will not check if the members of an equivalence class really are logically and semantically equivalent. It is your responsibility to ensure it. In this example we create an equivalence class with six members.
+    Statements are given titles by putting the title in square brackets in front of the statement, followed by a colon. If the title is used the first time for a statement, a new equivalence class is created with this title as identifier. If a previously defined statement already has the same title, the new statement is put as a new member into the same equivalence class. (Of course, Argdown can not and will not check if the members of an equivalence class really are logically and semantically equivalent.) In this example, we create an equivalence class with six members.
 hide: true
 ===
 
@@ -133,7 +145,7 @@ letters comes A.
 integer is 1. // oops
 ```
 
-A statement text without a statement title is a statement definition of an "anonymous statement" (belonging to an anonymous equivalence class).
+A statement text without a statement title is a statement definition of an "anonymous" statement (belonging to an anonymous equivalence class).
 
 #### Statement references
 
@@ -144,7 +156,7 @@ If you are too lazy to retype a whole statement, you can simply refer to its equ
 ```argdown-cheatsheet
 ===
 explanation: >
-    Statement titles can also be used without defining a new statement. In this case there is no new member assigned to the equivalence class of this title. Instead we only refer to the members of this class without changing it.
+    Statement titles can also be used without defining a new statement. In this case there is no new member assigned to the equivalence class of this title. Instead, one only refers to the members of this class without changing it.
 hide: true
 ===
 [Life moves fast]: I said it before
@@ -159,10 +171,11 @@ you might miss it.
 [Life moves fast]
 ```
 
+
 ```argdown-cheatsheet
 ===
 explanation: >
-    We do not have to assign members to an equivalence class before we can refer to it. We even can refer to an empty equivalence class to which we will never assign a statement (though you probably should not do it).
+    We do not have to assign members to an equivalence class before we can refer to it. We even can refer to an empty equivalence class to which we will never assign a statement (though it probably doesn't make much sense).
 hide: true
 ===
 [Back to the future]
@@ -180,7 +193,7 @@ Sometimes you want to talk about a statement in another statement without actual
 
 ```argdown-cheatsheet
 ===
-explanation: By using an @ sign before the statement title you can mention an equivalence class within another statement.
+explanation: By using an "@" sign before the statement title you can mention an equivalence class within another statement.
 hide: true
 ===
 [Nietzsche's Slogan]: God is dead.
@@ -189,11 +202,9 @@ I do not think that @[Nietsche's Slogan]
 makes much sense if you think about it.
 ```
 
-A statement _mention_ could only be replaced by a member of the mentioned equivalence class _if it was put in quotes_.
-
-In contrast, a statement _reference_ could be replaced by a member of the referred to equivalence class _without_ putting it into quotes.
-
 You can also mention arguments in statements. Take a look at the section on [argument mentions](#argument-mentions) for the details.
+
+Note: By mentioning another element in a statement, you do _not_ define a [relation](#relations) with that element. 
 
 ### Bold and italic statement text
 
@@ -255,7 +266,7 @@ hide: true
 You can add metadata in the [YAML data format](http://yaml.org) to any statement definition or reference. For a quick introduction to YAML see [here](https://www.codeproject.com/Articles/1214409/Learn-YAML-in-five-minutes) or [here](https://learnxinyminutes.com/docs/yaml/).
 
 :::tip Always add empty spaces after colons
-The most common pitfall with YAML is that you always have to insert an empty space after the colon that divides a key from its value. 
+The most common pitfall with YAML is that you forget to insert an empty space after the colon that divides a key from its value. 
 
 **Wrong:** `key:value`
 
@@ -267,7 +278,7 @@ If your YAML code creates errors, you should check this first.
 ```argdown-cheatsheet
 ===
 explanation: >
-    You can put any metadata into curly brackets behind a statement definition or reference. In this case we save different sources for the statement (the ealiest of which is not even from Nietzsche). In what format you save sources (or other metadata) is up to you or the plugins that work with this data. For example you could also save sources with additional data like page, year and city of publication.
+    You can put any metadata into curly brackets behind a statement definition or reference. In this case, we save different sources for the statement (the ealiest of which is not even from Nietzsche). In what format you save sources (or other metadata) is up to you or the plugins that work with this data. For example you, could also save sources with additional data like page, year and city of publication.
 hide: true
 ===
 [Nietzsche's Slogan]: God is dead.
@@ -278,7 +289,7 @@ hide: true
 ]}
 ```
 
-Note that by default, YAML can be used only in "inline format" which looks just like JSON (YAML is a superset of JSON). If you want to use the block format of YAML as well, you have to insert a linebreak directly after the opening bracket. Doing so you _have_ to use block format and can _not_ use the inline format (this is because of limitations within Argdown, not within YAML).
+Note that, by default, YAML can be used only in "inline format" which looks just like JSON (YAML is a superset of JSON). If you want to use the block format of YAML as well, you have to insert a linebreak directly after the opening bracket. Doing so, you _have_ to use block format and can _not_ use the inline format (this is because of limitations within Argdown, not within YAML).
 
 ```argdown-cheatsheet
 ===
@@ -294,7 +305,7 @@ sources:
 ```
 
 :::warning
-Do not use comments instead of YAML data elements to save your data.
+Do not use [comments](#comments) instead of YAML data elements to save your data.
 
 ```argdown-cheatsheet
 ===
@@ -316,7 +327,7 @@ While it is just as easy to read the comments for humans like yourself, for a co
 
 Arguments are the second basic block elements of Argdown. What is the conceptual difference between an argument and a statement?
 
-Somebody who makes a statement claims that something is true. If you do not know anything about it, this claim alone will not help you much in deciding if you should accept it or not. Somebody who makes an argument for a claim, tries to show (by logical inference) that if you already accept some other statements (the premises) you should also accept (and believe) the statement in question (the conclusion). 
+Somebody who makes a statement claims that something is true. If you do not know anything about it, this claim alone will not help you much in deciding if you should accept it or not. Somebody who makes an argument for a claim tries to show (by logical inference) that if you already accept some other statements (the premises) you should also accept (and believe) the statement in question (the conclusion). 
 
 So while a statement is structurally simple, an argument always has to consist of at least three elements: 
 
@@ -324,17 +335,23 @@ So while a statement is structurally simple, an argument always has to consist o
 * a conclusion and 
 * an inference from the premises to the conclusion.
 
-This internal structure is called a __premise-conclusion-structure__ (pcs) and we will see in this section how you can define it in Argdown. The act of defining an argument's pcs is called __logical reconstruction__. An argument for which we have defined its pcs is "reconstructed". If we have not done so yet, the argument is still "unreconstructed".
+This internal structure is called a __premise-conclusion-structure__ (pcs) and we will see in [the next section](#Premise-conclusion-structures) how you can define it in Argdown. 
+The act of working out an argument's pcs is called __reconstruction__ because we often have to add or reformulate parts of the argument that were left implicit. 
+An argument to which we have assigned a pcs is "reconstructed." If a pcs has not been assigned yet, the argument is still "unreconstructed."
 
-Argdown also supports reconstructing more __complex arguments__: A complex argument consists of a sequence of "inferential steps" from premises to conclusions in which each conclusion is used together with new premises to derive the next conclusion. The last conclusion of such a complex argument is called the __main conclusion__, the others are called __preliminary conclusions__. In contrast, a simple argument only contains one inferential step.
+Argdown also supports reconstructing more __complex arguments__: A complex argument consists of a sequence of "inferential steps" from premises to conclusions in which each conclusion is used together with new premises to derive the next conclusion. The last conclusion of such a complex argument is called the __main conclusion__, the others are called __intermediary conclusions__. In contrast, a simple argument only contains one inferential step.
 
 :::tip
-A complex argument is logically equivalent to a series of simple arguments that are connected by support relations. In some cases it may be better to hide the complexity within a complex argument to simplify the argument map. In others it may be better to show the internal workings between the inferential steps in the argument map. This is a question of complexity managment and which style you choose is up to you.
+A complex argument is logically equivalent to a series of simple arguments that are connected by support relations. In some cases, it may be better to hide the complexity within a complex argument to simplify the argument map. In others, it may be better to show the internal workings between the inferential steps in the argument map. This is a question of complexity managment and style, which is up to you.
 :::
 
-The process of logical reconstruction is often quite tedious and difficult. If we just want to quickly sketch the different arguments in a debate or the main inferential steps in a complex argumentation, defining the pcs of every argument would be reconstructive overkill. Instead you can start out by giving all arguments a short title and describing their main drift in a sentence or two.
+The process of working out an argument's premise-conclusion-structure can be tedious and difficult. If you just want to quickly sketch the different arguments in a debate or the main inferential steps in a complex argumentation, defining the pcs of every argument would be reconstructive overkill. Instead, you can simply give all arguments a short title and describe their main drift in a sentence or two. 
 
-This documentation first describes how to __sketch arguments__ in Argdown. Then it will turn onto the logical reconstruction in Argdown and describe premise-conclusion-structures in detail.
+This section first describes how to __sketch arguments__ in Argdown. The next section will turn onto the detailed reconstruction in Argdown and describe premise-conclusion-structures.
+
+:::tip
+Even if your ultimate aim is a precise analysis of all arguments in a debate, sketching the arguments is typically a useful first step and should precede detailed reconstruction. 
+:::
 
 ### Argument titles
 
@@ -347,13 +364,13 @@ Argument titles come in _angle brackets_ and assign a description to an _argumen
 ```argdown-cheatsheet
 ===
 explanation: >
-    Two sketched arguments, each defining an argument by giving it a title in angle brackets, followed by the informal description of the argument. In both cases the description already hints at how the complex premise-conclusion-structure of the argument will look like, even though they both do not mention the main conclusion "God", but preliminary conclusions from which another inferential step is needed to get to "God".
+    Two sketched arguments supporting a central claim. Each argument is defined by giving it a title in angle brackets, followed by an informal description. In both cases, the description already hints at how the complex premise-conclusion-structure of the argument will look like, even though they both do not mention the main conclusion "God", but only intermediary conclusions from which another inferential step is needed to get to "God".
 hide: true
 ===
 [God]: There is a god.
     + <Teleological Proof>:
-      Because the world is
-      intelligently designed
+      Since the world is
+      intelligently designed,
       there has to be an
       intelligent creator.
     + <Ontological Proof>:
@@ -365,16 +382,16 @@ hide: true
       of an absolutely perfect Being
       contains the idea of
       actual existence;
-      therefore since we have the idea
-      of an absolutely perfect Being
+      therefore, since we have the idea
+      of an absolutely perfect Being,
       such a Being must really exist.
 ```
 
-Argument descriptions can be thought of as a statement that follows an argument title. But in the strict sense they are no statements at all, because they do _not_ belong to any equivalence class. You can not give them a statement title. Instead you assign them to an argument in an argument definition.
+Argument descriptions can, informally, be thought of as a statement that follows an argument title. But, in Argdown terminology, they are no statements at all, because they do _not_ belong to any equivalence class. You can not give them a statement title. Instead, you assign them to an argument in an argument definition.
 
-An argument can have multiple descriptions as members. An argument can thus be thought of as being something similar to an "equivalence class for argument descriptions". Each argument description belongs to one and only one argument. And just like equivalence classes, arguments can stand in relation to each other or to equivalence classes. While you can _not_ repeat an argument description (because just like a statement it is a string occurrence, not a string), you can repeat argument titles, thus assigning different argument descriptions to the same argument.
+An argument can have multiple descriptions as members. An argument can thus be thought of as being something similar to an "equivalence class for argument descriptions". Each argument description belongs to one and only one argument. And just like equivalence classes, arguments can stand in [relation](#relations) to each other or to equivalence classes. While you can _not_ repeat an argument description (because just like a statement it is a string occurrence, not a string, see beginning of Section [Statements](#statements)), you can repeat argument titles, thus assigning different argument descriptions to the same argument.
 
-But this analogy has its limits: Argument descriptions do _not_ have to be logically and semantically equivalent. They can summarize an argument very differently:
+But this analogy has its limits: Argument descriptions are _not_ supposed to be logically and semantically equivalent. They can summarize an argument very differently:
 
 ```argdown-cheatsheet
 ===
@@ -382,8 +399,8 @@ explanation: different descriptions for the same argument that are not logically
 hide: true
 ===
 <Teleological Proof>:
-    Because the world is
-    intelligently designed
+    Since the world is
+    intelligently designed,
     there has to be an
     intelligent creator.
 
@@ -403,7 +420,7 @@ hide: true
 
 #### Argument references
 
-Like [statement titles](#statement-references) you can also use argument titles to refer to an argument without assigning a new description to it:
+Like [statement titles](#statement-references), you can also use argument titles to refer to an argument without assigning a new description to it:
 
 ```argdown-cheatsheet
 ===
@@ -432,7 +449,7 @@ hide: true
 
 ```argdown-cheatsheet
 ===
-explanation: An argument does not have to be defined first before one can refer to it. It does not even have to be defined at all. In this example, "Ontological Proof" is never defined with an argument description. It is only referred to, while "Teleological Proof" is referred to before it is defined.
+explanation: An argument does not have to be defined first before one can refer to it. It does not even have to be defined at all. In this example, "Ontological Proof" is never defined with an argument description. It is only referred to -- while "Teleological Proof" is referred to before it is defined.
 hide: true
 ===
 [God]: God exists.
@@ -519,34 +536,39 @@ hide: true
 }
 ```
 
-### Premise-conclusion-structures
+## Premise-conclusion-structures
 
-Sketched arguments are __logically reconstructed__ by assigning a premise-conclusion-structure (pcs) to them. Premise-conclusion-structures are list-like block elements with pcs-statements as numbered list items. Pcs-statements are normal statements preceded by a pcs index number in round brackets. A pcs may not contain an empty line.
+An argument can be reconstructed in detail by assigning a premise-conclusion-structure to it. 
+You can assign a premise-conclusion-structure to any top-level definition or reference of an argument. 
+Premise-conclusion-structures are list-like block elements with [pcs-statements](#pcs-statements) as numbered list items.
+Pcs-statements are normal statements preceded by a pcs index number in round brackets. A pcs may not contain an empty line.
 
-There are currently two types of pcs-statements: premises and conclusions. Conclusions look like premises, except that they are preceded by an inference element. An inference element is separating its conclusion from its premises by a series of hyphens.
+There are currently two types of pcs-statements: premises and conclusions. Conclusions look like premises, except that they are preceded by an inference. An inference element is separating a conclusion from preceding pcs-statements by a series of hyphens.
 
 :::definition Composition of a premise-conclusion-structure 
-A well-formed pcs complies to the following rules:
+A pcs is well-formed if and only if it complies with the following rules:
 
-- it starts with at least one premise
-- it ends with a main conclusion, preceded by an inference
-- it may contain additional "inferential steps", each at least containing a preliminary conclusion preceded by an inference
-- each inferential step may contain additional premises and may make of use of preceding conclusions or premises
+- It is a consecutively numbered list of at least two pcs-statements without any blank lines.
+- The second-last and the last pcs-statement in the list are separated by an inference.
+- Any other two pcs-statements in the list may be separated by an inference. 
 :::
 
-A pcs is a block element that can only occur at the top-level of the document, never inside other block elements. You assign a pcs to an argument, by inserting it as next top-level element directly behind an argument definition or reference.
+
+:::definition Premisses, intermediary conclusion, main conclusion 
+In a well well-formed pcs, every pcs-statement which is preceded by an inference-marker is a conclusion. The last pcs-statement in the list is the __main conclusion__, all other conclusions are __intermediary conclusions__. Pcs-statements that are not conclusions are __premises__.  
+:::
 
 ```argdown-cheatsheet
 ===
 explanation: >
-    A premise-conclusion-structure is assigned to the "Teleological proof" argument. Its pcs-statements consist of one preliminary conclusion (3), one main conclusion (5) and three premises (1, 2, 4). The argument consists of two inferential steps: The first from 1 and 2 to 3. And the second from 3 and 4 to 5.
+    A premise-conclusion-structure is assigned to the "Teleological proof" argument. Its pcs-statements consist of one intermediary conclusion (3), one main conclusion (5) and three premises (1, 2, 4). The example makes use of the default inference-marker: a line which contains only a series of hyphens. 
 hide: true
 ===
 <Teleological proof>
 
-(1) The world is intelligently designed.
-(2) The best explanation,
-    why the world is intelligently designed,
+(1) The world seems intelligently designed.
+(2) The best explanation for
+    why the world seems intelligently designed,
     is that there is an
     intelligent being designing it.
 -----
@@ -558,7 +580,51 @@ hide: true
 (5) God exists.
 ```
 
-If you are inserting a pcs at the start of the document or after a top-level block element that is not an argument definition or reference, you are creating an _anonymous argument_ without a title. This is similar to using a statement without a title. You can still attack or support this anonymous argument, but you can not refer to it or add an argument description to it.
+A pcs is a block element that can only occur at the top-level of the document, never inside other block elements. You assign a pcs to an argument, by inserting it as next top-level element directly behind an argument definition or reference.
+
+If you are inserting a pcs at the start of the document or after a top-level block element that is not an argument definition or reference, you are creating an _anonymous argument_ without a title. This is similar to using a statement without a title. You can still attack or support this anonymous argument (see Section on [relations](#relations)), but you can not refer to it or add an argument description to it.
+
+
+### Pcs-statements
+
+Pcs-statements are simply [statements](#statements) preceded by a pcs index number in round brackets and an empty space. Any Argdown statement, including its permissible child elements, may be used in a pcs-statement.
+
+```argdown-cheatsheet
+===
+explanation: >
+    Essentially the same argument as before, articulated and enhanced with statement titles, references, mentions, links, tags and YAML-data.   
+hide: true
+===
+
+[Intelligent Design]: The world seems 
+intelligently designed.
+
+[God]: God exists.
+
+<Teleological proof>
+
+(1) [Intelligent Design]
+(2) [Best Explanation]: The best 
+    explanation for why the world seems 
+    intelligently designed 
+    (cf. @[Intelligent Design]),
+    is that _there is_ an 
+    intelligent being designing it.
+-----
+(3) **Some** intelligent being 
+    designing the world exists.
+    {sources: [
+        "Cleanthes"
+    ]} 
+(4) The only intelligent being 
+    that could [design the world](https://en.wikipedia.org/wiki/Intelligent_design) 
+    is God. #deism
+-----
+(5) [God]
+```
+
+As explained further below, you can also define relations to other arguments or statements directly below a pcs-statement (see [relations of reconstructed arguments](#relations-of-reconstructed-arguments)).
+
 
 ### Inferences
 
@@ -577,12 +643,12 @@ hide: true
 (3) s3
 ```
 
-You can also specify which inference rules where used or add YAML data to the inference. In this case you have to use the "expanded" inference mode. An expanded inference starts and ends with a line of at least two hyphens. In between these lines you can add a list of inference rules and/or a YAML data element. For more details about YAML data elements see the section on [statement YAML data](#statement-yaml-data).
+You can also specify which inference rules were used or add YAML data to the inference. In this case you have to use the "expanded" inference mode. An expanded inference starts and ends with a line of at least two hyphens. In between these lines you can add a list of inference rules and/or a YAML data element. For more details about YAML data elements see the section on [statement YAML data](#statement-yaml-data).
 
 ```argdown-cheatsheet
 ===
 explanation: >
-    Using an expanded inference in a pcs. Two inference rules are specified and YAML metadata is added, containing the statements used in the inference and the kind of logic the inference rules are a part of.
+    Using an expanded inference in a pcs. Two inference rules are specified and YAML metadata is added, containing the statements used in the inference and the kind of logic the inference rules are part of.
 hide: true
 ===
 
@@ -597,20 +663,21 @@ Universal instantiation, Modus Ponens
 
 ## Relations
 
-Relations can be defined between statements, arguments and inferences. You can express the same relation in different places and in different ways in the Argdown document. The Argdown parser will recognize that you mean the same relation and not draw redundant arrows in the map.
+Relations can be defined below statements, arguments, pcs-statements and inferences. 
+You can express the same relation multiple times in different places and in different ways in the same Argdown document. 
+The Argdown parser will recognize that you mean the same relation and not draw redundant arrows in the map.
 
-:::definition Composition of a relation tree
-You define a relation for any statement, argument or inference **x** by:
+:::definition Defining relations of an element
+You define a single relation **r** for any parent relation member **x** (where x can be a statement, argument, pcs-statement or inference) in the following way:
 
-- adding a _new line_ below **x** or below any other relation defined below x as long as you leave no empty line in between
-- _indenting_ the new line more than **x** is indented and less than any other relation directly under x that is not itself a relation of x
-- adding a _relation symbol_ (+, -, \_, \>\<) and in most cases a _direction symbol_ (< or >)
-- adding the other relation member **y** (statement, argument or inference) directly behind the symbol after an empty space.
+- Insert a _new line_ directly below **x**.
+- Indent the line more than **x** is indented.
+- Add a  _relation symbol_ (+, -, \_, \>\<) plus, possibly, a _direction symbol_ (< or >) to define the type of relation.
+- Add the child relation member **y** (a statement or an argument definition or reference).
 
-For any such relation member **y** you can also add relations beneath it by following the same rules, thus creating a multi-level tree structure of relations.
+You can define several relations of **x** in a list by following the steps above for each new relation, 
+creating a sequence of consecutive lines below **x**, each starting with the same indentation and a relation symbol.
 :::
-
-Using this syntax you can define an arbitrarily complex non-hierarchical graph of relations within a single tree of Argdown relations.
 
 ```argdown-cheatsheet
 ===
@@ -624,9 +691,30 @@ s1
     - <d>
 ```
 
+By following these rules you can specify any structure of relations on a given set of elements. 
+
 ```argdown-cheatsheet
 ===
-explanation: A hierarchic tree of relations. Argument a is supporting statement s1. Argument b is attacking argument a. Argument c is supporting argument b. Argument d is supporting argument a. Argument e is attacking statement s1.
+explanation: A hierarchic tree of relations, notated in several "flat" lists. Argument a is supporting statement s1. Argument b is attacking argument a. Argument c is supporting argument b. Argument d is supporting argument a. Argument e is attacking statement s1.
+hide: true
+===
+s1
+    + <a>
+    - <e>
+
+<a>
+    - <b>
+    + <d>
+
+<b>
+    + <c>
+```
+
+Argdown also allows you to nest definitions of relations in a hierarchical-lists-like fashion: 
+
+```argdown-cheatsheet
+===
+explanation: The same hierarchic tree of relations as before, now defined by nesting relations in multi-level lists.
 hide: true
 ===
 s1
@@ -636,6 +724,37 @@ s1
         + <d>
     - <e>
 ```
+
+While it is easy to see in this example how such a multi-level tree structure of relations works, it is harder to exactly define its syntax. 
+Before we can do so, we have to introduce some additional terminology:
+
+:::definition Child and parent members of a relation
+Each relation in such a tree consists of a **parent relation member** and a **child relation member**: 
+
+- The **child relation member** comes directly behind the relation symbol of this relation (same line).
+- The **parent relation member** is the *first* relation member above the child relation member whose line is indented less than the line of the child relation member. 
+
+A relation member can act as parent member in one relation and as a child member in another. 
+:::
+
+:::definition Root of a relation tree
+The **root** of a multi-level tree is the relation member in the first line of the tree.
+:::
+
+:::definition Tree level
+A relation member's **tree level** is determined by the number of elements in the chain of parent relation members reaching from the relation's child member back to the root element of the tree. 
+:::
+
+:::definition Composition of a relation tree
+A multi-level tree of relations is well-formed if 
+
+- there are no empty lines 
+- all relation members of the same tree level are indented the same number of steps 
+- all relation members of higher tree levels are indented more steps than relation members of lower tree levels.
+
+:::
+
+Because we can refer to the same argument or eqivalence class several times in the same relation tree, it is possible to define non-hierarchical relations in a single relation tree:
 
 ```argdown-cheatsheet
 ===
@@ -650,9 +769,9 @@ hide: true
 
 ### Relation direction
 
-Relations can have two directions: forward-pointing (>) or backward-pointing (<). Relative to the second relation member (the one that is in the same line as the direction symbol) backward-pointing relations are _outgoing_ and forward-pointing relations are _incoming_ relations. The only exception is the contradiction (><) which is a symmetric relation between two statements and thus always goes in both ways.
+Relations can have two directions: forward-pointing (>) or backward-pointing (<). Relative to the child relation member (the one that is in the same line as the relation and direction symbols) backward-pointing relations are _outgoing_ and forward-pointing relations are _incoming_ relations. The direction of the relation is important for asymmetric relations like attack and support (in which R(A,B) is not the same as R(B,A)). Because the contrary and contradictory relations between statements are symmetric, the relation direction does not matter in these two cases.
 
-For outgoing relations the direction can be left implicit:
+For outgoing (backward-pointing) relations the direction can be left implicit (i.e., `<+`=`+`,  `<-`=`-` and  `<_`=`_`):
 
 ```argdown-cheatsheet
 ===
@@ -666,145 +785,80 @@ s1
     +> <c> // explicit direction
 ```
 
-### Statement relations
-
-Possible relations between statements are the three logical relations _entailment_, _contrariness_ and _contradiction_.
-One logical relation is missing from this list: **equivalence** between statements. This relation is modeled in Argdown with
-equivalence classes and thus does not need its own relation symbol.
-
-```argdown-cheatsheet
-===
-explanation: Statement s2 entails statement s1
-hide: true
-===
-s1
-    + s2
-```
-
-```argdown-cheatsheet
-===
-explanation: Statement s2 entails statement s1
-hide: true
-===
-s1
-    <+ s2
-```
-
-```argdown-cheatsheet
-===
-explanation: Statement s1 entails statement s2
-hide: true
-===
-s1
-    +> s2
-```
-
-```argdown-cheatsheet
-===
-explanation: Statement s2 is contrary to statement s1
-hide: true
-===
-s1
-    - s2
-```
-
-```argdown-cheatsheet
-===
-explanation: Statement s2 is contrary to statement s1
-hide: true
-===
-s1
-    <- s2
-```
-
-```argdown-cheatsheet
-===
-explanation: Statement s1 is contrary to statement s2
-hide: true
-===
-s1
-    -> s2
-```
-
-```argdown-cheatsheet
-===
-explanation: Statement s1 and statement s2 are contradictory
-hide: true
-
-===
-s1
-    >< s2
-```
-
-### Argument relations
+### Relations of unreconstructed arguments
 
 Possible relations between arguments are the three dialectical relations _support_, _attack_ and _undercut_.
 
-_Support_ and _attack_ relations can also be defined with an argument as a source and a statement as a target.
-
-::: tip
-It is also possible to define these relations with a _statement_ as the source and an argument as a target. If the statement is _not_ a conclusion of an argument (see below) such relations are not pure dialectic relations in the narrow sense.
-
-Argdown is intentionally not too strict about which relations are permissible. Whenever possible you should avoid such relations in favor of "pure" dialectical or logical relations. If you want to express which statements are used as premises in an argument, you should explicitely reconstruct the premise-conclusion-structure of the argument.
-:::
+_Support_ and _attack_ relations can also be defined between arguments and statements.
 
 ```argdown-cheatsheet
 ===
-explanation: Argument a is supported by argument b
+explanation: >
+    With implicit relation direction: Statement a is supported by argument b, which is in turn supported by argument c.
 hide: true
 ===
-<a>
+[a]
     + <b>
+        + <c>
 ```
 
 ```argdown-cheatsheet
 ===
-explanation: Argument a is supported by argument b
+explanation: >
+    With explicit relation direction: Argument a is supported by argument b and statement c.
 hide: true
 ===
 <a>
     <+ <b>
+    <+ [c]
 ```
 
 ```argdown-cheatsheet
 ===
-explanation: Argument a supports argument b
+explanation: Argument a supports argument b and statement c
 hide: true
 ===
 <a>
     +> <b>
+    +> [c]
 ```
 
 ```argdown-cheatsheet
 ===
-explanation: Argument a is attacked by argument b
+explanation: >
+    With implicit relation direction: Statement a is attacked by argument b, which is in turn attacked by argument c.
 hide: true
 ===
-<a>
+[a]
     - <b>
+        - <c>
 ```
 
 ```argdown-cheatsheet
 ===
-explanation: Argument a is attacked by argument b
+explanation: >
+    With explicit relation direction: Argument a is attacked by argument b and statement c.
 hide: true
 ===
 <a>
     <- <b>
+    <- [c]
 ```
 
 ```argdown-cheatsheet
 ===
-explanation: Argument a attacks argument b
+explanation: Argument a attacks argument b and statement c.
 hide: true
 ===
 <a>
     -> <b>
+    -> [c]
 ```
 
 ```argdown-cheatsheet
 ===
-explanation: Argument a is undercut by argument b
+explanation: >
+    With implicit relation direction: Argument a is undercut by argument b
 hide: true
 ===
 <a>
@@ -813,7 +867,8 @@ hide: true
 
 ```argdown-cheatsheet
 ===
-explanation: Argument a is undercut by argument b
+explanation: >
+    With explicit relation direction: Argument a is undercut by argument b
 hide: true
 ===
 <a>
@@ -829,29 +884,223 @@ hide: true
     _> <b>
 ```
 
+### Relations between statements
+
+The Argdown syntax for relations between two statements can be interpreted in two ways. In **loose mode** the possible relations between two statements are "support" and "attack". In **strict mode** the possible relations between two statements are "entailment", "contrariness" and "contradiction".
+
+#### Loose interpretation
+
+The loose interpretation mode is useful for the first rough sketch of a debate or for newcomers to argument reconstruction, who often do not distinguish clearly between arguments and statements. In both cases, statement elements are often used to describe the central claims as well as the arguments of a debate and arrows are used to simply define support and attack relations. Relations between statements are therefore expected to have roughly the same meaning as relations between arguments.
+
+In **loose interpretation mode** relations between two statements that use the + or - relation symbols are therefore interpreted as support and attack relations just like such relations between two arguments or an argument and a statement:
+
+```argdown-cheatsheet
+===
+explanation: >
+    Loose interpretation: statement a is supporting statement b and attacking statement c. Statement a is supported by statement c and is attacked by statement d.
+hide: true
+model:
+    transformStatementRelations: false
+===
+[a]
+    +> [a]
+    -> [b]
+    <+ [c]
+    <- [d]
+```
+
+Because the loose interpretation is useful for starting out it is activated by default in Argdown.
+
+#### Strict interpretation
+
+The strict interpretation mode is useful if you want to logically reconstruct a debate in detail. In this case, you need to distinguish clearly between arguments and statements. A statement does not really attack or support another statement. Only arguments can do that by the force of a logical inference connecting premises with a conclusion. In contrast, statements only state that something is true and stand in *logical relations* to other statements. In a strict sense relations between statements therefore are different from relations between arguments (or arguments and statements).
+
+In **strict interpretation mode** a + relation between two statements is therefore interpreted as meaning that one statement **logically entails** the other. A - relation between two statements is interpreted as meaning that one statement is **logically contrary** to the other. Additionally you can also use >< to state that two statements are **contradictory** to each other.
+
+```argdown-cheatsheet
+===
+explanation: >
+    Strict interpretation: statement a logically entails statement b and is contrary to statement c. Statement d entails statement a. Statement e is contrary to statement a. Statement f and statement a are contradictory to each other.
+hide: true
+model:
+    transformStatementRelations: true
+===
+[a]
+    +> [b]
+    -> [c]
+    <+ [d]
+    <- [e]
+    >< [f]
+```
+
+In the case of + relations, it will not matter in practice if you use the loose or strict interpretation of statement relations. Both relations are **asymmetric**: Even if A supports B, B does **not** necessarily have to support A in turn. And even if A entails B, B does **not** necessarily have to entail A in turn.
+
+In the case of >< relation there is also no difference, because there is no conflicting "loose" interpretation corresponding to a relation type between two arguments.
+
+However, in the case of - relations the strict interpretation **does** make a difference in practice: While the attack relation is asymmetric, the contrary relation is symmetric. If A **attacks** B, B does **not** also have to attack A. But if A is **contrary** to B, B is also necessarily contrary to A. 
+
+In the argument map, this difference becomes obvious: If you use loose mode, red arrows between statements will only point in one direction (because the attack relation is asymmetric). If you use strict mode, red arrows between statements will point in both directions (because the contrary relation is symmetric). Apart from that the different interpretations will also have consequences for the arrows from and to reconstructed arguments, as we will see in the next subsection.
+
+If you want to use Argdown parser in strict interpretation mode, you have to use the ["transformStatementRelations: true"](...) configuration option of the model plugin.
+
+
 ### Relations of reconstructed arguments
 
-Arguments are considered as "reconstructed" if they have an internal premise-conclusion-structure.
+:::warning
 
-In this case the dialectical attack and support relations can be defined in terms of logical relations between statements:
+For simplicity's sake it is assumed in this section that the Argdown parser is used in **strict mode** so that relations between statements are interpreted as entailment, contrariness and contradiction.
 
-:::definition The logical definition of dialectical relations
-Argument a is **supported** by argument b iff a's main conclusion **entails** a premise of b.
-
-Argument a is **attacked** by argument b iff a's main conclusion is **contrary** to a premise of b.
 :::
 
-Because statement p entails statement q if p is _equivalent_ with q, argument a is also supported by argument b if a's main conclusion is equivalent with a premise of b (which means in Argdown that the two statements share the same title).
+An argument is "reconstructed" if it has been assigned a [premise-conclusion-structure](#premise-conclusion-structures). In this case you can define the relations of the argument in two ways: Either by adding them below the argument's definitions or references (like you would do for non-reconstructed arguments). Or by specifying directly in the argument's pcs in which relations its premises and its main conclusion stand to other arguments or statements.
 
-Even though it is not as easy to define undercuts in terms of logical relations between statements, an undercut can at least also be defined in terms of an argument's internal premise-conclusion-structure:
+```argdown-cheatsheet
+===
+explanation: Three ways of expressing that a supports b. The third method also specifies exactly which premise is entailed by argument a's main conclusion.
+hide: true
+===
+<a>
+    +> <b>
 
-:::definition Logical definition of an undercut
-Argument a is an **undercut** of argument b iff a's main conclusion __undermines__ an inferential step of a.
+<a>
+
+(1) s1
+(2) s2
+-----
+(3) [s3]
+    +> <b>
+    +> [t1]
+
+<b>
+
+(1) [t1]: s4
+(2) s5
+-----
+(3) s6
+```
+
+#### How the Argdown parser derives argument relations from statement relations
+
+If you have defined relations in an argument's pcs, the Argdown parser will automatically derive the argument's relations from the *incoming* relations of its premises and the *outgoing* relations of its main conclusion. So, in practical terms, you can simply reconstruct the premise-conclusion-structures of arguments and define the logical relations between their conclusions and premises. Argdown will then automatically add the relations of attack and support between arguments and visualize the entire complex argumentation as an argument map.
+
+:::warning Do not be surprised!
+
+If you first have defined relations for a central claim in your debate and reuse its equivalence class as premise or conclusion in an argument's pcs, you might thereby also have defined relations of this argument that may appear as unexpected arrows in your argument map.
+
 :::
 
-If an argument's premise-conclusion-structure contains several inferential steps, you can define which inferential step is undermined by an undercut.
+:::definition Derivation of an argument's support relations from it pcs
 
-Because of these definitions, if you reconstruct the premise-conclusion-structures of arguments you can much more precisely express dialectical relations between them by defining logical relations between their conclusions and premises. And you can also express logical relations between an argument's main conclusion and other statements by defining dialectical relations between the argument and these other statements:
+It is derived that Argument a is **supported** by argument b if either
+
+- a's main conclusion is defined as **entailing** a premise of b or
+- a's main conclusion and a premise of b belong to the same **equivalence class** or
+- a's main conclusion is defined as **supporting** b.
+
+:::
+
+```argdown-cheatsheet
+===
+explanation: Statement s2 and statement s3 have the same title t1, which means that they belong to the same equivalence class. Accordingly, argument a supports argument b.
+hide: true
+===
+
+<a>
+
+(1) s1
+-----
+(2) [t1]: s2
+
+<b>
+
+(1) [t1]: s3
+-----
+(2) s4
+```
+
+
+:::definition Derivation of an argument's attack relations from its pcs
+
+It is derived that Argument a is **attacked** by argument b if either
+
+- a's main conclusion is defined as **contrary** or **contradictory** to a premise of b or 
+- a's main conclusion is defined as attacking b.
+
+:::
+
+```argdown-cheatsheet
+===
+explanation: Equivalence class t1 (of which statement s6 is a member) is contrary to statement s1. Because s1 is used as premise in argument a and s6 is used as conclusion in argument b, argument b is attacking argument a.
+hide: true
+===
+<a>
+
+(1) s1
+    <- [t1]
+(2) s2
+-----
+(3) s3
+
+<b>
+
+(1) s4
+(2) s5
+-----
+(3) [t1]: s6
+```
+
+:::definition Derivation of an argument's undercut relations from its pcs
+It is derived that Argument a is **undercut** by argument b if either
+
+- a's main conclusion is defined as **undercutting** an inference of b or
+- a's main conclusion is defined as **undercutting** b.
+:::
+
+```argdown-cheatsheet
+===
+explanation: Equivalence class t1 (of which statement s6 is a member) is undercutting argument a's inference from s1 and s2 to s3. Because t1 is b's conclusion, b is undercutting argument a.
+hide: true
+===
+<a>
+
+(1) s1
+(2) s2
+-----
+    <_ [t1]
+(3) s3
+
+<b>
+
+(1) s4
+(2) s5
+-----
+(3) [t1]: s6
+```
+
+#### How the Argdown parser derives statement relations from argument relations
+
+If you have already defined an argument's relations below its definition or reference and then assign a pcs to this argument, the Argdown parser will automatically derive outgoing relations of the main conclusion from the outgoing relations of the argument.
+
+:::warning Do not be surprised!
+If you reuse the equivalence class of an argument's main conclusion elsewhere and have defined outgoing relations for this argument, you thereby have defined outgoing relations of this equivalence class that may appear as unexpected (but technically correct) arrows in your argument map.
+:::
+
+
+:::definition Derivation of outgoing relations of an argument's main conclusion from an argument's outgoing relations
+It is derived that the main conclusion of argument a 
+
+- is **contrary** to another statement s if a is **attacking** s.
+
+- is **attacking** argument b if a is **attacking** b.
+
+- is **entailing** another statement s if a is **supporting** s.
+
+- is **supporting** argument b if a is **supporting** b.
+
+- is **undercutting** another argument's inference i if a is **undercutting** i.
+:::
+
+
 
 ```argdown-cheatsheet
 ===
@@ -899,20 +1148,6 @@ s4
     <+ <a>
 ```
 
-```argdown-cheatsheet
-===
-explanation: Statement s3 and statement s4 have the same title t1, which means that both are logically equivalent. Because equivalency implies entailment, argument a supports s4.
-hide: true
-===
-<a>
-
-(1) s1
-(2) s2
------
-(3) [t1]: s3
-
-[t1]: s4
-```
 
 ```argdown-cheatsheet
 ===
@@ -935,30 +1170,10 @@ hide: true
 (3) s6
 ```
 
-```argdown-cheatsheet
-===
-explanation: Equivalence class t1 (of which statement s6 is a member) is contrary to statement s1. Because s1 is used as premise in argument a and s6 is used as conclusion in argument b, argument b is attacking argument a.
-hide: true
-===
-<a>
-
-(1) s1
-    <- [t1]
-(2) s2
------
-(3) s3
-
-<b>
-
-(1) s4
-(2) s5
------
-(3) [t1]: s6
-```
 
 ```argdown-cheatsheet
 ===
-explanation: Argument a is a complex argument with two inferential steps. Argument b is attacking argument a with an undercut against its first inferential step.
+explanation: Argument a is a complex argument with two inferential steps. Argument b is attacking argument a with an undercut against its first inferential step. 
 hide: true
 ===
 <a>
@@ -1070,6 +1285,8 @@ hide: true
 
 In the last example the YAML data is used with the `isGroup` flag. For more information on this flag, see the guide on [creating groups in argument maps](/guide/creating-group-nodes.html).
 
+
+
 ## Lists
 
 You can use ordered or unordered lists of statements. Lists are block elements that can only occur at the top-level of the document or as nested child lists within another list.
@@ -1120,6 +1337,7 @@ hide: true
     3. [Idea Perfect Being]: We have the
        idea of a perfect being.
 ```
+
 
 ## Comments
 
