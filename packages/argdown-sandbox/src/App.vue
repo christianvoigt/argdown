@@ -41,6 +41,7 @@
 </template>
 
 <script>
+/* eslint-disable */
 import AppHeader from "@/components/AppHeader";
 import ArgdownInput from "@/components/ArgdownInput";
 import AppNavigation from "@/components/AppNavigation";
@@ -78,6 +79,7 @@ export default {
 </script>
 
 <style lang="scss">
+/* eslint-disable */
 $border-color: #eee;
 $accent-color: #3e8eaf;
 * {
@@ -102,6 +104,20 @@ h4 {
     Helvetica Neue, sans-serif;
   font-weight: 500;
 }
+button {
+  border: 1px solid #ccc;
+  background-color: #fff;
+  border-radius: 0.2em;
+  display: flex;
+  align-items: center;
+  height: 2rem;
+  padding: 0 0.75em;
+  margin: 0 0.15em;
+  cursor: pointer;
+}
+.text-button {
+  font-size: 1em;
+}
 #app {
   display: flex;
   flex-direction: column;
@@ -114,7 +130,7 @@ h4 {
     display: flex;
     justify-content: space-between;
     flex-direction: row;
-    padding: 0.7rem 1.5rem;
+    padding: 0.7rem 0.5rem;
     border-bottom: 1px solid $border-color;
 
     ul.nav-list li {
@@ -155,10 +171,12 @@ ul.nav-list {
     a {
       display: flex;
       align-items: center;
-      padding: 0.1em 0.75em;
+      padding: 0 0.75em;
+      height: 2rem;
       margin: 0 0.15em;
       color: #2c3e50;
       font-weight: 500;
+      font-size: 1em;
     }
   }
 }
@@ -229,7 +247,7 @@ button .icon {
   min-height: 0;
   .input-header,
   .output-header {
-    height: 2em;
+    height: 2.5em;
     padding: 0.25em 0.5em;
     display: flex;
     justify-content: space-between;
@@ -281,6 +299,9 @@ button .icon {
     padding: 1em 2em;
     overflow: auto;
   }
+}
+.output-view-state-buttons {
+  display: flex;
 }
 .dropdown {
   position: relative;

@@ -27,6 +27,17 @@ interface IArgdownConfig {
      * if true, tags will be removed from statement and description text
      **/
     removeTagsFromText?: boolean; // default: false
+    /**
+     * Determines how statement-to-statement relations are to be interpreted:
+     * In "loose" mode, - means attack and + means support.
+     * In "strict" mode, - means contrary and + means entails.
+     **/
+    mode?: "loose" | "strict" // loose is default mode
+    /**
+     * If true, outgoing relations of reconstructed arguments are transformed into outgoing relations of the pcs's main conclusion.
+     * Incoming undercuts of reconstructed arguments are transformed into incoming undercuts of the pcs's last inference.
+     **/
+    transformArgumentRelations?: boolean; // default is true
   };
   // settings for the tag plugin
   color?: {

@@ -2,7 +2,7 @@
     <nav class="sub-nav">
     <ul class="nav-list">
     <li>
-    <div class="dropdown"><a href="#" class="dropdown-button">Examples</a>
+    <div class="dropdown"><button class="text-button dropdown-button">Examples</button>
     <ul class="dropdown-content">
         <li v-for="example in $store.getters.examples" :key="example.id"><a href="#" v-on:click.prevent="loadExample(example.id)">{{example.title}}</a></li>
     </ul>

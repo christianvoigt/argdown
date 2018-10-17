@@ -107,7 +107,7 @@ export default {
     width: 100%;
   }
   .CodeMirror {
-    border: 1px solid #ccc;
+    border: 1px solid #eee;
     height: 100%;
     width: 100%;
     font-size: 1.25em;

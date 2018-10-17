@@ -38,10 +38,14 @@ export interface ITagData {
   occurrenceIndex?: number;
   priority?: number;
 }
+export enum InterpretationModes{
+  LOOSE = "loose",
+  STRICT = "strict"
+}
 export interface IModelPluginSettings {
+  mode?:InterpretationModes;
   removeTagsFromText?: boolean;
   transformArgumentRelations?: boolean;
-  transformStatementRelations?: boolean;
 }
 declare module "../index" {
   interface IArgdownRequest {
@@ -90,9 +94,9 @@ declare module "../index" {
   }
 }
 const defaultSettings = {
+  mode: InterpretationModes.LOOSE,
   removeTagsFromText: false,
-  transformArgumentRelations: true,
-  transformStatementRelations: false
+  transformArgumentRelations: true
 };
 /**
  * The ModelPlugin builds the basic data model from the abstract syntax tree (AST) in the [[IArgdownResponse.ast]] response property that is provided by the [[ParserPlugin]].
@@ -265,7 +269,7 @@ export class ModelPlugin implements IArgdownPlugin {
     if (settings.transformArgumentRelations) {
       this.transformArgumentRelations(response);
     }
-    if (settings.transformStatementRelations) {
+    if (settings.mode === InterpretationModes.STRICT) {
       this.transformStatementRelations(response);
     }
     return response;
@@ -787,12 +791,12 @@ export class ModelPlugin implements IArgdownPlugin {
           throw new ArgdownPluginError(this.name, "Missing argument statements.");
         }
         const lastStatement = argument.pcs[argument.pcs.length - 1];
-        if (lastStatement.role === StatementRole.PRELIMINARY_CONCLUSION) {
+        if (lastStatement.role === StatementRole.INTERMEDIARY_CONCLUSION) {
           lastStatement.role = StatementRole.MAIN_CONCLUSION;
           const ec = response.statements![lastStatement.title!];
           ec.isUsedAsMainConclusion = true;
-          if (!ec.members.find(s => s.role === StatementRole.PRELIMINARY_CONCLUSION)) {
-            ec.isUsedAsPreliminaryConclusion = false;
+          if (!ec.members.find(s => s.role === StatementRole.INTERMEDIARY_CONCLUSION)) {
+            ec.isUsedAsIntermediaryConclusion = false;
           }
         } else {
           throw new ArgdownPluginError(this.name, "Missing main conclusions.");
@@ -822,11 +826,11 @@ export class ModelPlugin implements IArgdownPlugin {
           if (childIndex !== null && childIndex > 0 && parentNode && parentNode.children) {
             let precedingSibling = parentNode.children[childIndex - 1] as IRuleNode;
             if (precedingSibling.name === RuleNames.INFERENCE) {
-              // We first assume that this is a preliminary conclusion
+              // We first assume that this is a intermediary conclusion
               // If we exit the argument we will change the role of the last statement in the pcs
-              statement.role = StatementRole.PRELIMINARY_CONCLUSION;
+              statement.role = StatementRole.INTERMEDIARY_CONCLUSION;
               const conclusion = <IConclusion>statement;
-              ec.isUsedAsPreliminaryConclusion = true;
+              ec.isUsedAsIntermediaryConclusion = true;
               conclusion.inference = precedingSibling.inference;
               conclusion.inference!.conclusionIndex = currentPCS.pcs!.length;
               conclusion.inference!.argumentTitle = currentPCS.title;

@@ -53,7 +53,7 @@ As you can see, green and red edges each can represent several types of relation
 | Two argument nodes or a statement and an argument node are connected by a __green__ arrow. | The source __supports__ the target. |
 | Two statement nodes are connected by a __red arrow__ with triangle arrow heads going in both directions. | Two statements (of two equivalence classes) are __contrary__ to each other (strict mode). |
 | Two statement nodes are connected by a __red arrow__ with diamond arrow heads going in both directions. | Two statements (of two equivalence classes) are __contradictory__ to each other. |
-| Two arguments or a statement and an argument are connected by a __red arrow__. | The source __attacks__ the target. |
+| A statement or an argument is connected to another statement or argument by a directed (one-way) __red arrow__. | The source __attacks__ the target. |
 | Two arguments or a statement and an argument are connected by a __purple arrow__. | The source __undercuts__ the target. |
 
 :::tip Equivalence

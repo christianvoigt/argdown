@@ -1,5 +1,27 @@
 # @argdown/core
 
+## 1.0.0 (10-16-2018)
+
+### Major changes
+
+* moved to Monorepo, renamed to @argdown/core
+* switched to Typescript.
+* Rewrote MapPlugin
+* Split off StatementSelectionPlugin, ArgumentSelectionPlugin, PreselectionPlugin, RegroupPlugin, GroupPlugin, ColorPlugin
+* YAML frontmatter and metadata
+* Added a lot of configuration options (selection, grouping, colorizing, customizing nodes)
+* Added loose and strict mode for switching between attack/support contrary/entails for s2s relations (#69 Strict mode for entailment and contrary relations)
+
+### Minor changes
+
+* upgraded Chevrotain, made parser compatible with new version
+
+### Bug fixes
+
+* #71 Arg disappears if contradictory instead of contrary relation
+* #59 Linter: Argument Syntax
+* #64 Syntax error for Argument conclusion produces unhelpful error message.
+
 ## 0.8.7 (02-06-2018)
 
 ### Minor changes

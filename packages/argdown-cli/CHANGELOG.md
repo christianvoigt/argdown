@@ -1,5 +1,18 @@
 # @argdown/cli
 
+## 1.0.0
+
+### Major Changes
+
+- moved to Monorepo, split up into @argdown/cli and @argdown/node
+- switched to Typescript
+- support for @argdown/core 1.0.0
+
+### Bug fixes
+
+- #68 Argdown-Cli Test failing on Windows
+- #66 Missing colouring in Dagre Map
+
 ## 0.11.9
 
 * updated argdown-parser to 0.8.7
@@ -9,7 +22,7 @@
 ### Minor Changes
 
 * updated argdown-parser to 0.8.6
-* app.load now returs array of responses
+* app.load now returns array of responses
 
 ## 0.11.7
 

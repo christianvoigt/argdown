@@ -900,7 +900,7 @@ explanation: >
     Loose interpretation: statement a is supporting statement b and attacking statement c. Statement a is supported by statement c and is attacked by statement d.
 hide: true
 model:
-    transformStatementRelations: false
+    mode: loose
 ===
 [a]
     +> [a]
@@ -923,7 +923,7 @@ explanation: >
     Strict interpretation: statement a logically entails statement b and is contrary to statement c. Statement d entails statement a. Statement e is contrary to statement a. Statement f and statement a are contradictory to each other.
 hide: true
 model:
-    transformStatementRelations: true
+    mode: strict
 ===
 [a]
     +> [b]
@@ -941,7 +941,23 @@ However, in the case of - relations the strict interpretation **does** make a di
 
 In the argument map, this difference becomes obvious: If you use loose mode, red arrows between statements will only point in one direction (because the attack relation is asymmetric). If you use strict mode, red arrows between statements will point in both directions (because the contrary relation is symmetric). Apart from that the different interpretations will also have consequences for the arrows from and to reconstructed arguments, as we will see in the next subsection.
 
-If you want to use Argdown parser in strict interpretation mode, you have to use the ["transformStatementRelations: true"](...) configuration option of the model plugin.
+If you want to use Argdown parser in strict interpretation mode, you have to use the [`mode: strict`](/guide/configuration-cheatsheet) configuration option of the model plugin (see example above).
+
+:::warning Stay consistent!
+
+Currently the Argdown parser will not check if the different relations you have defined are logically consistent. It is possible to create "nonsense" relations:
+
+```argdown-cheatsheet
+===
+explanation: In strict mode these relations are logically inconsistent: t1 is contrary to t2, but also entails t2. Which means that if t1 is true, t2 has to be true and false.
+hide: true
+===
+
+[t1]: s1.
+    - [t2]: s2.
+        + [t1]: s1.
+```
+:::
 
 
 ### Relations of reconstructed arguments
@@ -989,7 +1005,7 @@ If you first have defined relations for a central claim in your debate and reuse
 
 :::
 
-:::definition Derivation of an argument's support relations from it pcs
+:::definition Derivation of an argument's support relations from its pcs
 
 It is derived that Argument a is **supported** by argument b if either
 
@@ -1173,7 +1189,7 @@ hide: true
 
 ```argdown-cheatsheet
 ===
-explanation: Argument a is a complex argument with two inferential steps. Argument b is attacking argument a with an undercut against its first inferential step. 
+explanation: Argument a is a complex argument with two inferential steps. Argument b is attacking argument a with an undercut against its first inferential step. Accordingly, Argdown infers that statement s8 undercuts a’s first inferential step.
 hide: true
 ===
 <a>
@@ -1186,6 +1202,13 @@ hide: true
 (4) s4
 -----
 (5) s5
+
+<b>
+
+(1) s6
+(2) s7
+----
+(3) s8
 ```
 
 ```argdown-cheatsheet
@@ -1203,6 +1226,33 @@ hide: true
     +> <c>
     <- <d>
 ```
+
+:::warning Stay consistent!
+
+Currently the Argdown parser will not check if the derived relations are consistent with the explicitly defined relations. It is possible to create "nonsense" relations:
+
+```argdown-cheatsheet
+===
+explanation: In strict mode these relations produce a logical inconsistency. t1 is contrary to t2. But because a1 supports t2, it is also derived that its main conclusion t1 entails t2. Taken together this means that if t1 is true, t2 has to be true and false.
+hide: true
+===
+
+[t1]: s1.
+    - [t2]: s2.
+
+<a1>
+
+(1) p1
+----
+(2) [t1]
+
+<a2>
+
+(1) [t2]
+  <+ <a1> 
+----
+(2) c```
+:::
 
 ## Frontmatter
 
