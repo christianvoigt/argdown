@@ -164,7 +164,7 @@ Click on the "map" button in the upper right corner of the Argdown widget to see
 
 Note that, in the above document, we don't define explicitly arrows from and to the argument from freedom of speech, Argdown adds these arrows automatically given our reconstructed premise-conclusion-structure. To learn more about what arrows are added automatically, read [this section of the syntax documentation](/syntax/#relations-of-reconstructed-arguments).
 
-If all arguments are fully reconstructed, the Argdown may simply consists in a list of statements, and arguments with attached premise-conclusion-structures.  
+If all arguments are fully reconstructed, the Argdown document may simply consist in a list of statements, and arguments with attached premise-conclusion-structures.  
 
 ```argdown
 ===

@@ -133,7 +133,7 @@ const isArgumentSelected = (
             undefined !==
             equivalenceClass.relations.find(r => {
               const isSymmetric = IRelation.isSymmetric(r);
-              if (s.role === StatementRole.PRELIMINARY_CONCLUSION) {
+              if (s.role === StatementRole.INTERMEDIARY_CONCLUSION) {
                 return false;
               } else if (!isSymmetric && s.role === StatementRole.PREMISE && r.from! === equivalenceClass) {
                 return false;

@@ -157,7 +157,7 @@ const isStatementSelected = (
   return (!settings.excludeDisconnected || (usedInArgument || withRelations)) && inSelection;
 };
 const isUsedInSelectedArgument = (selectedArguments: Map<string, IArgument>) => (statement: IStatement) => {
-  if (isArgumentStatement(statement) && statement.role !== StatementRole.PRELIMINARY_CONCLUSION) {
+  if (isArgumentStatement(statement) && statement.role !== StatementRole.INTERMEDIARY_CONCLUSION) {
     return selectedArguments.get(statement.argumentTitle!) !== undefined;
   }
   return false;

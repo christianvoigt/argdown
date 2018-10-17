@@ -8,7 +8,7 @@ import {
   ServerOptions,
   TransportKind,
   Middleware,
-  ProposedFeatures
+  ForkOptions
 } from "vscode-languageclient";
 import { LanguageServerConfiguration } from "./LanguageServerConfiguration";
 import { CommandManager } from "./commands/CommandManager";
@@ -20,7 +20,8 @@ import { Logger } from "./preview/Logger";
 import { ArgdownContentProvider } from "./preview/ArgdownContentProvider";
 import { ExtensionContentSecurityPolicyArbiter, PreviewSecuritySelector } from "./preview/security";
 import { ArgdownExtensionContributions } from "./preview/ArgdownExtensionContributions";
-import { ForkOptions } from "vscode-languageclient/lib/client";
+import { ConfigurationWorkspaceMiddleware } from "vscode-languageclient/lib/configuration";
+//import { ForkOptions } from "vscode-languageclient/lib/client";
 
 let client: LanguageClient;
 let languageServerConfiguration: LanguageServerConfiguration;
@@ -87,7 +88,7 @@ export function activate(context: vscode.ExtensionContext) {
   };
 
   languageServerConfiguration = new LanguageServerConfiguration();
-  let middleware: ProposedFeatures.ConfigurationMiddleware | Middleware = {
+  let middleware: ConfigurationWorkspaceMiddleware | Middleware = {
     workspace: {
       configuration: languageServerConfiguration.computeConfiguration
     }

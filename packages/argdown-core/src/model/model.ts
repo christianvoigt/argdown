@@ -177,7 +177,7 @@ export interface IArgument extends HasTitle, HasRelations, HasTags, HasData, Has
    * A pcs consists of a statement list (not a list of equivalence classes)
    * in which each statement plays either the role of "premise" or "conclusion".
    * Using statements makes it possible to save argument-specific data in the statements:
-   * This is used to save the role of the statement in this argument. It is either a PREMISE, PRELIMINARY_CONCLUSION or MAIN_CONCLUSION.
+   * This is used to save the role of the statement in this argument. It is either a PREMISE, INTERMEDIARY_CONCLUSION or MAIN_CONCLUSION.
    * Statements that have the role of a conclusion in the argument possess an inference property.
    */
   pcs: IPCSStatement[];
@@ -250,7 +250,7 @@ export interface IStatement extends HasTitle, HasTags, HasData, HasLocation, Has
  * The role of a statement occurrence in an Argdown document.
  *
  * If the statement is used in an argument's premise conclusion structure
- * it is either a PREMISE, PRELIMINARY_CONCLUSION or a CONCLUSION.
+ * it is either a PREMISE, INTERMEDIARY_CONCLUSION or a CONCLUSION.
  *
  * If it is used to describe an argument in an argument definition, it is an ARGUMENT_DESCRIPTION.
  *
@@ -259,7 +259,7 @@ export interface IStatement extends HasTitle, HasTags, HasData, HasLocation, Has
  */
 export enum StatementRole {
   PREMISE = "premise",
-  PRELIMINARY_CONCLUSION = "preliminary-conclusion",
+  INTERMEDIARY_CONCLUSION = "intermediary-conclusion",
   MAIN_CONCLUSION = "main-conclusion",
   ARGUMENT_DESCRIPTION = "argument-description",
   TOP_LEVEL_STATEMENT = "top-level-statement",
@@ -269,14 +269,14 @@ export enum StatementRole {
  * A statement used within an argument's premise-conclusion-structure ([[IArgument.pcs]])
  */
 export interface IPCSStatement extends IStatement {
-  role: StatementRole.PREMISE | StatementRole.MAIN_CONCLUSION | StatementRole.PRELIMINARY_CONCLUSION;
+  role: StatementRole.PREMISE | StatementRole.MAIN_CONCLUSION | StatementRole.INTERMEDIARY_CONCLUSION;
   argumentTitle?: string;
 }
 /**
  * A statement used as conclusion within an argument's premise-conclusion-structure ([[IArgument.pcs]])
  */
 export interface IConclusion extends IPCSStatement {
-  role: StatementRole.PRELIMINARY_CONCLUSION | StatementRole.MAIN_CONCLUSION;
+  role: StatementRole.INTERMEDIARY_CONCLUSION | StatementRole.MAIN_CONCLUSION;
   inference?: IInference;
 }
 export interface IArgumentDescription extends IStatement {
@@ -320,7 +320,7 @@ export interface IEquivalenceClass extends HasTitle, HasRelations, HasTags, HasD
   /**
    * is true if any member statement is used as a main conclusion in an argument's pcs
    */
-  isUsedAsPreliminaryConclusion?: boolean;
+  isUsedAsIntermediaryConclusion?: boolean;
   /**
    * is true if any member statement is used as top level element (as child of the argdown rule)
    */
@@ -537,14 +537,14 @@ export const isReconstructed = (a: IArgument): boolean => {
 };
 export const isConclusion = (s: IStatement): s is IConclusion => {
   return (
-    (s.role === StatementRole.PRELIMINARY_CONCLUSION || s.role === StatementRole.MAIN_CONCLUSION) &&
+    (s.role === StatementRole.INTERMEDIARY_CONCLUSION || s.role === StatementRole.MAIN_CONCLUSION) &&
     (<IConclusion>s).inference != undefined
   );
 };
 export const isArgumentStatement = (s: IStatement): s is IPCSStatement => {
   return (
     s.role === StatementRole.PREMISE ||
-    s.role === StatementRole.PRELIMINARY_CONCLUSION ||
+    s.role === StatementRole.INTERMEDIARY_CONCLUSION ||
     s.role == StatementRole.MAIN_CONCLUSION
   );
 };

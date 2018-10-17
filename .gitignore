@@ -20,3 +20,5 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
+
+lerna-debug.log

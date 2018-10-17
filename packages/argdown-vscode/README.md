@@ -1,5 +1,7 @@
 # Argdown for Visual Studio Code
 
+![Argdown logo](./argdown-arrow.png?raw=true "Argdown logo")
+
 [Argdown](https://christianvoigt.github.io/argdown) is a simple syntax for analyzing complex argumentation, inspired by Markdown. This extension provides full language support for Argdown in VS Code:
 
 - [Live Preview](#map-preview) of your argument map

@@ -11,6 +11,7 @@ import {
   StatementRole,
   IEquivalenceClass,
   IArgument,
+  InterpretationModes,
   DataPlugin
 } from "../src/index";
 import * as fs from "fs";
@@ -84,7 +85,7 @@ describe("ModelPlugin", function() {
       process: ["parse-input", "build-model"],
       input: source,
       model: {
-        transformStatementRelations: true
+        mode: InterpretationModes.STRICT
       }
     });
 
@@ -220,8 +221,8 @@ describe("ModelPlugin", function() {
     let result = app.run({
       process: ["parse-input", "build-model"],
       input: source,
-      model:{
-        transformStatementRelations: true
+      model: {
+        mode: InterpretationModes.STRICT
       }
     });
     expect(Object.keys(result.arguments!).length).to.equal(3);
@@ -235,7 +236,7 @@ describe("ModelPlugin", function() {
 
     expect(argument.pcs![0].role).to.equal(StatementRole.PREMISE);
     expect(argument.pcs![1].role).to.equal(StatementRole.PREMISE);
-    expect(argument.pcs![2].role).to.equal(StatementRole.PRELIMINARY_CONCLUSION);
+    expect(argument.pcs![2].role).to.equal(StatementRole.INTERMEDIARY_CONCLUSION);
     expect(argument.pcs![3].role).to.equal(StatementRole.MAIN_CONCLUSION);
     expect(result.statements![argument.pcs[0].title!]).to.exist;
     expect(result.statements![argument.pcs[1].title!]).to.exist;
@@ -251,7 +252,7 @@ describe("ModelPlugin", function() {
     expect(!!premise.isUsedAsTopLevelStatement).to.be.false;
     expect(!!premise.isUsedAsRelationStatement).to.be.false;
     expect(!!premise.isUsedAsMainConclusion).to.be.false;
-    expect(!!premise.isUsedAsPreliminaryConclusion).to.be.false;
+    expect(!!premise.isUsedAsIntermediaryConclusion).to.be.false;
     expect(!!premise.isUsedAsPremise).to.be.true;
     expect(premise.relations!.length).to.equal(2);
 
@@ -267,14 +268,14 @@ describe("ModelPlugin", function() {
     expect(!!preConclusion.isUsedAsPremise).to.be.false;
     expect(!!preConclusion.isUsedAsTopLevelStatement).to.be.false;
     expect(!!preConclusion.isUsedAsRelationStatement).to.be.false;
-    expect(!!preConclusion.isUsedAsPreliminaryConclusion).to.be.true;
+    expect(!!preConclusion.isUsedAsIntermediaryConclusion).to.be.true;
     expect(!!preConclusion.isUsedAsMainConclusion).to.be.false;
 
     expect(argument.pcs[3].title).to.equal("D");
     let conclusion = result.statements![argument.pcs[3].title!];
     expect(!!conclusion.isUsedAsTopLevelStatement).to.be.false;
     expect(!!conclusion.isUsedAsRelationStatement).to.be.false;
-    expect(!!conclusion.isUsedAsPreliminaryConclusion).to.be.false;
+    expect(!!conclusion.isUsedAsIntermediaryConclusion).to.be.false;
     expect(!!conclusion.isUsedAsMainConclusion).to.be.true;
     expect(!!conclusion.isUsedAsPremise).to.be.false;
     expect(conclusion.relations!.length).to.equal(4); //with transformed relations from the argument
@@ -302,7 +303,7 @@ describe("ModelPlugin", function() {
 
     let statement = result.statements!["E"];
     expect(statement).to.exist;
-    expect(!!statement.isUsedAsPreliminaryConclusion).to.be.false;
+    expect(!!statement.isUsedAsIntermediaryConclusion).to.be.false;
     expect(!!statement.isUsedAsMainConclusion).to.be.false;
     expect(!!statement.isUsedAsPremise).to.be.false;
     expect(statement.relations!.length).to.equal(2);
@@ -648,7 +649,7 @@ describe("ModelPlugin", function() {
     expect(Object.keys(result.statements!).length).to.equal(4);
     expect(result.statements!["S2"].members.length).to.equal(2);
   });
-  it("can lex multiline statements", function () {
+  it("can lex multiline statements", function() {
     let source = `
     I 
     am 
@@ -663,9 +664,8 @@ describe("ModelPlugin", function() {
       logExceptions: false
     });
     expect(result.statements!["Untitled 1"].members[0].text).to.equal("I am a multiline statement.");
-
   });
-  it("behaves correctly if transformStatementRelations is false", ()=>{
+  it("behaves correctly if in loose mode", () => {
     const input = `
     [A]
       - [B]
@@ -678,7 +678,7 @@ describe("ModelPlugin", function() {
       process: ["parse-input", "build-model"],
       input,
       model: {
-        transformStatementRelations: false
+        mode: InterpretationModes.LOOSE
       }
     });
     expect(response.relations!.length).to.equal(3);
@@ -686,7 +686,7 @@ describe("ModelPlugin", function() {
     expect(response.relations![1].relationType).to.equal(RelationType.SUPPORT);
     expect(response.relations![2].relationType).to.equal(RelationType.ATTACK);
   });
-  it("behaves correctly if transformStatementRelations is true", ()=>{
+  it("behaves correctly if in strict mode", () => {
     const input = `
     [A]
       - [B]
@@ -699,7 +699,7 @@ describe("ModelPlugin", function() {
       process: ["parse-input", "build-model"],
       input,
       model: {
-        transformStatementRelations: true
+        mode: InterpretationModes.STRICT
       }
     });
     expect(response.relations!.length).to.equal(2);
