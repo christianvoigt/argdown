@@ -3,14 +3,8 @@ import * as path from "path";
 import { ArgdownEngine } from "./ArgdownEngine";
 
 import { Logger } from "./Logger";
-import {
-  ContentSecurityPolicyArbiter,
-  ArgdownPreviewSecurityLevel
-} from "./security";
-import {
-  ArgdownPreviewConfigurationManager,
-  ArgdownPreviewConfiguration
-} from "./ArgdownPreviewConfiguration";
+import { ContentSecurityPolicyArbiter, ArgdownPreviewSecurityLevel } from "./security";
+import { ArgdownPreviewConfigurationManager, ArgdownPreviewConfiguration } from "./ArgdownPreviewConfiguration";
 import { ArgdownExtensionContributions } from "./ArgdownExtensionContributions";
 import { PreviewViews } from "./ArgdownPreview";
 import { IDictionary } from "./util/IDictionary";
@@ -53,9 +47,7 @@ const htmlViewProvider: IViewProvider = {
     config: ArgdownPreviewConfiguration
   ) => {
     let html = await argdownEngine.exportHtml(argdownDocument, config);
-    return `${html}<div class="has-line" data-line="${
-      argdownDocument.lineCount
-    }"></div>`;
+    return `${html}<div class="has-line" data-line="${argdownDocument.lineCount}"></div>`;
   },
   generateSubMenu: () => {
     return `<nav class="submenu">
@@ -69,9 +61,7 @@ const htmlViewProvider: IViewProvider = {
   ) => {
     let html = await argdownEngine.exportHtml(argdownDocument, config);
     return {
-      html: `${html}<div class="has-line" data-line="${
-        argdownDocument.lineCount
-      }"></div>`
+      html: `${html}<div class="has-line" data-line="${argdownDocument.lineCount}"></div>`
     };
   }
 };
@@ -92,7 +82,7 @@ const dagreViewProvider: IViewProvider = {
 		`;
   },
   generateSubMenu: () => {
-    return `<nav class="submenu">Save as <a data-command="argdown.exportContentToDagreSvg" href="#">svg</a> | <a data-command="argdown.exportContentToDagrePng" href="#">png</a> | <a data-command="argdown.exportContentToDagreSvg" href="#">pdf</a>
+    return `<nav class="submenu">Save as <a data-command="argdown.exportContentToDagreSvg" href="#">svg</a> | <a data-command="argdown.exportContentToDagrePng" href="#">png</a>
 	</nav>`;
   },
   generateOnDidChangeTextDocumentMessage: async (
@@ -149,13 +139,8 @@ export class ArgdownContentProvider {
   ): Promise<any> {
     const sourceUri = argdownDocument.uri;
     const config = previewConfigurations.getConfiguration(sourceUri);
-    const viewProvider =
-      this.viewProviders[config.view] || this.viewProviders[PreviewViews.HTML];
-    return await viewProvider.generateOnDidChangeTextDocumentMessage(
-      this.engine,
-      argdownDocument,
-      config
-    );
+    const viewProvider = this.viewProviders[config.view] || this.viewProviders[PreviewViews.HTML];
+    return await viewProvider.generateOnDidChangeTextDocumentMessage(this.engine, argdownDocument, config);
   }
 
   public async provideHtmlContent(
@@ -167,8 +152,7 @@ export class ArgdownContentProvider {
     const sourceUri = argdownDocument.uri;
     const config = previewConfigurations.getConfiguration(sourceUri);
     const view = config.view;
-    const viewProvider =
-      this.viewProviders[view] || this.viewProviders[PreviewViews.HTML];
+    const viewProvider = this.viewProviders[view] || this.viewProviders[PreviewViews.HTML];
     const viewStateStore = state[view];
     const initialData = {
       source: sourceUri.toString(),
@@ -194,11 +178,7 @@ export class ArgdownContentProvider {
     const csp = this.getCspForResource(sourceUri, nonce);
     let viewHtml = "";
     try {
-      viewHtml = await viewProvider.generateView(
-        this.engine,
-        argdownDocument,
-        config
-      );
+      viewHtml = await viewProvider.generateView(this.engine, argdownDocument, config);
       viewHtml = `<div class="view ${view}-view">${viewHtml}</div>`;
     } catch (e) {
       this.logger.log("error from Argdown app: " + e.toString());
@@ -212,22 +192,17 @@ export class ArgdownContentProvider {
 			<head>
 				<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
 				${csp}
-				<meta id="vscode-argdown-preview-data" data-settings="${JSON.stringify(
-          initialData
-        ).replace(/"/g, "&quot;")}" data-strings="${JSON.stringify(
-      previewStrings
-    ).replace(/"/g, "&quot;")}">
+				<meta id="vscode-argdown-preview-data" data-settings="${JSON.stringify(initialData).replace(
+          /"/g,
+          "&quot;"
+        )}" data-strings="${JSON.stringify(previewStrings).replace(/"/g, "&quot;")}">
 				<script src="${this.extensionResourcePath("pre.js")}" nonce="${nonce}"></script>
 				${this.getStyles(sourceUri, nonce, config)}
-				<base href="${argdownDocument.uri
-          .with({ scheme: "vscode-resource" })
-          .toString(true)}">
+				<base href="${argdownDocument.uri.with({ scheme: "vscode-resource" }).toString(true)}">
 			</head>
-			<body class="vscode-body argdown ${view}-active ${
-      menuLocked ? "locked" : "unlocked"
-    }-menu ${config.scrollBeyondLastLine ? "scrollBeyondLastLine" : ""} ${
-      config.wordWrap ? "wordWrap" : ""
-    } ${config.markEditorSelection ? "showEditorSelection" : ""}">
+			<body class="vscode-body argdown ${view}-active ${menuLocked ? "locked" : "unlocked"}-menu ${
+      config.scrollBeyondLastLine ? "scrollBeyondLastLine" : ""
+    } ${config.wordWrap ? "wordWrap" : ""} ${config.markEditorSelection ? "showEditorSelection" : ""}">
 				${body}
 				${this.getScriptsForView(viewProvider.scripts, nonce)}
 				${this.getScripts(nonce)}
@@ -237,19 +212,13 @@ export class ArgdownContentProvider {
   private generateMenu(activeView: string, subMenu: string): string {
     return `<div class="main-menu-hover-field"><nav class="main-menu">
 	<ul>
-	<li><a title="Show HTML" data-message="didChangeView" data-view="${
-    PreviewViews.HTML
-  }" class="${
+	<li><a title="Show HTML" data-message="didChangeView" data-view="${PreviewViews.HTML}" class="${
       activeView == PreviewViews.HTML ? "active" : "inactive"
     }" href="#">Html</a></li>
-	<li><a title="Show Dagre Map" data-message="didChangeView" data-view="${
-    PreviewViews.DAGRE
-  }" class="${
+	<li><a title="Show Dagre Map" data-message="didChangeView" data-view="${PreviewViews.DAGRE}" class="${
       activeView == PreviewViews.DAGRE ? "active" : "inactive"
     }" href="#">Dagre Map</a></li>
-	<li><a title="Show Viz.Js Map" data-message="didChangeView" data-view="${
-    PreviewViews.VIZJS
-  }" class="${
+	<li><a title="Show Viz.Js Map" data-message="didChangeView" data-view="${PreviewViews.VIZJS}" class="${
       activeView == PreviewViews.VIZJS ? "active" : "inactive"
     }" href="#">Viz.Js Map</a></li>	
 	</ul>
@@ -260,9 +229,7 @@ export class ArgdownContentProvider {
   }
 
   private extensionResourcePath(mediaFile: string): string {
-    return vscode.Uri.file(
-      this.context.asAbsolutePath(path.join("media", mediaFile))
-    )
+    return vscode.Uri.file(this.context.asAbsolutePath(path.join("media", mediaFile)))
       .with({ scheme: "vscode-resource" })
       .toString();
   }
@@ -299,30 +266,21 @@ export class ArgdownContentProvider {
       .toString();
   }
 
-  private computeCustomStyleSheetIncludes(
-    resource: vscode.Uri,
-    config: ArgdownPreviewConfiguration
-  ): string {
+  private computeCustomStyleSheetIncludes(resource: vscode.Uri, config: ArgdownPreviewConfiguration): string {
     if (Array.isArray(config.styles)) {
       return config.styles
         .map(style => {
           return `<link rel="stylesheet" class="code-user-style" data-source="${style.replace(
             /"/g,
             "&quot;"
-          )}" href="${this.fixHref(
-            resource,
-            style
-          )}" type="text/css" media="screen">`;
+          )}" href="${this.fixHref(resource, style)}" type="text/css" media="screen">`;
         })
         .join("\n");
     }
     return "";
   }
 
-  private getSettingsOverrideStyles(
-    nonce: string,
-    config: ArgdownPreviewConfiguration
-  ): string {
+  private getSettingsOverrideStyles(nonce: string, config: ArgdownPreviewConfiguration): string {
     return `<style nonce="${nonce}">
 			body {
 				${config.fontFamily ? `font-family: ${config.fontFamily};` : ""}
@@ -332,16 +290,9 @@ export class ArgdownContentProvider {
 		</style>`;
   }
 
-  private getStyles(
-    resource: vscode.Uri,
-    nonce: string,
-    config: ArgdownPreviewConfiguration
-  ): string {
+  private getStyles(resource: vscode.Uri, nonce: string, config: ArgdownPreviewConfiguration): string {
     const baseStyles = this.contributions.previewStyles
-      .map(
-        resource =>
-          `<link rel="stylesheet" type="text/css" href="${resource.toString()}">`
-      )
+      .map(resource => `<link rel="stylesheet" type="text/css" href="${resource.toString()}">`)
       .join("\n");
 
     return `${baseStyles}
@@ -351,19 +302,13 @@ export class ArgdownContentProvider {
   private getScriptsForView(scripts: string[], nonce: string): string {
     return scripts
       .map(
-        script =>
-          `<script async src="${this.extensionResourcePath(
-            script
-          )}" nonce="${nonce}" charset="UTF-8"></script>`
+        script => `<script async src="${this.extensionResourcePath(script)}" nonce="${nonce}" charset="UTF-8"></script>`
       )
       .join("\n");
   }
   private getScripts(nonce: string): string {
     return this.contributions.previewScripts
-      .map(
-        resource =>
-          `<script async src="${resource.toString()}" nonce="${nonce}" charset="UTF-8"></script>`
-      )
+      .map(resource => `<script async src="${resource.toString()}" nonce="${nonce}" charset="UTF-8"></script>`)
       .join("\n");
   }
 

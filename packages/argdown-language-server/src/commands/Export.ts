@@ -8,39 +8,25 @@ interface IDictionary<T> {
 
 export interface ExportContentArgs {
   content: string;
-  target: Uri;
+  target: string;
   process: string;
 }
 export interface ExportDocumentArgs {
-  source: Uri;
-  target: Uri;
+  source: string;
+  target: string;
   process: string;
 }
 const requestProviders: IDictionary<(r: any) => any> = {
   "vizjs-to-svg": r => {
     return {
       ...r,
-      process: [
-        "parse-input",
-        "build-model",
-        "build-map",
-        "export-dot",
-        "export-svg",
-        "save-svg-as-svg"
-      ]
+      process: ["parse-input", "build-model", "build-map", "export-dot", "export-svg", "save-svg-as-svg"]
     };
   },
   "vizjs-to-pdf": r => {
     return {
       ...r,
-      process: [
-        "parse-input",
-        "build-model",
-        "build-map",
-        "export-dot",
-        "export-svg",
-        "save-svg-as-pdf"
-      ]
+      process: ["parse-input", "build-model", "build-map", "export-dot", "export-svg", "save-svg-as-pdf"]
     };
   },
   "dagre-to-pdf": r => {
@@ -52,47 +38,26 @@ const requestProviders: IDictionary<(r: any) => any> = {
   dot: r => {
     return {
       ...r,
-      process: [
-        "parse-input",
-        "build-model",
-        "build-map",
-        "export-dot",
-        "save-as-dot"
-      ]
+      process: ["parse-input", "build-model", "build-map", "export-dot", "save-as-dot"]
     };
   },
   html: r => {
     return {
       ...r,
-      process: [
-        "parse-input",
-        "build-model",
-        "export-html",
-        "save-as-html",
-        "copy-default-css"
-      ]
+      process: ["parse-input", "build-model", "export-html", "save-as-html", "copy-default-css"]
     };
   },
   json: r => {
     return {
       ...r,
-      process: [
-        "parse-input",
-        "build-model",
-        "build-map",
-        "export-json",
-        "save-as-json"
-      ]
+      process: ["parse-input", "build-model", "build-map", "export-json", "save-as-json"]
     };
   }
 };
-export const exportContent = async (
-  argdownEngine: AsyncArgdownApplication,
-  args: ExportContentArgs
-) => {
+export const exportContent = async (argdownEngine: AsyncArgdownApplication, args: ExportContentArgs) => {
   let request: IArgdownRequest = {};
-  if (args.process === "vizjs-to-pdf") {
-    request.outputPath = args.target.fsPath;
+  if (args.process === "vizjs-to-pdf" || args.process === "dagre-to-pdf") {
+    request.outputPath = Uri.parse(args.target).fsPath;
     const getRequest = requestProviders[args.process];
     request = getRequest(request);
     const response = {
@@ -101,7 +66,7 @@ export const exportContent = async (
     await argdownEngine.runAsync(request, response);
   } else {
     request.input = args.content;
-    request.outputPath = args.target.fsPath;
+    request.outputPath = Uri.parse(args.target).fsPath;
     const getRequest = requestProviders[args.process];
     request = getRequest(request);
     await argdownEngine.runAsync(request);
@@ -113,8 +78,8 @@ export const exportDocument = async (
   doc: TextDocument | undefined
 ) => {
   let request: any = { logLevel: "verbose" };
-  request.inputPath = args.source.fsPath;
-  request.outputPath = args.target.fsPath;
+  request.inputPath = Uri.parse(args.source).fsPath;
+  request.outputPath = Uri.parse(args.target).fsPath;
   const getRequest = requestProviders[args.process];
   request = getRequest(request);
   if (doc) {

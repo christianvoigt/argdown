@@ -154,6 +154,7 @@ export default new Vuex.Store({
         {
           process: ["export-html"]
         },
+        data.frontMatter,
         state.config
       );
       const response = app.run(request, data);
@@ -168,6 +169,7 @@ export default new Vuex.Store({
         {
           process: ["build-map", "export-dot"]
         },
+        data.frontMatter,
         state.config
       );
       const response = app.run(request, data);
@@ -182,6 +184,7 @@ export default new Vuex.Store({
         {
           process: ["build-map", "export-json"]
         },
+        data.frontMatter,
         state.config
       );
       const response = app.run(request, data);
@@ -215,7 +218,13 @@ export default new Vuex.Store({
       if (!data.ast) {
         return null;
       }
-      const request = _.defaultsDeep({ process: ["build-map"] }, state.config);
+      const request = _.defaultsDeep(
+        {
+          process: ["build-map"]
+        },
+        data.frontMatter,
+        state.config
+      );
       const response = app.run(request, data);
       return response.map;
     },

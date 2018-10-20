@@ -40,6 +40,8 @@ selection:
 [c] #tag-3
 
 <b>: #tag-3
+
+[d]: a statement without a tag
 ```
 
 Here are the presets that come shipped with the Argdown parser:
@@ -74,6 +76,7 @@ If you want a different look you can also define you own custom color theme:
 ===
 color:
     colorScheme:
+        - "#FFA44F"
         - "#ff4f98"
         - "#51ffae"
         - "#f3d942"
@@ -88,9 +91,13 @@ selection:
 [c] #tag-3
 
 <b>: #tag-3
+
+[d]: a statement without a tag.
 ```
 
-The first tag used in the document will get the first color, the second tag used in the document will get the second color, the third will get the third and so on.
+Argument or statement nodes without any tags will always get the color at index 0. 
+
+The first tag used in the document will get the color at index 1, the second tag used in the document will get the color at index 2, the third will get the color at index 3 and so on.
 
 ## The `groupColorScheme` setting
 
@@ -129,7 +136,9 @@ group:
 
 Sometimes you do want more control over which tags get which colors. You can use the `tagColors` color setting to map tags to colors directly.
 
-The color can be a hex color string or a number. If it is a number, the number refers to the color in the colorScheme at that index. The color scheme is zero-based, so the first color is at index 0. It is recommended to use the latter option in combination with a color scheme as it enables you to quickly swap out color schemes and try different color combinations.
+The color can be a hex color string or a number. If it is a number, the number refers to the color in the colorScheme at that index. It is recommended to use the latter option in combination with a color scheme as it enables you to quickly swap out color schemes and try different color combinations.
+
+The color scheme is zero-based, so the first color is at index 0. The color at index 0 is always used as default color for argument and statement nodes. 
 
 ```argdown
 ===
@@ -221,7 +230,9 @@ group:
 
 If you do not want to colorize nodes based on tags or group level but by titles, you can use the`statementColors`, `argumentColors` and `groupColors` color settings to directly assign colors to statements, arguments or groups.
 
-As before the color can be a hex color string or a number. If it is a number, the number refers to the color in the colorScheme at that index. The color scheme is zero-based, so the first color is at index 0. It is recommended to use the latter option in combination with a color scheme as it enables you to quickly swap out color schemes and try different color combinations.
+As before the color can be a hex color string or a number. If it is a number, the number refers to the color in the colorScheme at that index. It is recommended to use the latter option in combination with a color scheme as it enables you to quickly swap out color schemes and try different color combinations.
+
+The color scheme is zero-based, so the first color is at index 0. The color at index 0 is always used as default color for argument and statement nodes.
 
 ```argdown
 ===
@@ -263,7 +274,9 @@ selection:
 
 You can also directly assign colors by using the `color` data field.
 
-As before the color can be a hex color string or a number. If it is a number, the number refers to the color in the colorScheme at that index. The color scheme is zero-based, so the first color is at index 0. It is recommended to use the latter option in combination with a color scheme as it enables you to quickly swap out color schemes and try different color combinations.
+As before the color can be a hex color string or a number. If it is a number, the number refers to the color in the colorScheme at that index.  It is recommended to use the latter option in combination with a color scheme as it enables you to quickly swap out color schemes and try different color combinations.
+
+The color scheme is zero-based, so the first color is at index 0. The color at index 0 is always used as default color for argument and statement nodes.
 
 ```argdown
 ===

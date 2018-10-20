@@ -82,7 +82,7 @@ class ArgdownParser extends Parser {
   });
   private pcs = this.RULE<IAstNode>(RuleNames.PCS, () => {
     let children: IAstNode[] = [];
-    children.push(this.SUBRULE1<IAstNode>(this.argumentStatement));
+    children.push(this.SUBRULE1<IAstNode>(this.pcsStatement));
     this.AT_LEAST_ONE({
       DEF: () => {
         children.push(this.SUBRULE2<IAstNode>(this.pcsTail));
@@ -94,18 +94,18 @@ class ArgdownParser extends Parser {
     let children: IAstNode[] = [];
     this.MANY({
       DEF: () => {
-        children.push(this.SUBRULE1<IAstNode>(this.argumentStatement));
+        children.push(this.SUBRULE1<IAstNode>(this.pcsStatement));
       }
     });
     children.push(this.SUBRULE2<IAstNode>(this.inference));
-    children.push(this.SUBRULE3<IAstNode>(this.argumentStatement));
+    children.push(this.SUBRULE3<IAstNode>(this.pcsStatement));
     return IRuleNode.create(RuleNames.PCS_TAIL, children);
   });
-  private argumentStatement = this.RULE<IAstNode>(RuleNames.ARGUMENT_STATEMENT, () => {
+  private pcsStatement = this.RULE<IAstNode>(RuleNames.PCS_STATEMENT, () => {
     let children: IAstNode[] = [];
     children.push(this.CONSUME(lexer.StatementNumber));
     children.push(this.SUBRULE<IAstNode>(this.statement));
-    return IRuleNode.create(RuleNames.ARGUMENT_STATEMENT, children);
+    return IRuleNode.create(RuleNames.PCS_STATEMENT, children);
   });
   private inference = this.RULE<IAstNode>(RuleNames.INFERENCE, () => {
     let children: IAstNode[] = [];

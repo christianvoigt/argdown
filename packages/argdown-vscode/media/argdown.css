@@ -225,7 +225,7 @@ a.unlock-menu {
 }
 
 .html-view .argdown .argument-reference,
-.html-view .argdown .argument-definiendum,
+.html-view .argdown .argument-definition,
 .html-view .argdown .argument-mention {
   color: blue;
   text-decoration: none;
@@ -242,7 +242,7 @@ a.unlock-menu {
   font-weight: bold;
 }
 
-.html-view .argdown .argument-statement {
+.html-view .argdown .pcs-statement {
   padding-left: 3em;
   padding-top: 0.25em;
   padding-bottom: 0.25em;
@@ -276,11 +276,11 @@ a.unlock-menu {
   font-style: italic;
 }
 
-.html-view .argdown .conclusion.argument-statement {
+.html-view .argdown .conclusion.pcs-statement {
   font-weight: bold;
 }
 
-.html-view .argdown .conclusion.argument-statement .relations {
+.html-view .argdown .conclusion.pcs-statement .relations {
   font-weight: normal;
 }
 .html-view .argument-definition.tag7 > .definiendum,

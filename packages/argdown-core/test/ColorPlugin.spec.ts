@@ -21,18 +21,22 @@ describe("ColorPlugin", function() {
     ===
     [Statement 1]: #tag1
       + [Statement 2]: #tag2 #tag3
-        - [Statement 3]: #tag3`;
+        - [Statement 3]: #tag3
+        
+    [Statement 4]: untagged`;
     const request = { process: ["parse-input", "build-model"], input: source };
     const response = app.run(request);
-    expect(response.statements!["Statement 1"].color).to.equal(colorSchemes["iwanthue-red-roses"][0]);
-    expect(response.statements!["Statement 2"].color).to.equal(colorSchemes["iwanthue-red-roses"][1]);
-    expect(response.statements!["Statement 3"].color).to.equal(colorSchemes["iwanthue-red-roses"][2]);
+    expect(response.statements!["Statement 1"].color).to.equal(colorSchemes["iwanthue-red-roses"][1]);
+    expect(response.statements!["Statement 2"].color).to.equal(colorSchemes["iwanthue-red-roses"][2]);
+    expect(response.statements!["Statement 3"].color).to.equal(colorSchemes["iwanthue-red-roses"][3]);
+    expect(response.statements!["Statement 4"].color).to.equal(colorSchemes["iwanthue-red-roses"][0]);
   });
   it("can use a custom color scheme", function() {
     let source = `
     ===
     color:
         colorScheme:
+            - "#ff4f98"
             - "#ff4f98"
             - "#51ffae"
             - "#f3d942"
@@ -261,8 +265,8 @@ selection:
     expect(response.sections![0].color).to.equal("#fff2ae");
     expect(response.sections![0].children[0].color).to.equal("#f4cae4");
     expect(response.sections![0].children[1].color).to.equal("#b3e2cd");
-    expect(response.arguments!["a"].color).to.equal(colorSchemes["iwanthue-yellow-lime"][0]);
-    expect(response.arguments!["b"].color).to.equal(colorSchemes["iwanthue-yellow-lime"][1]);
-    expect(response.statements!["c"].color).to.equal(colorSchemes["iwanthue-yellow-lime"][2]);
+    expect(response.arguments!["a"].color).to.equal(colorSchemes["iwanthue-yellow-lime"][1]);
+    expect(response.arguments!["b"].color).to.equal(colorSchemes["iwanthue-yellow-lime"][2]);
+    expect(response.statements!["c"].color).to.equal(colorSchemes["iwanthue-yellow-lime"][3]);
   });
 });

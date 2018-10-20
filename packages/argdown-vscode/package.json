@@ -1,5 +1,5 @@
 {
-  "name": "@argdown/vscode",
+  "name": "argdown-vscode",
   "displayName": "Argdown",
   "description": "Live preview, language support & export for the Argdown argumentation syntax",
   "icon": "argdown-icon.png",
