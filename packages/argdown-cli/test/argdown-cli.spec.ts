@@ -221,7 +221,7 @@ describe("argdown-cli", function() {
     let filePathToJson2 = path.resolve(__dirname, "./json/include-test.json");
     let filePathToJson3 = path.resolve(__dirname, "./json/_partial1.json");
     let filePathToCli = path.resolve(__dirname, "../dist/src/cli.js");
-    const cmd = "node " + filePathToCli + " json '" + globPath + "' " + jsonFolder;
+    const cmd = "node " + filePathToCli + " json \"" + globPath + "\" " + jsonFolder;
     return rimrafPromise(jsonFolder)
       .then(() => {
         return execPromise(cmd, (error, _stdout, stderr) => {

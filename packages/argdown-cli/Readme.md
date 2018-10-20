@@ -12,26 +12,26 @@ To learn more about the Argdown argumentation syntax, visit the [Argdown documen
 * export argument map to pdf, svg or dot with `argdown map`
 * export data to json with `argdown json`
 * returns code diagnostics
-* extend argdown-cli with custom plugins and processes in a `argdown.config.js` file and run them with `argdown run [processName]`
+* extend @argdown/cli with custom plugins and processes in a `argdown.config.js` file and run them with `argdown run [processName]`
 
 For a better editing experience we recommend to additionally install the [VS Code extension](https://christianvoigt.github.io/argdown/guide/installing-the-vscode-extension.html).
 
 ## Installation
 
-If you have not already done so, please [install node.js and npm](https://docs.npmjs.com/getting-started/installing-node) on your system before installing argdown-cli.
+If you have not already done so, please [install node.js and npm](https://docs.npmjs.com/getting-started/installing-node) on your system before installing @argdown/cli.
 
 If you already have installed node on your system, please ensure that it is at least of version 8.0.0.
 
-To install argdown-cli run the following npm command:
+To install @argdown/cli run the following npm command:
 
 ```bash
-npm install -g argdown-cli
+npm install -g @argdown/cli
 ```
 
-You can try out argdown-cli without installing it by running:
+You can try out @argdown/cli without installing it by running:
 
 ```bash
-npx argdown-cli map
+npx @argdown/cli map
 ```
 
 ## Available commands
@@ -66,20 +66,20 @@ Some more Argdown content ...
 
 This will even work recursively as long as you don't try to include an Argdown file that has already been included before.
 
-Argdown-Cli will then compile the different Argdown files into one before starting the parsing process. You can also save the result of this compilation by using the `argdown compile` command.
+@argdown/cli will then compile the different Argdown files into one before starting the parsing process. You can also save the result of this compilation by using the `argdown compile` command.
 
 Please note that the line numbers of error messages will always refer to lines in the compiled argdown document, not to lines in the original files.
 
 ### Partials
 
-You can include any Argdown file in another Argdown file. However, it is recommended to only include 'partials' in other files. An Argdown file is treated as a partial if its name starts with an underscore. Except in @import statements partials are ignored by argdown-cli.
+You can include any Argdown file in another Argdown file. However, it is recommended to only include 'partials' in other files. An Argdown file is treated as a partial if its name starts with an underscore. Except in @import statements partials are ignored by @argdown/cli.
 
-This naming convention makes it possible to have a main .argdown file and several partials in the same folder without having to specify which files should be processed or ignored by the commands of argdown-cli.
+This naming convention makes it possible to have a main .argdown file and several partials in the same folder without having to specify which files should be processed or ignored by the commands of @argdown/cli.
 
 ## Config options
 
 The cli can be configured with a config file. This allows you to change the behaviour of the built-in features or even add completely new features by adding custom plugins.
 
-Argdown-cli will automatically look for a `argdown.config.js` in the current working directory. If you want to use a different name or path you can use `argdown --config [name-of-my-config-file].js`.
+@argdown/cli will automatically look for a `argdown.config.js` in the current working directory. If you want to use a different name or path you can use `argdown --config [name-of-my-config-file].js`.
 
-[Visit the config documentation](https://christianvoigt.github.io/argdown/guide/configuration-introduction.html) to learn more about the format of the config file and how to add plugins to argdown-cli.
+[Visit the config documentation](https://christianvoigt.github.io/argdown/guide/configuration-introduction.html) to learn more about the format of the config file and how to add plugins to @argdown/cli.

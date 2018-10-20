@@ -9,7 +9,7 @@ export enum RuleNames {
   HEADING = "heading",
   PCS = "pcs",
   PCS_TAIL = "pcsTail",
-  ARGUMENT_STATEMENT = "argumentStatement",
+  PCS_STATEMENT = "pcsStatement",
   INFERENCE = "inference",
   INFERENCE_RULES = "inferenceRules",
   ORDERED_LIST = "orderedList",

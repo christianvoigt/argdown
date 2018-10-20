@@ -127,7 +127,10 @@ export class HtmlExportPlugin implements IArgdownPlugin {
       [TokenNames.STATEMENT_MENTION]: (_request, response, token) => {
         const equivalenceClass = response.statements![token.title!];
         let classes = "mention statement-mention";
-        if (equivalenceClass.tags) {
+        if (!equivalenceClass) {
+          console.log("Mentioned statement not found: " + token.title);
+        }
+        if (equivalenceClass && equivalenceClass.tags) {
           classes += " " + $.getCssClassesFromTags(response, equivalenceClass.tags);
         }
         let htmlId = utils.getHtmlId("statement", token.title!);
@@ -164,7 +167,10 @@ export class HtmlExportPlugin implements IArgdownPlugin {
         let htmlId = utils.getHtmlId("argument", token.title!);
         let classes = "mention argument-mention";
         const argument = response.arguments![token.title!];
-        if (argument.tags) {
+        if (!argument) {
+          console.log("Mentioned argument not found: " + token.title);
+        }
+        if (argument && argument.tags) {
           classes += " " + $.getCssClassesFromTags(response, argument.tags);
         }
         response.html += `<a href="#${htmlId}" class="${classes}">@&lt;<span class="title argument-title">${_.escape(
@@ -218,7 +224,7 @@ export class HtmlExportPlugin implements IArgdownPlugin {
                   tagColorCss += `.${tag.cssClass}{color: ${tag.color};}\n`;
                 }
               }
-              if(tagColorCss.length > 0){
+              if (tagColorCss.length > 0) {
                 head += `<style>${tagColorCss}</style>`;
               }
             }
@@ -241,14 +247,22 @@ export class HtmlExportPlugin implements IArgdownPlugin {
       },
       [RuleNames.STATEMENT + "Entry"]: (_request, response, node) => {
         let classes = "statement has-line";
-        if (node.equivalenceClass && node.equivalenceClass.tags && node.equivalenceClass.tags) {
+        if (node.equivalenceClass && node.equivalenceClass.tags) {
           classes += " " + $.getCssClassesFromTags(response, node.equivalenceClass.tags);
         }
         response.html += `<div data-line="${node.startLine}" class="${classes}">`;
       },
       [RuleNames.STATEMENT + "Exit"]: (_request, response) => (response.html += "</div>"),
-      [RuleNames.PCS + "Entry"]: (_request, response, node) => {
+      [RuleNames.ARGUMENT + "Entry"]: (_request, response, node) => {
         let classes = "argument has-line";
+        if (node.argument && node.argument.tags) {
+          classes += " " + $.getCssClassesFromTags(response, node.argument.tags);
+        }
+        response.html += `<div data-line="${node.startLine}" class="${classes}">`;
+      },
+      [RuleNames.ARGUMENT + "Exit"]: (_request, response) => (response.html += "</div>"),
+      [RuleNames.PCS + "Entry"]: (_request, response, node) => {
+        let classes = "pcs has-line";
         if (node.argument && node.argument.tags && node.argument.tags) {
           classes += " " + $.getCssClassesFromTags(response, node.argument.tags);
         }
@@ -346,7 +360,7 @@ export class HtmlExportPlugin implements IArgdownPlugin {
       [RuleNames.BOLD + "Exit"]: (_request, response, node) => (response.html += "</b>" + node.trailingWhitespace),
       [RuleNames.ITALIC + "Entry"]: (_request, response) => (response.html += "<i>"),
       [RuleNames.ITALIC + "Exit"]: (_request, response, node) => (response.html += "</i>" + node.trailingWhitespace),
-      [RuleNames.ARGUMENT_STATEMENT + "Entry"]: (_request, response, node) => {
+      [RuleNames.PCS_STATEMENT + "Entry"]: (_request, response, node) => {
         const statement = node.statement;
         if (statement && isConclusion(statement) && statement.inference) {
           let inference = statement.inference;
@@ -370,21 +384,22 @@ export class HtmlExportPlugin implements IArgdownPlugin {
         }
         response.html += `<div data-line="${node.startLine}" class="has-line ${
           node.statement!.role
-        } argument-statement"><div class="statement-nr">(<span>${node.statementNr}</span>)</div>`;
+        } pcs-statement"><div class="statement-nr">(<span>${node.statementNr}</span>)</div>`;
       },
-      [RuleNames.ARGUMENT_STATEMENT + "Exit"]: (_request, response) => (response.html += "</div>")
+      [RuleNames.PCS_STATEMENT + "Exit"]: (_request, response) => (response.html += "</div>")
     };
   }
   getCssClassesFromTags(response: IArgdownResponse, tags: string[]): string {
     let classes = "";
-    if (!tags || tags.length === 0|| !response.tags) {
+    if (!tags || tags.length === 0 || !response.tags) {
       return classes;
     }
-    classes = tags.sort((a,b)=>{
-      const aTagData = response.tags![a];
-      const bTagData = response.tags![b];
-      return (aTagData.priority || 0) - (bTagData.priority || 0);
-    })
+    classes = tags
+      .sort((a, b) => {
+        const aTagData = response.tags![a];
+        const bTagData = response.tags![b];
+        return (aTagData.priority || 0) - (bTagData.priority || 0);
+      })
       .map(t => {
         const tagData = response.tags![t];
         if (tagData) {

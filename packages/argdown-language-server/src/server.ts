@@ -411,7 +411,7 @@ connection.onDocumentSymbol(async (params: DocumentSymbolParams) => {
 });
 
 argdown.addPlugin(new FoldingRangesPlugin(), "add-folding-ranges");
-connection.onFoldingRanges(async (params: FoldingRangeParams)=>{
+connection.onFoldingRanges(async (params: FoldingRangeParams) => {
   const doc = documents.get(params.textDocument.uri);
   if (doc) {
     const request = {

@@ -21,7 +21,16 @@ import { ArgdownTypes } from "@argdown/core";
 
 var saveDagreAsPng = null;
 var saveDagreAsSvg = null;
+function escapeHtml(str){
+  str = str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/'/g, '&#39;')
+      .replace(/"/g, '&quot;');
 
+  return str;
+}
 export default {
   name: "dagre-d3-output",
   computed: {
@@ -87,7 +96,7 @@ export default {
       };
       nodeProperties.label = '<div class="node-label">';
       if (node.labelTitle) {
-        nodeProperties.label += "<h3>" + node.labelTitle + "</h3>";
+        nodeProperties.label += "<h3>" + escapeHtml(node.labelTitle) + "</h3>";
       }
       // eslint-disable-next-line
       if (
@@ -95,7 +104,7 @@ export default {
         (node.type === ArgdownTypes.STATEMENT_MAP_NODE ||
           node.type === ArgdownTypes.ARGUMENT_MAP_NODE)
       ) {
-        nodeProperties.label += "<p>" + node.labelText + "</p>";
+        nodeProperties.label += "<p>" + escapeHtml(node.labelText) + "</p>";
       }
       if (node.tags) {
         for (let tag of node.tags) {

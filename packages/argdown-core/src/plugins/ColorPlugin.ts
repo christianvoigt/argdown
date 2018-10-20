@@ -31,7 +31,8 @@ export interface IColorSettings {
   /**
    * A custom color scheme
    *
-   * The color at index x will be used for the tag at `tagsToColorize[index]`
+   * The color at index 0 will be used for untagged nodes.
+   * The color at index n + 1 will be used for the tag at `tagsToColorize[n]`
    */
   colorScheme?: string[] | string;
   /**
@@ -120,7 +121,7 @@ export class ColorPlugin implements IArgdownPlugin {
     }
     let groupColorScheme: string[] = settings.groupColorScheme!;
 
-    if (settings.colorizeByTag) {
+    if (settings.colorizeByTag || settings.colorizeGroupsByTag) {
       for (let tagData of Object.values(response.tags)) {
         const tag = tagData.tag;
         if (!tag) {
@@ -135,12 +136,20 @@ export class ColorPlugin implements IArgdownPlugin {
           if (isObject(tagColorsEntry)) {
             tagData.priority = tagColorsEntry.priority;
           }
-        } else if (colorScheme) {
-          if (tagData.occurrenceIndex !== undefined && tagData.occurrenceIndex < colorScheme.length) {
-            color = colorScheme[tagData.occurrenceIndex];
+        } else {
+          if (
+            colorScheme &&
+            tagData.occurrenceIndex !== undefined &&
+            tagData.occurrenceIndex < colorScheme.length + 1
+          ) {
+            color = colorScheme[tagData.occurrenceIndex + 1]; // index 0 belongs to untagged nodes
           }
-          if (tagData.occurrenceIndex !== undefined && tagData.occurrenceIndex < groupColorScheme.length) {
-            groupColor = groupColorScheme[tagData.occurrenceIndex];
+          if (
+            groupColorScheme &&
+            tagData.occurrenceIndex !== undefined &&
+            tagData.occurrenceIndex < groupColorScheme.length + 1
+          ) {
+            groupColor = groupColorScheme[tagData.occurrenceIndex + 1]; // index 0 belongs to untagged groups
           }
         }
         if (tag !== undefined && color !== undefined) {
@@ -157,9 +166,11 @@ export class ColorPlugin implements IArgdownPlugin {
         ec.color = getColor(colorScheme, ec.data.color);
       } else if (settings.statementColors && settings.statementColors[ec.title!] !== undefined) {
         ec.color = getColor(colorScheme, settings.statementColors[ec.title!]);
-      } else if (settings.colorizeByTag && ec.tags) {
+      } else if (settings.colorizeByTag && ec.tags && ec.tags.length > 0) {
         const tag = getTagWithHighestPriority(ec.tags, response.tags);
         ec.color = getColor(colorScheme, tagColors[tag]);
+      } else if (colorScheme && colorScheme.length > 0) {
+        ec.color = colorScheme[0];
       }
     }
     for (let a of Object.values(response.arguments)) {
@@ -167,9 +178,11 @@ export class ColorPlugin implements IArgdownPlugin {
         a.color = getColor(colorScheme, a.data.color);
       } else if (settings.argumentColors && settings.argumentColors[a.title!] !== undefined) {
         a.color = getColor(colorScheme, settings.argumentColors[a.title!]);
-      } else if (settings.colorizeByTag && a.tags) {
+      } else if (settings.colorizeByTag && a.tags && a.tags.length > 0) {
         const tag = getTagWithHighestPriority(a.tags, response.tags);
         a.color = getColor(colorScheme, tagColors[tag]);
+      } else if (colorScheme && colorScheme.length > 0) {
+        a.color = colorScheme[0];
       }
     }
 

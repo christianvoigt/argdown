@@ -16,7 +16,7 @@ For more information about this package visit the [API documents](https://christ
 
 ## Installing
 
-If you want to use the package in your own software, use `npm install @argdown/core`.
+If you want to use the package in your own software, use `npm install @argdown/node`.
 
 If you want to check out the code, fork this repository and run `npm run bootstrap`.
 

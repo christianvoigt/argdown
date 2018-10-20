@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { ArgdownApplication, ParserPlugin, ModelPlugin, DataPlugin } from "../src/index";
+import { ArgdownApplication, ParserPlugin, ModelPlugin, DataPlugin, FrontMatterSettingsModes } from "../src/index";
 
 let app = new ArgdownApplication();
 
@@ -61,5 +61,23 @@ testBool: true
     expect(result.arguments!["B"].data.myObject.list[1]).to.equal(2);
     expect(result.arguments!["B"].data.myObject.list.length).to.equal(3);
     expect(result.arguments!["B"].data.auf).to.equal("wiedersehen");
+  });
+  it("can overwrite graphVizSettings", () => {
+    const input = `
+====
+dot: { graphVizSettings: { rankDir: "YES!" } }
+====    
+
+test
+`;
+    const request = {
+      process: ["parse-input", "build-model"],
+      input,
+      logLevel: "error",
+      dot: { graphVizSettings: { rankDir: "BT" } },
+      data: { frontMatterSettingsMode: FrontMatterSettingsModes.PRIORITY }
+    };
+    app.run(request);
+    expect((<any>request).dot.graphVizSettings.rankDir).to.equal("YES!");
   });
 });

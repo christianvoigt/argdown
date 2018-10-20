@@ -913,7 +913,13 @@ Because the loose interpretation is useful for starting out it is activated by d
 
 #### Strict interpretation
 
-The strict interpretation mode is useful if you want to logically reconstruct a debate in detail. In this case, you need to distinguish clearly between arguments and statements. A statement does not really attack or support another statement. Only arguments can do that by the force of a logical inference connecting premises with a conclusion. In contrast, statements only state that something is true and stand in *logical relations* to other statements. In a strict sense relations between statements therefore are different from relations between arguments (or arguments and statements).
+The strict interpretation mode is useful if you want to logically reconstruct a debate in detail, because it gives you more expressive power. You can now distinguish between logical relations between statements like entailment, contrariness and contradiction and dialectical support and attack relations between an argument and a statement (or another argument). 
+
+To give you a simple example: Let us say two people argue with each other and one shouts "This suit is too expensive!" while the other shouts "This suit is cheap!". We should probably best reconstruct these two speech acts not as reasons given to convince each other. Just claiming that your contrahent's claim is wrong can not count as an attack against this claim. Instead, the two people simply contradict each other in a shouting match. In Argdown we should use two statements and define a contrary relations in strict mode. 
+
+In contrast, if one of the two persons shouts "Are you serious? This suit costs more than I paid for my car! That is way too much money for a suit!" this speech act is probably best interpreted as giving a reason for *why* it is true that the suit is too expensive. In Argdown we should use an argument and a statement and define an attack relation between them. Now, given that we already have defined the above contrary relation, we have also expressed that this argument is an attack on the opponent's claim.
+
+In loose mode, we can not express this difference between the contradicting someone's claim and reasoning against it. We need the expressive power of strict mode for that.
 
 In **strict interpretation mode** a + relation between two statements is therefore interpreted as meaning that one statement **logically entails** the other. A - relation between two statements is interpreted as meaning that one statement is **logically contrary** to the other. Additionally you can also use >< to state that two statements are **contradictory** to each other.
 
@@ -933,13 +939,13 @@ model:
     >< [f]
 ```
 
-In the case of + relations, it will not matter in practice if you use the loose or strict interpretation of statement relations. Both relations are **asymmetric**: Even if A supports B, B does **not** necessarily have to support A in turn. And even if A entails B, B does **not** necessarily have to entail A in turn.
+You will see the difference between the modes most clearly if you export your data to JSON, because here the relation objects will have different relationType properties. The difference is less obvious in the argument map:
 
-In the case of >< relation there is also no difference, because there is no conflicting "loose" interpretation corresponding to a relation type between two arguments.
+In the case of + relations, you will not see any difference in your map. Entailment and support are both **asymmetric** relations and are visualized with directed green arrows (with an arrow head at its end and no arrow head at its start).
 
-However, in the case of - relations the strict interpretation **does** make a difference in practice: While the attack relation is asymmetric, the contrary relation is symmetric. If A **attacks** B, B does **not** also have to attack A. But if A is **contrary** to B, B is also necessarily contrary to A. 
+However, in the case of - relations the difference between modes becomes obvious in the map: While the attack relation is *asymmetric*, the contrary relation is *symmetric*. Thus, in loose mode red arrows between statements will only point in one direction. In strict mode red arrows between statements will point in both directions. 
 
-In the argument map, this difference becomes obvious: If you use loose mode, red arrows between statements will only point in one direction (because the attack relation is asymmetric). If you use strict mode, red arrows between statements will point in both directions (because the contrary relation is symmetric). Apart from that the different interpretations will also have consequences for the arrows from and to reconstructed arguments, as we will see in the next subsection.
+Apart from the JSON data and the visualization of relations, the different interpretations will also have consequences for the automatic derivation of relations from and to reconstructed arguments, as we will see in the next subsection.
 
 If you want to use Argdown parser in strict interpretation mode, you have to use the [`mode: strict`](/guide/configuration-cheatsheet) configuration option of the model plugin (see example above).
 

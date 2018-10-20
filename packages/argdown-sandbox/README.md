@@ -16,3 +16,15 @@ Visit the [documentation](https://christianvoigt.github.io/argdown) for more inf
 The app uses the [Vue](https://vuejs.org/) library.
 
 The sandbox is only intended for giving users a first impression of Argdown. For a more complete feature set, please install the [VS Code extension](https://christianvoigt.github.io/argdown/guide/installing-the-vscode-extension.html).
+
+## Installation
+
+`npm install @argdown/sandbox`
+
+## Development
+
+`npm run serve`
+
+## Building
+
+`npm run build`

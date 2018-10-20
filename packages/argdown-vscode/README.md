@@ -1,6 +1,6 @@
 # Argdown for Visual Studio Code
 
-![Argdown logo](./argdown-arrow.png?raw=true "Argdown logo")
+![Argdown logo](./media/argdown-arrow.png?raw=true "Argdown logo")
 
 [Argdown](https://christianvoigt.github.io/argdown) is a simple syntax for analyzing complex argumentation, inspired by Markdown. This extension provides full language support for Argdown in VS Code:
 
@@ -18,6 +18,8 @@
 If you want to learn more about Argdown argumentation syntax, read the [guide and documentation](https://christianvoigt.github.io/argdown).
 
 ## Activating the Argdown theme
+
+![Activating the Argdown theme](./media/ArgdownTheme.gif?raw=true "Activating the Argdown theme")
 
 Standard themes do not highlight Argdown relations and elements. For complete syntax highlighting, please activate the Argdown theme:
 

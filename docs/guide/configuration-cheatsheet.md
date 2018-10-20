@@ -21,6 +21,24 @@ interface IArgdownConfig {
    * Will be appended to the file name of any files exported. 
    **/
   outputSuffix?:string;
+  // settings for the data plugin
+  data?: {
+    /**
+     * If set to "ignore", any settings in the frontmatter will be ignored.
+     * If set to "default" or undefined the front matter yaml data settings are merged as default settings into the request object.
+     * If set to "priority" the yaml data settings overwrite any external settings.
+     * This makes it possible to configure plugins without using an external argdown.config.js file.
+     */
+    frontMatterSettingsMode?: "default" | "ignore" | "priority"
+    /**
+     * If false the YAML data of arguments, statements and headings is always parsed with the outer curly brackets.
+     * In this case the YAML data has to always be in inline format which looks similar to JSON data.
+     *
+     * If true the data is parsed without the outer curly brackets if the opening bracket is followed by a line break.
+     * This means that the YAML data has to be in block format instead of the JSON-like inline format.
+     */
+    switchToBlockFormatIfMultiline?: boolean;
+  },
   // settings for the model plugin
   model?: {
     /**
@@ -45,6 +63,8 @@ interface IArgdownConfig {
      * A custom color scheme or the name of a built-in one
      * 
      * colors have to be in #fffff hex format
+     * 
+     * The color at index 0 will be used as default color.
      *
      */
     colorScheme?: string[] | string; // default is "default"
@@ -61,6 +81,8 @@ interface IArgdownConfig {
      * 
      * You can give tags priorities to use them for coloring even if they are not the first tags 
      * applied.
+     * 
+     * Example: {"tag-1": 1, "tag-2": "#CCCCCC", "tag-3": {color: 0, priority: 2}}
      */
     tagColors?: { [tagName:string]: string|number| {color: string|number, priority: number} };
     /**
@@ -69,14 +91,20 @@ interface IArgdownConfig {
     ignoreColorData?:boolean; // default is false
     /**
      * A map from statement titles to colors
+     * 
+     * Example: {"S1": 1, "S2": "#CCCCCC"}
      **/
     statementColors?: {[title:string]: string|number};
     /**
      * A map from argument titles to colors
-     **/
+     * 
+     * Example: {"A1": 1, "A2": "#CCCCCC"}
+    **/
     argumentColors?: {[title:string]: string|number};
     /**
      * A map from section titles to colors
+     * 
+     * Example: {"Heading 1": 1, "Heading 2": "#CCCCCC"}
      **/
     groupColors?: {[title:string]: string|number};
   };
@@ -203,6 +231,12 @@ interface IArgdownConfig {
     outputDir?: string; // default is "./dot"
     graphname?: string;
     lineLength?: number;
+    /**
+     * Any settings strings that are allowed in a dot file.
+     * The settings will be inserted in the following form: 'key: "value";'
+     * 
+     * Example: {rankdir: "BT"}
+     */
     graphVizSettings?: { [name: string]: string };
   }
   dotToSvg: {

@@ -809,7 +809,7 @@ export class ModelPlugin implements IArgdownPlugin {
         currentArgument = null;
         currentPCS = null;
       },
-      [RuleNames.ARGUMENT_STATEMENT + "Exit"]: (_request, response, node, parentNode, childIndex) => {
+      [RuleNames.PCS_STATEMENT + "Exit"]: (_request, response, node, parentNode, childIndex) => {
         if (!currentPCS) {
           throw new ArgdownPluginError(this.name, "Missing argument reconstruction.");
         }

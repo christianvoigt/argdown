@@ -21,7 +21,7 @@ export const initMenu = (messaging: MessagePoster) => {
               view: node.dataset.view
             });
           } else if (node.dataset.message === "didChangeLockMenu") {
-            console.log("sending didChangeLockMenu: " + node.dataset.lockmenu);
+            //console.log("sending didChangeLockMenu: " + node.dataset.lockmenu);
             messaging.postMessage(node.dataset.message, {
               lockMenu: node.dataset.lockmenu
             });
