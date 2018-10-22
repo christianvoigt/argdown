@@ -1,6 +1,6 @@
 {
   "name": "@argdown/prism",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Prism language highlighting and theme for Argdown",
   "main": "index.js",
   "scripts": {
@@ -14,6 +14,5 @@
     "Argdown"
   ],
   "author": "Christian Voigt",
-  "license": "MIT",
-  "dependencies": {}
+  "license": "MIT"
 }

@@ -1,6 +1,6 @@
 {
   "name": "@argdown/sandbox",
-  "version": "1.6.1",
+  "version": "1.0.0",
   "description": "An Argdown editor that runs in the browser",
   "author": "Christian Voigt <1pxsolidblack@googlemail.com>",
   "repository": {
@@ -21,8 +21,8 @@
     "copy-examples": "rimraf ./public/examples/*.argdown && copyfiles -f \"../../examples/*.argdown\" ./public/examples"
   },
   "dependencies": {
-    "@argdown/codemirror-mode": "^0.1.1",
-    "@argdown/core": "^0.8.7",
+    "@argdown/codemirror-mode": "^1.0.0",
+    "@argdown/core": "^1.0.0",
     "axios": "^0.18.0",
     "d3": "^5.0.0",
     "dagre-d3": "^0.6.1",

@@ -5,7 +5,7 @@
   "icon": "argdown-icon.png",
   "author": "Christian Voigt",
   "license": "MIT",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "publisher": "christianvoigt",
   "repository": {
     "type": "git",
@@ -450,15 +450,15 @@
     "build-preview": "webpack --mode development"
   },
   "dependencies": {
-    "@argdown/node": "^0.11.9",
-    "@argdown/core": "^0.8.7",
-    "@argdown/language-server": "^0.0.1",
-    "vscode": "^1.1.21",
-    "vscode-languageclient": "^5.1.0",
+    "@argdown/core": "^1.0.0",
+    "@argdown/language-server": "^1.0.0",
+    "@argdown/node": "^1.0.0",
     "d3": "^5.4.0",
     "dagre-d3": "^0.6.1",
     "lodash.defaultsdeep": "^4.6.0",
-    "lodash.throttle": "^4.1.1"
+    "lodash.throttle": "^4.1.1",
+    "vscode": "^1.1.21",
+    "vscode-languageclient": "^5.1.0"
   },
   "devDependencies": {
     "@types/d3": "^5.0.0",
