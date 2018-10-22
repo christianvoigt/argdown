@@ -185,6 +185,22 @@ Statement
     expect(pcsTail.children[1].children[2].children[0].tokenType.tokenName).to.equal("Indent");
     expect(pcsTail.children[1].children[2].children[1].name).to.equal("outgoingUndercut");
   });
+  //   it("can parse nested lists", () => {
+  //     const input = `
+  // # The central statements of the debate
+
+  // * Atheist statements
+  //     1. [Nietzsches Slogan]: God is dead.
+  // * Deist statements
+  //     2. [Intelligent Design]: The world is intelligently designed
+  //     3. [Idea Perfect Being]: We have the idea of a perfect being.
+  //     `;
+  //     let lexResult = tokenize(input);
+  //     parser.input = lexResult.tokens;
+  //     parser.argdown();
+  //     expect(lexResult.errors).to.be.empty;
+  //     expect(parser.errors).to.be.empty;
+  //   });
 });
 
 describe("ArgdownTreeWalker", function() {
