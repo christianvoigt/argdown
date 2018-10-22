@@ -1,8 +1,8 @@
 var argdown = require("../../packages/argdown-node/dist/src/index.js").argdown;
 var container = require("markdown-it-container");
 
-var domain = "http://1px-solid-black.com/argdown";
-// var domain = "https://christianvoigt.github.io"
+//var domain = "http://1px-solid-black.com/argdown";
+var domain = "https://christianvoigt.github.io";
 
 var SaysWhoPlugin = require("../../packages/argdown-core/dist/src/plugins/SaysWhoPlugin.js").SaysWhoPlugin;
 argdown.addPlugin(new SaysWhoPlugin(), "add-proponents");

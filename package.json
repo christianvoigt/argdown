@@ -4,7 +4,8 @@
   "repository": "https://github.com/christianvoigt/argdown",
   "private": true,
   "scripts": {
-    "bootstrap": "lerna bootstrap",
+    "lerna:bootstrap": "lerna bootstrap",
+    "lerna:version": "lerna version --force-publish",
     "test": "lerna run test",
     "test:coverage": "lerna run test:coverage",
     "build": "lerna run build",
@@ -17,8 +18,8 @@
   "readmeFilename": "Readme.md",
   "preferGlobal": true,
   "devDependencies": {
-    "lerna": "^2.11.0",
-    "vuepress": "^0.10.2"
+    "lerna": "^3.4.2",
+    "vuepress": "^0.14.4"
   },
   "workspace-sources": {
     "*": [
