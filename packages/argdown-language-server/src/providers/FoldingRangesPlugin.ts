@@ -50,7 +50,7 @@ export class FoldingRangesPlugin implements IArgdownPlugin {
       }
       response.foldingRanges!.push(FoldingRange.create(node.startLine! - 1, endLine));
     },
-    [RuleNames.ARGUMENT_STATEMENT + "Entry"]: (_req, response, node) => {
+    [RuleNames.PCS_STATEMENT + "Entry"]: (_req, response, node) => {
       response.foldingRanges!.push(FoldingRange.create(node.startLine! - 1, node.endLine! - 1));
     },
     [RuleNames.INFERENCE + "Entry"]: (_req, response, node) => {
