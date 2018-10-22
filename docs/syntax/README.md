@@ -913,13 +913,7 @@ Because the loose interpretation is useful for starting out it is activated by d
 
 #### Strict interpretation
 
-The strict interpretation mode is useful if you want to logically reconstruct a debate in detail, because it gives you more expressive power. You can now distinguish between logical relations between statements like entailment, contrariness and contradiction and dialectical support and attack relations between an argument and a statement (or another argument). 
-
-To give you a simple example: Let us say two people argue with each other and one shouts "This suit is too expensive!" while the other shouts "This suit is cheap!". We should probably best reconstruct these two speech acts not as reasons given to convince each other. Just claiming that your contrahent's claim is wrong can not count as an attack against this claim. Instead, the two people simply contradict each other in a shouting match. In Argdown we should use two statements and define a contrary relations in strict mode. 
-
-In contrast, if one of the two persons shouts "Are you serious? This suit costs more than I paid for my car! That is way too much money for a suit!" this speech act is probably best interpreted as giving a reason for *why* it is true that the suit is too expensive. In Argdown we should use an argument and a statement and define an attack relation between them. Now, given that we already have defined the above contrary relation, we have also expressed that this argument is an attack on the opponent's claim.
-
-In loose mode, we can not express this difference between the contradicting someone's claim and reasoning against it. We need the expressive power of strict mode for that.
+The strict interpretation mode is useful if you want to logically reconstruct a debate in detail. Switching to strict mode gives you more expressive power. You can now distinguish between logical relations between statements (entailment, contrariness, contradiction) and dialectical support and attack relations between an argument and a statement (or another argument). 
 
 In **strict interpretation mode** a + relation between two statements is therefore interpreted as meaning that one statement **logically entails** the other. A - relation between two statements is interpreted as meaning that one statement is **logically contrary** to the other. Additionally you can also use >< to state that two statements are **contradictory** to each other.
 
@@ -939,6 +933,41 @@ model:
     >< [f]
 ```
 
+If you want to use Argdown parser in strict interpretation mode, you have to use the [`mode: strict`](/guide/configuration-cheatsheet) configuration option of the model plugin (see example above).
+
+##### Why use strict mode?
+
+To give you an example of a use case in which strict mode brings advantages:
+
+- A says: "This suit is too expensive."
+- B says: "This suit is really cheap."
+- C says: "Are you serious? This suit costs more than I paid for my car! That is way too much money for a suit!"
+
+Let us say our interpretation of this little debate is as follows: A's and B's statements simply contradict each other. Neither A nor B bring forward any reasons that back up their claims. C implicitely agrees with A's claim that the suit is too expensive. But C additionally backs this claim with a reason. Because A's claim contradicts B's claim, C's argument attacks B's claim.
+
+Given that this is our best interpretation and we want to use Argdown to express it, we should use strict mode instead of loose mode. In loose mode we can not express the difference between contradicting someone's claim versus arguing against it. If we switch to strict mode it becomes easy:
+
+```argdown
+===
+model:
+    mode: strict
+===
+
+[A]: The suit is too expensive
+
+[B]: The suit is cheap.
+
+<C>: The suit costs more than C's car. A suit that costs more than a car is too expensive.
+
+[A]
+    - [B] // means: statement A is contrary to statement B
+
+[A]
+    + <C> // means: argument C supports statement A
+```
+
+##### What difference does it make?
+
 You will see the difference between the modes most clearly if you export your data to JSON, because here the relation objects will have different relationType properties. The difference is less obvious in the argument map:
 
 In the case of + relations, you will not see any difference in your map. Entailment and support are both **asymmetric** relations and are visualized with directed green arrows (with an arrow head at its end and no arrow head at its start).
@@ -947,15 +976,14 @@ However, in the case of - relations the difference between modes becomes obvious
 
 Apart from the JSON data and the visualization of relations, the different interpretations will also have consequences for the automatic derivation of relations from and to reconstructed arguments, as we will see in the next subsection.
 
-If you want to use Argdown parser in strict interpretation mode, you have to use the [`mode: strict`](/guide/configuration-cheatsheet) configuration option of the model plugin (see example above).
-
 :::warning Stay consistent!
 
 Currently the Argdown parser will not check if the different relations you have defined are logically consistent. It is possible to create "nonsense" relations:
 
 ```argdown-cheatsheet
 ===
-explanation: In strict mode these relations are logically inconsistent: t1 is contrary to t2, but also entails t2. Which means that if t1 is true, t2 has to be true and false.
+explanation: >
+    In strict mode these relations are logically inconsistent: t1 is contrary to t2, but also entails t2. Which means that if t1 is true, t2 has to be true and false.
 hide: true
 ===
 
@@ -1239,7 +1267,8 @@ Currently the Argdown parser will not check if the derived relations are consist
 
 ```argdown-cheatsheet
 ===
-explanation: In strict mode these relations produce a logical inconsistency. t1 is contrary to t2. But because a1 supports t2, it is also derived that its main conclusion t1 entails t2. Taken together this means that if t1 is true, t2 has to be true and false.
+explanation: >
+    In strict mode these relations produce a logical inconsistency. t1 is contrary to t2. But because a1 supports t2, it is also derived that its main conclusion t1 entails t2. Taken together this means that if t1 is true, t2 has to be true and false.
 hide: true
 ===
 
@@ -1377,22 +1406,11 @@ hide: true
    idea of a perfect being.
 ```
 
-```argdown-cheatsheet
-===
-explanation: Lists can be nested.
-hide: true
-===
+:::warning nested lists not supported
+At the moment Argdown does not support nested lists. This simplifies  the parsing process as it does not require the parser to distinguish between list items and relations with the same indentation.
 
-# The central statements of the debate
-
-* Atheist statements
-    1. [Nietzsche's Slogan]: God is dead.
-* Deist statements
-    2. [Intelligent Design]: The world is
-       intelligently designed
-    3. [Idea Perfect Being]: We have the
-       idea of a perfect being.
-```
+If you want to have more flexibility in your text formatting, we recommend embedding the Argdown sections of your text within a Markdown or Latex document. In the future we will publish software that will help you exporting the embedded Argdown from such documents.
+:::
 
 
 ## Comments

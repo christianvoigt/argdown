@@ -145,19 +145,29 @@ class ArgdownParser extends Parser {
     this.AT_LEAST_ONE(() => children.push(this.SUBRULE(this.unorderedListItem)));
     this.CONSUME(lexer.Dedent); // Dedent is removed from AST
     // children.push(this.CONSUME(lexer.Dedent));
-    return IRuleNode.create(RuleNames.ORDERED_LIST, children);
+    return IRuleNode.create(RuleNames.UNORDERED_LIST, children);
   });
 
   private unorderedListItem = this.RULE(RuleNames.UNORDERED_LIST_ITEM, () => {
     let children: IAstNode[] = [];
     children.push(this.CONSUME(lexer.UnorderedListItem));
-    children.push(this.SUBRULE(this.statement));
+    this.OR({
+      DEF: [
+        { ALT: () => children.push(this.SUBRULE(this.statement)) },
+        { ALT: () => children.push(this.SUBRULE(this.argument)) }
+      ]
+    });
     return IRuleNode.create(RuleNames.UNORDERED_LIST_ITEM, children);
   });
   private orderedListItem = this.RULE(RuleNames.ORDERED_LIST_ITEM, () => {
     let children: IAstNode[] = [];
     children.push(this.CONSUME(lexer.OrderedListItem));
-    children.push(this.SUBRULE(this.statement));
+    this.OR({
+      DEF: [
+        { ALT: () => children.push(this.SUBRULE(this.statement)) },
+        { ALT: () => children.push(this.SUBRULE(this.argument)) }
+      ]
+    });
     return IRuleNode.create(RuleNames.ORDERED_LIST_ITEM, children);
   });
   private argument = this.RULE(RuleNames.ARGUMENT, () => {
