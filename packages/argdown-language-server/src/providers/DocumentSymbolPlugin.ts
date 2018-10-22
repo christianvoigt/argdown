@@ -209,7 +209,7 @@ export class DocumentSymbolPlugin implements IArgdownPlugin {
         const symbol = parentsStack.pop();
         addSymbol(response, symbol!, parentsStack);
       },
-      [RuleNames.ARGUMENT_STATEMENT + "Entry"]: (_request, _response, node) => {
+      [RuleNames.PCS_STATEMENT + "Entry"]: (_request, _response, node) => {
         const symbol = new ArgdownSymbol();
         symbol.name = `(${node.statementNr}) [${node.statement!.title}]`;
         symbol.range = getRange(node);
@@ -226,7 +226,7 @@ export class DocumentSymbolPlugin implements IArgdownPlugin {
         symbol.kind = SymbolKind.Variable;
         parentsStack.push(symbol);
       },
-      [RuleNames.ARGUMENT_STATEMENT + "Exit"]: (_request, response) => {
+      [RuleNames.PCS_STATEMENT + "Exit"]: (_request, response) => {
         const symbol = parentsStack.pop();
         addSymbol(response, symbol!, parentsStack);
       },
