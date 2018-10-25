@@ -62,13 +62,31 @@ var examples = {
   "argdown-primer": {
     id: "argdown-primer",
     title: "Argdown Primer",
-    url: "/argdown/sandbox/examples/argdown-primer.argdown",
+    url: "/sandbox/examples/argdown-primer.argdown",
     cachedContent: primer
   },
-  test: {
-    id: "test",
-    title: "Second example",
-    url: "/argdown/sandbox/examples/test.argdown"
+  greenspan: {
+    id: "greenspan",
+    title:
+      "Why the Fed didn't Intervene to Prevent the 2008 Financial Crisis -- An Analysis of Alan Greenspan's Arguments",
+    url: "/sandbox/examples/greenspan-schefczyk_hardwrap.argdown"
+  },
+  softdrugs: {
+    id: "softdrugs",
+    title: "Pros and Cons Legalisation of Soft Drugs -- A Simple Analysis",
+    url: "/sandbox/examples/legalisation-softdrugs.argdown"
+  },
+  semmelweis: {
+    id: "semmelweis",
+    title:
+      "A Stylized Reconstruction of the Scientific Debate That led Ignaz Semmelweis to Understand Childbed Fever",
+    url: "/sandbox/examples/semmelweis_betz.argdown"
+  },
+  "state-censorship": {
+    id: "state-censorship",
+    title:
+      "Censorship from the State -- Some Pros and Cons Reconstructed in Detail",
+    url: "/sandbox/examples/state-censorship.argdown"
   }
 };
 

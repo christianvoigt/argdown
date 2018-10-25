@@ -2,7 +2,7 @@ var argdown = require("../../packages/argdown-node/dist/src/index.js").argdown;
 var container = require("markdown-it-container");
 
 //var domain = "http://1px-solid-black.com/argdown";
-var domain = "https://christianvoigt.github.io";
+var domain = "https://argdown.org";
 
 var SaysWhoPlugin = require("../../packages/argdown-core/dist/src/plugins/SaysWhoPlugin.js").SaysWhoPlugin;
 argdown.addPlugin(new SaysWhoPlugin(), "add-proponents");
@@ -38,7 +38,14 @@ function removeFrontMatter(str) {
 module.exports = {
   title: "Argdown",
   description: "A simple syntax for complex argumentation",
-  base: "/argdown/",
+  base: "/",
+  head: [
+    ["link", { rel: "shortcut icon", type: "image/x-icon", href: `${domain}/favicon.ico` }],
+    ["link", { rel: "icon", type: "image/png", href: `${domain}/favicon-32x32.png`, sizes: "32x32" }],
+    ["link", { rel: "icon", type: "image/png", href: `${domain}/favicon-16x16.png`, sizes: "16x16" }],
+    ["link", { rel: "manifest", href: `${domain}/site.webmanifest` }],
+    ["link", { rel: "apple-touch-icon-precomposed", href: `${domain}/apple-touch-icon.png` }]
+  ],
   markdown: {
     config: md => {
       md.use(...createContainer("buttonlist"));
@@ -115,6 +122,10 @@ module.exports = {
     }
   },
   themeConfig: {
+    algolia: {
+      apiKey: '6f7a8a8ebb4447a94088be7ef719ea1f', 
+      indexName: 'argdown'
+    },    
     sidebar: {
       "/changes/": [
         {

@@ -1,9 +1,0 @@
-# My second Argdown document
-
-<a>: text
-    - <b>: text
-
-## H2
-
-[t1]: text
-    - <a>

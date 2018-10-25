@@ -18,7 +18,7 @@ Vue.use(Router);
 
 export default new Router({
   mode: "history",
-  base: "/argdown/sandbox/",
+  base: "/sandbox/",
   scrollBehavior(to) {
     if (to.hash) {
       return {

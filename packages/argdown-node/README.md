@@ -1,6 +1,6 @@
 # @argdown/node
 
-![Argdown logo](../../argdown-arrow.png?raw=true "Argdown logo")
+![Argdown logo](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/argdown-arrow.png?sanitize=true "Argdown logo")
 
 This package consists of classes specific for running Argdown applications in Node.js: 
 
@@ -10,9 +10,9 @@ This package consists of classes specific for running Argdown applications in No
 
 The package is used in @argdown/cli and @argdown/vscode.
 
-This package is part of the [Argdown project](https://christianvoigt.github.io/argdown).
+This package is part of the [Argdown project](https://argdown.org).
 
-For more information about this package visit the [API documents](https://christianvoigt.github.io/argdown/argdown-node/index.html).
+For more information about this package visit the [API documents](https://argdown.org/argdown-node/index.html).
 
 ## Installing
 

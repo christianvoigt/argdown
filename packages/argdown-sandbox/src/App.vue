@@ -313,9 +313,9 @@ button .icon {
     display: none;
     position: absolute;
     background-color: #f9f9f9;
-    min-width: 250px;
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-    padding: 12px 16px;
+    min-width: 350px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,.2);
+    padding: 0px;
     z-index: 1000;
   }
   &:hover {
@@ -323,5 +323,14 @@ button .icon {
       display: block;
     }
   }
+}
+.sub-nav ul.nav-list .dropdown ul li a {
+    display: flex;
+    height: auto;
+    width: 100%;
+    padding: 1em 0.5em;
+    border: 1px solid #ccc;
+    margin-top: -1px;
+    border-radius: 0;
 }
 </style>

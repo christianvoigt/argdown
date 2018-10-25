@@ -1,8 +1,8 @@
 # Argdown for Visual Studio Code
 
-![Argdown logo](./media/argdown-arrow.png?raw=true "Argdown logo")
+![Argdown logo](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/argdown-arrow.png?sanitize=true)
 
-[Argdown](https://christianvoigt.github.io/argdown) is a simple syntax for analyzing complex argumentation, inspired by Markdown. This extension provides full language support for Argdown in VS Code:
+[Argdown](https://argdown.org) is a simple syntax for analyzing complex argumentation, inspired by Markdown. This extension provides full language support for Argdown in VS Code:
 
 - [Live Preview](#map-preview) of your argument map
 - 2 map layout algorithms ([DagreD3](https://github.com/dagrejs/dagre-d3) & [Viz.js](https://github.com/mdaines/viz.js/))
@@ -15,11 +15,11 @@
 - Linting (Code Diagnostics)
 - [Export to Html, Dot, JSON, SVG, PNG and PDF](#exporting)
 
-If you want to learn more about Argdown argumentation syntax, read the [guide and documentation](https://christianvoigt.github.io/argdown).
+If you want to learn more about Argdown argumentation syntax, read the [guide and documentation](https://argdown.org).
 
 ## Activating the Argdown theme
 
-![Activating the Argdown theme](./media/ArgdownTheme.gif?raw=true "Activating the Argdown theme")
+![Activating the Argdown theme](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/ArgdownTheme.gif?sanitize=true "Activating the Argdown theme")
 
 Standard themes do not highlight Argdown relations and elements. For complete syntax highlighting, please activate the Argdown theme:
 
@@ -32,16 +32,18 @@ We hope that VS Code will add support for language-specific themes in the future
 
 ## Map Preview
 
-Coming soon.
+![Map Preview](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/MapPreview.gif?sanitize=true "Opening the map preview")
  
 ## Code Completion
 
-Coming soon.
+![Code Completion](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/CodeCompletion.gif?sanitize=true "Using code completion")
 
 ## Document Outline, Breadcrumbs and Symbol Search
 
-Coming soon.
+![Document Outline](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/Outline.gif?sanitize=true "Using the document outline")
+
+![Breadcrumbs](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/Breadcrumbs.gif?sanitize=true "Using breadcrumbs")
 
 ## Exporting
 
-Coming soon.
+![Export](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/Export.gif?sanitize=true "Exporting Argdown document")

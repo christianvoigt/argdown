@@ -1,10 +1,10 @@
 # @argdown/cli
 
-![Argdown logo](../../argdown-arrow.png?raw=true "Argdown logo")
+![Argdown logo](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/argdown-arrow.png?sanitize=true "Argdown logo")
 
 A commandline interface to process Argdown data.
 
-To learn more about the Argdown argumentation syntax, visit the [Argdown documentation](https://christianvoigt.github.io/argdown).
+To learn more about the Argdown argumentation syntax, visit the [Argdown documentation](https://argdown.org).
 
 ## Features
 
@@ -14,7 +14,7 @@ To learn more about the Argdown argumentation syntax, visit the [Argdown documen
 * returns code diagnostics
 * extend @argdown/cli with custom plugins and processes in a `argdown.config.js` file and run them with `argdown run [processName]`
 
-For a better editing experience we recommend to additionally install the [VS Code extension](https://christianvoigt.github.io/argdown/guide/installing-the-vscode-extension.html).
+For a better editing experience we recommend to additionally install the [VS Code extension](https://argdown.org/guide/installing-the-vscode-extension.html).
 
 ## Installation
 
@@ -82,4 +82,4 @@ The cli can be configured with a config file. This allows you to change the beha
 
 @argdown/cli will automatically look for a `argdown.config.js` in the current working directory. If you want to use a different name or path you can use `argdown --config [name-of-my-config-file].js`.
 
-[Visit the config documentation](https://christianvoigt.github.io/argdown/guide/configuration-introduction.html) to learn more about the format of the config file and how to add plugins to @argdown/cli.
+[Visit the config documentation](https://argdown.org/guide/configuration-introduction.html) to learn more about the format of the config file and how to add plugins to @argdown/cli.

@@ -23,7 +23,7 @@
   "scripts": {
     "build": "tsc -p .",
     "watch": "tsc -w -p .",
-    "prepublish": "npm run build",
+    "prepublishOnly": "npm run build",
     "test": "mocha -r ts-node/register --full-trace --require source-map-support/register ./test/**/*.spec.ts"
   },
   "devDependencies": {

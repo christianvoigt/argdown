@@ -12,6 +12,13 @@ structures, inspired by Markdown.
   + Finally, you can export Argdown as a graph and create 
     **argument maps** of whole debates.
 
+This Argdown document only demonstrates the basic syntax elements. 
+The argument map produced is a "bogus debate". 
+
+To read a reconstruction of a *real* debate, select one of the 
+**example debates** by moving your mouse to the *"Examples"* button 
+on the upper left, above the text editor.
+
 ## Argdown Basics
 
 This is a normal statement with __bold__ and _italic_ text, 

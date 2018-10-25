@@ -18,7 +18,7 @@
     "coverage": "nyc mocha -r ts-node/register --full-trace --bail --require source-map-support/register ./test/**/*.spec.ts",
     "report": "nyc report",
     "clean": "rimraf dist/*",
-    "prepublish": "npm run-script build",
+    "prepublishOnly": "npm run-script build",
     "push": "git push --tags origin HEAD:master"
   },
   "repository": {

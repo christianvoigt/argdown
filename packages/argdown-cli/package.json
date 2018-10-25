@@ -40,7 +40,7 @@
     "test:custom-process": "mocha -r ts-node/register --full-trace --require source-map-support/register ./test/**/*.spec.ts --fgrep \"custom process\"",
     "coverage": "nyc mocha -r ts-node/register --full-trace --bail --require source-map-support/register ./test/**/*.spec.ts",
     "report": "nyc report",
-    "prepublish": "npm run-script build",
+    "prepublishOnly": "npm run-script build",
     "clean": "rimraf dist/*",
     "version:patch": "npm version patch"
   },

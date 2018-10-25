@@ -2,9 +2,9 @@
 
 ![Argdown logo](../../argdown-arrow.png?raw=true "Argdown logo")
 
-[Argdown](https://christianvoigt.github.io/argdown) demo editor. Try it out in your browser: [Demo Editor](http://christianvoigt.github.io/argdown/sandbox/).
+[Argdown](https://argdown.org) demo editor. Try it out in your browser: [Demo Editor](http://christianvoigt.github.io/argdown/sandbox/).
 
-Visit the [documentation](https://christianvoigt.github.io/argdown) for more information about the Argdown argumentation syntax.
+Visit the [documentation](https://argdown.org) for more information about the Argdown argumentation syntax.
 
 ## Features:
 
@@ -15,7 +15,7 @@ Visit the [documentation](https://christianvoigt.github.io/argdown) for more inf
 
 The app uses the [Vue](https://vuejs.org/) library.
 
-The sandbox is only intended for giving users a first impression of Argdown. For a more complete feature set, please install the [VS Code extension](https://christianvoigt.github.io/argdown/guide/installing-the-vscode-extension.html).
+The sandbox is only intended for giving users a first impression of Argdown. For a more complete feature set, please install the [VS Code extension](https://argdown.org/guide/installing-the-vscode-extension.html).
 
 ## Installation
 

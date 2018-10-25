@@ -1,12 +1,12 @@
 # @argdown/codemirror-mode
 
-![Argdown logo](../../argdown-arrow.png?raw=true "Argdown logo")
+![Argdown logo](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/argdown-arrow.png?sanitize=true "Argdown logo")
 
 A simple Codemirror syntax highlighting mode for the Argdown argumentation syntax.
 
-For a live demo of this mode see the [Argdown Demo](https://christianvoigt.github.io/argdown/sandbox).
+For a live demo of this mode see the [Argdown Demo](https://argdown.org/sandbox).
 
-This package is part of the [Argdown project](https://christianvoigt.github.io/argdown).
+This package is part of the [Argdown project](https://argdown.org).
 
 # how to register the mode with CodeMirror:
 

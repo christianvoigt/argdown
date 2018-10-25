@@ -1,16 +1,16 @@
 # @argdown/core
 
-![Argdown logo](../../argdown-arrow.png?raw=true "Argdown logo")
+![Argdown logo](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/argdown-arrow.png?sanitize=true "Argdown logo")
 
 The package contains 
 
-- the parser and lexer for the [Argdown argumentation syntax](https://christianvoigt.github.io/argdown), using the [Chevrotain DSL](https://github.com/SAP/chevrotain).
+- the parser and lexer for the [Argdown argumentation syntax](https://argdown.org), using the [Chevrotain DSL](https://github.com/SAP/chevrotain).
 - the basic ArgdownApplication class that manages plugins 
 - and the plugins for all central tasks, including the ParserPlugin, ModelPlugin, MapPlugin, HtmlExportPlugin, JSONExportPlugin, DotExportPlugin.
 
-This package is part of the [Argdown project](https://christianvoigt.github.io/argdown).
+This package is part of the [Argdown project](https://argdown.org).
 
-For more information about this package visit the [API documents](https://christianvoigt.github.io/argdown/argdown-core/index.html).
+For more information about this package visit the [API documents](https://argdown.org/argdown-core/index.html).
 
 ## Installing
 

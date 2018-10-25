@@ -1,15 +1,20 @@
 {
   "name": "argdown-vscode",
   "displayName": "Argdown",
-  "description": "Live preview, language support & export for the Argdown argumentation syntax",
-  "icon": "argdown-icon.png",
+  "description": "Live preview and full language support for the Argdown argumentation syntax",
+  "icon": "media/argdown-mark-blue-256x256.png",
+  "galleryBanner": {
+    "color": "#FFFFFF",
+    "theme": "light"
+  },
   "author": "Christian Voigt",
   "license": "MIT",
   "version": "1.0.0",
   "publisher": "christianvoigt",
+  "homepage": "https://christianvoigt.github.io/argdown",
   "repository": {
     "type": "git",
-    "url": "https://github.com/christianvoigt/argdown/tree/master/packages/argdown-vscode"
+    "url": "https://github.com/christianvoigt/argdown"
   },
   "bugs": {
     "url": "https://github.com/christianvoigt/argdown/issues"

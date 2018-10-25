@@ -236,6 +236,29 @@ a link to
 [wikipedia](https://wikipedia.org).
 ```
 
+You can link to headings, arguments or statements. To link to a heading, use the heading text in ["slugified"](https://blog.tersmitten.nl/slugify/) form (lowercase, hyphens instead of spaces, removed special characters and punctuation) preceded by "#heading-". To link to an argument or statement, use the title's slugified form, preceded by "#argument-" or "#statement-".
+
+Currently these links will only work in the exported HTML. For arguments and statements it is recommended to use mentions instead.
+
+```argdown-cheatsheet
+===
+explanation: How to link to headings, statements and arguments.
+hide: true
+===
+
+# This is a heading
+
+[This is a statement]: bla
+
+<This is a an argument>: blabla
+
+[link to heading](#heading-this-is-a-heading)
+
+[link to statement](#statement-this-is-a-statement)
+
+[link to argument](#argument-this-is-an-argument)
+```
+
 ### Hashtags
 
 ```argdown-cheatsheet
@@ -775,7 +798,7 @@ For outgoing (backward-pointing) relations the direction can be left implicit (i
 
 ```argdown-cheatsheet
 ===
-explanation: two outgoing supports of a and b for s1 and one incoming support c from s1.
+explanation: two outgoing supports of a and b for s1 and one incoming support of c from s1.
 hide: true
 ===
 

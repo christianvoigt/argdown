@@ -1,3 +1,3 @@
 module.exports = {
-  baseUrl: "/argdown/sandbox/"
+  baseUrl: "/sandbox/"
 };

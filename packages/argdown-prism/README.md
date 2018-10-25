@@ -1,5 +1,5 @@
 # @argdown/prism
 
-![Argdown logo](../../argdown-arrow.png?raw=true "Argdown logo")
+![Argdown logo](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/argdown-arrow.png?sanitize=true "Argdown logo")
 
-[Prism](https://prismjs.com/) language highlighting and theme for [Argdown](https://christianvoigt.github.io/argdown).
+[Prism](https://prismjs.com/) language highlighting and theme for [Argdown](https://argdown.org).
