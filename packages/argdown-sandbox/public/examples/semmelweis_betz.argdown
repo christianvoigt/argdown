@@ -3,7 +3,8 @@ title: A Stylized Reconstruction of the Scientific Debate
     That led Ignaz Semmelweis to Understand Childbed Fever  
 author: Gregor Betz
 date: 19/10/2018
-transformStatementRelations: true // using strict mode
+model:
+    mode: strict
 dot: 
     graphVizSettings: 
       "rankdir": "TB"  

@@ -264,7 +264,7 @@ Click on the "map" button in the upper right corner of the Argdown widget to see
 
 This example presented a basic workflow of how to reconstruct a debate with Argdown. By now you have probably learned enough to start working on your own material. If you have questions about the exact syntax of Argdown elements, you can always consult the complete [syntax documentation](/syntax/). If you want to learn more about the many ways of customizing your argument map, you will find a detailed description in the [guide on how to create argument maps with Argdown](/guide/creating-argument-maps).
 
-We also recommend to browse through our curated collection of debates in the [Argdown Sandbox](/sandbox/). They exemplify different styles of what we consider to be "good Argdown code". To open the list of example debates, move with your mouse over the "Examples" button in the top left corner over the Argdown code editor. 
+We also recommend to browse through our curated collection of debates in the [Argdown Sandbox](https://argdown.org/sandbox/). They exemplify different styles of what we consider to be "good Argdown code". To open the list of example debates, move with your mouse over the "Examples" button in the top left corner over the Argdown code editor. 
 
 
 

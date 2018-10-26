@@ -12,6 +12,8 @@ Start with [the docs](https://christianvoigt.github.io/argdown) or try it out in
 
 If you want to start working right away, you should install the [Argdown VS Code extension](https://christianvoigt.github.io/argdown/guide/installing-the-vscode-extension).
 
+<img src="./screenshots/argdown-vscode-greenspan-1.png?raw=true" width="30%"></img> <img src="./screenshots/argdown-vscode-greenspan-2.png?raw=true" width="30%"></img> <img src="./screenshots/argdown-vscode-semmelweis-1.png?raw=true" width="30%"></img> <img src="./screenshots/argdown-sandbox-soft-drugs-1.png?raw=true" width="30%"></img> <img src="./screenshots/argdown-sandbox-greenspan-1.png?raw=true" width="30%"></img> <img src="./screenshots/argdown-sandbox-censorship-1.png?raw=true" width="30%"></img> 
+
 ## Credits and license
 
 The development of Argdown and Argdown-related tools is funded by the [DebateLab](http://debatelab.philosophie.kit.edu/) at KIT, Karlsruhe.
