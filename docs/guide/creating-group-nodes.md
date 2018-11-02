@@ -40,7 +40,7 @@ hide: true
 
 Because __H2__ is a subsection of __H1__, its group is a child group of __H1's__ group. Notice that argument __a__ is first used in section __H1__, but is a member of __H2's__ group because it was not defined in __H1__.
 
-On the other hand, argument __b__ is defined in __H1__, but it is reconstructed in __H2__ and reconstruction take precedence over definitions. So __b__ is a member of __H2's__ group.
+On the other hand, argument __b__ is defined in __H1__, but it is reconstructed in __H2__ and reconstructions take precedence over definitions. So __b__ is a member of __H2's__ group.
 
 ## The `groupDepth` group setting
 
