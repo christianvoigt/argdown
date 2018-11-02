@@ -67,7 +67,7 @@ Click on the map button in the top right to see these three sad arguments appear
 
 ## Choosing a `statementSelectionMode`
 
-The Argdown parser supports several different general methods to exlude equivalence classes from the selection. You can change the method used by choosing a `statementSelectionMode` in the selection settings. This sections describes the different modes currently supported.
+The Argdown parser supports several different general methods to exlude equivalence classes from the selection. You can change the method used by choosing a `statementSelectionMode` in the selection settings. This section describes the different modes currently supported.
 
 :::tip Managing complexity in your map
 In contrast to arguments, not all preselected and connected equivalence classes will appear as statement nodes in the map. While you can easily change this behaviour, it is quite important to keep the number of statement nodes in your map as low as possible. 
