@@ -1,3 +1,10 @@
+---
+title: Creating edges
+meta:
+    - name: description
+      content: How you can visualize relations as edges in your argument map.
+---
+
 # Creating edges
 
 :::tip Reading tips

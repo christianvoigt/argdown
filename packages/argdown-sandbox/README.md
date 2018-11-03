@@ -2,7 +2,7 @@
 
 ![Argdown logo](../../argdown-arrow.png?raw=true "Argdown logo")
 
-[Argdown](https://argdown.org) demo editor. Try it out in your browser: [Demo Editor](http://christianvoigt.github.io/argdown/sandbox/).
+[Argdown](https://argdown.org) demo editor. Try it out in your browser: [Demo Editor](http://argdown.org/sandbox/).
 
 Visit the [documentation](https://argdown.org) for more information about the Argdown argumentation syntax.
 

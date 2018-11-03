@@ -1,5 +1,9 @@
 ---
 sidebar: auto
+title: The Syntax
+meta:
+    - name: description
+      content: Official documentation of the Argdown argumentation syntax.
 ---
 
 <!--ToDo: Verlinkung innerhalb des Dokuments, z.B. equivalence class, relation, etc. -->

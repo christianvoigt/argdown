@@ -1,3 +1,10 @@
+---
+title: Loading custom plugins
+meta:
+    - name: description
+      content: How to load custom plugins in a config file
+---
+
 # Loading custom plugins in a config file
 
 Now let's add our toy plugin from the [previous section](/guide/writing-custom-plugins.html) into Argdown and run it. We can use an `argdown.config.js` file for that (Read the guide on configuration for more information on [how to run custom processes](/guide/running-custom-processes)):

@@ -1,3 +1,10 @@
+---
+title: Running custom processes
+meta:
+    - name: description
+      content: How to define and run custom processes in your config file.
+---
+
 # Running custom processes
 
 Using configuration options you can export very different views of the same data. While this is great, it can be tedious to constantly switch between different config files to export different argument maps. To avoid this, you can define several custom processes within the same configuration file. These processes will inherit all settings from the config file, but you can also add new settings that will only be applied if this custom process is run.

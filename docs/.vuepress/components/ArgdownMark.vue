@@ -1,5 +1,5 @@
 <template functional>
-<a href="https://christianvoigt.github.io/argdown/" class="argdown-mark"><svg class="icon" width="100%" height="100%" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:1.41421;">
+<a href="https://argdown.org" class="argdown-mark"><svg class="icon" width="100%" height="100%" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:1.41421;">
     <g transform="matrix(1,0,0,1,-0.948929,-0.0447248)">
         <path d="M21.4,16.695L24.949,16.695L16.949,25.67L8.949,16.695L12.51,16.695L12.51,6.42L15.51,8.295L15.51,20.06L16.949,21.675L18.4,20.047L18.4,8.295L21.4,6.42L21.4,16.695Z"/>
     </g>

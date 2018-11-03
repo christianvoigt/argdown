@@ -1,3 +1,10 @@
+---
+title: Elements of an Argument Map
+meta:
+    - name: description
+      content: Explains the different elements in an Argdown argument map.
+---
+
 # Elements of an argument map
 
 ```argdown-map

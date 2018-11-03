@@ -87,6 +87,11 @@ var examples = {
     title:
       "Censorship from the State -- Some Pros and Cons Reconstructed in Detail",
     url: "/sandbox/examples/state-censorship.argdown"
+  },
+  populism: {
+    id: "populism",
+    title: "The Core Argument of Populism",
+    url: "/sandbox/examples/Populism-Core-Argument-Argdown-Example.argdown"
   }
 };
 

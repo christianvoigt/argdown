@@ -1,3 +1,10 @@
+---
+title: Installing the Argdown VS Code Extension
+meta:
+    - name: description
+      content: How to install the Argdown VS Code extension
+---
+
 # Installing the VS Code extension
 
 <img src="./argdown-vscode-greenspan-1.png" style="max-width: 600px;"></img>
@@ -10,7 +17,8 @@ Here are the steps to get you started with VS Code:
 2.  Open the **extension gallery** in VS Code to browse through all extensions published in the [VS Code Extension Marketplace](https://code.visualstudio.com/docs/editor/extension-gallery).
 3.  Enter `@argdown/vscode` in the search bar of the **extension gallery**. The Argdown extension will appear.
 4.  Click on the **install** button in the Argdown extension's entry.
-5.  Reload your VS Code window.
+5.  Reload your VS Code window to finish the installation.
+6.  Create a new file and save it with the `.argdown` or `.ad` file extension. This will tell VS Code that this file needs Argdown language support and the Argdown extension will be loaded.
 
 ## Activating the Argdown theme in VS Code
 

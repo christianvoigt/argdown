@@ -1,3 +1,10 @@
+---
+title: Configuration in the Frontmatter section
+meta:
+    - name: description
+      content: How to use the frontmatter section of your Argdown document to change the behaviour of the Argdown tools.
+---
+
 # Configuration in the Frontmatter section
 
 While using config files is in most cases the better solution, adding configuration options to your Argdown document has the advantage of being comfortable. It is a good option for quick experimentation or demonstrations.

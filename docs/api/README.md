@@ -1,5 +1,9 @@
 ---
 sidebar: auto
+title: API
+meta:
+    - name: description
+      content: API documentation for the packages of the Argdown project.
 ---
 
 # API

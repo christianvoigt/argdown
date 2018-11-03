@@ -1,4 +1,11 @@
-# Introduction
+---
+title: Getting Started
+meta:
+    - name: description
+      content: This guide shows you how to get started with Argdown. We will begin by installing the Argdown tools and then reconstruct a small example debate.
+---
+
+# Getting Started
 
 If you first want to get your feet wet, before jumping right into installing Argdown on your computer, the [Argdown sandbox](https://christianvoigt.github.io/argdown/sandbox/) is the right place for you. Otherwise it is recommended to install [the VS Code extension](/guide/installing-the-vscode-extension.html).
 

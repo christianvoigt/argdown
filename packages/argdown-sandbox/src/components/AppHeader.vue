@@ -1,6 +1,6 @@
 <template>
   <header class="app-header">
-    <img class="logo" src="../assets/argdown-mark.svg" alt="Argdown - argumentation analysis syntax">
+    <a class="logo" href="https://argdown.org"><img src="../assets/argdown-mark.svg" alt="Argdown - argumentation syntax"></a>
     <span class="name">Argdown Sandbox</span>
     <!--<h1>{{ title }}</h1>-->
   </header>
@@ -24,11 +24,12 @@ header {
   flex-direction: row;
   align-items: center;
 }
-.logo {
+.logo img {
   display: block;
   padding-right: 10px;
   width: 65px;
   height: auto;
+  border: 0;
 }
 h1 {
   font-size: 1.5em;

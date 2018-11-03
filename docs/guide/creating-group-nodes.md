@@ -1,3 +1,10 @@
+---
+title: Creating group nodes
+meta:
+    - name: description
+      content: How you can assign statements and arguments to group nodes in your argument map.
+---
+
 # Creating group nodes
 
 Headings define sections in the Argdown document. In the argument map, sections are represented as groups of arguments and statements (visualized as grey boxes). By default, the following rules decide to which group a statement or argument belongs:

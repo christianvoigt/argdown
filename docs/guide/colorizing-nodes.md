@@ -1,3 +1,10 @@
+---
+title: Colorizing nodes
+meta:
+    - name: description
+      content: How to colorize the nodes of your Argdown argument map.
+---
+
 # Colorizing nodes
 
 You can colorize argument and statement nodes by giving them tags:

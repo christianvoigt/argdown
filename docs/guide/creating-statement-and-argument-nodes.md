@@ -1,3 +1,10 @@
+---
+title: Creating statement and argument nodes
+meta:
+    - name: description
+      content: How you can select which statements and arguments appear as nodes in your argument map.
+---
+
 # Creating statement and argument nodes
 
 This section describes how the Argdown parser decides which statements and arguments are represented as nodes in the generated argument map and how you can change this behaviour.

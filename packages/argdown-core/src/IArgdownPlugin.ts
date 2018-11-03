@@ -22,7 +22,7 @@ export interface IRequestHandler {
  * the provided request object for configuration and the provided response object for returning any produced or transformed data.
  * The only exceptions are I/O operations (e.g. loading or saving files).
  *
- * See the [guide on writing custom plugins](https://christianvoigt.github.io/argdown/guide/writing-custom-plugins.html) for more information.
+ * See the [guide on writing custom plugins](https://argdown.org/guide/writing-custom-plugins.html) for more information.
  *
  * @example
  * ```typescript

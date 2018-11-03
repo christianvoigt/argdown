@@ -37,7 +37,8 @@ function removeFrontMatter(str) {
 }
 module.exports = {
   title: "Argdown",
-  description: "A simple syntax for complex argumentation",
+  description:
+    "Argdown is a simple syntax for complex argumentation. Writing pro & contra lists in Argdown is as simple as writing a twitter message, but you can also use it to logically reconstruct whole debates and visualize them as argument maps.",
   base: "/",
   head: [
     ["link", { rel: "shortcut icon", type: "image/x-icon", href: `${domain}/favicon.ico` }],
@@ -122,10 +123,12 @@ module.exports = {
     }
   },
   themeConfig: {
+    repo: "christianvoigt/argdown",
+    docsDir: "docs",
     algolia: {
-      apiKey: '6f7a8a8ebb4447a94088be7ef719ea1f', 
-      indexName: 'argdown'
-    },    
+      apiKey: "6f7a8a8ebb4447a94088be7ef719ea1f",
+      indexName: "argdown"
+    },
     sidebar: {
       "/changes/": [
         {
@@ -143,12 +146,17 @@ module.exports = {
       "/guide/": [
         {
           title: "Getting started",
-          children: ["", "installing-the-vscode-extension", "installing-the-commandline-tool", "a-first-example"]
+          children: [
+            ["", "Introduction"],
+            "installing-the-vscode-extension",
+            "installing-the-commandline-tool",
+            "a-first-example"
+          ]
         },
         {
           title: "Creating argument maps",
           children: [
-            "creating-argument-maps-introduction",
+            ["creating-argument-maps", "Introduction"],
             "elements-of-an-argument-map",
             "creating-statement-and-argument-nodes",
             "creating-edges",
@@ -160,7 +168,7 @@ module.exports = {
         {
           title: "Configuration",
           children: [
-            "configuration-introduction",
+            ["configuration", "Introduction"],
             "configuration-with-config-files",
             "configuration-in-the-frontmatter-section",
             "running-custom-processes",
@@ -170,7 +178,7 @@ module.exports = {
         {
           title: "Extending Argdown",
           children: [
-            "extending-argdown-introduction",
+            ["extending-argdown", "Introduction"],
             "writing-custom-plugins",
             "loading-custom-plugins-in-a-config-file",
             "using-argdown-in-your-application"
@@ -192,8 +200,7 @@ module.exports = {
         ]
       },
       { text: "Changes", link: "/changes/" },
-      { text: "Sandbox", link: domain + "/sandbox/" },
-      { text: "Github", link: "https://github.com/christianvoigt/argdown" }
+      { text: "Sandbox", link: domain + "/sandbox/" }
     ]
   }
 };

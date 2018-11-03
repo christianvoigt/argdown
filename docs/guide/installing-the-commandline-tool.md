@@ -1,3 +1,10 @@
+---
+title: Installing the Argdown commandline tool
+meta:
+    - name: description
+      content: How to install the Argdown commandline tool
+---
+
 # Installing the commandline-tool
 
 The Argdown commandline tool is a Node.js program and distributed as a npm package. To install it you first have to install Node.js:

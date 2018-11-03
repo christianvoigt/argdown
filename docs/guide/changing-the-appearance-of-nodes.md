@@ -1,3 +1,10 @@
+---
+title: Changing the appearance of nodes
+meta:
+    - name: description
+      content: How to change labels and choose a canonical member for your nodes.
+---
+
 # Changing the appearance of nodes
 
 ## The canonical member

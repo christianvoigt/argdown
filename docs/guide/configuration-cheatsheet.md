@@ -1,3 +1,10 @@
+---
+title: Configuration cheat sheet
+meta:
+    - name: description
+      content: An overview over all current configuration options of the official Argdown tools.
+---
+
 # Configuration Cheat Sheet
 
 The following typescript file contains all currently supported settings together with extensive comments on their meaning. For further information on most of these configuration options, please read the guide on [creating argument maps](/creating-argument-maps).

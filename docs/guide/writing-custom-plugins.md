@@ -1,3 +1,10 @@
+---
+title: Writing custom plugins
+meta:
+    - name: description
+      content: A short tutorial of how to create custom Argdown plugins.
+---
+
 # Writing custom plugins
 
 In this example, we will write a custom plugin that adds proponent names to argument node labels. The proponent names have to be defined in data elements of the arguments. 

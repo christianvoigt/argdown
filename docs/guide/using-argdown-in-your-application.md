@@ -1,3 +1,10 @@
+---
+title: Using Argdown in your application
+meta:
+    - name: description
+      content: How to integrate the Argdown tools into your own application.
+---
+
 # Using Argdown in your application
 
 So far, we have only extended Argdown through config files. If you want to use Argdown in your own application, it is also easy to do so. If you are writing a node application, you can use the `@argdown/node` package which provides you with the pre-built `AsyncArgdownApplication` instance that is used in the VS Code extension and in the commandline tool.

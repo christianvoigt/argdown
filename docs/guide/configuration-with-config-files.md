@@ -1,3 +1,10 @@
+---
+title: Configuration with config files
+meta:
+    - name: description
+      content: How to use config files to change the behaviour of the Argdown tools.
+---
+
 # Configuration with config files
 
 You can either create a `argdown.config.json` or `argdown.config.js` file. The VS Code extension will automatically look for either one in your workspace folders. Alternatively you can change where VS Code should look for configuration files in the VS Code settings. The Argdown commandline tool (@argdown/cli) will look for a config file in the folder you are currently executing it. You can also use the `--config` parameter to explicitely telling the cli where to look.

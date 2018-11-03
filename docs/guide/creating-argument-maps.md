@@ -1,4 +1,11 @@
-# Introduction
+---
+title: Creating Argument Maps
+meta:
+    - name: description
+      content: This guide describes how you can create argument maps with the Argdown argumentation syntax.
+---
+
+# Creating Argument Maps
 
 This guide describes how you can create argument maps with the Argdown VS Code extension or the Argdown commandline extension. To follow along, you should first [install](/guide/) one of these tools.
 

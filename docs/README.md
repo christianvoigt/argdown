@@ -1,11 +1,13 @@
 ---
 home: true
+tagline: A simple syntax for complex argumentation
+heroText: Argdown
 heroImage: /argdown-arrow.png
 actionText: Get Started →
 actionLink: /guide/
 features:
 - title: Simple
-  details: Writing pro & contra lists in Argdown is as simple as writing a twitter message. You don't have to learn anything new, except a few simple rules that will feel very natural. 
+  details: Writing pro & contra lists in Argdown is as simple as writing a Twitter message. You don't have to learn anything new, except a few simple rules that will feel very natural. 
 - title: Expressive
   details: With these simple rules you will be able to define complex dialectical relations between arguments or dive into the details of their logical premise-conclusion structures. 
 - title: Powerful
@@ -87,3 +89,5 @@ Now that you have learned the basics of Argdown you can:
 * [Commandline Tool](/guide/installing-the-commandline-tool.html) If you prefer to work with the commandline install the Argdown commandline tool. You can define custom processes in your config file and use them in a task runner to export several argument maps for the same document at once.
 
 :::
+
+If you are getting unexpected results in your map, take a look at the [syntax rules](/syntax) of Argdown and do not forget to separate top-level elements by empty lines.
