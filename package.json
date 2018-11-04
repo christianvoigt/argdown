@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "lerna:bootstrap": "lerna bootstrap",
-    "lerna:version": "lerna version --force-publish",
+    "lerna:version": "lerna version",
     "test": "lerna run test",
     "test:coverage": "lerna run test:coverage",
     "build": "lerna run build",

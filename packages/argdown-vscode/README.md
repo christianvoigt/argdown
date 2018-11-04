@@ -17,9 +17,16 @@
 
 If you want to learn more about Argdown argumentation syntax, read the [guide and documentation](https://argdown.org).
 
+
+## Working with the extension
+
+VS Code will only load the extension for Argdown documents.
+
+To tell VS Code that your document is an Argdown document, save your document with the `.argdown` or `.ad` filename extension (e.g. `test.argdown`).
+
 ## Activating the Argdown theme
 
-![Activating the Argdown theme](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/ArgdownTheme.gif?sanitize=true "Activating the Argdown theme")
+![Activating the Argdown theme](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/ArgdownThemeScreencap.gif?sanitize=true "Activating the Argdown theme")
 
 Standard themes do not highlight Argdown relations and elements. For complete syntax highlighting, please activate the Argdown theme:
 
@@ -32,18 +39,18 @@ We hope that VS Code will add support for language-specific themes in the future
 
 ## Map Preview
 
-![Map Preview](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/MapPreview.gif?sanitize=true "Opening the map preview")
+![Map Preview](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/MapPreviewScreencap.gif?sanitize=true "Opening the map preview")
  
 ## Code Completion
 
-![Code Completion](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/CodeCompletion.gif?sanitize=true "Using code completion")
+![Code Completion](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/CodeCompletionScreencap.gif?sanitize=true "Using code completion")
 
 ## Document Outline, Breadcrumbs and Symbol Search
 
-![Document Outline](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/Outline.gif?sanitize=true "Using the document outline")
+![Document Outline](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/OutlineScreencap.gif?sanitize=true "Using the document outline")
 
-![Breadcrumbs](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/Breadcrumbs.gif?sanitize=true "Using breadcrumbs")
+![Breadcrumbs](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/BreadcrumbsScreencap.gif?sanitize=true "Using breadcrumbs")
 
 ## Exporting
 
-![Export](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/Export.gif?sanitize=true "Exporting Argdown document")
+![Export](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/ExportScreencap.gif?sanitize=true "Exporting Argdown document")
