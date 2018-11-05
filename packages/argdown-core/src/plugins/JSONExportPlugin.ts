@@ -114,7 +114,7 @@ export class JSONExportPlugin implements IArgdownPlugin {
     response.json = toJSON(
       argdown,
       function(this: any, key, value) {
-        if (!settings.exportData && key === "metaData") {
+        if (!settings.exportData && key === "data") {
           return undefined;
         }
         if (

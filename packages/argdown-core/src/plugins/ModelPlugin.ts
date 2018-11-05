@@ -851,7 +851,6 @@ export class ModelPlugin implements IArgdownPlugin {
         };
         currentInference.relations = [];
         currentInference.inferenceRules = [];
-        currentInference.data = {};
         currentInference.startLine = node.startLine;
         currentInference.startColumn = node.startColumn;
         currentInference.endLine = node.endLine;
@@ -860,8 +859,17 @@ export class ModelPlugin implements IArgdownPlugin {
         currentRelationParent = currentInference;
         relationParentsStack.push(currentInference!);
       },
+      [RuleNames.INFERENCE + "Exit"]: (_request, _response, node) => {
+        if(!currentInference){
+          return;
+        }
+        currentInference.data = node.data;
+      },
       [RuleNames.INFERENCE_RULES + "Exit"]: (_request, _response, node) => {
-        if (node.children && currentInference !== null) {
+        if(!currentInference){
+          return;
+        }
+        if (node.children) {
           for (let child of node.children) {
             if (isRuleNode(child) && child.name == RuleNames.FREESTYLE_TEXT) {
               if (!currentInference.inferenceRules) {

@@ -204,7 +204,7 @@ export const errorMessageProvider = <IArgdownErrorMessageProvider>{
         return INVALID_INDENTATION_ERROR;
       }
       return INCOMPLETE_PCS_ERROR;
-    } else if (options.ruleName == "metadata") {
+    } else if (options.ruleName == "data") {
       return INVALID_INFERENCE_ERROR;
     } else if (firstToken && tokenMatcher(firstToken, ArgdownLexer.InferenceEnd)) {
       return INVALID_INFERENCE_ERROR;

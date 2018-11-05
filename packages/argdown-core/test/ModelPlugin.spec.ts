@@ -12,7 +12,8 @@ import {
   IEquivalenceClass,
   IArgument,
   InterpretationModes,
-  DataPlugin
+  DataPlugin,
+  isConclusion
 } from "../src/index";
 import * as fs from "fs";
 
@@ -705,5 +706,28 @@ describe("ModelPlugin", function() {
     expect(response.relations!.length).to.equal(2);
     expect(response.relations![0].relationType).to.equal(RelationType.CONTRARY);
     expect(response.relations![1].relationType).to.equal(RelationType.ENTAILS);
+  });
+  it("adds inference data", () => {
+    const input = `
+    <A1>
+
+    (1) A
+    --
+    {test: 1}
+    --
+    (2) B
+    `;
+    const response = app.run({
+      process: ["parse-input", "build-model"],
+      input,
+      model: {
+        mode: InterpretationModes.STRICT
+      }
+    });
+    expect(response.arguments!["A1"]).to.exist;
+    expect(response.arguments!["A1"].pcs[1]).to.exist;
+    expect(isConclusion(response.arguments!["A1"].pcs[1])).to.be.true;
+    expect((<any>response.arguments!["A1"].pcs[1]).inference!.data).to.exist;
+    expect((<any>response.arguments!["A1"].pcs[1]).inference!.data.test).to.equal(1);
   });
 });
