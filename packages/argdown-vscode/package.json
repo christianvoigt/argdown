@@ -5,7 +5,7 @@
   "icon": "media/argdown-mark-blue-256x256.png",
   "author": "Christian Voigt",
   "license": "MIT",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "publisher": "christianvoigt",
   "homepage": "https://argdown.org",
   "repository": {
@@ -452,7 +452,7 @@
   },
   "dependencies": {
     "@argdown/core": "^1.0.1",
-    "@argdown/language-server": "^1.0.0",
+    "@argdown/language-server": "^1.0.1",
     "@argdown/node": "^1.0.0",
     "d3": "^5.4.0",
     "dagre-d3": "^0.6.1",
