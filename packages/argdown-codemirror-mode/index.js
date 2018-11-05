@@ -12,8 +12,9 @@ var mode = {
     { regex: /\*.*?\*+/, token: "italic" }, //naive implementation (no ranges within italic range supported)
     { regex: /#(?:\([^\)]+\)|[\w-]+)[ \t]?/, token: "tag" },
     { regex: /[ \t]*\(\d+\)/, sol: true, token: "argument-statement" },
-    { regex: /#+.*/, sol: true, token: "heading" },
-    { regex: /--+/, sol: true, token: "inference", next: "inference" },
+    { regex: /#+[ \t]+.*/, sol: true, token: "heading" },
+    { regex: /[ \t]*----+/, sol: true, token: "inference" },
+    { regex: /[ \t]*--+/, sol: true, token: "inference", next: "inference" },
     { regex: /\[.+\]\(.+\)/, token: "link" },
     { regex: /@\[.+\]/, token: "statement-mention" },
     { regex: /\[.+\]:/, token: "statement-definition" },
