@@ -77,6 +77,8 @@ a.unlock-menu {
   display: block;
   flex: 0 1 auto; /* Default */
   list-style-type: none;
+  white-space: nowrap;
+  overflow: hidden;
 }
 .main-menu li a {
   display: block;
@@ -99,6 +101,8 @@ a.unlock-menu {
   text-align: right;
   flex: 1;
   padding: 1em;
+  overflow: hidden;
+  white-space: nowrap;
 }
 #scale-dialog {
   z-index: 1000000;
