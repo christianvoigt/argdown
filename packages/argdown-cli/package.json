@@ -14,7 +14,7 @@
   "license": "MIT",
   "main": "dist/src/cli.js",
   "dependencies": {
-    "@argdown/core": "^1.0.0",
+    "@argdown/core": "^1.0.1",
     "@argdown/node": "^1.0.0",
     "@types/yargs": "^11.0.0",
     "nyc": "^12.0.2",

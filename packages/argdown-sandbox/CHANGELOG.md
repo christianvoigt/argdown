@@ -1,5 +1,15 @@
 # @argdown/sandbox
 
+## 1.0.1 (2018-11-05)
+
+### Minor Changes
+
+* Updated to @argdown/core 1.0.1
+
+### Bug fixes
+
+* Codemirror syntax highlighting of inferences (#85, #84)
+
 ## 1.0.0 (2018-10-16)
 
 ### Major Changes

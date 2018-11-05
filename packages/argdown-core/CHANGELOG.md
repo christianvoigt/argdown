@@ -1,6 +1,12 @@
 # @argdown/core
 
-## 1.0.0 (10-16-2018)
+## 1.0.1 (2018-05-11)
+
+### Bug fixes
+
+* add data to inference objects #86
+
+## 1.0.0 (2018-10-16)
 
 ### Major changes
 
@@ -22,13 +28,13 @@
 * #59 Linter: Argument Syntax
 * #64 Syntax error for Argument conclusion produces unhelpful error message.
 
-## 0.8.7 (02-06-2018)
+## 0.8.7 (2018-06-02)
 
 ### Minor changes
 
 * added location information to argument descriptions
 
-## 0.8.6 (01-06-2018)
+## 0.8.6 (2018-06-01)
 
 ### Minor Changes
 
@@ -37,7 +43,7 @@
 * added location information and heading reference to sections (only startLine and startColumn)
 * added title for definition and reference nodes
 
-## 0.8.5 (05-28-2018)
+## 0.8.5 (2018-05-28)
 
 ### Minor Changes
 
@@ -49,7 +55,7 @@
 
 * JSON export includes labelTitle and labelText for map nodes
 
-## 0.8.4 (05-24-2018)
+## 0.8.4 (2018-05-24)
 
 ### Bug fixes
 
@@ -60,7 +66,7 @@
 
 * added has-line class to all html elements with line numbers.
 
-## 0.8.3 (05-16-2018)
+## 0.8.3 (2018-05-16)
 
 ### Minor changes
 
@@ -72,14 +78,14 @@
 
 * Fixed line numbers for relations, argument statements, inferences and list items. The lexer now puts all single line breaks in a special group, instead of skipping them completely. This makes it possible to ignore single line breaks in the parser, but still check the lexing context for line breaks.
 
-## 0.8.2 (05-15-2018)
+## 0.8.2 (2018-05-15)
 
 ### Minor changes
 
 * Improved security of HTML Export: link validation
 * Added utils for link validation/normalization (copied from Markdown-It)
 
-## 0.8.1 (04-10-2018)
+## 0.8.1 (2018-04-10)
 
 ### Minor changes
 
@@ -89,25 +95,25 @@
 
 * Windows line endings in argument reconstructions and list items no longer produce lexer errors.
 
-## 0.8.0 (03-22-2018)
+## 0.8.0 (2018-03-22)
 
 ### Breaking Changes
 
 * changed application and plugin structure: app.run(request) expects a request object with an input field, a process array, containing the processors to be run, and configuration options. Plugins now get passed a request and a response object and are expected to add their data to the response and return it.
 
-## 0.7.2 (02-21-2018)
+## 0.7.2 (2018-02-21)
 
 #### Bug fixes
 
 * fixed typo in logAstRecursively
 
-## 0.7.1 (02-21-2018)
+## 0.7.1 (2018-02-21)
 
 #### Bug fixes
 
 * removed occurences of chevrotain.getTokenConstructor
 
-## 0.7.0 (02-21-2018)
+## 0.7.0 (2018-02-21)
 
 #### Major Changes
 

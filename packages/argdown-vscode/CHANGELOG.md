@@ -9,6 +9,7 @@
 ### Bug fixes
 
 * Preview menu responsiveness #88
+* Syntax highlighting of headings with single line breaks #83
 
 ## 1.0.1 (2018-11-04)
 

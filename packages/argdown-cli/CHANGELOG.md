@@ -1,5 +1,11 @@
 # @argdown/cli
 
+## 1.0.1
+
+### Minor Changes
+
+* Updated to @argdown/core 1.0.1
+
 ## 1.0.0
 
 ### Major Changes

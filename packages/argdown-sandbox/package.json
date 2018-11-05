@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@argdown/codemirror-mode": "^1.0.0",
-    "@argdown/core": "^1.0.0",
+    "@argdown/core": "^1.0.1",
     "axios": "^0.18.0",
     "d3": "^5.0.0",
     "dagre-d3": "^0.6.1",
