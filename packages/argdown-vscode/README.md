@@ -17,6 +17,10 @@
 
 If you want to learn more about Argdown argumentation syntax, read the [guide and documentation](https://argdown.org).
 
+## Why the extension was temporarily unpublished
+
+On 2018-11-26 the extension was unpublished on the Marketplace as it was one of the extensions that [inadvertantly depended](https://code.visualstudio.com/blogs/2018/11/26/event-stream) on the open-source library event-stream that was used by hackers to [introduce a "backdoor" vulnerability](https://github.com/dominictarr/event-stream/issues/116). We are not responsible for this hack, nor have we directly used the event-stream library in our code. Instead it was automatically installed by the VS Code yeoman generator for extension authors. As the hack targeted cryptocurrency software, users of this extension were **not** affected by this hack, however Microsoft decided to be cautious and unpublish all extensions using the library. Version 1.0.3 updated the event-stream package and no longer contains the insecure dependency. We are sorry for any inconveniences caused by the temporary unaivailability.
+
 
 ## Working with the extension
 

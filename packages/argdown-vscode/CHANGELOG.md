@@ -1,5 +1,12 @@
 # @argdown/vscode
 
+## 1.0.3 (2018-11-26)
+
+### Minor Changes
+
+* Updated event-stream to remove unsecure dependency (https://code.visualstudio.com/blogs/2018/11/26/event-stream).
+* Updated @argdown/core to 1.0.2
+
 ## 1.0.2 (2018-11-05)
 
 ### Minor Changes

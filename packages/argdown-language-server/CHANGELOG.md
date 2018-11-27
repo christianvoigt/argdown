@@ -1,5 +1,11 @@
 # @argdown/language-server
 
+## 1.0.2 (2018-11-26)
+
+### Bug fixes
+
+* Does no longer send parser errors to server log #97
+
 ## 1.0.1 (2018-11-05)
 
 ### Minor Changes
