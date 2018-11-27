@@ -730,4 +730,21 @@ describe("ModelPlugin", function() {
     expect((<any>response.arguments!["A1"].pcs[1]).inference!.data).to.exist;
     expect((<any>response.arguments!["A1"].pcs[1]).inference!.data.test).to.equal(1);
   });
+  it("can parse undercuts for statements", () => {
+    const input = `
+    [A]
+      <_ [B]
+    `;
+    const response = app.run({
+      process: ["parse-input", "build-model"],
+      input,
+      model: {
+        mode: InterpretationModes.STRICT
+      }
+    });
+    expect(response.relations![0]).to.exist;
+    expect(response.relations![0].relationType).to.equal(RelationType.UNDERCUT);
+    expect(response.relations![0].from!.title).to.equal("B");
+    expect(response.relations![0].to!.title).to.equal("A");
+  });
 });

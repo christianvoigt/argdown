@@ -948,7 +948,8 @@ export class ModelPlugin implements IArgdownPlugin {
           if (currentInference) {
             currentRelation.to = currentInference;
           } else {
-            throw new ArgdownPluginError(this.name, "Missing inference.");
+            currentRelation.to = target;
+            //throw new ArgdownPluginError(this.name, "Missing inference.");
           }
         } else {
           currentRelation.to = target;
