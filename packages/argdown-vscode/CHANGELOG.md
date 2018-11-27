@@ -5,7 +5,7 @@
 ### Minor Changes
 
 * Updated event-stream to remove unsecure dependency (https://code.visualstudio.com/blogs/2018/11/26/event-stream).
-* Updated @argdown/core to 1.0.2
+* Updated @argdown/core & @argdown/language-server to 1.0.3
 * Updated webpack and webpack-cli in devDependencies
 
 ## 1.0.2 (2018-11-05)

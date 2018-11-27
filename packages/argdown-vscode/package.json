@@ -451,8 +451,8 @@
     "build-preview": "webpack --mode development"
   },
   "dependencies": {
-    "@argdown/core": "^1.0.2",
-    "@argdown/language-server": "^1.0.2",
+    "@argdown/core": "^1.0.3",
+    "@argdown/language-server": "^1.0.3",
     "@argdown/node": "^1.0.0",
     "d3": "^5.4.0",
     "dagre-d3": "^0.6.1",
