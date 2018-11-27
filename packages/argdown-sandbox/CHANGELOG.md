@@ -1,5 +1,11 @@
 # @argdown/sandbox
 
+## 1.0.2 (2018-11-26)
+
+### Minor Changes
+
+* Update to @argdown/core 1.0.2
+
 ## 1.0.1 (2018-11-05)
 
 ### Minor Changes
