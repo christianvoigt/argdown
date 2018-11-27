@@ -1,7 +1,7 @@
 {
   "name": "@argdown/language-server",
   "description": "Language Server for the Argdown argumentation syntax.",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": "Christian Voigt",
   "license": "MIT",
   "main": "dist/src/server.js",
@@ -14,7 +14,7 @@
     "url": "https://github.com/christianvoigt/argdown/tree/master/packages/argdown-language-server"
   },
   "dependencies": {
-    "@argdown/core": "^1.0.2",
+    "@argdown/core": "^1.0.3",
     "@argdown/node": "^1.0.0",
     "@types/node": "^8.0.53",
     "vscode-languageserver": "^5.1.0",

@@ -1,5 +1,12 @@
 # @argdown/language-server
 
+## 1.0.3 (2018-11-26)
+
+### Minor changes
+
+* Fixed errors if parser response is empty
+* Updated @argdown/core to 1.0.3
+
 ## 1.0.2 (2018-11-26)
 
 ### Minor changes

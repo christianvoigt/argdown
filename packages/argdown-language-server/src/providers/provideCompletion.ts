@@ -10,6 +10,9 @@ export const provideCompletion = (
   offset: number
 ) => {
   const range = Range.create(position.line, position.character - 1, position.line, position.character + 1);
+  if (!response.statements || !response.arguments) {
+    return [];
+  }
   if (char === "[") {
     return Object.keys(response.statements!).map((k: any) => {
       const eqClass = response.statements![k];
@@ -39,29 +42,33 @@ export const provideCompletion = (
     if (statementMatch && statementMatch.length > 1) {
       const title = statementMatch[1];
       const eqClass = response.statements![title];
-      return eqClass.members.filter(member => !member.isReference).map(member => {
-        const item = CompletionItem.create(member.text!);
-        item.kind = CompletionItemKind.Value;
-        item.detail = `[${title}]: ${member.text}`;
-        item.insertText = ` ${member.text}
+      return eqClass.members
+        .filter(member => !member.isReference)
+        .map(member => {
+          const item = CompletionItem.create(member.text!);
+          item.kind = CompletionItemKind.Value;
+          item.detail = `[${title}]: ${member.text}`;
+          item.insertText = ` ${member.text}
 `;
-        return item;
-      });
+          return item;
+        });
     } else {
       const argumentMatch = textBefore.match(argumentPattern);
       if (argumentMatch && argumentMatch.length > 1) {
         const title = argumentMatch[1];
         const argument = response.arguments![title];
         if (argument.members) {
-          return argument.members.filter(member => !member.isReference).map(member => {
-            const item = CompletionItem.create(member.text!);
-            item.kind = CompletionItemKind.Value;
-            item.detail = `<${title}>: ${member.text}`;
-            item.insertText = ` ${member.text}
+          return argument.members
+            .filter(member => !member.isReference)
+            .map(member => {
+              const item = CompletionItem.create(member.text!);
+              item.kind = CompletionItemKind.Value;
+              item.detail = `<${title}>: ${member.text}`;
+              item.insertText = ` ${member.text}
 `;
-            item.kind = CompletionItemKind.Value;
-            return item;
-          });
+              item.kind = CompletionItemKind.Value;
+              return item;
+            });
         }
       }
     }
