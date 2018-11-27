@@ -2,6 +2,10 @@
 
 ## 1.0.2 (2018-11-26)
 
+### Minor changes
+
+* Updated @argdown/core to 1.0.2
+
 ### Bug fixes
 
 * Does no longer send parser errors to server log #97
