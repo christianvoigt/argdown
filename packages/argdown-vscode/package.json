@@ -451,8 +451,8 @@
     "build-preview": "webpack --mode development"
   },
   "dependencies": {
-    "@argdown/core": "^1.0.1",
-    "@argdown/language-server": "^1.0.1",
+    "@argdown/core": "^1.0.2",
+    "@argdown/language-server": "^1.0.2",
     "@argdown/node": "^1.0.0",
     "d3": "^5.4.0",
     "dagre-d3": "^0.6.1",
@@ -470,7 +470,7 @@
     "raw-loader": "^0.5.1",
     "ts-loader": "^4.3.0",
     "typescript": "^2.8.3",
-    "webpack": "^4.8.3",
-    "webpack-cli": "^2.1.4"
+    "webpack": "^4.26.1",
+    "webpack-cli": "^3.1.2"
   }
 }

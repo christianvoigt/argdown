@@ -1,10 +1,16 @@
 # @argdown/core
 
+## 1.0.3 (2018-11-26)
+
+### Bug fixes
+
+* Fix incoming undercuts to statements #96
+
 ## 1.0.2 (2018-11-26)
 
 ### Bug fixes
 
-* Fix undercuts to statements #96
+* Fix outgoing undercuts to statements #96
 
 ## 1.0.1 (2018-11-05)
 

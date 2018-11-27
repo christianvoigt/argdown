@@ -306,7 +306,12 @@ class ArgdownParser extends Parser {
   private incomingUndercut = this.RULE(RuleNames.INCOMING_UNDERCUT, () => {
     let children: IAstNode[] = [];
     children.push(this.CONSUME(lexer.IncomingUndercut));
-    children.push(this.SUBRULE(this.argument));
+    this.OR({
+      DEF: [
+        { ALT: () => children.push(this.SUBRULE(this.statement)) },
+        { ALT: () => children.push(this.SUBRULE(this.argument)) }
+      ]
+    });
     return IRuleNode.create(RuleNames.INCOMING_UNDERCUT, children);
   });
   private outgoingUndercut = this.RULE(RuleNames.OUTGOING_UNDERCUT, () => {

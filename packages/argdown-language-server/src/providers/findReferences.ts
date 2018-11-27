@@ -11,7 +11,7 @@ export const findReferences = (
 ): IAstNode[] => {
   const references = <IAstNode[]>[];
   if (nodeAtPosition && isTokenNode(nodeAtPosition)) {
-    const refersToStatement = nodeAtPosition.tokenType!.tokenName!.startsWith("Statement");
+    const refersToStatement = nodeAtPosition!.tokenName!.startsWith("Statement");
     const refersToArgument = nodeAtPosition.tokenType!.tokenName!.startsWith("Argument");
     const refersToTag = nodeAtPosition.tokenType!.tokenName === TokenNames.TAG;
     // const isArgument = nodeAtPosition.tokenType.tokenName.startsWith(

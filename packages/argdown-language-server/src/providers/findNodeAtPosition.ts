@@ -18,7 +18,11 @@ import { TokenNames, IArgdownResponse, IRuleNode, IAstNode } from "@argdown/core
  * @param character the position's character. This is one-based so if coming from VS Code, add 1.
  */
 export const findNodeAtPosition = (response: IArgdownResponse, line: number, character: number): IAstNode | null => {
-  const containingNodes: any[] = findNodesContainingPosition((<IRuleNode>response.ast!).children!, line, character);
+  if (!response.ast || (<IRuleNode>response.ast!).children) {
+    return null;
+  }
+  var children = (<IRuleNode>response.ast!).children!;
+  const containingNodes: any[] = findNodesContainingPosition(children, line, character);
   return containingNodes.reverse().find(n => {
     if (!n.tokenType) {
       return false;

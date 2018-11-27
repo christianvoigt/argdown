@@ -734,6 +734,9 @@ describe("ModelPlugin", function() {
     const input = `
     [A]
       <_ [B]
+
+    [C]
+      _> [D]
     `;
     const response = app.run({
       process: ["parse-input", "build-model"],
@@ -746,5 +749,9 @@ describe("ModelPlugin", function() {
     expect(response.relations![0].relationType).to.equal(RelationType.UNDERCUT);
     expect(response.relations![0].from!.title).to.equal("B");
     expect(response.relations![0].to!.title).to.equal("A");
+    expect(response.relations![1]).to.exist;
+    expect(response.relations![1].relationType).to.equal(RelationType.UNDERCUT);
+    expect(response.relations![1].from!.title).to.equal("C");
+    expect(response.relations![1].to!.title).to.equal("D");
   });
 });
