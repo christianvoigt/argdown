@@ -46,13 +46,13 @@ const RUN_COMMAND = "argdown.run";
 
 // Create a connection for the server. The connection uses Node's IPC as a transport
 let connection = createConnection(ProposedFeatures.all);
-let logLevel = "verbose";
+let logLevel = "none";
 argdown.logger = {
   setLevel: (level: string) => {
     logLevel = level;
   },
-  log: (level: string, message: string) => {
-    if (level != "verbose" || logLevel == "verbose") {
+  log: (_level: string, message: string) => {
+    if (logLevel == "verbose") {
       connection.console.log(message);
     }
   }
