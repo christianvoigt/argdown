@@ -1,5 +1,17 @@
 # @argdown/vscode
 
+## 1.0.5 (2018-11-27)
+
+### Minor Changes
+
+* Moved vscode to devDependencies
+
+## 1.0.4 (2018-11-27)
+
+### Minor Changes
+
+* Updated vscode package to 1.1.22
+
 ## 1.0.3 (2018-11-26)
 
 ### Minor Changes
