@@ -5,7 +5,7 @@
   "icon": "media/argdown-mark-blue-256x256.png",
   "author": "Christian Voigt",
   "license": "MIT",
-  "version": "1.0.2",
+  "version": "1.0.5",
   "publisher": "christianvoigt",
   "homepage": "https://argdown.org",
   "repository": {
@@ -458,7 +458,6 @@
     "dagre-d3": "^0.6.1",
     "lodash.defaultsdeep": "^4.6.0",
     "lodash.throttle": "^4.1.1",
-    "vscode": "^1.1.21",
     "vscode-languageclient": "^5.1.0"
   },
   "devDependencies": {
@@ -470,6 +469,7 @@
     "raw-loader": "^0.5.1",
     "ts-loader": "^4.3.0",
     "typescript": "^2.8.3",
+    "vscode": "^1.1.22",
     "webpack": "^4.26.1",
     "webpack-cli": "^3.1.2"
   }

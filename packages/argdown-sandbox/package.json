@@ -1,6 +1,6 @@
 {
   "name": "@argdown/sandbox",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "An Argdown editor that runs in the browser",
   "author": "Christian Voigt <1pxsolidblack@googlemail.com>",
   "repository": {
