@@ -82,31 +82,59 @@ export class MapPlugin implements IArgdownPlugin {
   };
   prepare: IRequestHandler = (request, response) => {
     if (!response.statements) {
-      throw new ArgdownPluginError(this.name, "No statements field in response.");
+      throw new ArgdownPluginError(
+        this.name,
+        "No statements field in response."
+      );
     }
     if (!response.arguments) {
-      throw new ArgdownPluginError(this.name, "No arguments field in response.");
+      throw new ArgdownPluginError(
+        this.name,
+        "No arguments field in response."
+      );
     }
     if (!response.relations) {
-      throw new ArgdownPluginError(this.name, "No relations field in response.");
+      throw new ArgdownPluginError(
+        this.name,
+        "No relations field in response."
+      );
     }
     _.defaultsDeep(this.getSettings(request), this.defaults);
   };
   run: IRequestHandler = (request, response) => {
     if (!response.selection) {
-      throw new ArgdownPluginError(this.name, "No selection field in response.");
+      throw new ArgdownPluginError(
+        this.name,
+        "No selection field in response."
+      );
     }
     const settings = this.getSettings(request);
-    let selectedStatementsMap = reduceToMap(response.selection!.statements, curr => curr.title!);
-    let selectedArgumentsMap = reduceToMap(response.selection!.arguments, curr => curr.title!);
+    let selectedStatementsMap = reduceToMap(
+      response.selection!.statements,
+      curr => curr.title!
+    );
+    let selectedArgumentsMap = reduceToMap(
+      response.selection!.arguments,
+      curr => curr.title!
+    );
 
     let nodeCount = 0;
-    const statementNodes = response.selection!.statements.map<IMapNode>(createStatementNode(settings, nodeCount));
-    const statementNodesMap = reduceToMap<string, IMapNode>(statementNodes, curr => curr.title!);
+    const statementNodes = response.selection!.statements.map<IMapNode>(
+      createStatementNode(settings, nodeCount)
+    );
+    const statementNodesMap = reduceToMap<string, IMapNode>(
+      statementNodes,
+      curr => curr.title!
+    );
     nodeCount += statementNodes.length;
     // Create argument nodes
-    const argumentNodes = response.selection!.arguments.map<IMapNode>(createArgumentNode(settings, nodeCount));
-    const argumentNodesMap = reduceToMap<string, IMapNode>(argumentNodes, curr => curr.title!);
+    const argumentNodes = response.selection!.arguments.map<IMapNode>(
+      createArgumentNode(settings, nodeCount)
+    );
+    const argumentNodesMap = reduceToMap<string, IMapNode>(
+      argumentNodes,
+      curr => curr.title!
+    );
     nodeCount += argumentNodes.length;
 
     // Select relations
@@ -138,10 +166,10 @@ export class MapPlugin implements IArgdownPlugin {
   };
 }
 
-const createStatementNode = (settings: IMapSettings, initialNodeCount: number) => (
-  ec: IEquivalenceClass,
-  index: number
-) => {
+const createStatementNode = (
+  settings: IMapSettings,
+  initialNodeCount: number
+) => (ec: IEquivalenceClass, index: number) => {
   const node: IMapNode = {
     type: ArgdownTypes.STATEMENT_MAP_NODE,
     title: ec.title,
@@ -151,8 +179,14 @@ const createStatementNode = (settings: IMapSettings, initialNodeCount: number) =
   if (settings.statementLabelMode !== LabelMode.TITLE) {
     node.labelText = IEquivalenceClass.getCanonicalMemberText(ec) || undefined;
   }
-  if (settings.statementLabelMode !== LabelMode.TEXT || _.isEmpty(node.labelText)) {
-    if (settings.statementLabelMode === LabelMode.TITLE || !ec.title!.startsWith("Untitled")) {
+  if (
+    settings.statementLabelMode !== LabelMode.TEXT ||
+    _.isEmpty(node.labelText)
+  ) {
+    if (
+      settings.statementLabelMode === LabelMode.TITLE ||
+      !ec.title!.startsWith("Untitled")
+    ) {
       node.labelTitle = ec.title;
     }
   }
@@ -161,7 +195,10 @@ const createStatementNode = (settings: IMapSettings, initialNodeCount: number) =
   }
   return node;
 };
-const createArgumentNode = (settings: IMapSettings, initialNodeCount: number) => (a: IArgument, index: number) => {
+const createArgumentNode = (
+  settings: IMapSettings,
+  initialNodeCount: number
+) => (a: IArgument, index: number) => {
   const node: IMapNode = {
     title: a.title,
     type: ArgdownTypes.ARGUMENT_MAP_NODE,
@@ -171,8 +208,14 @@ const createArgumentNode = (settings: IMapSettings, initialNodeCount: number) =>
   if (settings.argumentLabelMode != LabelMode.TITLE) {
     node.labelText = IArgument.getCanonicalMemberText(a) || undefined;
   }
-  if (settings.argumentLabelMode !== LabelMode.TEXT || _.isEmpty(node.labelText)) {
-    if (!a.title!.startsWith("Untitled") || settings.argumentLabelMode == LabelMode.TITLE) {
+  if (
+    settings.argumentLabelMode !== LabelMode.TEXT ||
+    _.isEmpty(node.labelText)
+  ) {
+    if (
+      !a.title!.startsWith("Untitled") ||
+      settings.argumentLabelMode == LabelMode.TITLE
+    ) {
       node.labelTitle = a.title;
     }
   }
@@ -198,8 +241,12 @@ const createEdgesFromRelation = (
     } else {
       const ec = <IEquivalenceClass>rel.from!;
       ec.members.reduce((acc, s) => {
-        const isSymmetricPremiseRelation = isSymmetric && s.role === StatementRole.PREMISE;
-        if (s.role === StatementRole.MAIN_CONCLUSION || isSymmetricPremiseRelation) {
+        const isSymmetricPremiseRelation =
+          isSymmetric && s.role === StatementRole.PREMISE;
+        if (
+          s.role === StatementRole.MAIN_CONCLUSION ||
+          isSymmetricPremiseRelation
+        ) {
           const node = argumentNodesMap.get((<IPCSStatement>s).argumentTitle!);
           if (node) {
             acc.push(node);
@@ -212,7 +259,9 @@ const createEdgesFromRelation = (
   if (rel.to!.type === ArgdownTypes.ARGUMENT) {
     tos.push(argumentNodesMap.get(rel.to!.title!)!);
   } else if (rel.to!.type === ArgdownTypes.INFERENCE) {
-    const argumentNode = argumentNodesMap.get((<IInference>rel.to).argumentTitle!);
+    const argumentNode = argumentNodesMap.get(
+      (<IInference>rel.to).argumentTitle!
+    );
     tos.push(argumentNode!);
   } else if (rel.to!.type === ArgdownTypes.EQUIVALENCE_CLASS) {
     const statementNode = statementNodesMap.get(rel.to!.title!);
@@ -221,7 +270,8 @@ const createEdgesFromRelation = (
     } else {
       const ec = <IEquivalenceClass>rel.to;
       ec.members.reduce((acc, s) => {
-        const isSymmetricConclusionRelation = isSymmetric && s.role === StatementRole.MAIN_CONCLUSION;
+        const isSymmetricConclusionRelation =
+          isSymmetric && s.role === StatementRole.MAIN_CONCLUSION;
         if (s.role === StatementRole.PREMISE || isSymmetricConclusionRelation) {
           const node = argumentNodesMap.get((<IPCSStatement>s).argumentTitle!);
           if (node) {
@@ -249,7 +299,9 @@ const createEdgesFromRelation = (
         edge.toEquivalenceClass = <IEquivalenceClass>rel.to;
       }
       // If the relation is ec2ec, but the edge is s2a or a2s, we have to change the relation type to SUPPORT or ATTACK.
-      let s2sEdge = from.type === ArgdownTypes.STATEMENT_MAP_NODE && to.type === ArgdownTypes.STATEMENT_MAP_NODE;
+      let s2sEdge =
+        from.type === ArgdownTypes.STATEMENT_MAP_NODE &&
+        to.type === ArgdownTypes.STATEMENT_MAP_NODE;
       if (!s2sEdge) {
         // Check if we have to reverse the edge direction or dismiss the edge entirely
         if (isSymmetric) {
@@ -258,11 +310,14 @@ const createEdgesFromRelation = (
           let toIsConclusion = false;
           if (from.type === ArgdownTypes.ARGUMENT_MAP_NODE) {
             const fromArgument = response.arguments![from.title!];
-            fromIsPremise = fromArgument.pcs[fromArgument.pcs.length - 1].title !== rel.from!.title;
+            fromIsPremise =
+              fromArgument.pcs[fromArgument.pcs.length - 1].title !==
+              rel.from!.title;
           }
           if (to.type === ArgdownTypes.ARGUMENT_MAP_NODE) {
             const toArgument = response.arguments![to.title!];
-            toIsPremise = toArgument.pcs[toArgument.pcs.length - 1].title !== rel.to!.title;
+            toIsPremise =
+              toArgument.pcs[toArgument.pcs.length - 1].title !== rel.to!.title;
             toIsConclusion = !toIsPremise;
           }
           if (fromIsPremise && toIsPremise) {
@@ -327,7 +382,9 @@ const createSupportEdgesFromEquivalences = (
     // 2)
     for (let statement of ec.members) {
       if (statement.role === StatementRole.PREMISE) {
-        const argumentNode2 = argumentNodesMap.get((<IPCSStatement>statement).argumentTitle!);
+        const argumentNode2 = argumentNodesMap.get(
+          (<IPCSStatement>statement).argumentTitle!
+        );
         if (argumentNode2) {
           edges.push({
             type: ArgdownTypes.MAP_EDGE,
@@ -346,7 +403,9 @@ const createSupportEdgesFromEquivalences = (
     const ec = response.statements![statementNode.title!];
     for (let statement of ec.members) {
       if (statement.role === StatementRole.PREMISE) {
-        const argumentNode = argumentNodesMap.get((<IPCSStatement>statement).argumentTitle!);
+        const argumentNode = argumentNodesMap.get(
+          (<IPCSStatement>statement).argumentTitle!
+        );
         // 3)
         if (argumentNode) {
           edges.push({
@@ -369,7 +428,17 @@ const isRelationSelected = (
   selectedArguments: Map<string, IArgument>
 ) => (relation: IRelation): boolean => {
   return (
-    relationMemberIsInSelection(relation, relation.from!, selectedStatements, selectedArguments) &&
-    relationMemberIsInSelection(relation, relation.to!, selectedStatements, selectedArguments)
+    relationMemberIsInSelection(
+      relation,
+      relation.from!,
+      selectedStatements,
+      selectedArguments
+    ) &&
+    relationMemberIsInSelection(
+      relation,
+      relation.to!,
+      selectedStatements,
+      selectedArguments
+    )
   );
 };

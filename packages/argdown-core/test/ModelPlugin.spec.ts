@@ -42,11 +42,19 @@ describe("ModelPlugin", function() {
     expect(statements["Test"]).to.exist;
     expect(statements["Test"].isUsedAsTopLevelStatement).to.be.true;
     expect(statements["Test"].members[0].text).to.equal("Hello Earth!");
-    expect(statements["Test"].members[0].role).to.equal(StatementRole.TOP_LEVEL_STATEMENT);
+    expect(statements["Test"].members[0].role).to.equal(
+      StatementRole.TOP_LEVEL_STATEMENT
+    );
     expect(statements["Test"].members[1].text).to.equal("Hello World!");
-    expect(statements["Test"].members[1].role).to.equal(StatementRole.TOP_LEVEL_STATEMENT);
-    expect(IEquivalenceClass.getCanonicalMember(statements["Test"])!.text).to.equal("Hello World!");
-    expect(IEquivalenceClass.getCanonicalMemberText(statements["Test"])).to.equal("Hello World!");
+    expect(statements["Test"].members[1].role).to.equal(
+      StatementRole.TOP_LEVEL_STATEMENT
+    );
+    expect(
+      IEquivalenceClass.getCanonicalMember(statements["Test"])!.text
+    ).to.equal("Hello World!");
+    expect(
+      IEquivalenceClass.getCanonicalMemberText(statements["Test"])
+    ).to.equal("Hello World!");
     expect(statements["Test"].members[1].ranges!.length).to.equal(1);
     expect(statements["Test"].members[1].ranges![0].type).to.equal("italic");
     expect(statements["Test"].members[1].ranges![0].start).to.equal(6);
@@ -64,8 +72,12 @@ describe("ModelPlugin", function() {
     expect(result.arguments!["Test"]).to.exist;
     expect(result.arguments!["Test"].members.length).to.equal(2);
     let description = result.arguments!["Test"].members[1];
-    expect(IArgument.getCanonicalMember(result.arguments!["Test"])).to.equal(description);
-    expect(IArgument.getCanonicalMemberText(result.arguments!["Test"])).to.equal(description.text);
+    expect(IArgument.getCanonicalMember(result.arguments!["Test"])).to.equal(
+      description
+    );
+    expect(
+      IArgument.getCanonicalMemberText(result.arguments!["Test"])
+    ).to.equal(description.text);
     expect(description.text).to.equal("Hello World!");
     expect(description.ranges!.length).to.equal(1);
     expect(description.ranges![0].type).to.equal("italic");
@@ -98,18 +110,30 @@ describe("ModelPlugin", function() {
     expect(result.statements!["A"].isUsedAsTopLevelStatement).to.equal(true);
     expect(!!result.statements!["A"].isUsedAsRelationStatement).to.equal(false);
     expect(result.statements!["A"].relations!.length).to.equal(2);
-    expect(result.statements!["A"].relations![0].relationType).to.equal(RelationType.ENTAILS);
-    expect(result.statements!["A"].relations![0].to).to.equal(result.statements!["A"]);
-    expect(result.statements!["A"].relations![0].from).to.equal(result.statements!["B"]);
+    expect(result.statements!["A"].relations![0].relationType).to.equal(
+      RelationType.ENTAILS
+    );
+    expect(result.statements!["A"].relations![0].to).to.equal(
+      result.statements!["A"]
+    );
+    expect(result.statements!["A"].relations![0].from).to.equal(
+      result.statements!["B"]
+    );
     expect(result.statements!["B"]).to.exist;
     expect(!!result.statements!["B"].isUsedAsTopLevelStatement).to.equal(false);
     expect(result.statements!["B"].isUsedAsRelationStatement).to.equal(true);
     expect(result.statements!["B"].relations!.length).to.equal(1);
     expect(result.arguments!["C"]).to.exist;
     expect(result.arguments!["C"].relations!.length).to.equal(1);
-    expect(result.arguments!["C"].relations![0].relationType).to.equal(RelationType.ATTACK);
-    expect(result.arguments!["C"].relations![0].from).to.equal(result.statements!["A"]);
-    expect(result.arguments!["C"].relations![0].to).to.equal(result.arguments!["C"]);
+    expect(result.arguments!["C"].relations![0].relationType).to.equal(
+      RelationType.ATTACK
+    );
+    expect(result.arguments!["C"].relations![0].from).to.equal(
+      result.statements!["A"]
+    );
+    expect(result.arguments!["C"].relations![0].to).to.equal(
+      result.arguments!["C"]
+    );
   });
   it("can ignore duplicates of argument relations", function() {
     let source = `
@@ -130,7 +154,7 @@ describe("ModelPlugin", function() {
     });
     expect(Object.keys(result.statements!).length).to.equal(4);
     expect(Object.keys(result.arguments!).length).to.equal(1);
-    console.log(result.relations);
+    //console.log(result.relations);
     expect(result.relations!.length).to.equal(1);
   });
   it("can create sketched argument relations", function() {
@@ -142,16 +166,28 @@ describe("ModelPlugin", function() {
     });
     expect(result.arguments!["A"]).to.exist;
     expect(result.arguments!["A"].relations!.length).to.equal(2);
-    expect(result.arguments!["A"].relations![0].relationType).to.equal(RelationType.SUPPORT);
-    expect(result.arguments!["A"].relations![0].to).to.equal(result.arguments!["A"]);
-    expect(result.arguments!["A"].relations![0].from).to.equal(result.arguments!["B"]);
+    expect(result.arguments!["A"].relations![0].relationType).to.equal(
+      RelationType.SUPPORT
+    );
+    expect(result.arguments!["A"].relations![0].to).to.equal(
+      result.arguments!["A"]
+    );
+    expect(result.arguments!["A"].relations![0].from).to.equal(
+      result.arguments!["B"]
+    );
     expect(result.arguments!["B"]).to.exist;
     expect(result.arguments!["B"].relations!.length).to.equal(1);
     expect(result.statements!["C"]).to.exist;
     expect(result.statements!["C"].relations!.length).to.equal(1);
-    expect(result.statements!["C"].relations![0].relationType).to.equal(RelationType.ATTACK);
-    expect(result.statements!["C"].relations![0].from).to.equal(result.arguments!["A"]);
-    expect(result.statements!["C"].relations![0].to).to.equal(result.statements!["C"]);
+    expect(result.statements!["C"].relations![0].relationType).to.equal(
+      RelationType.ATTACK
+    );
+    expect(result.statements!["C"].relations![0].from).to.equal(
+      result.arguments!["A"]
+    );
+    expect(result.statements!["C"].relations![0].to).to.equal(
+      result.statements!["C"]
+    );
   });
   it("does not create duplicate relations for contradictions", function() {
     let source = `[A]: A
@@ -237,7 +273,9 @@ describe("ModelPlugin", function() {
 
     expect(argument.pcs![0].role).to.equal(StatementRole.PREMISE);
     expect(argument.pcs![1].role).to.equal(StatementRole.PREMISE);
-    expect(argument.pcs![2].role).to.equal(StatementRole.INTERMEDIARY_CONCLUSION);
+    expect(argument.pcs![2].role).to.equal(
+      StatementRole.INTERMEDIARY_CONCLUSION
+    );
     expect(argument.pcs![3].role).to.equal(StatementRole.MAIN_CONCLUSION);
     expect(result.statements![argument.pcs[0].title!]).to.exist;
     expect(result.statements![argument.pcs[1].title!]).to.exist;
@@ -246,7 +284,9 @@ describe("ModelPlugin", function() {
 
     const conclusionEc = result.statements!["D"];
     expect(conclusionEc.members.length).to.equal(1);
-    expect(conclusionEc.members[0].role).to.equal(StatementRole.MAIN_CONCLUSION);
+    expect(conclusionEc.members[0].role).to.equal(
+      StatementRole.MAIN_CONCLUSION
+    );
     expect(conclusionEc.isUsedAsMainConclusion).to.be.true;
 
     let premise = result.statements![argument.pcs[0].title!];
@@ -283,17 +323,25 @@ describe("ModelPlugin", function() {
 
     expect(conclusion.relations![0].from!.title).to.equal("D");
     expect(conclusion.relations![0].to!.title).to.equal("E");
-    expect(conclusion.relations![0].relationType).to.equal(RelationType.CONTRARY);
+    expect(conclusion.relations![0].relationType).to.equal(
+      RelationType.CONTRARY
+    );
 
     expect(conclusion.relations![1].from!.title).to.equal("D");
     expect(conclusion.relations![1].to!.title).to.equal("Sketched Argument 1");
-    expect(conclusion.relations![1].relationType).to.equal(RelationType.SUPPORT);
+    expect(conclusion.relations![1].relationType).to.equal(
+      RelationType.SUPPORT
+    );
 
-    expect(conclusion.relations![2].relationType).to.equal(RelationType.CONTRARY);
+    expect(conclusion.relations![2].relationType).to.equal(
+      RelationType.CONTRARY
+    );
     expect(conclusion.relations![2].from!.title).to.equal("D");
     expect(conclusion.relations![2].to!.title).to.equal("F");
 
-    expect(conclusion.relations![3].relationType).to.equal(RelationType.SUPPORT);
+    expect(conclusion.relations![3].relationType).to.equal(
+      RelationType.SUPPORT
+    );
     expect(conclusion.relations![3].from!.title).to.equal("D");
     expect(conclusion.relations![3].to!.title).to.equal("Sketched Argument 2");
 
@@ -354,22 +402,34 @@ describe("ModelPlugin", function() {
     expect(result.sections![0].children.length).to.equal(2);
     expect(result.sections![0].children[0].title).to.equal("Section 2");
     expect(result.sections![0].children[0].children.length).to.equal(1);
-    expect(result.sections![0].children[0].children[0].title).to.equal("Section 3");
-    expect(result.sections![0].children[0].children[0].children.length).to.equal(0);
+    expect(result.sections![0].children[0].children[0].title).to.equal(
+      "Section 3"
+    );
+    expect(
+      result.sections![0].children[0].children[0].children.length
+    ).to.equal(0);
     expect(result.sections![0].children[1].title).to.equal("Section 4");
     expect(result.sections![0].children[1].children.length).to.equal(0);
 
     expect(result.statements!["A"]).to.exist;
     expect(result.statements!["A"].members[0].section).to.exist;
-    expect(result.statements!["A"].members[0].section!.title).to.equal("Section 2");
+    expect(result.statements!["A"].members[0].section!.title).to.equal(
+      "Section 2"
+    );
 
     expect(result.arguments!["B"]).to.exist;
     expect(result.arguments!["B"].section).to.exist;
     expect(result.arguments!["B"].section!.title).to.equal("Section 4");
     expect(result.arguments!["B"].members[0].section).to.exist;
-    expect(result.arguments!["B"].members[0].section!.title).to.equal("Section 2");
-    expect(result.arguments!["B"].members[1].section!.title).to.equal("Section 3");
-    expect(result.arguments!["B"].members[2].section!.title).to.equal("Section 4");
+    expect(result.arguments!["B"].members[0].section!.title).to.equal(
+      "Section 2"
+    );
+    expect(result.arguments!["B"].members[1].section!.title).to.equal(
+      "Section 3"
+    );
+    expect(result.arguments!["B"].members[2].section!.title).to.equal(
+      "Section 4"
+    );
 
     expect(result.arguments!["C"]).to.exist;
     expect(result.arguments!["C"].section).to.exist;
@@ -447,7 +507,9 @@ describe("ModelPlugin", function() {
     expect(Object.keys(result.tags!).length).to.equal(6);
     expect(result.statements!["Statement 1"].tags!.length).to.equal(3);
     expect(
-      result.statements!["Statement 2"].members[result.statements!["Statement 2"].members.length - 1].text
+      result.statements!["Statement 2"].members[
+        result.statements!["Statement 2"].members.length - 1
+      ].text
     ).to.equal("text #tag-1 #(tag 2)");
     expect(result.statements!["Statement 2"].tags!.length).to.equal(2);
     expect(result.arguments!["Argument 1"].tags!.length).to.equal(3);
@@ -472,8 +534,10 @@ describe("ModelPlugin", function() {
       input: source
     });
     expect(result.statements!["Statement 1"].tags!.length).to.equal(2);
-    expect(result.statements!["Statement 1"].tags!.includes("tag-1")).to.be.true;
-    expect(result.statements!["Statement 1"].tags!.includes("tag-2")).to.be.true;
+    expect(result.statements!["Statement 1"].tags!.includes("tag-1")).to.be
+      .true;
+    expect(result.statements!["Statement 1"].tags!.includes("tag-2")).to.be
+      .true;
     expect(result.arguments!["Argument 1"].tags!.length).to.equal(4);
     expect(result.arguments!["Argument 1"].tags!.includes("tag-3")).to.be.true;
     expect(result.arguments!["Argument 1"].tags!.includes("tag-4")).to.be.true;
@@ -527,7 +591,9 @@ describe("ModelPlugin", function() {
       input: source
     });
     expect(result.statements!["A"]).to.exist;
-    expect(IEquivalenceClass.getCanonicalMemberText(result.statements!["A"])).to.equal("[text] text");
+    expect(
+      IEquivalenceClass.getCanonicalMemberText(result.statements!["A"])
+    ).to.equal("[text] text");
   });
   it("can return error with token location for incomplete reconstruction", function() {
     let source = `sdsadad
@@ -536,7 +602,9 @@ describe("ModelPlugin", function() {
     let result = app.run({ process: ["parse-input"], input: source });
     //console.log(result.parserErrors[0]);
     expect((<any>result.parserErrors![0]).previousToken.startLine).to.equal(3);
-    expect((<any>result.parserErrors![0]).previousToken.startColumn).to.equal(5);
+    expect((<any>result.parserErrors![0]).previousToken.startColumn).to.equal(
+      5
+    );
   });
   it("throws exception if AST is missing", function() {
     const source = "[Test]: Hello _World_!";
@@ -664,7 +732,9 @@ describe("ModelPlugin", function() {
       logLevel: "error",
       logExceptions: false
     });
-    expect(result.statements!["Untitled 1"].members[0].text).to.equal("I am a multiline statement.");
+    expect(result.statements!["Untitled 1"].members[0].text).to.equal(
+      "I am a multiline statement."
+    );
   });
   it("behaves correctly if in loose mode", () => {
     const input = `
@@ -728,7 +798,9 @@ describe("ModelPlugin", function() {
     expect(response.arguments!["A1"].pcs[1]).to.exist;
     expect(isConclusion(response.arguments!["A1"].pcs[1])).to.be.true;
     expect((<any>response.arguments!["A1"].pcs[1]).inference!.data).to.exist;
-    expect((<any>response.arguments!["A1"].pcs[1]).inference!.data.test).to.equal(1);
+    expect(
+      (<any>response.arguments!["A1"].pcs[1]).inference!.data.test
+    ).to.equal(1);
   });
   it("can parse undercuts for statements", () => {
     const input = `

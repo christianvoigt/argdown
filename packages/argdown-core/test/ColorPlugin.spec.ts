@@ -1,5 +1,17 @@
 import { expect } from "chai";
-import { ArgdownApplication, ParserPlugin, ModelPlugin, DataPlugin, ColorPlugin } from "../src/index";
+import {
+  ArgdownApplication,
+  ParserPlugin,
+  ModelPlugin,
+  DataPlugin,
+  ColorPlugin,
+  MapPlugin,
+  StatementSelectionPlugin,
+  ArgumentSelectionPlugin,
+  PreselectionPlugin,
+  IGroupMapNode,
+  GroupPlugin
+} from "../src/index";
 import { colorSchemes } from "../src/plugins/colorSchemes";
 
 let app = new ArgdownApplication();
@@ -10,7 +22,12 @@ let modelPlugin = new ModelPlugin();
 let colorPlugin = new ColorPlugin();
 app.addPlugin(dataPlugin, "build-model");
 app.addPlugin(modelPlugin, "build-model");
-app.addPlugin(colorPlugin, "build-model");
+app.addPlugin(new PreselectionPlugin(), "build-map");
+app.addPlugin(new StatementSelectionPlugin(), "build-map");
+app.addPlugin(new ArgumentSelectionPlugin(), "build-map");
+app.addPlugin(new MapPlugin(), "build-map");
+app.addPlugin(new GroupPlugin(), "build-map");
+app.addPlugin(colorPlugin, "add-color");
 
 describe("ColorPlugin", function() {
   it("can load a preset color scheme", function() {
@@ -24,12 +41,23 @@ describe("ColorPlugin", function() {
         - [Statement 3]: #tag3
         
     [Statement 4]: untagged`;
-    const request = { process: ["parse-input", "build-model"], input: source };
+    const request = {
+      process: ["parse-input", "build-model", "add-color"],
+      input: source
+    };
     const response = app.run(request);
-    expect(response.statements!["Statement 1"].color).to.equal(colorSchemes["iwanthue-red-roses"][1]);
-    expect(response.statements!["Statement 2"].color).to.equal(colorSchemes["iwanthue-red-roses"][2]);
-    expect(response.statements!["Statement 3"].color).to.equal(colorSchemes["iwanthue-red-roses"][3]);
-    expect(response.statements!["Statement 4"].color).to.equal(colorSchemes["iwanthue-red-roses"][0]);
+    expect(response.statements!["Statement 1"].color).to.equal(
+      colorSchemes["iwanthue-red-roses"][1]
+    );
+    expect(response.statements!["Statement 2"].color).to.equal(
+      colorSchemes["iwanthue-red-roses"][2]
+    );
+    expect(response.statements!["Statement 3"].color).to.equal(
+      colorSchemes["iwanthue-red-roses"][3]
+    );
+    expect(response.statements!["Statement 4"].color).to.equal(
+      colorSchemes["iwanthue-red-roses"][0]
+    );
   });
   it("can use a custom color scheme", function() {
     let source = `
@@ -52,7 +80,10 @@ describe("ColorPlugin", function() {
     
     <b>: #tag-3
     `;
-    const request = { process: ["parse-input", "build-model"], input: source };
+    const request = {
+      process: ["parse-input", "build-model", "add-color"],
+      input: source
+    };
     const response = app.run(request);
     expect(response.arguments!["a"].color).to.equal("#ff4f98");
     expect(response.arguments!["b"].color).to.equal("#51ffae");
@@ -78,11 +109,18 @@ describe("ColorPlugin", function() {
     [c] #tag-3
     
     <b>: #tag-3`;
-    const request = { process: ["parse-input", "build-model"], input: source };
+    const request = {
+      process: ["parse-input", "build-model", "add-color"],
+      input: source
+    };
     const response = app.run(request);
     expect(response.arguments!["a"].color).to.equal("#169b89");
-    expect(response.arguments!["b"].color).to.equal(colorSchemes["colorbrewer-set3"][7]);
-    expect(response.statements!["c"].color).to.equal(colorSchemes["colorbrewer-set3"][2]);
+    expect(response.arguments!["b"].color).to.equal(
+      colorSchemes["colorbrewer-set3"][7]
+    );
+    expect(response.statements!["c"].color).to.equal(
+      colorSchemes["colorbrewer-set3"][2]
+    );
   });
   it("can apply colors based on tag priority", function() {
     let source = `
@@ -104,11 +142,16 @@ selection:
 [c] #tag-3 #tag-2
 
 <b>: #tag-3`;
-    const request = { process: ["parse-input", "build-model"], input: source };
+    const request = {
+      process: ["parse-input", "build-model", "add-color"],
+      input: source
+    };
     const response = app.run(request);
     expect(response.arguments!["a"].color).to.equal("#169b89");
     expect(response.arguments!["b"].color).to.equal("#169b89");
-    expect(response.statements!["c"].color).to.equal(colorSchemes["colorbrewer-set3"][3]);
+    expect(response.statements!["c"].color).to.equal(
+      colorSchemes["colorbrewer-set3"][3]
+    );
   });
   it("can change group color by tag", function() {
     let source = `
@@ -141,11 +184,16 @@ selection:
     ### H3 #tag-3
     
     [c]: text`;
-    const request = { process: ["parse-input", "build-model"], input: source };
+    const request = {
+      process: ["parse-input", "build-model", "add-color"],
+      input: source
+    };
     const response = app.run(request);
     expect(response.sections![0].color).to.equal("#e6f5c9");
     expect(response.sections![0].children[0].color).to.equal("#fff2ae");
-    expect(response.sections![0].children[0].children[0].color).to.equal("#b3e2cd");
+    expect(response.sections![0].children[0].children[0].color).to.equal(
+      "#b3e2cd"
+    );
   });
   it("can change element color by title", function() {
     let source = `
@@ -183,14 +231,21 @@ selection:
     
     <b>: #tag-3
     `;
-    const request = { process: ["parse-input", "build-model"], input: source };
+    const request = {
+      process: ["parse-input", "build-model", "add-color"],
+      input: source
+    };
     const response = app.run(request);
     expect(response.sections![0].color).to.equal("#b3e2cd");
     expect(response.sections![0].children[0].color).to.equal("#fff2ae");
     expect(response.sections![0].children[1].color).to.equal("#f4cae4");
     expect(response.arguments!["a"].color).to.equal("#64b964");
-    expect(response.arguments!["b"].color).to.equal(colorSchemes["iwanthue-colorblind-friendly"][7]);
-    expect(response.statements!["c"].color).to.equal(colorSchemes["iwanthue-colorblind-friendly"][2]);
+    expect(response.arguments!["b"].color).to.equal(
+      colorSchemes["iwanthue-colorblind-friendly"][7]
+    );
+    expect(response.statements!["c"].color).to.equal(
+      colorSchemes["iwanthue-colorblind-friendly"][2]
+    );
   });
   it("can change element color by data color field", function() {
     let source = `
@@ -219,13 +274,20 @@ selection:
     
     <b>: #tag-3
     `;
-    const request = { process: ["parse-input", "build-model"], input: source };
+    const request = {
+      process: ["parse-input", "build-model", "add-color"],
+      input: source
+    };
     const response = app.run(request);
     expect(response.sections![0].color).to.equal("#b3e2cd");
     expect(response.sections![0].children[0].color).to.equal("#fdcdac");
     expect(response.sections![0].children[1].color).to.be.undefined;
-    expect(response.arguments!["a"].color).to.equal(colorSchemes["iwanthue-fluo"][6]);
-    expect(response.arguments!["b"].color).to.equal(colorSchemes["iwanthue-fluo"][3]);
+    expect(response.arguments!["a"].color).to.equal(
+      colorSchemes["iwanthue-fluo"][6]
+    );
+    expect(response.arguments!["b"].color).to.equal(
+      colorSchemes["iwanthue-fluo"][3]
+    );
     expect(response.statements!["c"].color).to.equal("#64b964");
   });
   it("can ignore data color field", function() {
@@ -260,13 +322,77 @@ selection:
     
     <b>: #tag-3
     `;
-    const request = { process: ["parse-input", "build-model"], input: source };
+    const request = {
+      process: ["parse-input", "build-model", "add-color"],
+      input: source
+    };
     const response = app.run(request);
     expect(response.sections![0].color).to.equal("#fff2ae");
     expect(response.sections![0].children[0].color).to.equal("#f4cae4");
     expect(response.sections![0].children[1].color).to.equal("#b3e2cd");
-    expect(response.arguments!["a"].color).to.equal(colorSchemes["iwanthue-yellow-lime"][1]);
-    expect(response.arguments!["b"].color).to.equal(colorSchemes["iwanthue-yellow-lime"][2]);
-    expect(response.statements!["c"].color).to.equal(colorSchemes["iwanthue-yellow-lime"][3]);
+    expect(response.arguments!["a"].color).to.equal(
+      colorSchemes["iwanthue-yellow-lime"][1]
+    );
+    expect(response.arguments!["b"].color).to.equal(
+      colorSchemes["iwanthue-yellow-lime"][2]
+    );
+    expect(response.statements!["c"].color).to.equal(
+      colorSchemes["iwanthue-yellow-lime"][3]
+    );
+  });
+  it("can colorize map", function() {
+    let input = `    
+===
+color:
+    relationColors:
+        support: "#100000"
+        attack: "#200000"
+        entails: "#300000"
+        contrary: "#400000"
+        contradictory: "#500000"
+        undercut: "#600000"
+===
+
+# g1 {color: "#000001"}
+
+<a1>: asdad {color: "#000002"}
+    - <a2>: adasd {color: "#000003"}
+
+## g2 {color: "#000004"}
+
+<a2>
+    + [s1]: asdds {color: "#000005"}
+    <_ [s2]: asdd {color: "#000006"}
+
+    `;
+    const request = {
+      process: ["parse-input", "build-model", "build-map", "add-color"],
+      input,
+      logLevel: "verbose"
+    };
+    const response = app.run(request);
+    //console.log(toJSON(response.map!.nodes));
+    expect(response.map!.nodes![0].color).to.equal("#000001");
+    expect(response.arguments!["a1"].color).to.equal("#000002");
+    expect(
+      (<IGroupMapNode>response.map!.nodes![0]).children![0].color
+    ).to.equal("#000002");
+    expect(
+      (<IGroupMapNode>response.map!.nodes![0]).children![1].color
+    ).to.equal("#000003");
+    expect(
+      (<IGroupMapNode>response.map!.nodes![0]).children![2].color
+    ).to.equal("#000004");
+    expect(
+      (<IGroupMapNode>(<IGroupMapNode>response.map!.nodes![0]).children![2])
+        .children![0].color
+    ).to.equal("#000005");
+    expect(
+      (<IGroupMapNode>(<IGroupMapNode>response.map!.nodes![0]).children![2])
+        .children![1].color
+    ).to.equal("#000006");
+    expect(response.map!.edges![0].color).to.equal("#200000");
+    expect(response.map!.edges![1].color).to.equal("#100000");
+    expect(response.map!.edges![2].color).to.equal("#600000");
   });
 });

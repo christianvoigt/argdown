@@ -117,11 +117,19 @@ export interface HasSection {
 export interface HasColor {
   color?: string;
 }
+export interface HasFontColor {
+  fontColor?: string;
+}
 /**
  * Represents a matched Argdown syntax rule in the abstract syntax tree produced by the [[ParserPlugin]].
  * Has either other [[IRuleNode]]s or [[ITokenNode]]s as children.
  */
-export interface IRuleNode extends HasLocation, HasData, HasText, HasTags, HasTitle {
+export interface IRuleNode
+  extends HasLocation,
+    HasData,
+    HasText,
+    HasTags,
+    HasTitle {
   type: ArgdownTypes.RULE_NODE;
   name: RuleNames;
   children?: IAstNode[];
@@ -170,7 +178,15 @@ export type IAstNode = IRuleNode | ITokenNode;
  * are transformed by the [[ModelPlugin]] into relations of the argument's main conclusion
  * (the last statement in the argument's pcs).
  */
-export interface IArgument extends HasTitle, HasRelations, HasTags, HasData, HasLocation, HasSection, HasColor {
+export interface IArgument
+  extends HasTitle,
+    HasRelations,
+    HasTags,
+    HasData,
+    HasLocation,
+    HasSection,
+    HasColor,
+    HasFontColor {
   type: ArgdownTypes.ARGUMENT;
   /**
    * If the argument was logically reconstructed, it has a premise conclusion structure (pcs).
@@ -241,7 +257,13 @@ export namespace IArgument {
  *
  * For further details on the relationship between equivalence classes and statements, see [[IEquivalenceClass]].
  */
-export interface IStatement extends HasTitle, HasTags, HasData, HasLocation, HasSection, HasText {
+export interface IStatement
+  extends HasTitle,
+    HasTags,
+    HasData,
+    HasLocation,
+    HasSection,
+    HasText {
   type: ArgdownTypes.STATEMENT;
   role?: StatementRole;
   isReference?: boolean;
@@ -269,7 +291,10 @@ export enum StatementRole {
  * A statement used within an argument's premise-conclusion-structure ([[IArgument.pcs]])
  */
 export interface IPCSStatement extends IStatement {
-  role: StatementRole.PREMISE | StatementRole.MAIN_CONCLUSION | StatementRole.INTERMEDIARY_CONCLUSION;
+  role:
+    | StatementRole.PREMISE
+    | StatementRole.MAIN_CONCLUSION
+    | StatementRole.INTERMEDIARY_CONCLUSION;
   argumentTitle?: string;
 }
 /**
@@ -302,7 +327,15 @@ export interface IArgumentDescription extends IStatement {
  * Dialectical relations with arguments or inferences can be of type: support, attack, undercut.
  *
  */
-export interface IEquivalenceClass extends HasTitle, HasRelations, HasTags, HasData, HasLocation, HasSection, HasColor {
+export interface IEquivalenceClass
+  extends HasTitle,
+    HasRelations,
+    HasTags,
+    HasData,
+    HasLocation,
+    HasSection,
+    HasColor,
+    HasFontColor {
   type: ArgdownTypes.EQUIVALENCE_CLASS;
   /**
    * The statements that share the title with this equivalence class and are considered to be logically equivalent.
@@ -343,7 +376,9 @@ export namespace IEquivalenceClass {
    * Provides a default statement that can be used to reqpresent this equivalence class.
    * The statement chosen is the one that occurs last in the Argdown source code.
    */
-  export const getCanonicalMember = (ec: IEquivalenceClass): IStatement | undefined => {
+  export const getCanonicalMember = (
+    ec: IEquivalenceClass
+  ): IStatement | undefined => {
     if (!ec.members || ec.members.length <= 0) {
       return undefined;
     }
@@ -364,7 +399,9 @@ export namespace IEquivalenceClass {
   /**
    * Convenience method that directly returns the text of the equivalence class's canonical statement.
    */
-  export const getCanonicalMemberText = (ec: IEquivalenceClass): string | undefined => {
+  export const getCanonicalMemberText = (
+    ec: IEquivalenceClass
+  ): string | undefined => {
     let statement = getCanonicalMember(ec);
     if (statement) {
       return statement.text;
@@ -379,7 +416,12 @@ export namespace IEquivalenceClass {
  *
  * Inferences can be identified by their argument's title and their conclusion's index in the argument's pcs.
  */
-export interface IInference extends HasTitle, HasRelations, HasData, HasLocation, HasSection {
+export interface IInference
+  extends HasTitle,
+    HasRelations,
+    HasData,
+    HasLocation,
+    HasSection {
   type: ArgdownTypes.INFERENCE;
   inferenceRules?: string[];
   /**
@@ -411,7 +453,7 @@ export type RelationMember = IArgument | IEquivalenceClass | IInference;
  * If the source is a reconstructed argument,
  * the relation will be transformed to a logical relation of the argument's main conclusion.
  */
-export interface IRelation {
+export interface IRelation extends HasColor {
   type: ArgdownTypes.RELATION;
   from?: RelationMember;
   to?: RelationMember;
@@ -425,10 +467,15 @@ export interface IRelation {
 }
 export namespace IRelation {
   export const relationToString = (r: IRelation) => {
-    return `Relation(from: ${r.from!.title}, to: ${r.to!.title}, type: ${r.type})`;
+    return `Relation(from: ${r.from!.title}, to: ${r.to!.title}, type: ${
+      r.type
+    })`;
   };
   export const isSymmetric = (r: IRelation) => {
-    return r.relationType === RelationType.CONTRARY || r.relationType === RelationType.CONTRADICTORY;
+    return (
+      r.relationType === RelationType.CONTRARY ||
+      r.relationType === RelationType.CONTRADICTORY
+    );
   };
 }
 /**
@@ -436,7 +483,14 @@ export namespace IRelation {
  * Sections can contain other sections as children. They are derived from headings
  * and used to derive groups (clusters) in argument maps.
  */
-export interface ISection extends HasTitle, HasTags, HasText, HasLocation, HasData, HasColor {
+export interface ISection
+  extends HasTitle,
+    HasTags,
+    HasText,
+    HasLocation,
+    HasData,
+    HasColor,
+    HasFontColor {
   type: ArgdownTypes.SECTION;
   /**
    * An automatically generated id unique among sections
@@ -466,11 +520,10 @@ export type MapNodeType =
  *
  * Can be either a statement, argument or group node.
  */
-export interface IMapNode extends HasTitle, HasTags {
+export interface IMapNode extends HasTitle, HasTags, HasColor, HasFontColor {
   type: MapNodeType;
   labelTitle?: string;
   labelText?: string;
-  color?: string;
   id: string;
 }
 /**
@@ -489,7 +542,7 @@ export interface IGroupMapNode extends IMapNode {
  * An edge in an argument map derived from an [[IRelation]] or an [[IEquivalenceClass]].
  *
  */
-export interface IMapEdge {
+export interface IMapEdge extends HasColor {
   type: ArgdownTypes.MAP_EDGE;
   id: string;
   /**
@@ -537,7 +590,8 @@ export const isReconstructed = (a: IArgument): boolean => {
 };
 export const isConclusion = (s: IStatement): s is IConclusion => {
   return (
-    (s.role === StatementRole.INTERMEDIARY_CONCLUSION || s.role === StatementRole.MAIN_CONCLUSION) &&
+    (s.role === StatementRole.INTERMEDIARY_CONCLUSION ||
+      s.role === StatementRole.MAIN_CONCLUSION) &&
     (<IConclusion>s).inference != undefined
   );
 };
