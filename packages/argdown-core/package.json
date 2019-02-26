@@ -11,24 +11,24 @@
   ],
   "version": "1.0.3",
   "license": "MIT",
-  "main": "./dist/src/index.js",
+  "main": "./dist/src/index",
   "types": "./dist/src/index.d.ts",
   "dependencies": {
-    "@babel/polyfill": "^7.0.0-beta.49",
+    "@babel/polyfill": "^7.2.5",
     "@types/chai": "^4.1.3",
     "@types/js-yaml": "^3.11.1",
     "@types/lodash": "^4.14.109",
-    "@types/node": "^10.3.1",
+    "@types/node": "^11.9.5",
     "@types/xmlbuilder": "^0.0.34",
     "chevrotain": "^4.1.0",
     "eventemitter3": "^3.0.0",
     "js-yaml": "^3.12.0",
     "lodash": "^4.17.10",
     "mdurl": "^1.0.1",
-    "nyc": "^12.0.2",
+    "nyc": "^13.3.0",
     "punycode": "^2.1.0",
     "string-pixel-width": "^1.9.0",
-    "xmlbuilder": "^10.1.1"
+    "xmlbuilder": "^11.0.0"
   },
   "repository": {
     "type": "git",
@@ -51,7 +51,7 @@
     "test:map": "mocha -r ts-node/register --full-trace --require source-map-support/register ./test/MapPlugin.spec.ts",
     "coverage": "nyc mocha -r ts-node/register --full-trace --bail --require source-map-support/register ./test/**/*.spec.ts",
     "report": "nyc report",
-    "clean": "rimraf dist/*",
+    "clean": "rimraf \"dist/*\"",
     "prepublishOnly": "npm run-script build",
     "push": "git push --tags origin HEAD:master"
   },
@@ -63,14 +63,14 @@
     "copyfiles": "^2.0.0",
     "glob": "^7.1.1",
     "mkdirp": "^0.5.1",
-    "mocha": "^5.2.0",
-    "nyc": "^12.0.2",
-    "rimraf": "^2.6.2",
+    "mocha": "^6.0.2",
+    "nyc": "^13.3.0",
+    "rimraf": "^2.6.3",
     "source-map-support": "^0.5.6",
-    "ts-node": "^6.1.2",
-    "typedoc": "^0.12.0",
-    "typescript": "~2.9.1",
-    "typescript-workspace-plugin": "^1.0.5"
+    "ts-node": "^8.0.2",
+    "typedoc": "^0.14.2",
+    "typescript": "~3.3.3333",
+    "typescript-workspace-plugin": "^2.0.1"
   },
   "nyc": {
     "include": [
