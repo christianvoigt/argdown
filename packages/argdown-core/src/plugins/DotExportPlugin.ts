@@ -5,16 +5,26 @@ import {
   RelationType,
   ArgdownTypes,
   IMapNode,
-  IGroupMapNode
+  IGroupMapNode,
+  IArgument
 } from "../model/model";
 import { IArgdownRequest, IArgdownResponse } from "../index";
 import { validateColorString } from "../utils";
+import { IEquivalenceClass, IMap, isGroupMapNode } from "../../dist/src";
 
+export interface IRankMap {
+  [key: string]: IRank;
+}
+export interface IRank {
+  arguments: string[];
+  statements: string[];
+}
 export interface IDotSettings {
   useHtmlLabels?: boolean;
   graphname?: string;
   lineLength?: number;
   graphVizSettings?: { [name: string]: string };
+  sameRank?: IRank[];
 }
 declare module "../index" {
   interface IArgdownRequest {
@@ -45,7 +55,8 @@ const defaultSettings: IDotSettings = {
     concentrate: "false",
     ratio: "auto",
     size: "10,10"
-  }
+  },
+  sameRank: []
 };
 /**
  * Exports map data to dot format.
@@ -92,8 +103,19 @@ export class DotExportPlugin implements IArgdownPlugin {
     const settings = this.getSettings(request);
     _.defaultsDeep(settings, this.defaults);
   };
-  run: IRequestHandler = (request, response) => {
+  run: IRequestHandler = (request, response, logger) => {
     const settings = this.getSettings(request);
+    let rankMap: IRankMap = {};
+    rankMap = Object.values(response.arguments!).reduce(
+      reduceToRankMap,
+      rankMap
+    );
+    rankMap = Object.values(response.statements!).reduce(
+      reduceToRankMap,
+      rankMap
+    );
+    settings.sameRank!.push(...Object.values(rankMap));
+    logger.log("info", "ranks:" + settings.sameRank!.length);
 
     response.groupCount = 0;
     let dot = 'digraph "' + settings.graphname + '" {\n\n';
@@ -102,6 +124,27 @@ export class DotExportPlugin implements IArgdownPlugin {
       for (let key of keys) {
         const value = settings.graphVizSettings[key];
         dot += key + ' = "' + value + '";\n';
+      }
+    }
+    if (settings.sameRank && settings.sameRank.length > 0) {
+      const nodeMaps = getNodeIdsMaps(response.map!);
+      for (let rank of settings.sameRank) {
+        dot += `{ rank = same;\n`;
+        for (let argumentTitle of rank.arguments) {
+          const id = nodeMaps.argumentNodes[argumentTitle];
+          if (!id) {
+            continue;
+          }
+          dot += `${id};\n`;
+        }
+        for (let ecTitle of rank.statements) {
+          const id = nodeMaps.statementNodes[ecTitle];
+          if (!id) {
+            continue;
+          }
+          dot += `${id};\n`;
+        }
+        dot += `};\n`;
       }
     }
 
@@ -274,4 +317,41 @@ const getLabel = (
     label = '"' + escapeQuotesForDot(title) + '"';
   }
   return label;
+};
+const reduceToRankMap = (
+  acc: IRankMap,
+  curr: IArgument | IEquivalenceClass
+) => {
+  if (curr.data && curr.data.rank) {
+    const rank = acc[curr.data.rank] || {
+      arguments: [],
+      statements: []
+    };
+    if (curr.type === ArgdownTypes.ARGUMENT) {
+      rank.arguments.push(curr.title!);
+    } else {
+      rank.statements.push(curr.title!);
+    }
+    acc[curr.data.rank] = rank;
+  }
+  return acc;
+};
+interface INodeMaps {
+  argumentNodes: { [key: string]: string };
+  statementNodes: { [key: string]: string };
+}
+const getNodeIdsMaps = (map: IMap): INodeMaps => {
+  const maps = { argumentNodes: {}, statementNodes: {} };
+  map.nodes.reduce(reduceToNodeMaps, maps);
+  return maps;
+};
+const reduceToNodeMaps = (acc: INodeMaps, curr: IMapNode) => {
+  if (isGroupMapNode(curr) && curr.children) {
+    acc = curr.children.reduce(reduceToNodeMaps, acc);
+  } else if (curr.type === ArgdownTypes.ARGUMENT_MAP_NODE) {
+    acc.argumentNodes[curr.title!] = curr.id!;
+  } else if (curr.type === ArgdownTypes.STATEMENT_MAP_NODE) {
+    acc.statementNodes[curr.title!] = curr.id!;
+  }
+  return acc;
 };
