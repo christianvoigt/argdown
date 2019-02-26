@@ -1,16 +1,11 @@
 import { argdown } from "@argdown/node";
 import { Arguments } from "yargs";
 import { StatementSelectionMode, LabelMode } from "@argdown/core";
+import { IGeneralCliOptions } from "../IGeneralCliOptions";
 
 export const command = "map [inputGlob] [outputDir]";
 export const desc = "export Argdown input as DOT files";
 export const builder = {
-  logParserErrors: {
-    alias: "e",
-    describe: "Log parser errors to console",
-    type: "boolean",
-    default: true
-  },
   useHtmlLabels: {
     alias: "html-labels",
     describe: "Use HTML node labels",
@@ -18,19 +13,30 @@ export const builder = {
   },
   argumentLabelMode: {
     alias: "argument-labels",
-    choices: [undefined, LabelMode.HIDE_UNTITLED, LabelMode.TITLE, LabelMode.TEXT],
+    choices: [
+      undefined,
+      LabelMode.HIDE_UNTITLED,
+      LabelMode.TITLE,
+      LabelMode.TEXT
+    ],
     type: "string",
     describe: "The method by which argument label content is selected"
   },
   statementLabelMode: {
     alias: "statement-labels",
-    choices: [undefined, LabelMode.HIDE_UNTITLED, LabelMode.TITLE, LabelMode.TEXT],
+    choices: [
+      undefined,
+      LabelMode.HIDE_UNTITLED,
+      LabelMode.TITLE,
+      LabelMode.TEXT
+    ],
     type: "string",
     describe: "The method by which statement label content is selected"
   },
   statementSelectionMode: {
     alias: "statement-selection",
-    describe: "The method that determines which statements are inserted as nodes into the map",
+    describe:
+      "The method that determines which statements are inserted as nodes into the map",
     type: "string",
     choices: [
       undefined,
@@ -52,10 +58,6 @@ export const builder = {
     type: "number",
     describe: "Number of chars in a label line."
   },
-  groupColors: {
-    type: "array",
-    describe: "Colors for groups sorted by stacking order"
-  },
   inclusive: {
     type: "boolean",
     describe: "Include disconnected nodes."
@@ -63,10 +65,6 @@ export const builder = {
   rankdir: {
     type: "string",
     describe: "Graphviz rankdir setting"
-  },
-  concentrate: {
-    type: "string",
-    describe: "Graphviz concentrate setting"
   },
   ratio: {
     type: "string",
@@ -79,102 +77,122 @@ export const builder = {
   format: {
     alias: "f",
     type: "string",
-    describe: "the file format (dot, svg, pdf)",
+    describe: "the file format (dot, graphml, svg, pdf)",
     default: "pdf"
   }
 };
-export const handler = async (argv: Arguments) => {
-  let config = await argdown.loadConfig(argv.config);
+export interface IMapCliOptions {
+  format?: string;
+  size?: string;
+  ratio?: string;
+  rankdir?: string;
+  inclusive?: boolean;
+  lineLength?: number;
+  graphName?: string;
+  statementSelectionMode?: StatementSelectionMode;
+  statementLabelMode?: LabelMode;
+  argumentLabelMode?: LabelMode;
+  useHtmlLabels?: boolean;
+  inputGlob?: string;
+  outputDir?: string;
+}
+export const handler = async (
+  args: Arguments<IGeneralCliOptions & IMapCliOptions>
+) => {
+  let config = await argdown.loadConfig(args.config);
 
   config.dot = config.dot || {};
   config.map = config.map || {};
   config.group = config.group || {};
   config.selection = config.selection || {};
   config.color = config.color || {};
-  const format = argv.format || "pdf";
+  const format = args.format || "pdf";
   if (format === "pdf") {
     config.svgToPdf = config.svgToPdf || {};
   } else {
     config.saveAs = config.saveAs || {};
   }
 
-  if (argv.useHtmlLabels) {
+  if (args.useHtmlLabels) {
     config.dot.useHtmlLabels = true;
   }
 
-  if (argv.argumentLabelMode) {
-    config.map.argumentLabelMode = argv.argumentLabelMode;
+  if (args.argumentLabelMode) {
+    config.map.argumentLabelMode = args.argumentLabelMode;
   }
-  if (argv.statementLabelMode) {
-    config.map.statementLabelMode = argv.statementLabelMode;
+  if (args.statementLabelMode) {
+    config.map.statementLabelMode = args.statementLabelMode;
   }
-  if (argv.statementSelectionMode) {
-    config.selection.statementSelectionMode = argv.statementSelectionMode;
+  if (args.statementSelectionMode) {
+    config.selection.statementSelectionMode = args.statementSelectionMode;
   }
-  if (argv.inclusive) {
+  if (args.inclusive) {
     config.selection.excludeDisconnected = false;
   }
 
-  if (argv.graphName) {
-    config.dot.graphname = argv.graphName;
+  if (args.graphName) {
+    config.dot.graphname = args.graphName;
   }
-  if (argv.lineLength) {
-    config.dot.lineLength = argv.lineLength;
-  }
-  if (argv.groupColors) {
-    config.color.groupColors = argv.groupColors;
+  if (args.lineLength) {
+    config.dot.lineLength = args.lineLength;
   }
 
   config.dot.graphVizSettings = config.dot.graphVizSettings || {};
-  if (argv.concentration) {
-    config.dot.graphVizSettings.concentration = argv.contentration;
+  if (args.size) {
+    config.dot.graphVizSettings.size = args.size;
   }
-  if (argv.size) {
-    config.dot.graphVizSettings.size = argv.size;
+  if (args.ratio) {
+    config.dot.graphVizSettings.ratio = args.ratio;
   }
-  if (argv.ratio) {
-    config.dot.graphVizSettings.ratio = argv.ratio;
-  }
-  if (argv.rankdir) {
-    config.dot.graphVizSettings.rankdir = argv.rankdir;
+  if (args.rankdir) {
+    config.dot.graphVizSettings.rankdir = args.rankdir;
   }
 
-  if (argv.inputGlob) {
-    config.inputPath = argv.inputGlob;
+  if (args.inputGlob) {
+    config.inputPath = args.inputGlob;
   }
-  if (argv.outputDir) {
+  if (args.outputDir) {
     if (format === "pdf") {
-      config.svgToPdf!.outputDir = argv.outputDir;
+      config.svgToPdf!.outputDir = args.outputDir;
     } else {
-      config.saveAs!.outputDir = argv.outputDir;
+      config.saveAs!.outputDir = args.outputDir;
     }
   }
-  config.logLevel = argv.verbose ? "verbose" : config.logLevel;
-  config.watch = argv.watch || config.watch;
+  config.logLevel = args.verbose ? "verbose" : config.logLevel;
+  config.watch = args.watch || config.watch;
   config.process = ["load-file", "parse-input"];
-  config.logParserErrors = argv.logParserErrors || config.logParserErrors;
+  config.logParserErrors = args.logParserErrors || config.logParserErrors;
   if (config.logParserErrors) {
     config.process.push("log-parser-errors");
   }
   config.process.push("build-model");
   config.process.push("build-map");
-  config.process.push("export-dot");
-  if (format !== "dot") {
-    config.process.push("export-svg");
+  config.process.push("colorize");
+  if (format != "graphml") {
+    config.process.push("export-dot");
+    if (format !== "dot") {
+      config.process.push("export-svg");
+    }
+  } else {
+    config.process.push("export-graphml");
   }
-  if (!argv.stdout || argv.outputDir) {
+  if (!args.stdout || args.outputDir) {
     if (format === "dot") {
       config.process.push("save-as-dot");
     } else if (format === "svg") {
       config.process.push("save-svg-as-svg");
+    } else if (format === "graphml") {
+      config.process.push("save-as-graphml");
     } else {
       config.process.push("save-svg-as-pdf");
     }
   }
 
-  if (argv.stdout) {
+  if (args.stdout) {
     if (format === "dot") {
       config.process.push("stdout-dot");
+    } else if (format === "graphml") {
+      config.process.push("stdout-graphml");
     } else {
       // pdf and png to stdout is currently not supported
       config.process.push("stdout-svg");

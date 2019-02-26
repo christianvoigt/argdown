@@ -16,10 +16,10 @@
   "dependencies": {
     "@argdown/core": "^1.0.3",
     "@argdown/node": "^1.0.0",
-    "@types/yargs": "^11.0.0",
-    "nyc": "^12.0.2",
+    "@types/yargs": "^12.0.9",
+    "nyc": "^13.3.0",
     "pkginfo": "^0.4.1",
-    "yargs": "^8.0.1"
+    "yargs": "^13.2.1"
   },
   "bin": {
     "argdown": "./dist/src/cli.js"
@@ -36,12 +36,12 @@
     "deploy": "npm run version:patch && git push --tags origin HEAD:master",
     "build": "npm run clean && npm run build:src",
     "build:src": "tsc",
-    "test": "mocha -r ts-node/register --full-trace --require source-map-support/register ./test/**/*.spec.ts",
+    "test": "npm run build && mocha -r ts-node/register --full-trace --require source-map-support/register ./test/**/*.spec.ts",
     "test:custom-process": "mocha -r ts-node/register --full-trace --require source-map-support/register ./test/**/*.spec.ts --fgrep \"custom process\"",
     "coverage": "nyc mocha -r ts-node/register --full-trace --bail --require source-map-support/register ./test/**/*.spec.ts",
     "report": "nyc report",
     "prepublishOnly": "npm run-script build",
-    "clean": "rimraf dist/*",
+    "clean": "rimraf \"dist/*\"",
     "version:patch": "npm version patch"
   },
   "readmeFilename": "Readme.md",
@@ -56,16 +56,16 @@
     "cpx": "^1.5.0",
     "glob": "^7.1.1",
     "intercept-stdout": "^0.1.2",
-    "jest": "^23.1.0",
+    "jest": "^24.1.0",
     "mkdirp": "^0.5.1",
-    "mocha": "^5.2.0",
-    "nyc": "^12.0.2",
-    "rimraf": "^2.6.2",
+    "mocha": "^6.0.2",
+    "nyc": "^13.3.0",
+    "rimraf": "^2.6.3",
     "source-map-support": "^0.5.6",
-    "ts-node": "^6.1.2",
-    "typedoc": "^0.12.0",
-    "typescript": "~2.9.1",
-    "typescript-workspace-plugin": "^1.0.5"
+    "ts-node": "^8.0.2",
+    "typedoc": "^0.14.2",
+    "typescript": "~3.3.3333",
+    "typescript-workspace-plugin": "^2.0.1"
   },
   "nyc": {
     "include": [

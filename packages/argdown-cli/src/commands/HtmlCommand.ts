@@ -1,5 +1,6 @@
 import { argdown } from "@argdown/node";
 import { Arguments } from "yargs";
+import { IGeneralCliOptions } from "../IGeneralCliOptions";
 
 export const command = "html [inputGlob] [outputDir]";
 export const desc = "export Argdown input as HTML files";
@@ -17,7 +18,8 @@ export const builder = {
   },
   head: {
     alias: "h",
-    describe: "Allows you to prepend a custom head element to the html (has to include doctype and html opening tag)",
+    describe:
+      "Allows you to prepend a custom head element to the html (has to include doctype and html opening tag)",
     type: "string"
   },
   css: {
@@ -41,46 +43,61 @@ export const builder = {
     type: "string"
   }
 };
-export const handler = async function(argv: Arguments) {
-  let config = await argdown.loadConfig(argv.config);
+export interface IHtmlCliOptions {
+  charset?: string;
+  headless?: boolean;
+  title?: string;
+  css?: string;
+  lang?: string;
+  inputGlob?: string;
+  outputDir?: string;
+}
+export const handler = async function(
+  args: Arguments<IGeneralCliOptions & IHtmlCliOptions>
+) {
+  let config = await argdown.loadConfig(args.config);
 
   config.html = config.html || {};
 
-  if (argv.headless) {
+  if (args.headless) {
     config.html.headless = true;
   }
-  if (argv.title) {
-    config.html.title = argv.title;
+  if (args.title) {
+    config.html.title = args.title;
+  }
+  if (args.lang) {
+    config.html.lang = args.lang;
   }
 
-  if (argv.inputGlob) {
-    config.inputPath = argv.inputGlob;
+  if (args.inputGlob) {
+    config.inputPath = args.inputGlob;
   }
   config.saveAs = config.saveAs || {};
-  if (argv.outputDir) {
-    config.saveAs.outputDir = argv.outputDir;
+  if (args.outputDir) {
+    config.saveAs.outputDir = args.outputDir;
   }
 
-  config.logLevel = argv.verbose ? "verbose" : config.logLevel;
-  config.watch = argv.watch || config.watch;
+  config.logLevel = args.verbose ? "verbose" : config.logLevel;
+  config.watch = args.watch || config.watch;
   config.process = ["load-file", "parse-input"];
-  config.logParserErrors = argv.logParserErrors || config.logParserErrors;
+  config.logParserErrors = args.logParserErrors || config.logParserErrors;
   if (config.logParserErrors) {
     config.process.push("log-parser-errors");
   }
   config.process.push("build-model");
+  config.process.push("colorize");
   config.process.push("export-html");
 
-  if (!argv.stdout || argv.outputDir) {
+  if (!args.stdout || args.outputDir) {
     config.process.push("save-as-html");
   }
 
-  if (argv.css) {
-    config.html.css = argv.css;
-  } else if (!argv.stdout || argv.outputDir) {
+  if (args.css) {
+    config.html.css = args.css;
+  } else if (!args.stdout || args.outputDir) {
     config.process.push("copy-default-css");
   }
-  if (argv.stdout) {
+  if (args.stdout) {
     config.process.push("stdout-html");
   }
 

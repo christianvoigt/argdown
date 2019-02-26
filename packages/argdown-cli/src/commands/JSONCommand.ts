@@ -1,5 +1,6 @@
 import { argdown } from "@argdown/node";
 import { Arguments } from "yargs";
+import { IGeneralCliOptions } from "../IGeneralCliOptions";
 
 export const command = "json [inputGlob] [outputDir]";
 export const desc = "export Argdown input as JSON files";
@@ -24,43 +25,51 @@ export const builder = {
     type: "boolean"
   }
 };
-export const handler = async (argv: Arguments) => {
-  let config = await argdown.loadConfig(argv.config);
+export interface IJSONCliOptions {
+  inputGlob?: string;
+  outputDir?: string;
+  spaces?: number;
+}
+export const handler = async (
+  args: Arguments<IGeneralCliOptions & IJSONCliOptions>
+) => {
+  let config = await argdown.loadConfig(args.config);
 
   config.json = config.json || {};
 
-  if (argv.spaces !== null) {
-    config.json.spaces = argv.spaces;
+  if (args.spaces !== null) {
+    config.json.spaces = args.spaces;
   }
-  if (argv.removeEmbeddedRelations) {
+  if (args.removeEmbeddedRelations) {
     config.json.removeEmbeddedRelations = true;
   }
-  if (argv.removeMap) {
+  if (args.removeMap) {
     config.json.exportMap = false;
   }
 
-  if (argv.inputGlob) {
-    config.inputPath = argv.inputGlob;
+  if (args.inputGlob) {
+    config.inputPath = args.inputGlob;
   }
   config.saveAs = config.saveAs || {};
-  if (argv.outputDir) {
-    config.saveAs.outputDir = argv.outputDir;
+  if (args.outputDir) {
+    config.saveAs.outputDir = args.outputDir;
   }
 
-  config.logLevel = argv.verbose ? "verbose" : config.logLevel;
-  config.watch = argv.watch || config.watch;
+  config.logLevel = args.verbose ? "verbose" : config.logLevel;
+  config.watch = args.watch || config.watch;
   config.process = ["load-file", "parse-input"];
-  config.logParserErrors = argv.logParserErrors || config.logParserErrors;
+  config.logParserErrors = args.logParserErrors || config.logParserErrors;
   if (config.logParserErrors) {
     config.process.push("log-parser-errors");
   }
   config.process.push("build-model");
+  config.process.push("colorize");
   config.process.push("export-json");
 
-  if (!argv.stdout || argv.outputDir) {
+  if (!args.stdout || args.outputDir) {
     config.process.push("save-as-json");
   }
-  if (argv.stdout) {
+  if (args.stdout) {
     config.process.push("stdout-json");
   }
 
