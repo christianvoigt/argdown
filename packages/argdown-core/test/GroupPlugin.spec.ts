@@ -10,10 +10,9 @@ import {
   PreselectionPlugin,
   ArgumentSelectionPlugin,
   StatementSelectionPlugin,
-  GroupPlugin,
-  ColorPlugin,
-  ArgdownTypes
+  GroupPlugin
 } from "../src/index";
+import { toJSON } from "../src/model/toJSON";
 
 const app = new ArgdownApplication();
 const parserPlugin = new ParserPlugin();
@@ -22,12 +21,12 @@ app.addPlugin(parserPlugin, "parse-input");
 const modelPlugin = new ModelPlugin();
 app.addPlugin(dataPlugin, "build-model");
 app.addPlugin(modelPlugin, "build-model");
-const colorPlugin = new ColorPlugin();
-app.addPlugin(colorPlugin, "build-model");
 
 const preselectionPlugin = new PreselectionPlugin();
 app.addPlugin(preselectionPlugin, "build-map");
-const statementSelectionPlugin = new StatementSelectionPlugin({ statementSelectionMode: StatementSelectionMode.ALL });
+const statementSelectionPlugin = new StatementSelectionPlugin({
+  statementSelectionMode: StatementSelectionMode.ALL
+});
 app.addPlugin(statementSelectionPlugin, "build-map");
 const argumentSelectionPlugin = new ArgumentSelectionPlugin();
 app.addPlugin(argumentSelectionPlugin, "build-map");
@@ -63,11 +62,11 @@ describe("GroupPlugin", function() {
       input: source
     });
     expect(result.map!.nodes.length).to.equal(2);
-    expect(result.map!.nodes[0].title).to.equal("A");
-    expect(result.map!.nodes[1].title).to.equal("Section 2");
+    expect(result.map!.nodes[0].title).to.equal("Section 2");
+    expect(result.map!.nodes[1].title).to.equal("A");
     expect(result.map!.edges.length).to.equal(2);
 
-    let section2 = <IGroupMapNode>result.map!.nodes[1];
+    let section2 = <IGroupMapNode>result.map!.nodes[0];
     expect(section2.children!.length).to.equal(2);
     expect(section2.children![0].title).to.equal("B");
 
@@ -141,15 +140,14 @@ describe("GroupPlugin", function() {
       process: ["parse-input", "build-model", "build-map"],
       input: source
     });
-    // console.log(toJSON(result.map!.nodes, null, 2));
+    console.log(toJSON(result.map!.nodes, null, 2));
     //app.parser.logAst(result.ast);
     //preprocessor.logRelations(result);
     //console.log(result.arguments);
 
-    expect(result.map!.nodes.length).to.equal(3);
-    expect(result.map!.nodes[0].title).to.equal("a");
-    expect(result.map!.nodes[1].title).to.equal("h2");
-    expect(result.map!.nodes[2].title).to.equal("c");
+    expect(result.map!.nodes.length).to.equal(2);
+    expect(result.map!.nodes[0].title).to.equal("h2");
+    expect(result.map!.nodes[1].title).to.equal("a");
   });
   it("ignores sections with isGroup === false", function() {
     let source = `
@@ -178,52 +176,14 @@ describe("GroupPlugin", function() {
     //preprocessor.logRelations(result);
     //console.log(result.arguments);
     expect(result.sections![0].children[0].isGroup).to.be.false;
-    expect(result.arguments!["a"].section).to.be.undefined;
 
     expect(result.map!.nodes.length).to.equal(3);
-    expect(result.map!.nodes[0].title).to.equal("p");
-    expect(result.map!.nodes[1].title).to.equal("h3");
+    expect(result.map!.nodes[0].title).to.equal("h3");
+    expect(result.map!.nodes[1].title).to.equal("p");
     expect(result.map!.nodes[2].title).to.equal("a");
-    expect((<IGroupMapNode>result.map!.nodes[1]).children!.length).to.equal(1);
-    expect((<IGroupMapNode>result.map!.nodes[1]).children![0].title).to.equal("b");
-  });
-  it("can use a custom color scheme for groups", function() {
-    let source = `
-    ===
-    color:
-        colorScheme: colorbrewer-set2
-        groupColorScheme:
-            - "#fff2ae"
-            - "#f4cae4"
-            - "#b3e2cd"
-    selection:
-        excludeDisconnected: false
-    group:
-        groupDepth: 3
-    ===
-    
-    # H1
-    
-    <a>: #tag-1
-    
-    ## H2
-    
-    <b>: #tag-2 #tag-1
-    
-    ### H3
-    
-    [c]: #tag-3
-    
-    <b>: #tag-3
-    `;
-    const request = { process: ["parse-input", "build-model", "build-map"], input: source };
-    const response = app.run(request);
-    expect(response.map!.nodes![0].color).to.equal("#fff2ae");
-    const group2 = <IGroupMapNode>(<IGroupMapNode>response.map!.nodes![0]).children![1];
-    expect(group2.type).to.equal(ArgdownTypes.GROUP_MAP_NODE);
-    expect(group2.color).to.equal("#f4cae4");
-    const group3 = <IGroupMapNode>group2.children![1];
-    expect(group3.type).to.equal(ArgdownTypes.GROUP_MAP_NODE);
-    expect(group3.color).to.equal("#b3e2cd");
+    expect((<IGroupMapNode>result.map!.nodes[0]).children!.length).to.equal(1);
+    expect((<IGroupMapNode>result.map!.nodes[0]).children![0].title).to.equal(
+      "b"
+    );
   });
 });

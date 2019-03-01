@@ -6,7 +6,7 @@ import { IGroupSettings, ISectionConfig } from "./GroupPlugin";
 /**
  * Applies the regroup group setting by deleting all sections derived from headings and creating new ones based on the settings.
  *
- * Transforms the response.section field and the section property of arguments and equivalence classes.
+ * Transforms the response.sections field and the section property of arguments and equivalence classes.
  * This plugin should be run before the [[ColorPlugin]]
  */
 export class RegroupPlugin implements IArgdownPlugin {
@@ -23,13 +23,22 @@ export class RegroupPlugin implements IArgdownPlugin {
     const settings = this.getSettings(request);
     if (settings.regroup) {
       if (!response.statements) {
-        throw new ArgdownPluginError(this.name, "No statements field in response.");
+        throw new ArgdownPluginError(
+          this.name,
+          "No statements field in response."
+        );
       }
       if (!response.arguments) {
-        throw new ArgdownPluginError(this.name, "No arguments field in response.");
+        throw new ArgdownPluginError(
+          this.name,
+          "No arguments field in response."
+        );
       }
       if (!response.relations) {
-        throw new ArgdownPluginError(this.name, "No relations field in response.");
+        throw new ArgdownPluginError(
+          this.name,
+          "No relations field in response."
+        );
       }
       response.sections = [];
       for (let ec of Object.values(response.statements)) {
@@ -59,7 +68,8 @@ const regroupRecursively = (
     level: sectionLevel,
     title: sectionConfig.title,
     tags: sectionConfig.tags,
-    children: []
+    children: [],
+    isClosed: sectionConfig.isClosed
   };
   if (parentSection) {
     newSection.parent = parentSection;
@@ -84,7 +94,13 @@ const regroupRecursively = (
   if (sectionConfig.children) {
     for (let i = 0; i < sectionConfig.children.length; i++) {
       const child = sectionConfig.children[i];
-      const childSection = regroupRecursively(child, response, sectionLevel + 1, sectionCounter + i, newSection);
+      const childSection = regroupRecursively(
+        child,
+        response,
+        sectionLevel + 1,
+        sectionCounter + i,
+        newSection
+      );
       newSection.children.push(childSection);
     }
   }

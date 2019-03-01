@@ -500,6 +500,7 @@ export interface ISection
   children: ISection[];
   parent?: ISection;
   heading?: IRuleNode;
+  isClosed?: boolean;
   /**
    * Should this section be used as a group in the argument map?
    *
@@ -537,6 +538,7 @@ export interface IGroupMapNode extends IMapNode {
   children?: IMapNode[];
   parent?: string;
   section?: ISection;
+  isClosed?: boolean;
 }
 /**
  * An edge in an argument map derived from an [[IRelation]] or an [[IEquivalenceClass]].

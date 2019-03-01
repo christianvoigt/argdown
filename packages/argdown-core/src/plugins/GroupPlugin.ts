@@ -2,7 +2,13 @@ import * as _ from "lodash";
 import { IArgdownPlugin, IRequestHandler } from "../IArgdownPlugin";
 import { ArgdownPluginError } from "../ArgdownPluginError";
 import { IArgdownRequest, IArgdownResponse } from "../index";
-import { IMapNode, ArgdownTypes, IGroupMapNode, ISection } from "../model/model";
+import {
+  IMapNode,
+  ArgdownTypes,
+  IGroupMapNode,
+  ISection,
+  isGroupMapNode
+} from "../model/model";
 
 export interface ISectionConfig extends ISection {
   statements?: string[];
@@ -11,6 +17,9 @@ export interface ISectionConfig extends ISection {
 export interface IGroupSettings {
   groupDepth?: number;
   regroup?: ISectionConfig[];
+  sections?: { [key: string]: { isGroup?: boolean; isClosed?: boolean } };
+  ignoreIsClosed?: boolean;
+  ignoreIsGroup?: boolean;
 }
 const defaultSettings: IGroupSettings = {
   groupDepth: 2
@@ -46,13 +55,22 @@ export class GroupPlugin implements IArgdownPlugin {
   };
   prepare: IRequestHandler = (request, response) => {
     if (!response.statements) {
-      throw new ArgdownPluginError(this.name, "No statements field in response.");
+      throw new ArgdownPluginError(
+        this.name,
+        "No statements field in response."
+      );
     }
     if (!response.arguments) {
-      throw new ArgdownPluginError(this.name, "No arguments field in response.");
+      throw new ArgdownPluginError(
+        this.name,
+        "No arguments field in response."
+      );
     }
     if (!response.relations) {
-      throw new ArgdownPluginError(this.name, "No relations field in response.");
+      throw new ArgdownPluginError(
+        this.name,
+        "No relations field in response."
+      );
     }
     _.defaultsDeep(this.getSettings(request), this.defaults);
   };
@@ -62,33 +80,50 @@ export class GroupPlugin implements IArgdownPlugin {
     }
     const settings = this.getSettings(request);
     // Create group nodes and node tree structure
-    const groupColorScheme =
-      request.color && request.color.groupColorScheme
-        ? request.color.groupColorScheme
-        : ["#DADADA", "#BABABA", "#AAAAAA"];
+    const minGroupLevel =
+      (response.maxSectionLevel || 0) - settings.groupDepth! + 1;
+    if (response.sections) {
+      response.sections = response.sections.map(s =>
+        setIsGroupRecursive(s, minGroupLevel)
+      );
+    }
 
-    response.map!.nodes = createMapNodeTree(settings, groupColorScheme, response, response.map!.nodes);
+    response.map!.nodes = createMapNodeTree(response, response.map!.nodes);
   };
 }
 /**
  * Creates group nodes and returns a tree structure containing all group, statement and argument nodes of the map.
  */
 const createMapNodeTree = (
-  settings: IGroupSettings,
-  groupColorScheme: string[],
   response: IArgdownResponse,
   nodes: IMapNode[]
 ): IMapNode[] => {
   const groupMap = createGroups(response, nodes);
   [...groupMap.values()].reduce(createAncestorGroups, groupMap);
   const groups = [...groupMap.values()];
-  //normalize group levels
-  const maxGroupLevel = groups.reduce((acc, curr) => (curr.level! > acc ? curr.level! : acc), 0);
-  const minGroupLevel = maxGroupLevel - settings.groupDepth! + 1;
-  const nodesWithSection = normalizeGroupLevels(minGroupLevel, groupColorScheme, groups);
-  const nodesWithoutSection: IMapNode[] = nodes.filter(n => !findSection(response, n));
-  return [...nodesWithSection, ...nodesWithoutSection];
+  const topLevelGroups = groups.filter(g => !g.parent);
+  for (let group of topLevelGroups) {
+    setGroupLevelsRecursive(group);
+  }
+  const nodesWithoutSection: IMapNode[] = nodes.filter(
+    n => !findSection(response, n)
+  );
+  return [...topLevelGroups, ...nodesWithoutSection];
 };
+/// Sets isGroup for all sections that have not already an isGroup property.
+/// isGroup = section.level - ((maxSectionLevel - groupDepth) + 1) >= 0;
+const setIsGroupRecursive = (section: ISection, minGroupLevel: number) => {
+  if (section.isGroup === undefined) {
+    section.isGroup = section.level >= minGroupLevel;
+  }
+  if (section.children) {
+    for (let child of section.children) {
+      setIsGroupRecursive(child, minGroupLevel);
+    }
+  }
+  return section;
+};
+
 const createGroups = (response: IArgdownResponse, nodes: IMapNode[]) => {
   const groupMap = new Map<string, IGroupMapNode>();
   for (let node of nodes) {
@@ -100,15 +135,19 @@ const createGroups = (response: IArgdownResponse, nodes: IMapNode[]) => {
           type: ArgdownTypes.GROUP_MAP_NODE,
           id: section.id,
           title: section.title,
-          color: section.color,
           labelTitle: section.title,
-          children: <IGroupMapNode[]>[],
+          children: <IMapNode[]>[],
           level: section.level,
-          section: section
+          section: section,
+          isClosed: section.isClosed
         };
         groupMap.set(section.id, group);
-        if (section.parent) {
-          group.parent = section.parent.id;
+        let parentSection = section.parent;
+        while (parentSection && parentSection.isGroup === false) {
+          parentSection = parentSection.parent;
+        }
+        if (parentSection) {
+          group.parent = parentSection.id;
         }
       }
       group.children!.push(node);
@@ -116,40 +155,36 @@ const createGroups = (response: IArgdownResponse, nodes: IMapNode[]) => {
   }
   return groupMap;
 };
-const findSection = (response: IArgdownResponse, node: IMapNode): ISection | undefined | null => {
+const findSection = (
+  response: IArgdownResponse,
+  node: IMapNode
+): ISection | undefined | null => {
+  let section = null;
   if (node.type == ArgdownTypes.ARGUMENT_MAP_NODE) {
     let argument = response.arguments![node.title!];
-    return argument.section;
+    section = argument.section;
   } else {
     let equivalenceClass = response.statements![node.title!];
-    return equivalenceClass.section;
+    section = equivalenceClass.section;
   }
+  while (section && section.isGroup === false) {
+    section = section.parent;
+  }
+  return section;
 };
-const normalizeGroupLevels = (
-  minGroupLevel: number,
-  groupColorScheme: string[],
-  groups: IGroupMapNode[]
-): IMapNode[] => {
-  const nodes: IMapNode[] = [];
-  for (let group of groups) {
-    group.level = group.level! - minGroupLevel;
-    if (!group.color && group.level < groupColorScheme.length) {
-      group.color = groupColorScheme[group.level];
-    }
-  }
-
-  for (let group of groups) {
-    if (group.level! < 0) {
-      for (let node of group.children!) {
-        if (node.type !== ArgdownTypes.GROUP_MAP_NODE || (<IGroupMapNode>node).level! >= 0) {
-          nodes.push(node);
-        }
+const setGroupLevelsRecursive = (
+  currentGroup: IGroupMapNode,
+  parentLevel: number = 0
+): IGroupMapNode => {
+  currentGroup.level = parentLevel + 1;
+  if (currentGroup.children) {
+    for (let child of currentGroup.children) {
+      if (isGroupMapNode(child)) {
+        setGroupLevelsRecursive(child, currentGroup.level);
       }
-    } else if (!group.parent) {
-      nodes.push(group);
     }
   }
-  return nodes;
+  return currentGroup;
 };
 /**
  * Creates all ancestor groups of a group that are not already existing.
@@ -163,20 +198,19 @@ const createAncestorGroups = (
   group: IGroupMapNode
 ): Map<string, IGroupMapNode> => {
   let currentGroup = group;
+  let parentSection = currentGroup.section!.parent;
   while (currentGroup.parent) {
     let parentGroup = groupMap.get(currentGroup.parent);
     if (parentGroup) {
       parentGroup.children!.push(currentGroup);
       break;
     }
-    const parentSection = currentGroup.section!.parent;
     if (parentSection) {
       if (parentSection.isGroup || parentSection.isGroup === undefined) {
         parentGroup = {
           type: ArgdownTypes.GROUP_MAP_NODE,
           id: parentSection.id,
           title: parentSection.title,
-          color: parentSection.color,
           labelTitle: parentSection.title,
           children: [currentGroup],
           level: parentSection.level,
@@ -187,9 +221,12 @@ const createAncestorGroups = (
         }
         groupMap.set(currentGroup.parent, parentGroup);
         currentGroup = parentGroup;
+        parentSection = currentGroup.section!.parent;
       } else if (parentSection.parent) {
         currentGroup.parent = parentSection.parent.id;
+        parentSection = parentSection.parent;
       } else {
+        currentGroup.parent = undefined;
         break;
       }
     }

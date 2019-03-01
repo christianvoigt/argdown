@@ -435,7 +435,7 @@ describe("ModelPlugin", function() {
     expect(result.arguments!["C"].section).to.exist;
     expect(result.arguments!["C"].section!.title).to.equal("Section 2");
   });
-  it("ignores sections with isGroup === false", function() {
+  it("assigns sections with isGroup === false", function() {
     let source = `
 # h1
 
@@ -462,7 +462,7 @@ describe("ModelPlugin", function() {
     //console.log(result.arguments);
     expect(result.sections![0].isGroup === false).to.be.false;
     expect(result.sections![0].children[0].isGroup === false).to.be.true;
-    expect(result.arguments!["a"].section).to.be.undefined;
+    expect(result.arguments!["a"].section!.title).to.equal("h2");
     expect(result.arguments!["b"].section!.title).to.equal("h3");
   });
   it("puts equivalence class and argument in section if isInGroup is true", function() {
