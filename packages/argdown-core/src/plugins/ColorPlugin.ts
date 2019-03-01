@@ -287,7 +287,21 @@ const colorNodesRecursive = (
 ) => {
   if (isGroupMapNode(node)) {
     node.fontColor = settings.groupFontColor;
-    node.color = sectionsMap.get(node.id!)!.color;
+    const section = sectionsMap.get(node.id!)!;
+    // because the group level can differ from the section level, we have to check if the section was colored by level
+    // if that's the case, we have to recalculate the color based on the groupColorScheme.
+    if (
+      (!settings.ignoreColorData && section.data && section.data.color) ||
+      (settings.groupColors && settings.groupColors[section.title!]) ||
+      (settings.colorizeGroupsByTag && section.tags)
+    ) {
+      node.color = section.color;
+    } else if (settings.groupColorScheme) {
+      node.color =
+        settings.groupColorScheme[
+          Math.min(settings.groupColorScheme.length - 1, node.level! - 1)
+        ];
+    }
     if (node.children) {
       for (let child of node.children) {
         colorNodesRecursive(response, sectionsMap, settings, child);
@@ -341,6 +355,12 @@ const colorizeSection = (
   } else if (settings.colorizeGroupsByTag && section.tags) {
     const tag = getTagWithHighestPriority(section.tags, tagDataDict);
     section.color = getColor(colorScheme, tagColors[tag]);
+  } else if (section.level && settings.groupColorScheme) {
+    const index = Math.min(
+      settings.groupColorScheme.length - 1,
+      section.level - 1
+    );
+    section.color = settings.groupColorScheme[index];
   }
 };
 

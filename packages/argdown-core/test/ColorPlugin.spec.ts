@@ -10,7 +10,8 @@ import {
   ArgumentSelectionPlugin,
   PreselectionPlugin,
   IGroupMapNode,
-  GroupPlugin
+  GroupPlugin,
+  ArgdownTypes
 } from "../src/index";
 import { colorSchemes } from "../src/plugins/colorSchemes";
 
@@ -281,7 +282,7 @@ selection:
     const response = app.run(request);
     expect(response.sections![0].color).to.equal("#b3e2cd");
     expect(response.sections![0].children[0].color).to.equal("#fdcdac");
-    expect(response.sections![0].children[1].color).to.be.undefined;
+    expect(response.sections![0].children[1].color).to.equal("#f4cae4");
     expect(response.arguments!["a"].color).to.equal(
       colorSchemes["iwanthue-fluo"][6]
     );
@@ -394,5 +395,49 @@ color:
     expect(response.map!.edges![0].color).to.equal("#200000");
     expect(response.map!.edges![1].color).to.equal("#100000");
     expect(response.map!.edges![2].color).to.equal("#600000");
+  });
+  it("can use a custom color scheme for groups", function() {
+    let source = `
+    ===
+    color:
+        colorScheme: colorbrewer-set2
+        groupColorScheme:
+            - "#fff2ae"
+            - "#f4cae4"
+            - "#b3e2cd"
+    selection:
+        excludeDisconnected: false
+    group:
+        groupDepth: 3
+    ===
+    
+    # H1
+    
+    <a>: #tag-1
+    
+    ## H2
+    
+    <b>: #tag-2 #tag-1
+    
+    ### H3
+    
+    [c]: #tag-3
+    
+    <b>: #tag-3
+    `;
+    const request = {
+      process: ["parse-input", "build-model", "build-map", "add-color"],
+      input: source
+    };
+    const response = app.run(request);
+    expect(response.map!.nodes![0].color).to.equal("#fff2ae");
+    const group2 = <IGroupMapNode>(
+      (<IGroupMapNode>response.map!.nodes![0]).children![1]
+    );
+    expect(group2.type).to.equal(ArgdownTypes.GROUP_MAP_NODE);
+    expect(group2.color).to.equal("#f4cae4");
+    const group3 = <IGroupMapNode>group2.children![1];
+    expect(group3.type).to.equal(ArgdownTypes.GROUP_MAP_NODE);
+    expect(group3.color).to.equal("#b3e2cd");
   });
 });
