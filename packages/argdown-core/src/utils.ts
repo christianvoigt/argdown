@@ -1,6 +1,7 @@
 import { IAstNode } from "./model/model";
 import { isTokenNode, isRuleNode } from "./model/model";
 import { IToken } from "chevrotain";
+import * as pixelWidth from "string-pixel-width";
 
 const mdurl = require("mdurl");
 const punycode = require("punycode");
@@ -123,7 +124,11 @@ export const stringToClassName = (str: string): string => stringToHtmlId(str);
 /// If htmlIdsSet is not null, creates an id that is not already a member of the set.
 /// Example: If "statement-s1" is already a member of the set, it will return "statement-s1-occurrence-2".
 /// Note that you still have to add the new id to the set yourself if you want to avoid duplicates.
-export const getHtmlId = (type: string, title: string, htmlIdsSet?: { [id: string]: boolean }): string => {
+export const getHtmlId = (
+  type: string,
+  title: string,
+  htmlIdsSet?: { [id: string]: boolean }
+): string => {
   let id = type + "-" + title;
   id = stringToHtmlId(id);
   if (htmlIdsSet) {
@@ -136,7 +141,10 @@ export const getHtmlId = (type: string, title: string, htmlIdsSet?: { [id: strin
   }
   return id;
 };
-export const reduceToMap = <K, V extends object>(a: V[], idProvider: (curr: V) => K): Map<K, V> => {
+export const reduceToMap = <K, V extends object>(
+  a: V[],
+  idProvider: (curr: V) => K
+): Map<K, V> => {
   return a.reduce((acc, curr): Map<K, V> => {
     acc.set(idProvider(curr), curr);
     return acc;
@@ -181,7 +189,11 @@ export const astToString = (ast: IAstNode): string => {
 export const astToJsonString = (ast: IAstNode[]): string => {
   return JSON.stringify(ast, null, 2);
 };
-const logAstRecursively = (value: IAstNode, pre: string, str: string): string => {
+const logAstRecursively = (
+  value: IAstNode,
+  pre: string,
+  str: string
+): string => {
   if (value === undefined) {
     str += "undefined";
     return str;
@@ -212,4 +224,127 @@ export const isString = (x: any): x is string => {
 
 export const isObject = (x: any): x is object => {
   return typeof x === "object";
+};
+
+/**
+ * Splits a string at least every x characters. If useSpaces is true,
+ *
+ * Returns an array of substrings.
+ *
+ **/
+export const splitByCharactersInLine = (
+  s: string,
+  n: number,
+  useSpaces: boolean,
+  a?: string[]
+): string[] => {
+  if (!s) return [];
+
+  a = a || [];
+  if (s.length <= n) {
+    a.push(s);
+    return a;
+  }
+  var line = s.substring(0, n);
+  if (!useSpaces) {
+    // insert newlines anywhere
+    a.push(line);
+    return splitByCharactersInLine(s.substring(n), n, useSpaces, a);
+  } else {
+    // attempt to insert newlines after whitespace
+    var lastSpaceRgx = /\s(?!.*\s)/;
+    var idx = line.search(lastSpaceRgx);
+    var nextIdx = n;
+    if (idx > 0) {
+      line = line.substring(0, idx);
+      nextIdx = idx;
+    }
+    a.push(line);
+    return splitByCharactersInLine(s.substring(nextIdx), n, useSpaces, a);
+  }
+};
+/**
+ * Splits a string every x pixels,
+ * using string-pixel-width for measuring the width of the current line.
+ *
+ * Returns an array of substrings with width <= maxWidth.
+ *
+ * Only fonts measured by the string-pixel-width library are supported.
+ **/
+export const splitByLineWidth = (
+  str: string,
+  options: {
+    maxWidth?: number;
+    fontSize?: number;
+    bold?: boolean;
+    font?: string;
+  }
+): string[] => {
+  if (!str) {
+    return [];
+  }
+  const arr: string[] = [];
+  const words = str.split(" ");
+  let currentLineWidth = 0;
+  let currentLine = "";
+  let { font = "arial", fontSize = 10, bold = false, maxWidth = 0 } = options;
+  const spaceWidth = pixelWidth(" ", {
+    font: font,
+    size: fontSize,
+    bold: bold
+  });
+  for (let word of words) {
+    const wordWidth = pixelWidth(word, {
+      font: font,
+      size: fontSize,
+      bold: bold
+    });
+    if (currentLineWidth + wordWidth > maxWidth) {
+      currentLineWidth = wordWidth + spaceWidth;
+      arr.push(currentLine);
+      currentLine = word + " ";
+    } else {
+      currentLineWidth += wordWidth + spaceWidth;
+      currentLine += word + " ";
+    }
+  }
+  arr.push(currentLine);
+  return arr;
+};
+/**
+ * Adds line breaks to a string every x pixels,
+ * using string-pixel-width for measuring the width.
+ *
+ * Returns an object containing the new string and the number of lines.
+ *
+ * Only fonts measured by the string-pixel-width library are supported.
+ **/
+export const addLineBreaks = (
+  str: string,
+  measurePixelWidth: boolean,
+  options: {
+    maxWidth?: number;
+    charactersInLine?: number;
+    fontSize?: number;
+    font?: string;
+    bold?: boolean;
+    lineBreak?: string;
+  }
+): { text: string; lines: number } => {
+  if (!str) {
+    return { text: "", lines: 0 };
+  }
+  const arr = measurePixelWidth
+    ? splitByLineWidth(str, options)
+    : splitByCharactersInLine(str, options.charactersInLine || 0, true);
+  const lineBreak = options.lineBreak || "\n";
+  return { lines: arr.length, text: arr.join(lineBreak) };
+};
+/**
+ * Replaces all non-alphanumeric characters with their unicode html entity
+ **/
+export const escapeAsHtmlEntities = (s: string): string => {
+  return s.replace(/[^0-9A-Za-z ]/g, function(c) {
+    return "&#" + c.charCodeAt(0) + ";";
+  });
 };

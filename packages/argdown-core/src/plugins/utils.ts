@@ -14,7 +14,12 @@ export const otherRelationMemberIsInSelection = (
   selectedStatements: Map<string, IEquivalenceClass>,
   selectedArguments: Map<string, IArgument>
 ) => {
-  return relationMemberIsInSelection(relation, other(relation, relationMember), selectedStatements, selectedArguments);
+  return relationMemberIsInSelection(
+    relation,
+    other(relation, relationMember),
+    selectedStatements,
+    selectedArguments
+  );
 };
 export const relationMemberIsInSelection = (
   relation: IRelation,
@@ -34,12 +39,20 @@ export const relationMemberIsInSelection = (
     return (
       undefined !==
       relationMember.members.find(
-        s => (isSymmetric || s.role === role) && selectedArguments.get((<IPCSStatement>s).argumentTitle!) !== undefined
+        s =>
+          (isSymmetric || s.role === role) &&
+          selectedArguments.get((<IPCSStatement>s).argumentTitle!) !== undefined
       )
     );
-  } else if (relationMember.type === ArgdownTypes.ARGUMENT && selectedArguments.get(relationMember.title!)) {
+  } else if (
+    relationMember.type === ArgdownTypes.ARGUMENT &&
+    selectedArguments.get(relationMember.title!)
+  ) {
     return true;
-  } else if (relationMember.type === ArgdownTypes.INFERENCE && selectedArguments.get(relationMember.argumentTitle!)) {
+  } else if (
+    relationMember.type === ArgdownTypes.INFERENCE &&
+    selectedArguments.get(relationMember.argumentTitle!)
+  ) {
     return true;
   }
   return false;

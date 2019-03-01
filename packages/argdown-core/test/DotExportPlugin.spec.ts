@@ -9,7 +9,8 @@ import {
   PreselectionPlugin,
   StatementSelectionPlugin,
   ArgumentSelectionPlugin,
-  GroupPlugin
+  GroupPlugin,
+  ColorPlugin
 } from "../src/index";
 
 const app = new ArgdownApplication();
@@ -28,6 +29,7 @@ const mapPlugin = new MapPlugin();
 app.addPlugin(mapPlugin, "create-map");
 const groupPlugin = new GroupPlugin();
 app.addPlugin(groupPlugin, "create-map");
+app.addPlugin(new ColorPlugin(), "colorize");
 const dotExport = new DotExportPlugin();
 app.addPlugin(dotExport, "export-dot");
 
@@ -57,11 +59,17 @@ describe("DotExport", function() {
     `;
 
     let result = app.run({
-      process: ["parse-input", "build-model", "create-map", "export-dot"],
+      process: [
+        "parse-input",
+        "build-model",
+        "create-map",
+        "colorize",
+        "export-dot"
+      ],
       input: source,
       logLevel: "error"
     });
-    //console.log(result.dot);
+    // console.log(result.dot);
     expect(result.dot).to.exist;
   });
   it("can create samerank sections", function() {
@@ -83,11 +91,17 @@ describe("DotExport", function() {
     `;
 
     let result = app.run({
-      process: ["parse-input", "build-model", "create-map", "export-dot"],
+      process: [
+        "parse-input",
+        "build-model",
+        "create-map",
+        "colorize",
+        "export-dot"
+      ],
       input: source,
-      logLevel: "debug"
+      logLevel: "error"
     });
-    console.log(result.dot);
+    //console.log(result.dot);
     const rankSections = `{ rank = same;
 n4;
 n5;

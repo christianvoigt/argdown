@@ -6,11 +6,14 @@ import {
   ArgdownTypes,
   IMapNode,
   IGroupMapNode,
-  IArgument
+  IArgument,
+  IEquivalenceClass,
+  IMap,
+  isGroupMapNode
 } from "../model/model";
 import { IArgdownRequest, IArgdownResponse } from "../index";
 import { validateColorString } from "../utils";
-import { IEquivalenceClass, IMap, isGroupMapNode } from "../../dist/src";
+import { escapeAsHtmlEntities, addLineBreaks } from "../utils";
 
 export interface IRankMap {
   [key: string]: IRank;
@@ -22,7 +25,44 @@ export interface IRank {
 export interface IDotSettings {
   useHtmlLabels?: boolean;
   graphname?: string;
-  lineLength?: number;
+  measureLinePixelWidth?: boolean;
+  group?: {
+    lineWidth?: number;
+    charactersInLine?: number;
+    font?: string;
+    fontSize?: number;
+    bold?: boolean;
+  };
+  statement?: {
+    lineWidth?: number;
+    title?: {
+      font: string;
+      fontSize: number;
+      bold: boolean;
+      charactersInLine?: number;
+    };
+    text?: {
+      font: string;
+      fontSize: number;
+      bold: boolean;
+      charactersInLine?: number;
+    };
+  };
+  argument?: {
+    lineWidth?: number;
+    title?: {
+      font: string;
+      fontSize: number;
+      bold: boolean;
+      charactersInLine?: number;
+    };
+    text?: {
+      font: string;
+      fontSize: number;
+      bold: boolean;
+      charactersInLine?: number;
+    };
+  };
   graphVizSettings?: { [name: string]: string };
   sameRank?: IRank[];
 }
@@ -49,7 +89,23 @@ declare module "../index" {
 const defaultSettings: IDotSettings = {
   useHtmlLabels: true,
   graphname: "Argument Map",
-  lineLength: 25,
+  measureLinePixelWidth: false,
+  group: {
+    lineWidth: 400,
+    charactersInLine: 80,
+    font: "arial",
+    fontSize: 12
+  },
+  argument: {
+    lineWidth: 180,
+    title: { font: "arial", fontSize: 10, bold: true, charactersInLine: 40 },
+    text: { font: "arial", fontSize: 10, bold: false, charactersInLine: 40 }
+  },
+  statement: {
+    lineWidth: 180,
+    title: { font: "arial", fontSize: 10, bold: true, charactersInLine: 40 },
+    text: { font: "arial", fontSize: 10, bold: false, charactersInLine: 40 }
+  },
   graphVizSettings: {
     rankdir: "BT", //BT | TB | LR | RL
     concentrate: "false",
@@ -103,7 +159,7 @@ export class DotExportPlugin implements IArgdownPlugin {
     const settings = this.getSettings(request);
     _.defaultsDeep(settings, this.defaults);
   };
-  run: IRequestHandler = (request, response, logger) => {
+  run: IRequestHandler = (request, response) => {
     const settings = this.getSettings(request);
     let rankMap: IRankMap = {};
     rankMap = Object.values(response.arguments!).reduce(
@@ -115,7 +171,6 @@ export class DotExportPlugin implements IArgdownPlugin {
       rankMap
     );
     settings.sameRank!.push(...Object.values(rankMap));
-    logger.log("info", "ranks:" + settings.sameRank!.length);
 
     response.groupCount = 0;
     let dot = 'digraph "' + settings.graphname + '" {\n\n';
@@ -186,45 +241,54 @@ export class DotExportPlugin implements IArgdownPlugin {
       let dotGroupId = "cluster_" + response.groupCount;
       let groupLabel = node.labelTitle || "";
       if (settings.useHtmlLabels) {
-        groupLabel = foldAndEscape(
-          groupLabel,
-          settings.lineLength || defaultSettings.lineLength!
-        );
-        groupLabel = `<<FONT FACE="Arial" POINT-SIZE="10" COLOR="${
+        groupLabel = settings.measureLinePixelWidth
+          ? addLineBreaksAndEscape(groupLabel, true, {
+              maxWidth: settings.group!.lineWidth!,
+              fontSize: settings.group!.fontSize!,
+              bold: settings.group!.bold!,
+              font: settings.group!.font!
+            })
+          : addLineBreaksAndEscape(groupLabel, false, {
+              charactersInLine: settings.group!.charactersInLine!
+            });
+        groupLabel = `<<FONT FACE="${settings.group!
+          .font!}" POINT-SIZE="${settings.group!.fontSize!}" COLOR="${
           node.fontColor
         }">${groupLabel}</FONT>>`;
       } else {
-        groupLabel = '"' + escapeQuotesForDot(groupLabel) + '"';
+        groupLabel = `"${escapeQuotesForDot(groupLabel)}"`;
       }
       let groupColor = node.color || "#CCCCCC";
-
-      dot += "\nsubgraph " + dotGroupId + " {\n";
-      dot += "  label = " + groupLabel + ";\n";
-      dot += '  color = "' + groupColor + '";\n';
-      dot += "  style = filled;\n";
-      let labelloc = "t";
-      if (
-        settings.graphVizSettings &&
-        settings.graphVizSettings.rankdir == "BT"
-      ) {
-        labelloc = "b";
-      }
-      dot += ' labelloc = "' + labelloc + '";\n\n';
-      if (groupNode.children) {
-        for (let child of groupNode.children) {
-          dot += this.exportNodesRecursive(child, response, settings);
+      if (groupNode.isClosed) {
+        dot += `  ${
+          node.id
+        } [label=${groupLabel}, shape="box", style="filled", penwidth="0" fillcolor="${groupColor}", fontcolor="${
+          node.fontColor
+        }",  type="${node.type}"];\n`;
+      } else {
+        dot += `\nsubgraph ${dotGroupId} {\n  label = ${groupLabel};\n  color = "${groupColor}";\n  style = filled;\n`;
+        let labelloc = "t";
+        if (
+          settings.graphVizSettings &&
+          settings.graphVizSettings.rankdir == "BT"
+        ) {
+          labelloc = "b";
         }
+        dot += ` labelloc = "${labelloc}";\n\n`;
+        if (groupNode.children) {
+          for (let child of groupNode.children) {
+            dot += this.exportNodesRecursive(child, response, settings);
+          }
+        }
+        dot += `\n}\n\n`;
       }
-      dot += "\n}\n\n";
       return dot;
     }
 
-    let title = node.labelTitle || "";
-    let text = node.labelText || "";
     let label = "";
     let color =
       node.color && validateColorString(node.color) ? node.color : "#63AEF2";
-    label = getLabel(title, text, node.fontColor!, settings);
+    label = getLabel(node, settings);
     if (node.type === ArgdownTypes.ARGUMENT_MAP_NODE) {
       dot += `  ${
         node.id
@@ -241,80 +305,87 @@ export class DotExportPlugin implements IArgdownPlugin {
     return dot;
   }
 }
-const fold = (
-  s: string,
-  n: number,
-  useSpaces: boolean,
-  a?: string[]
-): string[] => {
-  if (!s) return [];
 
-  a = a || [];
-  if (s.length <= n) {
-    a.push(s);
-    return a;
+const addLineBreaksAndEscape = (
+  str: string,
+  measurePixelWidth: boolean,
+  options: {
+    maxWidth?: number;
+    charactersInLine?: number;
+    fontSize?: number;
+    font?: string;
+    bold?: boolean;
   }
-  var line = s.substring(0, n);
-  if (!useSpaces) {
-    // insert newlines anywhere
-    a.push(line);
-    return fold(s.substring(n), n, useSpaces, a);
-  } else {
-    // attempt to insert newlines after whitespace
-    var lastSpaceRgx = /\s(?!.*\s)/;
-    var idx = line.search(lastSpaceRgx);
-    var nextIdx = n;
-    if (idx > 0) {
-      line = line.substring(0, idx);
-      nextIdx = idx;
-    }
-    a.push(line);
-    return fold(s.substring(nextIdx), n, useSpaces, a);
-  }
-};
-const foldAndEscape = (str: string, lineLength: number): string => {
-  let strArray = fold(str, lineLength, true);
-  for (let i = 0; i < strArray.length; i++) {
-    strArray[i] = escapeForHtml(strArray[i]);
-  }
-  return strArray.join("<br/>");
-};
-const escapeForHtml = (s: string): string => {
-  return s.replace(/[^0-9A-Za-z ]/g, function(c) {
-    return "&#" + c.charCodeAt(0) + ";";
-  });
+): string => {
+  const result = addLineBreaks(
+    escapeAsHtmlEntities(str),
+    measurePixelWidth,
+    _.merge(
+      {
+        lineBreak: "<BR/>"
+      },
+      options
+    )
+  );
+  return result.text;
 };
 const escapeQuotesForDot = (str: string): string => {
   return str.replace(/\"/g, '\\"');
 };
-const getLabel = (
-  title: string,
-  text: string,
-  color: string,
-  settings: IDotSettings
-): string => {
+const getLabel = (node: IMapNode, settings: IDotSettings): string => {
+  const isArgumentNode = node.type === ArgdownTypes.ARGUMENT_MAP_NODE;
+  const title = node.labelTitle;
+  const text = node.labelText;
+  const color = node.fontColor;
   let label = "";
   if (settings.useHtmlLabels) {
-    label += `<<FONT FACE="Arial" POINT-SIZE="8" COLOR="${color}"><TABLE BORDER="0" CELLSPACING="0">`;
+    const maxWidth = isArgumentNode
+      ? settings.argument!.lineWidth!
+      : settings.statement!.lineWidth!;
+    label += `<<TABLE WIDTH="${maxWidth}" ALIGN="CENTER" BORDER="0" CELLSPACING="0">`;
     if (!_.isEmpty(title)) {
-      let titleLabel = foldAndEscape(
-        title,
-        settings.lineLength || defaultSettings.lineLength!
-      );
-      titleLabel = `<TR><TD ALIGN="center"><B>${titleLabel}</B></TD></TR>`;
+      let { fontSize, font, bold, charactersInLine } = isArgumentNode
+        ? settings.argument!.title!
+        : settings.statement!.title!;
+      let titleLabel = settings.measureLinePixelWidth
+        ? addLineBreaksAndEscape(title!, true, {
+            maxWidth,
+            fontSize,
+            bold,
+            font
+          })
+        : addLineBreaksAndEscape(title!, false, {
+            charactersInLine
+          });
+      if (bold) {
+        titleLabel = `<B>${titleLabel}</B>`;
+      }
+      titleLabel = `<TR><TD WIDTH="${maxWidth}" ALIGN="TEXT" BALIGN="CENTER"><FONT FACE="${font}" POINT-SIZE="${fontSize}" COLOR="${color}">${titleLabel}</FONT></TD></TR>`;
       label += titleLabel;
     }
     if (!_.isEmpty(text)) {
-      let textLabel = foldAndEscape(
-        text,
-        settings.lineLength || defaultSettings.lineLength!
-      );
-      textLabel = `<TR><TD ALIGN="center">${textLabel}</TD></TR>`;
+      let { fontSize, font, bold, charactersInLine } = isArgumentNode
+        ? settings.argument!.text!
+        : settings.statement!.text!;
+      let textLabel = settings.measureLinePixelWidth
+        ? addLineBreaksAndEscape(text!, true, {
+            maxWidth,
+            fontSize,
+            bold,
+            font
+          })
+        : addLineBreaksAndEscape(text!, false, {
+            charactersInLine
+          });
+      if (bold) {
+        textLabel = `<B>${textLabel}</B>`;
+      }
+      textLabel = `<TR><TD ALIGN="TEXT" WIDTH="${maxWidth}" BALIGN="CENTER"><FONT FACE="${font}" POINT-SIZE="${fontSize}" COLOR="${color}">${textLabel}</FONT></TD></TR>`;
       label += textLabel;
     }
-    label += "</TABLE></FONT>>";
+    label += "</TABLE>>";
   } else {
-    label = '"' + escapeQuotesForDot(title) + '"';
+    label = '"' + escapeQuotesForDot(title || "Untitled") + '"';
   }
   return label;
 };
