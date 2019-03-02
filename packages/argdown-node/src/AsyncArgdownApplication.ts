@@ -1,18 +1,34 @@
 "use strict";
-import { cloneDeep, isArray, isString, isEmpty, isFunction, defaultsDeep, isObject } from "lodash";
-import { ArgdownApplication, IArgdownRequest, IArgdownResponse, ArgdownPluginError } from "@argdown/core";
+import {
+  cloneDeep,
+  isArray,
+  isString,
+  isEmpty,
+  isFunction,
+  defaultsDeep,
+  isObject
+} from "lodash";
+import {
+  ArgdownApplication,
+  IArgdownRequest,
+  IArgdownResponse,
+  ArgdownPluginError
+} from "@argdown/core";
 import { isAsyncPlugin } from "./IAsyncArgdownPlugin";
 import * as path from "path";
 import * as chokidar from "chokidar";
 import * as glob from "glob";
 import { promisify } from "util";
-import * as requireUncached from "require-uncached";
+import * as importFresh from "import-fresh";
 import { readFile } from "fs";
 
 const readFileAsync = promisify(readFile);
 
 export class AsyncArgdownApplication extends ArgdownApplication {
-  async runAsync(request: IArgdownRequest, response?: IArgdownResponse): Promise<IArgdownResponse> {
+  async runAsync(
+    request: IArgdownRequest,
+    response?: IArgdownResponse
+  ): Promise<IArgdownResponse> {
     let processorsToRun: string[] = [];
     this.logger.setLevel("error");
     let resp: IArgdownResponse = response || {};
@@ -25,7 +41,11 @@ export class AsyncArgdownApplication extends ArgdownApplication {
       if (req.process) {
         if (isArray(req.process)) {
           processorsToRun = req.process;
-        } else if (isString(req.process) && req.processes && req.processes[req.process]) {
+        } else if (
+          isString(req.process) &&
+          req.processes &&
+          req.processes[req.process]
+        ) {
           const processObj = req.processes[req.process];
           req = defaultsDeep({}, processObj, req);
           if (isString(req.process)) {
@@ -40,7 +60,10 @@ export class AsyncArgdownApplication extends ArgdownApplication {
     }
 
     if (isEmpty(processorsToRun)) {
-      this.logger.log("error", "[AsyncArgdownApplication]: No processors to run.");
+      this.logger.log(
+        "error",
+        "[AsyncArgdownApplication]: No processors to run."
+      );
       return resp;
     }
     const exceptions: Error[] = [];
@@ -50,14 +73,23 @@ export class AsyncArgdownApplication extends ArgdownApplication {
       let cancelProcessor = false;
       let processor = this.processors[processorId];
       if (!processor) {
-        this.logger.log("error", "[AsyncArgdownApplication]: Processor not found: " + processorId);
+        this.logger.log(
+          "error",
+          "[AsyncArgdownApplication]: Processor not found: " + processorId
+        );
         continue;
       }
-      this.logger.log("verbose", "[AsyncArgdownApplication]: Running processor: " + processorId);
+      this.logger.log(
+        "verbose",
+        "[AsyncArgdownApplication]: Running processor: " + processorId
+      );
 
       for (let plugin of processor.plugins) {
         if (isFunction(plugin.prepare)) {
-          this.logger.log("verbose", "[AsyncArgdownApplication]: Preparing plugin: " + plugin.name);
+          this.logger.log(
+            "verbose",
+            "[AsyncArgdownApplication]: Preparing plugin: " + plugin.name
+          );
           try {
             plugin.prepare(req, resp, this.logger);
           } catch (e) {
@@ -86,14 +118,20 @@ export class AsyncArgdownApplication extends ArgdownApplication {
           } else {
             e.processor = processorId;
             exceptions.push(e);
-            this.logger.log("warning", `[ArgdownApplication]: Processor ${processorId} canceled.`);
+            this.logger.log(
+              "warning",
+              `[ArgdownApplication]: Processor ${processorId} canceled.`
+            );
             break;
           }
         }
       }
 
       for (let plugin of processor.plugins) {
-        this.logger.log("verbose", "[AsyncArgdownApplication]: Running plugin: " + plugin.name);
+        this.logger.log(
+          "verbose",
+          "[AsyncArgdownApplication]: Running plugin: " + plugin.name
+        );
         try {
           if (isAsyncPlugin(plugin)) {
             await plugin.runAsync(req, resp, this.logger);
@@ -123,8 +161,13 @@ export class AsyncArgdownApplication extends ArgdownApplication {
     }
     return resp;
   }
-  load = async (request: IArgdownRequest): Promise<IArgdownResponse[] | undefined> => {
-    const processObj = request.processes && isString(request.process) ? request.processes[request.process] : undefined;
+  load = async (
+    request: IArgdownRequest
+  ): Promise<IArgdownResponse[] | undefined> => {
+    const processObj =
+      request.processes && isString(request.process)
+        ? request.processes[request.process]
+        : undefined;
     let req = request;
     if (processObj) {
       req = defaultsDeep({}, processObj, req);
@@ -135,7 +178,11 @@ export class AsyncArgdownApplication extends ArgdownApplication {
       "**/_*/**" // Exclude entire directories starting with '_'.
     ];
 
-    if (req.logger && isFunction(req.logger.log) && isFunction(req.logger.setLevel)) {
+    if (
+      req.logger &&
+      isFunction(req.logger.log) &&
+      isFunction(req.logger.setLevel)
+    ) {
       if (!this.defaultLogger) {
         this.defaultLogger = this.logger;
       }
@@ -190,12 +237,16 @@ export class AsyncArgdownApplication extends ArgdownApplication {
         });
     } else {
       let files: string[] = await new Promise<string[]>((resolve, reject) => {
-        glob(absoluteInputGlob, loadOptions, (er: Error | null, files: string[]) => {
-          if (er) {
-            reject(er);
+        glob(
+          absoluteInputGlob,
+          loadOptions,
+          (er: Error | null, files: string[]) => {
+            if (er) {
+              reject(er);
+            }
+            resolve(files);
           }
-          resolve(files);
-        });
+        );
       });
       const promises = [];
       for (let file of files) {
@@ -213,7 +264,7 @@ export class AsyncArgdownApplication extends ArgdownApplication {
     }
     return;
   };
-  loadConfig = async (filePath: string): Promise<IArgdownRequest> => {
+  loadConfig = async (filePath?: string): Promise<IArgdownRequest> => {
     let config: IArgdownRequest = {};
     filePath = filePath || "./argdown.config.json"; // json is default because it can be loaded asynchronously
     filePath = path.resolve(process.cwd(), filePath);
@@ -224,10 +275,13 @@ export class AsyncArgdownApplication extends ArgdownApplication {
         const buffer = await readFileAsync(filePath, "utf8");
         config = JSON.parse(buffer);
       } catch (e) {
-        this.logger.log("verbose", "[AsyncArgdownApplication]: No config found: " + e.toString());
+        this.logger.log(
+          "verbose",
+          "[AsyncArgdownApplication]: No config found: " + e.toString()
+        );
       }
     } else if (extension === ".js") {
-      // For Js config files we have to used require-uncached which is synchronous
+      // For Js config files we have to used import-fresh which is synchronous
       try {
         let jsModuleExports = loadJSFile(filePath);
         if (jsModuleExports.config) {
@@ -237,7 +291,10 @@ export class AsyncArgdownApplication extends ArgdownApplication {
           config = jsModuleExports;
         }
       } catch (e) {
-        this.logger.log("verbose", "[AsyncArgdownApplication]: No config found: " + e.toString());
+        this.logger.log(
+          "verbose",
+          "[AsyncArgdownApplication]: No config found: " + e.toString()
+        );
       }
     }
     return config;
@@ -254,7 +311,7 @@ export class AsyncArgdownApplication extends ArgdownApplication {
 const loadJSFile = (filePath: string) => {
   let absoluteFilePath = path.resolve(process.cwd(), filePath);
   try {
-    return requireUncached(absoluteFilePath);
+    return importFresh(absoluteFilePath);
   } catch (e) {
     e.message = `Cannot read file: ${absoluteFilePath}\nError: ${e.message}`;
     throw e;

@@ -1,9 +1,29 @@
 import * as Viz from "viz.js";
+import { Module, render } from "viz.js/full.render";
 import * as _ from "lodash";
-import { IRequestHandler, ArgdownPluginError, IArgdownPlugin, IArgdownRequest } from "@argdown/core";
+import {
+  IRequestHandler,
+  ArgdownPluginError,
+  IArgdownRequest
+} from "@argdown/core";
+import {
+  IAsyncArgdownPlugin,
+  IAsyncRequestHandler
+} from "../IAsyncArgdownPlugin";
+
+export enum GraphvizEngine {
+  CIRCO = "circo",
+  DOT = "dot",
+  FDP = "fdp",
+  NEATO = "neato",
+  OSAGE = "osage",
+  TWOPI = "twopi"
+}
 
 export interface IDotToSvgSettings {
   removeProlog?: boolean;
+  engine?: GraphvizEngine;
+  nop?: number;
 }
 declare module "@argdown/core" {
   interface IArgdownRequest {
@@ -21,11 +41,15 @@ declare module "@argdown/core" {
     svg?: string;
   }
 }
-export class DotToSvgExportPlugin implements IArgdownPlugin {
+const viz = new Viz({ Module, render });
+export class DotToSvgExportPlugin implements IAsyncArgdownPlugin {
   name = "DotToSvgExportPlugin";
   defaults: IDotToSvgSettings;
   constructor(config?: IDotToSvgSettings) {
-    this.defaults = _.defaultsDeep({}, config, { removeProlog: true });
+    this.defaults = _.defaultsDeep({}, config, {
+      removeProlog: true,
+      engine: GraphvizEngine.DOT
+    });
   }
   prepare: IRequestHandler = (request: IArgdownRequest) => {
     const settings = this.getSettings(request);
@@ -35,15 +59,17 @@ export class DotToSvgExportPlugin implements IArgdownPlugin {
     request.dotToSvg = request.dotToSvg || {};
     return request.dotToSvg;
   };
-  run: IRequestHandler = (_request, response) => {
+  runAsync: IAsyncRequestHandler = async (request, response) => {
     if (!response.dot) {
       throw new ArgdownPluginError(this.name, "Missing dot field in response.");
     }
-    response.svg = Viz(response.dot);
-    response.svg = response.svg!.replace(/<\?[ ]*xml[\S ]+?\?>[\s]*<\![ ]*DOCTYPE[\S\s]+?\.dtd\"[ ]*>/, "");
-    // const settings = this.getSettings(request);
-    // if (settings.removeProlog) {
-    // }
-    return response;
+    let { engine, nop, removeProlog } = this.getSettings(request);
+    response.svg = await viz.renderString(response.dot, { engine, nop });
+    if (removeProlog) {
+      response.svg = response.svg!.replace(
+        /<\?[ ]*xml[\S ]+?\?>[\s]*<\![ ]*DOCTYPE[\S\s]+?\.dtd\"[ ]*>/,
+        ""
+      );
+    }
   };
 }

@@ -10,11 +10,13 @@ import {
   MapPlugin,
   DotExportPlugin,
   DataPlugin,
+  GraphMLExportPlugin,
   PreselectionPlugin,
   StatementSelectionPlugin,
   ArgumentSelectionPlugin,
   GroupPlugin,
-  RegroupPlugin
+  RegroupPlugin,
+  ClosedGroupPlugin
 } from "@argdown/core";
 import { SaveAsFilePlugin } from "./plugins/SaveAsFilePlugin";
 import { DotToSvgExportPlugin } from "./plugins/DotToSvgExportPlugin";
@@ -42,8 +44,6 @@ const modelPlugin = new ModelPlugin();
 argdown.addPlugin(modelPlugin, "build-model");
 const regroupPlugin = new RegroupPlugin();
 argdown.addPlugin(regroupPlugin, "build-model");
-const colorPlugin = new ColorPlugin();
-argdown.addPlugin(colorPlugin, "build-model");
 
 const preselectionPlugin = new PreselectionPlugin();
 argdown.addPlugin(preselectionPlugin, "build-map");
@@ -55,6 +55,9 @@ const mapPlugin = new MapPlugin();
 argdown.addPlugin(mapPlugin, "build-map");
 const groupPlugin = new GroupPlugin();
 argdown.addPlugin(groupPlugin, "build-map");
+const colorPlugin = new ColorPlugin();
+argdown.addPlugin(new ClosedGroupPlugin(), "transform-closed-groups");
+argdown.addPlugin(colorPlugin, "colorize");
 
 const stdoutArgdown = new StdOutPlugin({
   dataKey: "input",
@@ -104,6 +107,17 @@ argdown.addPlugin(saveAsDot, "save-as-dot");
 const stdoutDot = new StdOutPlugin({ dataKey: "dot" });
 argdown.addPlugin(stdoutDot, "stdout-dot");
 
+const graphMLExport = new GraphMLExportPlugin();
+argdown.addPlugin(graphMLExport, "export-graphml");
+const saveAsGraphML = new SaveAsFilePlugin({
+  outputDir: "./graphml",
+  dataKey: "graphml",
+  extension: ".graphml"
+});
+argdown.addPlugin(saveAsGraphML, "save-as-graphml");
+const stdoutGraphML = new StdOutPlugin({ dataKey: "graphml" });
+argdown.addPlugin(stdoutGraphML, "stdout-graphml");
+
 const dotToSvgExport = new DotToSvgExportPlugin();
 argdown.addPlugin(dotToSvgExport, "export-svg");
 const saveSvgAsSvg = new SaveAsFilePlugin({
@@ -118,9 +132,62 @@ const saveSvgAsPdf = new SvgToPdfExportPlugin();
 argdown.addPlugin(saveSvgAsPdf, "save-svg-as-pdf");
 
 argdown.defaultProcesses = {
-  "export-svg": ["load-file", "parse-input", "build-model", "build-map", "export-dot", "export-svg", "save-svg-as-svg"],
-  "export-pdf": ["load-file", "parse-input", "build-model", "build-map", "export-dot", "export-svg", "save-svg-as-pdf"],
-  "export-dot": ["load-file", "parse-input", "build-model", "build-map", "export-dot", "save-as-dot"],
-  "export-json": ["load-file", "parse-input", "build-model", "build-map", "export-json", "save-as-json"],
-  "export-html": ["load-file", "parse-input", "build-model", "export-html", "save-as-html"]
+  "export-svg": [
+    "load-file",
+    "parse-input",
+    "build-model",
+    "build-map",
+    "transform-closed-groups",
+    "colorize",
+    "export-dot",
+    "export-svg",
+    "save-svg-as-svg"
+  ],
+  "export-pdf": [
+    "load-file",
+    "parse-input",
+    "build-model",
+    "build-map",
+    "transform-closed-groups",
+    "colorize",
+    "export-dot",
+    "export-svg",
+    "save-svg-as-pdf"
+  ],
+  "export-dot": [
+    "load-file",
+    "parse-input",
+    "build-model",
+    "build-map",
+    "transform-closed-groups",
+    "colorize",
+    "export-dot",
+    "save-as-dot"
+  ],
+  "export-graphml": [
+    "load-file",
+    "parse-input",
+    "build-model",
+    "build-map",
+    "colorize",
+    "export-graphml",
+    "save-as-graphml"
+  ],
+  "export-json": [
+    "load-file",
+    "parse-input",
+    "build-model",
+    "build-map",
+    "colorize",
+    "export-json",
+    "save-as-json"
+  ],
+  "export-html": [
+    "load-file",
+    "parse-input",
+    "build-model",
+    "colorize",
+    "export-html",
+    "save-as-html"
+  ]
 };
