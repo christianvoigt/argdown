@@ -3,8 +3,7 @@
     <div class="content">
       <div class="rendered">
         <svg ref="svg" width="100%" height="100%">
-          <g class="dagre" style="transform: translate(0, 10px)">
-          </g>
+          <g class="dagre" style="transform: translate(0, 10px)"></g>
         </svg>
       </div>
     </div>
@@ -14,23 +13,17 @@
 <script>
 /*eslint-disable */
 import * as dagreD3 from "dagre-d3";
+import * as pixelWidth from "string-pixel-width";
 import * as d3 from "d3";
 import { EventBus } from "../event-bus.js";
 import { saveAsSvg, saveAsPng } from "../map-export.js";
 import { ArgdownTypes } from "@argdown/core";
+import { splitByLineWidth } from "@argdown/core";
+import { createDagreMap } from "./dagre-map.js";
 
 var saveDagreAsPng = null;
 var saveDagreAsSvg = null;
-function escapeHtml(str){
-  str = str
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/'/g, '&#39;')
-      .replace(/"/g, '&quot;');
 
-  return str;
-}
 export default {
   name: "dagre-d3-output",
   computed: {
@@ -38,6 +31,7 @@ export default {
       // console.log('map called!')
       this.updateSVG();
       this.$store.getters.argdownData;
+      this.$store.getters.config;
       return this.$store.getters.map;
     },
     rankDir: function() {
@@ -85,165 +79,13 @@ export default {
     EventBus.$off("save-map-as-png", saveDagreAsPng);
   },
   methods: {
-    addNode: function(node, g, currentGroup) {
-      const nodeProperties = {
-        labelType: "html",
-        class: node.type,
-        paddingBottom: 0,
-        paddingTop: 0,
-        paddingLeft: 0,
-        paddingRight: 0
-      };
-      nodeProperties.label = '<div class="node-label">';
-      if (node.labelTitle) {
-        nodeProperties.label += "<h3>" + escapeHtml(node.labelTitle) + "</h3>";
-      }
-      // eslint-disable-next-line
-      if (
-        node.labelText &&
-        (node.type === ArgdownTypes.STATEMENT_MAP_NODE ||
-          node.type === ArgdownTypes.ARGUMENT_MAP_NODE)
-      ) {
-        nodeProperties.label += "<p>" + escapeHtml(node.labelText) + "</p>";
-      }
-      if (node.tags) {
-        for (let tag of node.tags) {
-          nodeProperties.class += " ";
-          // eslint-disable-next-line
-          nodeProperties.class += this.$store.getters.tags[tag].cssClass;
-        }
-      }
-      if (node.color) {
-        if (node.type === ArgdownTypes.STATEMENT_MAP_NODE) {
-          nodeProperties.style = `stroke:${node.color};`;
-        } else {
-          nodeProperties.style = `fill:${node.color};`;
-        }
-      }
-      nodeProperties.label += "</div>";
-
-      if (node.type === ArgdownTypes.GROUP_MAP_NODE) {
-        nodeProperties.clusterLabelPos = "top";
-        nodeProperties.class += " level-" + node.level;
-      }
-      g.setNode(node.id, nodeProperties);
-      if (currentGroup) {
-        g.setParent(node.id, currentGroup.id);
-      }
-      if (node.type === ArgdownTypes.GROUP_MAP_NODE) {
-        for (let child of node.children) {
-          this.addNode(child, g, node);
-        }
-      }
-    },
     updateSVG: function() {
-      // console.log('updateSVG called!')
-      const map = this.$store.getters.map;
-      // eslint-disable-next-line
-      if (!this.$refs.svg || !map || !map.nodes || !map.edges || map.nodes.length === 0) {
-        // console.log('svg or map undefined')
-        const svg = d3.select(this.$refs.svg);
-        svg.selectAll("*").remove();
-        return;
-      }
-      // Create the input graph
-      const g = new dagreD3.graphlib.Graph({ compound: true })
-        .setGraph({
-          rankdir: this.$store.state.config.dagre.rankDir,
-          rankSep: this.$store.state.config.dagre.rankSep,
-          nodeSep: this.$store.state.config.dagre.nodeSep,
-          marginx: 20,
-          marginy: 20
-        })
-        .setDefaultEdgeLabel(function() {
-          return {};
-        });
-
-      for (let node of map.nodes) {
-        this.addNode(node, g);
-      }
-
-      for (let edge of map.edges) {
-        const props = {
-          class: edge.relationType
-        };
-        if (edge.relationType === "contradictory") {
-          props.arrowhead = "diamond";
-          props.arrowtail = "diamond";
-        }
-        g.setEdge(edge.from.id, edge.to.id, props);
-      }
-
-      const nodes = g.nodes();
-
-      for (let v of nodes) {
-        const node = g.node(v);
-        // Round the corners of the nodes
-        node.rx = node.ry = 5;
-      }
-
-      // Create the renderer
-      const render = new dagreD3.render(); // eslint-disable-line new-cap
-      // Add our custom arrow
-      render.arrows().diamond = function normal(parent, id, edge, type) {
-        var marker = parent
-          .append("marker")
-          .attr("id", id)
-          .attr("viewBox", "0 0 10 10")
-          .attr("refX", 9)
-          .attr("refY", 5)
-          .attr("markerUnits", "strokeWidth")
-          .attr("markerWidth", 10)
-          .attr("markerHeight", 10)
-          .attr("orient", "auto");
-
-        var path = marker
-          .append("path")
-          .attr("d", "M 0 5 L 5 2 L 10 5 L 5 8 z")
-          .style("stroke-width", 0)
-          .style("stroke-dasharray", "1,0");
-        dagreD3.util.applyStyle(path, edge[type + "Style"]);
-        if (edge[type + "Class"]) {
-          path.attr("class", edge[type + "Class"]);
-        }
-      };
-
-      // const layout = dagreD3.layout().rankSep(50).rankDir('BT')
-
-      // Set up an SVG group so that we can translate the final graph.
-      const svg = d3.select(this.$refs.svg);
-      svg.selectAll("*").remove();
-
-      svg.append("g");
-      const svgGroup = svg.select("g");
-      svgGroup.attr("class", "dagre");
-      // console.log('svg ' + svg)
-      // console.log('svgGroup ' + svgGroup)
-
-      var zoom = d3.zoom().on("zoom", function() {
-        // eslint-disable-next-line
-        svgGroup.attr("transform", d3.event.transform);
-      });
-      svg.call(zoom);
-
-      // Run the renderer. This is what draws the final graph.
-      render(svgGroup, g);
-      // renderer.layout(layout).run(svgGroup, g)
-      // Center the graph
-      let initialScale = 0.75;
-      let getSvgWidth = function() {
-        let positionInfo = svg.node().getBoundingClientRect();
-        return positionInfo.width;
-      };
-      svg
-        .transition()
-        .duration(0)
-        .call(
-          zoom.transform,
-          // eslint-disable-next-line
-          d3.zoomIdentity.translate((getSvgWidth() - g.graph().width * initialScale) / 2, 20).scale(initialScale)
-        );
-      svgGroup.attr("height", g.graph().height * initialScale + 40);
+      createDagreMap(
+        this.$store.getters.map,
+        this.$refs.svg,
+        this.$store.getters.config.dagre,
+        this.$store.getters.tags
+      );
     }
   }
 };

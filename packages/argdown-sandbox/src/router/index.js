@@ -5,6 +5,7 @@ import HtmlNavigation from "@/components/HtmlNavigation";
 import JSONOutput from "@/components/JSONOutput";
 // import ArgMLOutput from '@/components/ArgMLOutput'
 import DotOutput from "@/components/DotOutput";
+import GraphMLOutput from "@/components/GraphMLOutput";
 import DebugLexerParserOutput from "@/components/DebugLexerParserOutput";
 import DebugModelOutput from "@/components/DebugModelOutput";
 import DebugNavigation from "@/components/DebugNavigation";
@@ -45,7 +46,7 @@ export default new Router({
       }
     },
     {
-      path: "/map/viz-js",
+      path: "/map",
       name: "map-viz-js",
       components: {
         default: VizJsOutput,
@@ -53,7 +54,7 @@ export default new Router({
       }
     },
     {
-      path: "/map",
+      path: "/map/dagre-d3",
       name: "map-dagre-d3",
       components: {
         default: DagreD3Output,
@@ -65,6 +66,14 @@ export default new Router({
       name: "map-dot",
       components: {
         default: DotOutput,
+        "output-header": MapNavigation
+      }
+    },
+    {
+      path: "/map/graphml",
+      name: "map-graphml",
+      components: {
+        default: GraphMLOutput,
         "output-header": MapNavigation
       }
     },

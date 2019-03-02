@@ -1,11 +1,13 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import _ from "lodash";
+import { defaultSettings as dagreDefaultSettings } from "./components/dagre-map.js";
 import {
   ArgdownApplication,
   ParserPlugin,
   ModelPlugin,
   RegroupPlugin,
+  ClosedGroupPlugin,
   ColorPlugin,
   HtmlExportPlugin,
   JSONExportPlugin,
@@ -19,7 +21,8 @@ import {
   StatementSelectionMode,
   LabelMode,
   tokensToString,
-  astToString
+  astToString,
+  GraphMLExportPlugin
 } from "@argdown/core";
 import axios from "axios";
 
@@ -40,20 +43,23 @@ const argumentSelectionPlugin = new ArgumentSelectionPlugin();
 const mapPlugin = new MapPlugin();
 const groupPlugin = new GroupPlugin();
 const dotExport = new DotExportPlugin();
+const graphMLExport = new GraphMLExportPlugin();
 import primer from "!!raw-loader!../public/examples/argdown-primer.argdown";
 
 app.addPlugin(parserPlugin, "parse-input");
 app.addPlugin(dataPlugin, "build-model");
 app.addPlugin(modelPlugin, "build-model");
 app.addPlugin(regroupPlugin, "build-model");
-app.addPlugin(colorPlugin, "build-model");
+app.addPlugin(colorPlugin, "colorize");
 app.addPlugin(preselectionPlugin, "build-map");
 app.addPlugin(statementSelectionPlugin, "build-map");
 app.addPlugin(argumentSelectionPlugin, "build-map");
 app.addPlugin(mapPlugin, "build-map");
 app.addPlugin(groupPlugin, "build-map");
+app.addPlugin(new ClosedGroupPlugin(), "transform-closed-groups");
 app.addPlugin(htmlExport, "export-html");
 app.addPlugin(dotExport, "export-dot");
+app.addPlugin(graphMLExport, "export-graphml");
 app.addPlugin(jsonExport, "export-json");
 
 Vue.use(Vuex);
@@ -119,11 +125,7 @@ export default new Vuex.Store({
           size: "10,10"
         }
       },
-      dagre: {
-        rankDir: "BT",
-        rankSep: 50,
-        nodeSep: 70
-      },
+      dagre: _.defaultsDeep({}, dagreDefaultSettings),
       model: {
         removeTagsFromText: false
       }
@@ -159,11 +161,18 @@ export default new Vuex.Store({
   getters: {
     argdownData: state => {
       const request = _.defaultsDeep(
-        { input: state.argdownInput, process: ["parse-input", "build-model"] },
+        {
+          input: state.argdownInput,
+          process: ["parse-input", "build-model"]
+        },
         state.config
       );
       const response = app.run(request);
       return response;
+    },
+    config: (state, getters) => {
+      const data = getters.argdownData;
+      return _.defaultsDeep({}, data.frontMatter, state.config);
     },
     examples: state => {
       return Object.values(state.examples);
@@ -175,7 +184,7 @@ export default new Vuex.Store({
       }
       const request = _.defaultsDeep(
         {
-          process: ["export-html"]
+          process: ["colorize", "export-html"]
         },
         data.frontMatter,
         state.config
@@ -190,13 +199,33 @@ export default new Vuex.Store({
       }
       const request = _.defaultsDeep(
         {
-          process: ["build-map", "export-dot"]
+          process: [
+            "build-map",
+            "transform-closed-groups",
+            "colorize",
+            "export-dot"
+          ]
         },
         data.frontMatter,
         state.config
       );
       const response = app.run(request, data);
       return response.dot;
+    },
+    graphml: (state, getters) => {
+      const data = getters.argdownData;
+      if (!data.ast) {
+        return null;
+      }
+      const request = _.defaultsDeep(
+        {
+          process: ["build-map", "colorize", "export-graphml"]
+        },
+        data.frontMatter,
+        state.config
+      );
+      const response = app.run(request, data);
+      return response.graphml;
     },
     json: (state, getters) => {
       const data = getters.argdownData;
@@ -205,7 +234,7 @@ export default new Vuex.Store({
       }
       const request = _.defaultsDeep(
         {
-          process: ["build-map", "export-json"]
+          process: ["build-map", "colorize", "export-json"]
         },
         data.frontMatter,
         state.config
@@ -243,7 +272,7 @@ export default new Vuex.Store({
       }
       const request = _.defaultsDeep(
         {
-          process: ["build-map"]
+          process: ["build-map", "colorize", "transform-closed-groups"]
         },
         data.frontMatter,
         state.config

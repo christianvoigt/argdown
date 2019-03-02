@@ -1,43 +1,43 @@
 <template>
-  <div id="app" v-bind:class="viewStateClass">
-    <div id="top-slot" v-if="$store.state.viewState != 'input-maximized' && $store.state.viewState != 'output-maximized' ">
-      <app-header></app-header>
-      <app-navigation></app-navigation>
+<div id="app" v-bind:class="viewStateClass">
+  <div id="top-slot" v-if="$store.state.viewState != 'input-maximized' && $store.state.viewState != 'output-maximized' ">
+    <app-header></app-header>
+    <app-navigation></app-navigation>
+  </div>
+  <div class="main-window">
+    <div id="left-slot" v-if="$store.state.viewState != 'output-maximized'">
+      <div class="input-header">
+        <InputNavigation/>
+        <button v-if="$store.state.viewState != 'input-maximized'" class="button" v-on:click="$store.commit('setViewState','input-maximized')">
+          <img class="expand icon" src="./assets/expand.svg" alt="Expand">
+        </button>
+        <button v-if="$store.state.viewState == 'input-maximized'" class="button" v-on:click="$store.commit('setViewState','default')">
+          <img class="expand icon" src="./assets/compress.svg" alt="Compress">
+        </button>
+      </div>
+      <argdown-input v-bind:value="$store.state.argdownInput" v-on:change="value => { $store.commit('setArgdownInput',value)}"></argdown-input>
     </div>
-    <div class="main-window">
-      <div id="left-slot" v-if="$store.state.viewState != 'output-maximized'">
-        <div class="input-header">
-          <InputNavigation/>
-          <button v-if="$store.state.viewState != 'input-maximized'" class="button" v-on:click="$store.commit('setViewState','input-maximized')">
+    <div id="right-slot" v-if="$store.state.viewState != 'input-maximized'">
+      <div class="output-header">
+        <div class="output-sub-menu"><router-view name="output-header"></router-view></div>
+        <div class="output-view-state-buttons">
+          <button v-if="$store.state.viewState != 'output-maximized'" class="button" v-on:click="$store.commit('setViewState','output-maximized')">
             <img class="expand icon" src="./assets/expand.svg" alt="Expand">
           </button>
-          <button v-if="$store.state.viewState == 'input-maximized'" class="button" v-on:click="$store.commit('setViewState','default')">
+          <button v-if="$store.state.viewState == 'output-maximized'" class="button" v-on:click="$store.commit('setViewState','default')">
             <img class="expand icon" src="./assets/compress.svg" alt="Compress">
           </button>
+          <button class="button" v-on:click="$store.commit('toggleSettings')">
+            <img class="toggle-settings icon" src="./assets/cog.svg" alt="Settings">
+          </button>
         </div>
-        <argdown-input v-bind:value="$store.state.argdownInput" v-on:change="value => { $store.commit('setArgdownInput',value)}"></argdown-input>
       </div>
-      <div id="right-slot" v-if="$store.state.viewState != 'input-maximized'">
-        <div class="output-header">
-          <div class="output-sub-menu"><router-view name="output-header"></router-view></div>
-          <div class="output-view-state-buttons">
-            <button v-if="$store.state.viewState != 'output-maximized'" class="button" v-on:click="$store.commit('setViewState','output-maximized')">
-              <img class="expand icon" src="./assets/expand.svg" alt="Expand">
-            </button>
-            <button v-if="$store.state.viewState == 'output-maximized'" class="button" v-on:click="$store.commit('setViewState','default')">
-              <img class="expand icon" src="./assets/compress.svg" alt="Compress">
-            </button>
-            <button class="button" v-on:click="$store.commit('toggleSettings')">
-              <img class="toggle-settings icon" src="./assets/cog.svg" alt="Settings">
-            </button>
-          </div>
-        </div>
-        <router-view></router-view>
-        <router-view name="output-footer"></router-view>
-      </div>
-      <settings v-if="$store.state.showSettings"></settings>
-      </div>
+      <router-view></router-view>
+      <router-view name="output-footer"></router-view>
     </div>
+    <settings v-if="$store.state.showSettings"></settings>
+    </div>
+  </div>
 </template>
 
 <script>

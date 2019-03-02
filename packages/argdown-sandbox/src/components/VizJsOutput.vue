@@ -1,19 +1,20 @@
 <template>
   <div class="viz-js-output map-output output">
     <div class="content">
-      <div ref="container" class="rendered" v-html="svg">
-      </div>
+      <div ref="container" class="rendered" v-html="svg"></div>
     </div>
   </div>
 </template>
 
 <script>
 import Vue from "vue";
-import * as Viz from "viz.js";
+import Viz from "viz.js";
+import { Module, render } from "viz.js/full.render.js";
 import * as d3 from "d3";
 import { EventBus } from "../event-bus.js";
 import { saveAsSvg, saveAsPng } from "../map-export.js";
 
+var viz = new Viz({ Module, render });
 var saveVizAsPng = null;
 var saveVizAsSvg = null;
 
@@ -26,36 +27,41 @@ export default {
         return;
       }
       Vue.nextTick(function() {
-        const svg = d3.select(svgContainer).select("svg");
-        const svgGroup = svg.select("g");
-        svg.attr("class", "map-svg");
-        svg.attr("width", "100%");
-        svg.attr("height", "100%");
-        svg.attr("viewBox", null);
-        var zoom = d3.zoom().on("zoom", function() {
-          // eslint-disable-next-line
-          svgGroup.attr("transform", d3.event.transform);
-        });
-        svg.call(zoom);
-        if (!svg.node()) {
-          return;
-        }
-        const svgSize = svg.node().getBoundingClientRect();
-        const groupSize = svgGroup.node().getBBox();
-        const initialScale = 0.75;
-        svg
-          .transition()
-          .duration(0)
-          .call(
-            zoom.transform,
-            d3.zoomIdentity
-              .translate(
-                (svgSize.width - groupSize.width * initialScale) / 2,
-                (svgSize.height + groupSize.height * initialScale) / 2
-              )
-              .scale(initialScale)
-          );
-        svgGroup.attr("height", groupSize.height * initialScale + 40);
+        // next tick is not enough, this will still cause some d3-related bug
+        // so we simply wait a little longer...
+        setTimeout(() => {
+          console.log("adding zoom");
+          const svg = d3.select(svgContainer).select("svg");
+          const svgGroup = svg.select("g");
+          svg.attr("class", "map-svg");
+          svg.attr("width", "100%");
+          svg.attr("height", "100%");
+          svg.attr("viewBox", null);
+          var zoom = d3.zoom().on("zoom", function() {
+            // eslint-disable-next-line
+            svgGroup.attr("transform", d3.event.transform);
+          });
+          svg.call(zoom);
+          if (!svg.node()) {
+            return;
+          }
+          const svgSize = svg.node().getBoundingClientRect();
+          const groupSize = svgGroup.node().getBBox();
+          const initialScale = 0.75;
+          svg
+            .transition()
+            .duration(0)
+            .call(
+              zoom.transform,
+              d3.zoomIdentity
+                .translate(
+                  (svgSize.width - groupSize.width * initialScale) / 2,
+                  (svgSize.height + groupSize.height * initialScale) / 2
+                )
+                .scale(initialScale)
+            );
+          svgGroup.attr("height", groupSize.height * initialScale + 40);
+        }, 100);
       });
     }
   },
@@ -77,18 +83,27 @@ export default {
     EventBus.$off("save-map-as-svg", saveVizAsSvg);
     EventBus.$off("save-map-as-png", saveVizAsPng);
   },
-  computed: {
+  asyncComputed: {
     svg: function() {
       this.addZoomBehavior();
       const dot = this.$store.getters.dot;
-      return dot ? Viz(dot) : null;
+      return dot ? viz.renderString(dot) : null;
     }
   }
 };
 </script>
 
-<style scoped>
-.rendered {
-  height: 100%;
+<style  lang="scss" scoped>
+.content {
+  flex: 1;
+  overflow: auto;
+  .rendered {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    /* Firefox bug fix styles */
+    min-width: 0;
+    min-height: 0;
+  }
 }
 </style>

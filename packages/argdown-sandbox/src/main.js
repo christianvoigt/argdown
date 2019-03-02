@@ -4,6 +4,9 @@ import Vue from "vue";
 import App from "./App";
 import router from "./router";
 import store from "./store.js";
+import AsyncComputed from "vue-async-computed";
+
+Vue.use(AsyncComputed);
 
 Vue.config.productionTip = false;
 

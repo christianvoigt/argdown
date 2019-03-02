@@ -1,3 +1,4 @@
 module.exports = {
-  baseUrl: "/sandbox/"
+  publicPath: "/sandbox/",
+  chainWebpack: config => config.resolve.symlinks(false)
 };

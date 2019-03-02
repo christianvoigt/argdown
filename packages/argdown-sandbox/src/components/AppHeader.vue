@@ -1,6 +1,8 @@
 <template>
   <header class="app-header">
-    <a class="logo" href="https://argdown.org"><img src="../assets/argdown-mark.svg" alt="Argdown - argumentation syntax"></a>
+    <a class="logo" href="https://argdown.org">
+      <img src="../assets/argdown-mark.svg" alt="Argdown - argumentation syntax">
+    </a>
     <span class="name">Argdown Sandbox</span>
     <!--<h1>{{ title }}</h1>-->
   </header>

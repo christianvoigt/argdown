@@ -1,17 +1,37 @@
 <template>
   <nav class="sub-nav">
     <ul class="nav-list">
-      <li><router-link to="/map" exact>Dagre D3 Map</router-link></li>
-      <li><router-link to="/map/viz-js">Viz Js Map</router-link></li>
-      <li><router-link to="/map/dot">Dot Source</router-link></li>
+      <li>
+        <router-link to="/map/" exact>Viz Js Map</router-link>
+      </li>
+      <li>
+        <router-link to="/map/dagre-d3">Dagre D3 Map</router-link>
+      </li>
+      <li>
+        <router-link to="/map/dot">Dot Source</router-link>
+      </li>
+      <li>
+        <router-link to="/map/graphml">GraphML Source</router-link>
+      </li>
       <!-- <li><router-link to="/map/graphml">GraphML Source</router-link></li> -->
-      <li class="save-map" v-if="$route.name == 'map-viz-js' ||$route.name == 'map-dagre-d3'" >save map as <a class="save-as-svg" v-on:click.stop.prevent="saveAsSvg" href="">svg</a> <a class="save as png" v-on:click.stop.prevent="$store.commit('openSaveAsPngDialog')" href="">png</a></li>
+      <li class="save-map" v-if="$route.name == 'map-viz-js' ||$route.name == 'map-dagre-d3'">
+        save map as
+        <a class="save-as-svg" v-on:click.stop.prevent="saveAsSvg" href>svg</a>
+        <a
+          class="save as png"
+          v-on:click.stop.prevent="$store.commit('openSaveAsPngDialog')"
+          href
+        >png</a>
+      </li>
     </ul>
     <div class="save-as-png-dialog" v-if="$store.state.showSaveAsPngDialog">
       <h3>PNG Export</h3>
-      <label for="save-as-png-scale">Scale</label><input v-model="$store.state.pngScale" type="number" min="0" max="100" id="save-as-png-scale" />
-      <div class="submit-cancel"><button type="button" v-on:click.prevent.stop="saveAsPng" >Create PNG</button>
-      <button type="button" v-on:click.prevent.stop="$store.commit('closeSaveAsPngDialog')" >Cancel</button></div>
+      <label for="save-as-png-scale">Scale</label>
+      <input v-model="$store.state.pngScale" type="number" min="0" max="100" id="save-as-png-scale">
+      <div class="submit-cancel">
+        <button type="button" v-on:click.prevent.stop="saveAsPng">Create PNG</button>
+        <button type="button" v-on:click.prevent.stop="$store.commit('closeSaveAsPngDialog')">Cancel</button>
+      </div>
     </div>
   </nav>
 </template>

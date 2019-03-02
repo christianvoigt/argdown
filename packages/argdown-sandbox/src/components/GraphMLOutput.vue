@@ -1,8 +1,8 @@
 <template>
-  <div class="json-output output">
+  <div class="dot-output output">
     <div class="content">
-      <div class="json-source">
-        <pre>{{$store.getters.json}}</pre>
+      <div class="dot-source">
+        <pre>{{$store.getters.graphml}}</pre>
       </div>
     </div>
   </div>
@@ -10,7 +10,7 @@
 
 <script>
 export default {
-  name: "json-output"
+  name: "graphml-output"
 };
 </script>
 
