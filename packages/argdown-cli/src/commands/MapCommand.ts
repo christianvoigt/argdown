@@ -53,11 +53,6 @@ export const builder = {
     type: "string",
     describe: "Name of the graph"
   },
-  lineLength: {
-    alias: "line",
-    type: "number",
-    describe: "Number of chars in a label line."
-  },
   inclusive: {
     type: "boolean",
     describe: "Include disconnected nodes."
@@ -87,7 +82,6 @@ export interface IMapCliOptions {
   ratio?: string;
   rankdir?: string;
   inclusive?: boolean;
-  lineLength?: number;
   graphName?: string;
   statementSelectionMode?: StatementSelectionMode;
   statementLabelMode?: LabelMode;
@@ -132,9 +126,6 @@ export const handler = async (
 
   if (args.graphName) {
     config.dot.graphname = args.graphName;
-  }
-  if (args.lineLength) {
-    config.dot.lineLength = args.lineLength;
   }
 
   config.dot.graphVizSettings = config.dot.graphVizSettings || {};
