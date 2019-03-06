@@ -1,7 +1,8 @@
 import { IAstNode } from "./model/model";
 import { isTokenNode, isRuleNode } from "./model/model";
 import { IToken } from "chevrotain";
-import * as pixelWidth from "string-pixel-width";
+import pixelWidth from "string-pixel-width";
+import cloneDeep from "lodash.clonedeep";
 
 const mdurl = require("mdurl");
 const punycode = require("punycode");
@@ -21,8 +22,8 @@ const replaceUnsafeChar = (ch: string): string => {
   return HTML_REPLACEMENTS[ch];
 };
 
-export const escapeHtml = (str: string): string => {
-  if (HTML_ESCAPE_TEST_RE.test(str)) {
+export const escapeHtml = (str?: string): string | undefined => {
+  if (str && !stringIsEmpty(str) && HTML_ESCAPE_TEST_RE.test(str)) {
     return str.replace(HTML_ESCAPE_REPLACE_RE, replaceUnsafeChar);
   }
   return str;
@@ -215,15 +216,32 @@ const logAstRecursively = (
 };
 
 export const isNumber = (x: any): x is number => {
-  return typeof x === "number";
+  return x !== null && typeof x === "number";
 };
 
 export const isString = (x: any): x is string => {
-  return typeof x === "string";
+  return x !== null && typeof x === "string";
 };
 
+/**
+ * Be careful: This check excludes arrays, even though they are objects in JavaScript.
+ */
 export const isObject = (x: any): x is object => {
-  return typeof x === "object";
+  return !!x && typeof x === "object" && !Array.isArray(x);
+};
+
+export const isFunction = (x: any): x is Function => {
+  return x !== null && typeof x === "function";
+};
+
+export const stringIsEmpty = (x: any): boolean => {
+  return !isString(x) || x == "";
+};
+export const arrayIsEmpty = (x: any): boolean => {
+  return !Array.isArray(x) || x.length == 0;
+};
+export const objectIsEmpty = (x: any): boolean => {
+  return !isObject(x) || Object.keys(x).length == 0;
 };
 
 /**
@@ -232,13 +250,13 @@ export const isObject = (x: any): x is object => {
  * Returns an array of substrings.
  *
  **/
-export const splitByCharactersInLine = (
+export function splitByCharactersInLine(
   s: string,
   n: number,
   useSpaces: boolean,
   a?: string[]
-): string[] => {
-  if (!s) return [];
+): string[] {
+  if (!s || n <= 0) return [];
 
   a = a || [];
   if (s.length <= n) {
@@ -262,7 +280,7 @@ export const splitByCharactersInLine = (
     a.push(line);
     return splitByCharactersInLine(s.substring(nextIdx), n, useSpaces, a);
   }
-};
+}
 /**
  * Splits a string every x pixels,
  * using string-pixel-width for measuring the width of the current line.
@@ -347,4 +365,107 @@ export const escapeAsHtmlEntities = (s: string): string => {
   return s.replace(/[^0-9A-Za-z ]/g, function(c) {
     return "&#" + c.charCodeAt(0) + ";";
   });
+};
+/**
+ * Merge plugin default settings with incoming config settings.
+ *
+ * Any default setting can be set to an object with a 'merge' custom function.
+ * In that case this function is responsible for merging the incoming setting with default settings.
+ * The custom merge function will get the incoming setting as first parameter and should
+ * return the merged setting.
+ *
+ * @param settings the incoming config settings
+ * @param defaults the default settings object, possible containing objects with custom merge functions
+ */
+export const mergeDefaults = (
+  settings: any,
+  defaults: { [key: string]: any }
+) => {
+  for (let key of Object.keys(defaults)) {
+    const incomingValue = settings[key];
+    const defaultValue = defaults[key];
+    const defaultValueIsObject = isObject(defaultValue);
+    if (defaultValueIsObject && isFunction((<any>defaultValue).merge)) {
+      settings[key] = (<any>defaultValue).merge(incomingValue);
+    } else if (incomingValue == null) {
+      if (isFunction(defaultValue)) {
+        settings[key] = defaultValue;
+      } else if (defaultValueIsObject) {
+        settings[key] = mergeDefaults({}, defaultValue);
+      } else {
+        settings[key] = cloneDeep(defaultValue);
+      }
+    } else if (isObject(incomingValue) && defaultValueIsObject) {
+      settings[key] = mergeDefaults(incomingValue, defaultValue);
+    }
+  }
+  return settings;
+};
+type DefaultSettingValue<T> =
+  | DefaultSettings<T>
+  | T
+  | { merge: (incoming: any) => DefaultSettingValue<T> };
+export type DefaultSettings<T> = { [K in keyof T]: DefaultSettingValue<T[K]> };
+/**
+ * Sanitization methods for config settings.
+ * These can be used for simple type checking and overwriting config settings.
+ *
+ * Plugins should use these methods together with mergeDefaults.
+ */
+export const ensure = {
+  object: <T>(defaultValue: T) => {
+    return {
+      merge: (incoming: any) => {
+        if (!incoming || !isObject(incoming)) {
+          return mergeDefaults({}, defaultValue) as T;
+        } else {
+          return mergeDefaults(incoming, defaultValue) as T;
+        }
+      }
+    };
+  },
+  string: (defaultValue: string) => {
+    return {
+      merge: (incoming: any) => {
+        if (typeof incoming !== "string") {
+          return defaultValue;
+        } else {
+          return incoming;
+        }
+      }
+    };
+  },
+  number: (defaultValue: number) => {
+    return {
+      merge: (incoming: any) => {
+        if (typeof incoming !== "number") {
+          return defaultValue;
+        } else {
+          return incoming;
+        }
+      }
+    };
+  },
+  boolean: (defaultValue: boolean) => {
+    return {
+      merge: (incoming: any) => {
+        if (typeof incoming !== "boolean") {
+          return defaultValue;
+        } else {
+          return incoming;
+        }
+      }
+    };
+  },
+  array: (defaultValue: any[]) => {
+    return {
+      merge: (incoming: any) => {
+        if (!incoming || !Array.isArray(incoming)) {
+          return defaultValue;
+        } else {
+          return incoming;
+        }
+      }
+    };
+  }
 };

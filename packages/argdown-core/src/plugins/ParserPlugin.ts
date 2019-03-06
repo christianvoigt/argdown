@@ -5,8 +5,15 @@ import { IArgdownLogger } from "../IArgdownLogger";
 import { ArgdownPluginError } from "../ArgdownPluginError";
 import { IArgdownRequest, IArgdownResponse } from "../index";
 import { IAstNode } from "../model/model";
-import { IToken, ILexingError, IRecognitionException, tokenMatcher, EOF, createTokenInstance } from "chevrotain";
-import { last } from "lodash";
+import {
+  IToken,
+  ILexingError,
+  IRecognitionException,
+  tokenMatcher,
+  EOF,
+  createTokenInstance
+} from "chevrotain";
+import last from "lodash.last";
 
 declare module "../index" {
   interface IArgdownResponse {
@@ -55,7 +62,11 @@ declare module "../index" {
  */
 export class ParserPlugin implements IArgdownPlugin {
   name: string = "ParserPlugin";
-  run(request: IArgdownRequest, response: IArgdownResponse, logger: IArgdownLogger) {
+  run(
+    request: IArgdownRequest,
+    response: IArgdownResponse,
+    logger: IArgdownLogger
+  ) {
     if (!request.input) {
       throw new ArgdownPluginError(this.name, "No input field in request.");
     }
@@ -68,10 +79,18 @@ export class ParserPlugin implements IArgdownPlugin {
     response.parserErrors = parser.errors;
 
     if (response.lexerErrors && response.lexerErrors.length > 0) {
-      logger.log("verbose", "[ParserPlugin]: Lexer returned errors.\n" + JSON.stringify(response.lexerErrors));
+      logger.log(
+        "verbose",
+        "[ParserPlugin]: Lexer returned errors.\n" +
+          JSON.stringify(response.lexerErrors)
+      );
     }
     if (response.parserErrors && response.parserErrors.length > 0) {
-      logger.log("verbose", "[ParserPlugin]: Parser returned errors.\n" + JSON.stringify(response.parserErrors));
+      logger.log(
+        "verbose",
+        "[ParserPlugin]: Parser returned errors.\n" +
+          JSON.stringify(response.parserErrors)
+      );
     }
     if (response.parserErrors && response.parserErrors.length > 0) {
       // //add location if token is EOF

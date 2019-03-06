@@ -1,4 +1,3 @@
-import * as _ from "lodash";
 import { IArgdownPlugin, IRequestHandler } from "../IArgdownPlugin";
 import { ArgdownPluginError } from "../ArgdownPluginError";
 import { IArgdownRequest, IArgdownResponse } from "../index";
@@ -9,6 +8,8 @@ import {
   ISection,
   isGroupMapNode
 } from "../model/model";
+import { mergeDefaults, ensure, DefaultSettings, isObject } from "../utils";
+import defaultsDeep from "lodash.defaultsdeep";
 
 export interface ISectionConfig extends ISection {
   statements?: string[];
@@ -21,8 +22,10 @@ export interface IGroupSettings {
   ignoreIsClosed?: boolean;
   ignoreIsGroup?: boolean;
 }
-const defaultSettings: IGroupSettings = {
-  groupDepth: 2
+const defaultSettings: DefaultSettings<IGroupSettings> = {
+  groupDepth: 2,
+  sections: ensure.object({}),
+  regroup: ensure.array([])
 };
 declare module "../index" {
   interface IArgdownRequest {
@@ -43,10 +46,10 @@ export class GroupPlugin implements IArgdownPlugin {
   name = "GroupPlugin";
   defaults: IGroupSettings;
   constructor(config?: IGroupSettings) {
-    this.defaults = _.defaultsDeep({}, config, defaultSettings);
+    this.defaults = defaultsDeep({}, config, defaultSettings);
   }
   getSettings = (request: IArgdownRequest): IGroupSettings => {
-    if (request.group) {
+    if (isObject(request.group)) {
       return request.group;
     } else {
       request.group = {};
@@ -72,7 +75,8 @@ export class GroupPlugin implements IArgdownPlugin {
         "No relations field in response."
       );
     }
-    _.defaultsDeep(this.getSettings(request), this.defaults);
+    let settings = this.getSettings(request);
+    mergeDefaults(settings, this.defaults);
   };
   run: IRequestHandler = (request, response) => {
     if (!response.map) {

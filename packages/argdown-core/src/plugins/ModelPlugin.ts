@@ -1,10 +1,13 @@
-import * as _ from "lodash";
 import { tokenMatcher } from "chevrotain";
 import * as argdownLexer from "./../lexer";
 import { IArgdownPlugin, IRequestHandler } from "../IArgdownPlugin";
 import { IRuleNodeHandler, ITokenNodeHandler } from "../ArgdownTreeWalker";
 import { ArgdownPluginError } from "../ArgdownPluginError";
 import { IArgdownRequest, IArgdownResponse } from "../index";
+import defaultsDeep from "lodash.defaultsdeep";
+import last from "lodash.last";
+import union from "lodash.union";
+import merge from "lodash.merge";
 import {
   IEquivalenceClass,
   ArgdownTypes,
@@ -29,7 +32,7 @@ import {
 } from "../model/model";
 import { RuleNames } from "../RuleNames";
 import { TokenNames } from "../TokenNames";
-import { stringToClassName } from "../utils";
+import { stringToClassName, isObject, mergeDefaults } from "../utils";
 
 export interface ITagData {
   tag: string;
@@ -94,7 +97,7 @@ declare module "../index" {
     tags?: { [tagName: string]: ITagData };
   }
 }
-const defaultSettings = {
+const defaultSettings: IModelPluginSettings = {
   mode: InterpretationModes.LOOSE,
   removeTagsFromText: false,
   transformArgumentRelations: true
@@ -119,13 +122,13 @@ export class ModelPlugin implements IArgdownPlugin {
   ruleListeners: { [eventId: string]: IRuleNodeHandler };
   tokenListeners: { [eventId: string]: ITokenNodeHandler };
   getSettings = (request: IArgdownRequest) => {
-    if (!request.model) {
+    if (!isObject(request.model)) {
       request.model = {};
     }
     return request.model;
   };
   prepare: IRequestHandler = request => {
-    _.defaultsDeep(this.getSettings(request), this.defaults);
+    mergeDefaults(this.getSettings(request), this.defaults);
   };
   /**
    * Transforms outgoing relations of arguments with an assigned pcs into outgoing relations of the pcs's main conclusion.
@@ -155,7 +158,7 @@ export class ModelPlugin implements IArgdownPlugin {
         let argument = <IArgument>relation.from;
 
         //remove from argument
-        let index = _.indexOf(argument.relations, relation);
+        let index = argument.relations!.indexOf(relation);
         argument.relations!.splice(index, 1);
 
         let conclusionStatement = argument.pcs![argument.pcs!.length - 1];
@@ -179,7 +182,7 @@ export class ModelPlugin implements IArgdownPlugin {
           equivalenceClass.relations!.push(relation);
         } else {
           //remove relation from target
-          let index = _.indexOf(relation.to.relations, relation);
+          let index = relation.to.relations!.indexOf(relation);
           relation.to.relations!.splice(index, 1);
           addRelation = false;
         }
@@ -188,10 +191,10 @@ export class ModelPlugin implements IArgdownPlugin {
       // to incoming relations of last inference, removing duplicates
       if (toIsReconstructedArgument) {
         let argument = <IArgument>relation.to;
-        let inference = (<IConclusion>_.last(argument.pcs)!).inference!;
+        let inference = (<IConclusion>last(argument.pcs)!).inference!;
         relation.to = inference;
         // remove relation from argument
-        let index = _.indexOf(argument.relations, relation);
+        let index = argument.relations!.indexOf(relation);
         argument.relations!.splice(index, 1);
 
         let relationExists = false;
@@ -209,7 +212,7 @@ export class ModelPlugin implements IArgdownPlugin {
           inference.relations!.push(relation);
         } else {
           //remove relation from source
-          let index = _.indexOf(relation.from.relations, relation);
+          let index = relation.from.relations!.indexOf(relation);
           relation.from.relations!.splice(index, 1);
           //remove relation from relations
           addRelation = false;
@@ -247,10 +250,10 @@ export class ModelPlugin implements IArgdownPlugin {
           });
           if (relationExists !== undefined) {
             //remove relation from source
-            let indexSource = _.indexOf(relation.from!.relations, relation);
+            let indexSource = relation.from!.relations!.indexOf(relation);
             relation.from!.relations!.splice(indexSource, 1);
             //remove relation from target
-            let indexTarget = _.indexOf(relation.from!.relations, relation);
+            let indexTarget = relation.from!.relations!.indexOf(relation);
             relation.from!.relations!.splice(indexTarget, 1);
             addRelation = false;
           } else {
@@ -311,7 +314,7 @@ export class ModelPlugin implements IArgdownPlugin {
     return response;
   };
   constructor(config?: IModelPluginSettings) {
-    this.defaults = _.defaultsDeep({}, config, defaultSettings);
+    this.defaults = defaultsDeep({}, config, defaultSettings);
     this.name = "ModelPlugin";
     let $ = this;
 
@@ -396,7 +399,7 @@ export class ModelPlugin implements IArgdownPlugin {
       if (!object.tags) {
         object.tags = [];
       }
-      object.tags = _.union(object.tags, newTags);
+      object.tags = union(object.tags, newTags);
     };
     const onRelationExit: IRuleNodeHandler = (_request, response, node) => {
       let relation = node.relation;
@@ -706,7 +709,7 @@ export class ModelPlugin implements IArgdownPlugin {
               newSection.isClosed = newSection.data.isClosed;
             }
           }
-          if (groupSettings && groupSettings.sections) {
+          if (groupSettings && isObject(groupSettings.sections)) {
             const groupConfig = groupSettings.sections[newSection.title!];
             if (groupConfig) {
               newSection.isGroup = groupConfig.isGroup;
@@ -778,10 +781,7 @@ export class ModelPlugin implements IArgdownPlugin {
           addTags(statement.tags, equivalenceClass);
         }
         if (statement.data) {
-          equivalenceClass.data = _.merge(
-            equivalenceClass.data,
-            statement.data
-          );
+          equivalenceClass.data = merge(equivalenceClass.data, statement.data);
         }
         if (currentSection) {
           statement.section = currentSection;
@@ -845,7 +845,7 @@ export class ModelPlugin implements IArgdownPlugin {
           addTags(desc.tags, argument);
         }
         if (desc.data) {
-          argument.data = _.merge(argument.data, desc.data);
+          argument.data = merge(argument.data, desc.data);
         }
         if (currentSection) {
           desc.section = currentSection;
@@ -1048,7 +1048,7 @@ export class ModelPlugin implements IArgdownPlugin {
         }
       },
       [RuleNames.INCOMING_SUPPORT + "Entry"]: (_request, _response, node) => {
-        const target = _.last(relationParentsStack);
+        const target = last(relationParentsStack);
         currentRelation = {
           type: ArgdownTypes.RELATION,
           relationType: RelationType.SUPPORT,
@@ -1059,7 +1059,7 @@ export class ModelPlugin implements IArgdownPlugin {
       },
       [RuleNames.INCOMING_SUPPORT + "Exit"]: onRelationExit,
       [RuleNames.INCOMING_ATTACK + "Entry"]: (_request, _response, node) => {
-        const target = _.last(relationParentsStack);
+        const target = last(relationParentsStack);
         currentRelation = {
           type: ArgdownTypes.RELATION,
           relationType: RelationType.ATTACK,
@@ -1070,7 +1070,7 @@ export class ModelPlugin implements IArgdownPlugin {
       },
       [RuleNames.INCOMING_ATTACK + "Exit"]: onRelationExit,
       [RuleNames.OUTGOING_SUPPORT + "Entry"]: (_request, _response, node) => {
-        const target = _.last(relationParentsStack);
+        const target = last(relationParentsStack);
         currentRelation = {
           type: ArgdownTypes.RELATION,
           relationType: RelationType.SUPPORT,
@@ -1081,7 +1081,7 @@ export class ModelPlugin implements IArgdownPlugin {
       },
       [RuleNames.OUTGOING_SUPPORT + "Exit"]: onRelationExit,
       [RuleNames.OUTGOING_ATTACK + "Entry"]: (_request, _response, node) => {
-        const target = _.last(relationParentsStack);
+        const target = last(relationParentsStack);
         currentRelation = {
           type: ArgdownTypes.RELATION,
           relationType: RelationType.ATTACK,
@@ -1092,7 +1092,7 @@ export class ModelPlugin implements IArgdownPlugin {
       },
       [RuleNames.OUTGOING_ATTACK + "Exit"]: onRelationExit,
       [RuleNames.CONTRADICTION + "Entry"]: (_request, _response, node) => {
-        const target = _.last(relationParentsStack);
+        const target = last(relationParentsStack);
         currentRelation = {
           type: ArgdownTypes.RELATION,
           relationType: RelationType.CONTRADICTORY,
@@ -1103,7 +1103,7 @@ export class ModelPlugin implements IArgdownPlugin {
       },
       [RuleNames.CONTRADICTION + "Exit"]: onRelationExit,
       [RuleNames.OUTGOING_UNDERCUT + "Entry"]: (_request, _response, node) => {
-        const target = _.last(relationParentsStack);
+        const target = last(relationParentsStack);
         currentRelation = {
           type: ArgdownTypes.RELATION,
           relationType: RelationType.UNDERCUT,
@@ -1124,7 +1124,7 @@ export class ModelPlugin implements IArgdownPlugin {
       },
       [RuleNames.OUTGOING_UNDERCUT + "Exit"]: onRelationExit,
       [RuleNames.INCOMING_UNDERCUT + "Entry"]: (_request, _response, node) => {
-        const target = _.last(relationParentsStack);
+        const target = last(relationParentsStack);
         currentRelation = {
           type: ArgdownTypes.RELATION,
           relationType: RelationType.UNDERCUT,
@@ -1190,14 +1190,14 @@ export class ModelPlugin implements IArgdownPlugin {
         if (!target) {
           return;
         }
-        let italicEnd = _.last(node.children) as ITokenNode;
+        let italicEnd = last(node.children) as ITokenNode;
         if (italicEnd.image[italicEnd.image.length - 1] == " ") {
           target.text += " ";
           node.trailingWhitespace = " ";
         } else {
           node.trailingWhitespace = "";
         }
-        let range = _.last(rangesStack);
+        let range = last(rangesStack);
         if (range) {
           range.stop = target.text ? target.text.length - 1 : 0;
           rangesStack.pop();
@@ -1226,14 +1226,14 @@ export class ModelPlugin implements IArgdownPlugin {
           return;
         }
         const ruleNode = node as IRuleNode;
-        let boldEnd = _.last(ruleNode.children) as ITokenNode;
+        let boldEnd = last(ruleNode.children) as ITokenNode;
         if (boldEnd && boldEnd.image[boldEnd.image.length - 1] == " ") {
           target.text += " ";
           ruleNode.trailingWhitespace = " ";
         } else {
           ruleNode.trailingWhitespace = "";
         }
-        let range = _.last(rangesStack);
+        let range = last(rangesStack);
         if (range) {
           range.stop = target.text ? target.text.length - 1 : 0;
           rangesStack.pop();

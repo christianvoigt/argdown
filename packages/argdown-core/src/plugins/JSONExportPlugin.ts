@@ -1,9 +1,10 @@
-import * as _ from "lodash";
 import { IArgdownPlugin, IRequestHandler } from "../IArgdownPlugin";
 import { ArgdownPluginError } from "../ArgdownPluginError";
 import { toJSON } from "../model/toJSON";
 import { ArgdownTypes } from "../model/model";
 import { IArgdownRequest } from "../index";
+import defaultsDeep from "lodash.defaultsdeep";
+import { mergeDefaults, isObject } from "../utils";
 
 /**
  * Settings used by the JSONExportPlugin
@@ -69,10 +70,10 @@ export class JSONExportPlugin implements IArgdownPlugin {
   name = "JSONExportPlugin";
   defaults: IJSONSettings;
   constructor(config?: IJSONSettings) {
-    this.defaults = _.defaultsDeep({}, config, defaultSettings);
+    this.defaults = defaultsDeep({}, config, defaultSettings);
   }
   getSettings(request: IArgdownRequest) {
-    if (request.json) {
+    if (isObject(request.json)) {
       return request.json;
     } else {
       request.json = {};
@@ -80,17 +81,26 @@ export class JSONExportPlugin implements IArgdownPlugin {
     }
   }
   prepare: IRequestHandler = request => {
-    _.defaultsDeep(this.getSettings(request), this.defaults);
+    mergeDefaults(this.getSettings(request), this.defaults);
   };
   run: IRequestHandler = (request, response) => {
     if (!response.statements) {
-      throw new ArgdownPluginError(this.name, "No statements field in response.");
+      throw new ArgdownPluginError(
+        this.name,
+        "No statements field in response."
+      );
     }
     if (!response.arguments) {
-      throw new ArgdownPluginError(this.name, "No arguments field in response.");
+      throw new ArgdownPluginError(
+        this.name,
+        "No arguments field in response."
+      );
     }
     if (!response.relations) {
-      throw new ArgdownPluginError(this.name, "No relations field in response.");
+      throw new ArgdownPluginError(
+        this.name,
+        "No relations field in response."
+      );
     }
     const argdown: any = {
       arguments: response.arguments,
@@ -99,7 +109,12 @@ export class JSONExportPlugin implements IArgdownPlugin {
     };
     const settings = this.getSettings(request);
     const mapResponse = response as { map?: { nodes?: any[]; edges?: any[] } };
-    if (settings.exportMap && mapResponse.map && mapResponse.map.nodes && mapResponse.map.edges) {
+    if (
+      settings.exportMap &&
+      mapResponse.map &&
+      mapResponse.map.nodes &&
+      mapResponse.map.edges
+    ) {
       argdown.map = {
         nodes: mapResponse.map.nodes,
         edges: mapResponse.map.edges
@@ -122,7 +137,8 @@ export class JSONExportPlugin implements IArgdownPlugin {
           key === "relations" &&
           value.type &&
           this &&
-          (this.type === ArgdownTypes.ARGUMENT || this.types === ArgdownTypes.EQUIVALENCE_CLASS)
+          (this.type === ArgdownTypes.ARGUMENT ||
+            this.types === ArgdownTypes.EQUIVALENCE_CLASS)
         ) {
           return undefined;
         }
@@ -132,7 +148,8 @@ export class JSONExportPlugin implements IArgdownPlugin {
           key === "section" &&
           this &&
           this.type &&
-          (this.type === ArgdownTypes.ARGUMENT || this.types === ArgdownTypes.EQUIVALENCE_CLASS)
+          (this.type === ArgdownTypes.ARGUMENT ||
+            this.types === ArgdownTypes.EQUIVALENCE_CLASS)
         ) {
           return undefined;
         }

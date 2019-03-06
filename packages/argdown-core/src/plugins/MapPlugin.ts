@@ -1,7 +1,6 @@
-import * as _ from "lodash";
 import { IArgdownPlugin, IRequestHandler } from "../IArgdownPlugin";
 import { ArgdownPluginError } from "../ArgdownPluginError";
-import { reduceToMap } from "../utils";
+import { reduceToMap, mergeDefaults, stringIsEmpty, isObject } from "../utils";
 import { IArgdownRequest, IArgdownResponse } from "../index";
 import {
   IMap,
@@ -17,6 +16,8 @@ import {
   IInference
 } from "../model/model";
 import { relationMemberIsInSelection } from "./utils";
+import defaultsDeep from "lodash.defaultsdeep";
+
 export enum LabelMode {
   HIDE_UNTITLED = "hide-untitled",
   TITLE = "title",
@@ -70,10 +71,10 @@ export class MapPlugin implements IArgdownPlugin {
   name = "MapPlugin";
   defaults: IMapSettings;
   constructor(config?: IMapSettings) {
-    this.defaults = _.defaultsDeep({}, config, defaultSettings);
+    this.defaults = defaultsDeep({}, config, defaultSettings);
   }
   getSettings = (request: IArgdownRequest): IMapSettings => {
-    if (request.map) {
+    if (isObject(request.map)) {
       return request.map;
     } else {
       request.map = {};
@@ -99,7 +100,7 @@ export class MapPlugin implements IArgdownPlugin {
         "No relations field in response."
       );
     }
-    _.defaultsDeep(this.getSettings(request), this.defaults);
+    mergeDefaults(this.getSettings(request), this.defaults);
   };
   run: IRequestHandler = (request, response) => {
     if (!response.selection) {
@@ -181,7 +182,7 @@ const createStatementNode = (
   }
   if (
     settings.statementLabelMode !== LabelMode.TEXT ||
-    _.isEmpty(node.labelText)
+    stringIsEmpty(node.labelText)
   ) {
     if (
       settings.statementLabelMode === LabelMode.TITLE ||
@@ -210,7 +211,7 @@ const createArgumentNode = (
   }
   if (
     settings.argumentLabelMode !== LabelMode.TEXT ||
-    _.isEmpty(node.labelText)
+    stringIsEmpty(node.labelText)
   ) {
     if (
       !a.title!.startsWith("Untitled") ||

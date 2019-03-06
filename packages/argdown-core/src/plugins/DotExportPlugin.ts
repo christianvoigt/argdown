@@ -1,4 +1,3 @@
-import * as _ from "lodash";
 import { IArgdownPlugin, IRequestHandler } from "../IArgdownPlugin";
 import { ArgdownPluginError } from "../ArgdownPluginError";
 import {
@@ -12,8 +11,17 @@ import {
   isGroupMapNode
 } from "../model/model";
 import { IArgdownRequest, IArgdownResponse } from "../index";
-import { validateColorString } from "../utils";
+import {
+  validateColorString,
+  mergeDefaults,
+  DefaultSettings,
+  ensure,
+  stringIsEmpty,
+  isObject
+} from "../utils";
 import { escapeAsHtmlEntities, addLineBreaks } from "../utils";
+import defaultsDeep from "lodash.defaultsdeep";
+import merge from "lodash.merge";
 
 export interface IRankMap {
   [key: string]: IRank;
@@ -86,34 +94,56 @@ declare module "../index" {
     groupCount?: number;
   }
 }
-const defaultSettings: IDotSettings = {
+
+const defaultSettings: DefaultSettings<IDotSettings> = {
   useHtmlLabels: true,
   graphname: "Argument Map",
   measureLinePixelWidth: false,
-  group: {
+  group: ensure.object({
     lineWidth: 400,
     charactersInLine: 80,
     font: "arial",
     fontSize: 12
-  },
-  argument: {
+  }),
+  argument: ensure.object({
     lineWidth: 180,
-    title: { font: "arial", fontSize: 10, bold: true, charactersInLine: 40 },
-    text: { font: "arial", fontSize: 10, bold: false, charactersInLine: 40 }
-  },
-  statement: {
+    title: ensure.object({
+      font: "arial",
+      fontSize: 10,
+      bold: true,
+      charactersInLine: 40
+    }),
+    text: ensure.object({
+      font: "arial",
+      fontSize: 10,
+      bold: false,
+      charactersInLine: 40
+    })
+  }),
+  statement: ensure.object({
     lineWidth: 180,
-    title: { font: "arial", fontSize: 10, bold: true, charactersInLine: 40 },
-    text: { font: "arial", fontSize: 10, bold: false, charactersInLine: 40 }
-  },
-  graphVizSettings: {
+    title: ensure.object({
+      font: "arial",
+      fontSize: 10,
+      bold: true,
+      charactersInLine: 40
+    }),
+    text: ensure.object({
+      font: "arial",
+      fontSize: 10,
+      bold: false,
+      charactersInLine: 40
+    })
+  }),
+  graphVizSettings: ensure.object({
     rankdir: "BT", //BT | TB | LR | RL
     concentrate: "false",
     ratio: "auto",
     size: "10,10"
-  },
-  sameRank: []
+  }),
+  sameRank: ensure.array([])
 };
+
 /**
  * Exports map data to dot format.
  * The result ist stored in the [[IDotResponse.dot]] response object property.
@@ -124,11 +154,12 @@ export class DotExportPlugin implements IArgdownPlugin {
   name: string = "DotExportPlugin";
   defaults: IDotSettings;
   constructor(config?: IDotSettings) {
-    this.defaults = _.defaultsDeep({}, config, defaultSettings);
+    this.defaults = defaultsDeep({}, config, defaultSettings);
   }
   getSettings(request: IArgdownRequest): IDotSettings {
-    if (request.dot) {
-      return request.dot;
+    if (isObject(request.dot)) {
+      const settings = request.dot;
+      return settings;
     } else {
       request.dot = {};
       return request.dot;
@@ -156,8 +187,8 @@ export class DotExportPlugin implements IArgdownPlugin {
         "No relations property in response."
       );
     }
-    const settings = this.getSettings(request);
-    _.defaultsDeep(settings, this.defaults);
+    let settings = this.getSettings(request);
+    mergeDefaults(settings, defaultSettings);
   };
   run: IRequestHandler = (request, response) => {
     const settings = this.getSettings(request);
@@ -320,7 +351,7 @@ const addLineBreaksAndEscape = (
   const result = addLineBreaks(
     escapeAsHtmlEntities(str),
     measurePixelWidth,
-    _.merge(
+    merge(
       {
         lineBreak: "<BR/>"
       },
@@ -343,7 +374,7 @@ const getLabel = (node: IMapNode, settings: IDotSettings): string => {
       ? settings.argument!.lineWidth!
       : settings.statement!.lineWidth!;
     label += `<<TABLE WIDTH="${maxWidth}" ALIGN="CENTER" BORDER="0" CELLSPACING="0">`;
-    if (!_.isEmpty(title)) {
+    if (!stringIsEmpty(title)) {
       let { fontSize, font, bold, charactersInLine } = isArgumentNode
         ? settings.argument!.title!
         : settings.statement!.title!;
@@ -363,7 +394,7 @@ const getLabel = (node: IMapNode, settings: IDotSettings): string => {
       titleLabel = `<TR><TD WIDTH="${maxWidth}" ALIGN="TEXT" BALIGN="CENTER"><FONT FACE="${font}" POINT-SIZE="${fontSize}" COLOR="${color}">${titleLabel}</FONT></TD></TR>`;
       label += titleLabel;
     }
-    if (!_.isEmpty(text)) {
+    if (!stringIsEmpty(text)) {
       let { fontSize, font, bold, charactersInLine } = isArgumentNode
         ? settings.argument!.text!
         : settings.statement!.text!;

@@ -1,7 +1,6 @@
 import * as builder from "xmlbuilder";
-import * as pixelWidth from "string-pixel-width";
+import pixelWidth from "string-pixel-width";
 
-import * as _ from "lodash";
 import { IArgdownPlugin, IRequestHandler } from "../IArgdownPlugin";
 import { ArgdownPluginError } from "../ArgdownPluginError";
 import {
@@ -13,7 +12,15 @@ import {
   ArgdownTypes
 } from "../model/model";
 import { IArgdownRequest } from "../index";
-import { addLineBreaks } from "../utils";
+import {
+  addLineBreaks,
+  mergeDefaults,
+  DefaultSettings,
+  ensure,
+  isObject
+} from "../utils";
+import defaultsDeep from "lodash.defaultsdeep";
+
 export interface IGraphMLSettings {
   node?: {
     width?: number;
@@ -61,30 +68,30 @@ declare module "../index" {
     groupCount?: number;
   }
 }
-const defaultSettings: IGraphMLSettings = {
-  node: {
+const defaultSettings: DefaultSettings<IGraphMLSettings> = {
+  node: ensure.object({
     width: 135,
     horizontalPadding: 10,
     verticalPadding: 7,
-    text: {
+    text: ensure.object({
       fontSize: 13,
       lineHeight: 1.1
-    },
-    title: {
+    }),
+    title: ensure.object({
       fontSize: 13,
       lineHeight: 1.1
-    }
-  },
-  edge: {
+    })
+  }),
+  edge: ensure.object({
     width: 0.3
-  },
-  group: {
+  }),
+  group: ensure.object({
     fontSize: 16,
     lineHeight: 1.1,
     bold: false,
     horizontalPadding: 15,
     verticalPadding: 15
-  }
+  })
 };
 /**
  * Exports map data to the graphml format.
@@ -96,10 +103,10 @@ export class GraphMLExportPlugin implements IArgdownPlugin {
   name: string = "GraphMLExportPlugin";
   defaults: IGraphMLSettings;
   constructor(config?: IGraphMLSettings) {
-    this.defaults = _.defaultsDeep({}, config, defaultSettings);
+    this.defaults = defaultsDeep({}, config, defaultSettings);
   }
   getSettings(request: IArgdownRequest): IGraphMLSettings {
-    if (request.graphml) {
+    if (isObject(request.graphml)) {
       return request.graphml;
     } else {
       request.graphml = {};
@@ -128,8 +135,8 @@ export class GraphMLExportPlugin implements IArgdownPlugin {
         "No relations property in response."
       );
     }
-    const settings = this.getSettings(request);
-    _.defaultsDeep(settings, this.defaults);
+    let settings = this.getSettings(request);
+    mergeDefaults(settings, this.defaults);
   };
   run: IRequestHandler = (request, response) => {
     const settings = this.getSettings(request);

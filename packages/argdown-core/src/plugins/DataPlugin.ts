@@ -1,4 +1,3 @@
-import * as _ from "lodash";
 import * as yaml from "js-yaml";
 import { IArgdownPlugin, IRequestHandler } from "../IArgdownPlugin";
 import { ITokenNodeHandler } from "../ArgdownTreeWalker";
@@ -8,6 +7,9 @@ export enum FrontMatterSettingsModes {
   DEFAULT = "default",
   PRIORITY = "priority"
 }
+import defaultsDeep from "lodash.defaultsdeep";
+import merge from "lodash/merge";
+import { mergeDefaults, isObject } from "../utils";
 
 /**
  * Settings for the DataPlugin
@@ -72,7 +74,7 @@ export class DataPlugin implements IArgdownPlugin {
   defaults: IDataSettings;
   tokenListeners: { [eventId: string]: ITokenNodeHandler };
   constructor(config?: IDataSettings) {
-    this.defaults = _.defaultsDeep({}, config, defaultSettings);
+    this.defaults = defaultsDeep({}, config, defaultSettings);
     this.tokenListeners = {
       Data: (request, {}, token, parentNode) => {
         const options: yaml.LoadOptions = {};
@@ -81,7 +83,9 @@ export class DataPlugin implements IArgdownPlugin {
         if (settings.switchToBlockFormatIfMultiline) {
           const match = blockFormatStartPattern.exec(dataStr);
           if (match) {
-            dataStr = dataStr.substr(match[0].length).replace(blockFormatEndPattern, "");
+            dataStr = dataStr
+              .substr(match[0].length)
+              .replace(blockFormatEndPattern, "");
           }
         }
         const data = yaml.safeLoad(dataStr, options);
@@ -91,25 +95,34 @@ export class DataPlugin implements IArgdownPlugin {
       },
       FrontMatter: (request, response, token, parentNode) => {
         const options: yaml.LoadOptions = {};
-        let dataStr = token.image.replace(frontMatterStartPattern, "").replace(frontMatterEndPattern, "");
+        let dataStr = token.image
+          .replace(frontMatterStartPattern, "")
+          .replace(frontMatterEndPattern, "");
         const data: any = yaml.safeLoad(dataStr, options);
         if (parentNode) {
           parentNode.data = data;
         }
         response.frontMatter = data;
         const settings = this.getSettings(request);
-        if (data && _.isObject(data) && settings!.frontMatterSettingsMode !== FrontMatterSettingsModes.IGNORE) {
-          if (settings.frontMatterSettingsMode === FrontMatterSettingsModes.DEFAULT) {
-            _.defaultsDeep(request, data);
+        if (
+          data &&
+          isObject(data) &&
+          settings!.frontMatterSettingsMode !== FrontMatterSettingsModes.IGNORE
+        ) {
+          if (
+            settings.frontMatterSettingsMode ===
+            FrontMatterSettingsModes.DEFAULT
+          ) {
+            defaultsDeep(request, data);
           } else {
-            _.merge(request, data);
+            merge(request, data);
           }
         }
       }
     };
   }
   getSettings(request: IArgdownRequest) {
-    if (request.data) {
+    if (isObject(request.data)) {
       return request.data;
     } else {
       request.data = {};
@@ -117,7 +130,7 @@ export class DataPlugin implements IArgdownPlugin {
     }
   }
   prepare: IRequestHandler = request => {
-    _.defaultsDeep(this.getSettings(request), this.defaults);
+    mergeDefaults(this.getSettings(request), this.defaults);
   };
   //   run: IRequestHandler = (request, response, logger) => {};
 }

@@ -2,6 +2,10 @@ const getPriority = (level: string): number => {
   switch (level) {
     case "verbose":
       return 1;
+    case "info":
+      return 1;
+    case "debug":
+      return 1;
     case "warning":
       return 2;
     case "error":

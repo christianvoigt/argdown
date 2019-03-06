@@ -1,8 +1,10 @@
 "use strict";
 
 import * as chevrotain from "chevrotain";
-import * as _ from "lodash";
+import last from "lodash.last";
+import partialRight from "lodash.partialright";
 import { TokenNames } from "./TokenNames";
+import { arrayIsEmpty, objectIsEmpty } from "./utils";
 
 const createToken = chevrotain.createToken;
 const createTokenInstance = chevrotain.createTokenInstance;
@@ -21,12 +23,12 @@ const init = () => {
 };
 const getCurrentLine = (tokens: chevrotain.IToken[], groups: any): number => {
   const nlGroup = groups[NEWLINE_GROUP];
-  const matchedTokensIsEmpty = _.isEmpty(tokens);
-  const nlGroupIsEmpty = _.isEmpty(nlGroup);
+  const matchedTokensIsEmpty = arrayIsEmpty(tokens);
+  const nlGroupIsEmpty = objectIsEmpty(nlGroup);
   if (matchedTokensIsEmpty && nlGroupIsEmpty) return 1;
 
-  const lastToken = _.last(tokens);
-  const lastNl: any = _.last(nlGroup);
+  const lastToken = last(tokens);
+  const lastNl: any = last(nlGroup);
   let currentLine = lastToken ? lastToken.endLine! : 1;
   if (lastToken && chevrotain.tokenMatcher(lastToken, Emptyline)) {
     currentLine++;
@@ -41,12 +43,12 @@ const getCurrentEndOffset = (
   groups: any
 ): number => {
   const nlGroup = groups[NEWLINE_GROUP];
-  const matchedTokensIsEmpty = _.isEmpty(tokens);
-  const nlGroupIsEmpty = _.isEmpty(nlGroup);
+  const matchedTokensIsEmpty = arrayIsEmpty(tokens);
+  const nlGroupIsEmpty = objectIsEmpty(nlGroup);
   if (matchedTokensIsEmpty && nlGroupIsEmpty) return 0;
 
-  const lastToken = _.last(tokens);
-  const lastNl: any = _.last(nlGroup);
+  const lastToken = last(tokens);
+  const lastNl: any = last(nlGroup);
   const tokenEndOffset = lastToken ? lastToken.endOffset! : 0;
   const nlEndOffset = lastNl ? lastNl.endOffset! : 0;
   return tokenEndOffset > nlEndOffset ? tokenEndOffset : nlEndOffset;
@@ -56,7 +58,7 @@ const lastTokenIsNewline = (
   groups: any
 ): boolean => {
   const newlineGroup = groups[NEWLINE_GROUP];
-  const lastNl: any = _.last(newlineGroup);
+  const lastNl: any = last(newlineGroup);
   return lastNl && (!lastToken || lastNl.endOffset! > lastToken.endOffset!);
 };
 
@@ -67,7 +69,7 @@ const emitRemainingDedentTokens = (
   if (indentStack.length <= 1) {
     return;
   }
-  const lastToken = _.last(matchedTokens);
+  const lastToken = last(matchedTokens);
   const startOffset = getCurrentEndOffset(matchedTokens, groups);
   const endOffset = startOffset;
   const startLine = getCurrentLine(matchedTokens, groups);
@@ -100,7 +102,7 @@ const emitIndentOrDedent = (
   indentStr: string
 ): void => {
   const currIndentLevel = indentStr.length;
-  let lastIndentLevel = _.last(indentStack) || 0;
+  let lastIndentLevel = last(indentStack) || 0;
   const image = "";
   const startOffset = getCurrentEndOffset(matchedTokens, groups) + 1;
   const endOffset = startOffset + indentStr.length - 1;
@@ -124,7 +126,7 @@ const emitIndentOrDedent = (
   } else if (currIndentLevel < lastIndentLevel) {
     while (indentStack.length > 1 && currIndentLevel < lastIndentLevel) {
       indentStack.pop();
-      lastIndentLevel = _.last(indentStack) || 0;
+      lastIndentLevel = last(indentStack) || 0;
       let dedentToken = createTokenInstance(
         Dedent,
         image,
@@ -147,11 +149,11 @@ const matchRelation = (
   pattern?: RegExp
 ) => {
   const remainingText = text.substr(offset || 0);
-  const lastToken = _.last(tokens);
+  const lastToken = last(tokens);
   const afterNewline = lastTokenIsNewline(lastToken, groups!);
   const afterEmptyline = lastToken && tokenMatcher(lastToken, Emptyline);
 
-  if (_.isEmpty(tokens) || afterEmptyline || afterNewline) {
+  if (arrayIsEmpty(tokens) || afterEmptyline || afterNewline) {
     //relations after Emptyline are illegal, but we need the token for error reporting
     let match = pattern!.exec(remainingText);
     if (match !== null && match.length == 3) {
@@ -163,13 +165,13 @@ const matchRelation = (
   return null;
 };
 //relations start at BOF or after a newline, optionally followed by indentation (spaces or tabs)
-const matchIncomingSupport = _.partialRight(matchRelation, /^([' '\t]*)(\+>)/);
-const matchIncomingAttack = _.partialRight(matchRelation, /^([' '\t]*)(->)/);
-const matchOutgoingSupport = _.partialRight(matchRelation, /^([' '\t]*)(<?\+)/);
-const matchOutgoingAttack = _.partialRight(matchRelation, /^([' '\t]*)(<?-)/);
-const matchContradiction = _.partialRight(matchRelation, /^([' '\t]*)(><)/);
-const matchIncomingUndercut = _.partialRight(matchRelation, /^([' '\t]*)(_>)/);
-const matchOutgoingUndercut = _.partialRight(matchRelation, /^([' '\t]*)(<_)/);
+const matchIncomingSupport = partialRight(matchRelation, /^([' '\t]*)(\+>)/);
+const matchIncomingAttack = partialRight(matchRelation, /^([' '\t]*)(->)/);
+const matchOutgoingSupport = partialRight(matchRelation, /^([' '\t]*)(<?\+)/);
+const matchOutgoingAttack = partialRight(matchRelation, /^([' '\t]*)(<?-)/);
+const matchContradiction = partialRight(matchRelation, /^([' '\t]*)(><)/);
+const matchIncomingUndercut = partialRight(matchRelation, /^([' '\t]*)(_>)/);
+const matchOutgoingUndercut = partialRight(matchRelation, /^([' '\t]*)(<_)/);
 
 export const IncomingSupport = createToken({
   name: TokenNames.INCOMING_SUPPORT,
@@ -241,9 +243,9 @@ const matchInferenceStart: chevrotain.CustomPatternMatcherFunc = (
   groups
 ) => {
   let remainingText = text.substr(offset || 0);
-  const lastToken = _.last(tokens);
+  const lastToken = last(tokens);
   let afterNewline = lastTokenIsNewline(lastToken, groups!);
-  if (_.isEmpty(tokens) || afterNewline) {
+  if (arrayIsEmpty(tokens) || afterNewline) {
     const match = inferenceStartPattern.exec(remainingText);
     if (match != null) {
       emitRemainingDedentTokens(tokens!, <any>groups!);
@@ -299,20 +301,19 @@ const matchListItem = (
   pattern?: RegExp
 ): RegExpExecArray | null => {
   let remainingText = text.substr(offset || 0);
-  let last = _.last(tokens);
-  let afterNewline = lastTokenIsNewline(last, groups!);
-  let afterEmptyline = last && tokenMatcher(last, Emptyline);
-  if (_.isEmpty(tokens) || afterEmptyline || afterNewline) {
+  let lastToken = last(tokens);
+  let afterNewline = lastTokenIsNewline(lastToken, groups!);
+  let afterEmptyline = lastToken && tokenMatcher(lastToken, Emptyline);
+  if (arrayIsEmpty(tokens) || afterEmptyline || afterNewline) {
     let match = pattern!.exec(remainingText);
     if (match !== null) {
-
       /*
        dirty hack: 
        we add an empty space, because emitIndentOrDedent only indents if indentStr.length > 0
        for lists, starting with no whitespace is allowed, so we have to fake it
        (the method was written for relations, which need to start with whitespace)
        */
-      const indentStr = match[1]+" "; 
+      const indentStr = match[1] + " ";
       emitIndentOrDedent(tokens!, groups!, indentStr);
       return match;
     }
@@ -321,7 +322,7 @@ const matchListItem = (
 };
 
 const orderedListItemPattern = /^([' '\t]*)\d+\.(?=\s)/;
-const matchOrderedListItem = _.partialRight(
+const matchOrderedListItem = partialRight(
   matchListItem,
   orderedListItemPattern
 );
@@ -336,7 +337,7 @@ export const OrderedListItem = createToken({
 tokenList.push(OrderedListItem);
 //whitespace + * + whitespace (to distinguish list items from bold and italic ranges)
 const unorderedListItemPattern = /^([' '\t]*)\*(?=\s)/;
-const matchUnorderedListItem = _.partialRight(
+const matchUnorderedListItem = partialRight(
   matchListItem,
   unorderedListItemPattern
 );
@@ -360,9 +361,9 @@ const matchEmptyline = (
   groups?: object
 ) => {
   let remainingText = text.substr(offset || 0);
-  let last = _.last(tokens);
+  let lastToken = last(tokens);
   //ignore Emptylines after first one (relevant for Emptylines after ignored comments)
-  if (last && tokenMatcher(last, Emptyline)) return null;
+  if (lastToken && tokenMatcher(lastToken, Emptyline)) return null;
   let match = emptylinePattern.exec(remainingText);
   if (match !== null && match[0].length < remainingText.length) {
     //ignore trailing linebreaks
@@ -441,12 +442,12 @@ const matchStatementNumber = (
   groups?: object
 ) => {
   let remainingText = text.substr(offset || 0);
-  var last = _.last(tokens);
-  let afterNewline = lastTokenIsNewline(last, groups!);
-  let afterEmptyline = last && tokenMatcher(last, Emptyline);
+  var lastToken = last(tokens);
+  let afterNewline = lastTokenIsNewline(lastToken, groups!);
+  let afterEmptyline = lastToken && tokenMatcher(lastToken, Emptyline);
 
   //Statement in argument reconstruction:
-  if (_.isEmpty(tokens) || afterEmptyline || afterNewline) {
+  if (arrayIsEmpty(tokens) || afterEmptyline || afterNewline) {
     let match = statementNumberPattern.exec(remainingText);
     if (match !== null) {
       emitRemainingDedentTokens(tokens!, <any>groups!);
@@ -492,10 +493,10 @@ const matchHeadingStart = (
   tokens?: chevrotain.IToken[]
 ) => {
   let remainingText = text.substr(offset || 0);
-  let last = _.last(tokens);
-  let afterEmptyline = last && tokenMatcher(last, Emptyline);
+  let lastToken = last(tokens);
+  let afterEmptyline = lastToken && tokenMatcher(lastToken, Emptyline);
 
-  if (!last || afterEmptyline) {
+  if (!lastToken || afterEmptyline) {
     const match = headingPattern.exec(remainingText);
     if (match) {
       return match;
@@ -538,12 +539,12 @@ const matchBoldOrItalicEnd = (
   pattern?: RegExp,
   rangeType?: string
 ): RegExpExecArray | null => {
-  let lastRange = _.last(rangesStack);
+  let lastRange = last(rangesStack);
   if (lastRange != rangeType) return null;
   //first check if the last match was skipped Whitespace
   let skipped: any = groups ? groups[chevrotain.Lexer.SKIPPED] : null;
-  let lastSkipped: any = _.last(skipped);
-  let lastMatched = _.last(tokens);
+  let lastSkipped: any = last(skipped);
+  let lastMatched = last(tokens);
   if (
     !lastMatched ||
     (lastSkipped && lastSkipped.endOffset! > lastMatched.endOffset!)
@@ -559,45 +560,45 @@ const matchBoldOrItalicEnd = (
   }
   return null;
 };
-const matchAsteriskBoldStart = _.partialRight(
+const matchAsteriskBoldStart = partialRight(
   matchBoldOrItalicStart,
   /^\*\*(?!\s)/,
   "AsteriskBold"
 );
-const matchAsteriskBoldEnd = _.partialRight(
+const matchAsteriskBoldEnd = partialRight(
   matchBoldOrItalicEnd,
   /^\*\*(?:[ \t]|(?=\n|\r|\)|\}|\_|\.|,|!|\?|;|:|-|\*|$))/,
   "AsteriskBold"
 );
 
-const matchUnderscoreBoldStart = _.partialRight(
+const matchUnderscoreBoldStart = partialRight(
   matchBoldOrItalicStart,
   /^__(?!\s)/,
   "UnderscoreBold"
 );
-const matchUnderscoreBoldEnd = _.partialRight(
+const matchUnderscoreBoldEnd = partialRight(
   matchBoldOrItalicEnd,
   /^__(?:[ \t]|(?=\n|\r|\)|\}|\_|\.|,|!|\?|;|:|-|\*|$))/,
   "UnderscoreBold"
 );
 
-const matchAsteriskItalicStart = _.partialRight(
+const matchAsteriskItalicStart = partialRight(
   matchBoldOrItalicStart,
   /^\*(?!\s)/,
   "AsteriskItalic"
 );
-const matchAsteriskItalicEnd = _.partialRight(
+const matchAsteriskItalicEnd = partialRight(
   matchBoldOrItalicEnd,
   /^\*(?:[ \t]|(?=\n|\r|\)|\}|\_|\.|,|!|\?|;|:|-|\*|$))/,
   "AsteriskItalic"
 );
 
-const matchUnderscoreItalicStart = _.partialRight(
+const matchUnderscoreItalicStart = partialRight(
   matchBoldOrItalicStart,
   /^\_(?!\s)/,
   "UnderscoreItalic"
 );
-const matchUnderscoreItalicEnd = _.partialRight(
+const matchUnderscoreItalicEnd = partialRight(
   matchBoldOrItalicEnd,
   /^\_(?:[ \t]|(?=\n|\r|\)|\}|\_|\.|,|!|\?|;|:|-|\*|$))/,
   "UnderscoreItalic"
@@ -819,7 +820,7 @@ export const tokenize = (text: string): chevrotain.ILexingResult => {
   }
 
   //remove trailing Emptyline (parser cannot cope with it)
-  const lastToken = _.last(lexResult.tokens);
+  const lastToken = last(lexResult.tokens);
   if (lastToken && tokenMatcher(lastToken, Emptyline)) {
     lexResult.tokens.pop();
   }

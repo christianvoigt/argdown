@@ -3,13 +3,12 @@ import { ArgdownPluginError } from "./ArgdownPluginError";
 "use strict";
 
 import { ArgdownTreeWalker } from "./ArgdownTreeWalker";
-import * as _ from "lodash";
 import { IArgdownLogger } from "./IArgdownLogger";
 import { IArgdownPlugin } from "./IArgdownPlugin";
 import { Logger } from "./Logger";
 import { IArgdownRequest, IArgdownResponse } from "./index";
-import { defaultsDeep } from "lodash";
-import { isString } from "util";
+import defaultsDeep from "lodash.defaultsdeep";
+import { isString, isFunction, arrayIsEmpty } from "./utils";
 
 /**
  * A processor is a "working step" in a process, containing a group of plugins
@@ -62,7 +61,7 @@ export interface IArgdownProcessor {
  * and the response object for returning produced or transformed data. The only obvious exceptions are I/O plugins,
  * for example export plugins that save the exported data as new files.
  *
- * The `@argdown/cli` package provides a subclass called `AsyncArgdownApplication` which adds a `AsyncArgdownApplication.runAsync` method to this class.
+ * The `@argdown/node` package provides a subclass called `AsyncArgdownApplication` which adds a `AsyncArgdownApplication.runAsync` method to this class.
  * This can be used to support Promises and async/await in I/O operations.
  * The app.runAsync method works exactly like the app.run method
  * except that it tries to call `await plugin.runAsyc(...);` before calling any `plugin.run(...);` methods.
@@ -120,7 +119,7 @@ export class ArgdownApplication {
    */
   constructor(logger?: IArgdownLogger) {
     this.processors = {};
-    if (logger && _.isFunction(logger.log) && _.isFunction(logger.setLevel)) {
+    if (logger && isFunction(logger.log) && isFunction(logger.setLevel)) {
       this.logger = logger;
     } else {
       this.logger = this.defaultLogger;
@@ -257,9 +256,13 @@ export class ArgdownApplication {
         this.logger.setLevel(req.logLevel);
       }
       if (req.process) {
-        if (_.isArray(req.process)) {
+        if (Array.isArray(req.process)) {
           processorsToRun = req.process;
-        } else if (isString(req.process) && req.processes && req.processes[req.process]) {
+        } else if (
+          isString(req.process) &&
+          req.processes &&
+          req.processes[req.process]
+        ) {
           const processObj = req.processes[req.process];
           req = defaultsDeep(req, processObj);
           if (isString(processObj.process)) {
@@ -273,7 +276,7 @@ export class ArgdownApplication {
       }
     }
 
-    if (_.isEmpty(processorsToRun)) {
+    if (arrayIsEmpty(processorsToRun)) {
       this.logger.log("error", "[ArgdownApplication]: No processors to run.");
       return resp;
     }
@@ -284,14 +287,23 @@ export class ArgdownApplication {
       let cancelProcessor = false;
       let processor = this.processors[processorId];
       if (!processor) {
-        this.logger.log("error", "[ArgdownApplication]: Processor not found: " + processorId);
+        this.logger.log(
+          "error",
+          "[ArgdownApplication]: Processor not found: " + processorId
+        );
         continue;
       }
-      this.logger.log("verbose", "[ArgdownApplication]: Running processor: " + processorId);
+      this.logger.log(
+        "verbose",
+        "[ArgdownApplication]: Running processor: " + processorId
+      );
 
       for (let plugin of processor.plugins) {
-        if (_.isFunction(plugin.prepare)) {
-          this.logger.log("verbose", "[ArgdownApplication]: Preparing plugin: " + plugin.name);
+        if (isFunction(plugin.prepare)) {
+          this.logger.log(
+            "verbose",
+            "[ArgdownApplication]: Preparing plugin: " + plugin.name
+          );
           try {
             plugin.prepare(req, resp, this.logger);
           } catch (e) {
@@ -301,7 +313,10 @@ export class ArgdownApplication {
               e.processor = processorId;
               exceptions.push(e);
               cancelProcessor = true;
-              this.logger.log("warning", `[ArgdownApplication]: Processor ${processorId} canceled.`);
+              this.logger.log(
+                "warning",
+                `[ArgdownApplication]: Processor ${processorId} canceled.`
+              );
               break;
             }
           }
@@ -320,15 +335,21 @@ export class ArgdownApplication {
           } else {
             e.processor = processorId;
             exceptions.push(e);
-            this.logger.log("warning", `[ArgdownApplication]: Processor ${processorId} canceled.`);
+            this.logger.log(
+              "warning",
+              `[ArgdownApplication]: Processor ${processorId} canceled.`
+            );
             break;
           }
         }
       }
 
       for (let plugin of processor.plugins) {
-        this.logger.log("verbose", "[ArgdownApplication]: Running plugin: " + plugin.name);
-        if (_.isFunction(plugin.run)) {
+        this.logger.log(
+          "verbose",
+          "[ArgdownApplication]: Running plugin: " + plugin.name
+        );
+        if (isFunction(plugin.run)) {
           try {
             plugin.run(req, resp, this.logger);
           } catch (e) {

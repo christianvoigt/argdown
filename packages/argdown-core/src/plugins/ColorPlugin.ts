@@ -1,8 +1,15 @@
-import * as _ from "lodash";
 import { IArgdownPlugin, IRequestHandler } from "../IArgdownPlugin";
 import { ArgdownPluginError } from "../ArgdownPluginError";
 import { IArgdownRequest, IArgdownResponse } from "../index";
-import { validateColorString, isString, isNumber, isObject } from "../utils";
+import {
+  validateColorString,
+  isString,
+  isNumber,
+  isObject,
+  mergeDefaults,
+  ensure,
+  DefaultSettings
+} from "../utils";
 import { colorSchemes } from "./colorSchemes";
 import {
   ISection,
@@ -11,6 +18,7 @@ import {
   isGroupMapNode
 } from "../model/model";
 import { ITagData } from "./ModelPlugin";
+import defaultsDeep from "lodash.defaultsdeep";
 
 export interface IColorSettings {
   /**
@@ -88,20 +96,20 @@ declare module "../index" {
   }
 }
 
-const defaultSettings: IColorSettings = {
+const defaultSettings: DefaultSettings<IColorSettings> = {
   statementFontColor: "#000000",
   argumentFontColor: "#000000",
   groupFontColor: "#000000",
   colorScheme: colorSchemes["default"],
   groupColorScheme: ["#DADADA", "#BABABA", "#AAAAAA"],
-  relationColors: {
+  relationColors: ensure.object({
     attack: "#ff0000",
     support: "#00ff00",
     undercut: "#551A8B",
     entails: "#00ff00",
     contrary: "#ff0000",
     contradictory: "#ff0000"
-  },
+  }),
   colorizeByTag: true,
   colorizeGroupsByTag: false
 };
@@ -116,10 +124,12 @@ export class ColorPlugin implements IArgdownPlugin {
   name = "ColorPlugin";
   defaults: IColorSettings;
   constructor(config?: IColorSettings) {
-    this.defaults = _.defaultsDeep({}, config, defaultSettings);
+    this.defaults = defaultsDeep({}, config, defaultSettings);
   }
   getSettings(request: IArgdownRequest): IColorSettings {
-    request.color = request.color || {};
+    if (!isObject(request.color)) {
+      request.color = {};
+    }
     return request.color;
   }
   run: IRequestHandler = (request, response) => {
@@ -143,7 +153,8 @@ export class ColorPlugin implements IArgdownPlugin {
     }
     //needs to be done here, to allow the DataPlugin to run in the same processor
     const settings = this.getSettings(request);
-    _.defaultsDeep(settings, this.defaults);
+    mergeDefaults(settings, this.defaults);
+
     const tagColors: { [tagName: string]: string } = {};
     const groupTagColors: { [tagName: string]: string } = {};
     let colorScheme: string[];

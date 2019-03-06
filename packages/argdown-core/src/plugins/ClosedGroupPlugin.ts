@@ -7,6 +7,7 @@ import {
   IGroupMapNode,
   IMapEdge
 } from "../model/model";
+
 /**
  * Looks for closed group nodes in the map, removes their children and transforms relations
  * that are entering or leaving the group to incoming and outgoing relations of the group node.

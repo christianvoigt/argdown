@@ -1,5 +1,3 @@
-import * as _ from "lodash";
-import * as utils from "../utils";
 import { IArgdownPlugin, IRequestHandler } from "../IArgdownPlugin";
 import { IRuleNodeHandler, ITokenNodeHandler } from "../ArgdownTreeWalker";
 import { ArgdownPluginError } from "../ArgdownPluginError";
@@ -7,6 +5,17 @@ import { ITokenNode, IRuleNode, isConclusion } from "../model/model";
 import { TokenNames } from "../TokenNames";
 import { RuleNames } from "../RuleNames";
 import { IArgdownRequest, IArgdownResponse } from "../index";
+import {
+  validateLink,
+  normalizeLink,
+  mergeDefaults,
+  getHtmlId,
+  escapeHtml,
+  validateColorString,
+  DefaultSettings,
+  isObject
+} from "../utils";
+import defaultsDeep from "lodash.defaultsdeep";
 
 /**
  * Settings used by the HTMLExportPlugin
@@ -37,15 +46,15 @@ export interface IHtmlExportSettings {
   outputDir?: string;
   css?: string;
 }
-const defaultSettings: IHtmlExportSettings = {
+const defaultSettings: DefaultSettings<IHtmlExportSettings> = {
   headless: false,
   cssFile: "./argdown.css",
   title: "Argdown Document",
   lang: "en",
   charset: "utf8",
   allowFileProtocol: false,
-  validateLink: utils.validateLink,
-  normalizeLink: utils.normalizeLink
+  validateLink: validateLink,
+  normalizeLink: normalizeLink
 };
 declare module "../index" {
   interface IArgdownRequest {
@@ -81,46 +90,78 @@ export class HtmlExportPlugin implements IArgdownPlugin {
   tokenListeners: { [eventId: string]: ITokenNodeHandler };
   getSettings(request: IArgdownRequest) {
     let settings = request.html;
-    if (!settings) {
+    if (!isObject(settings)) {
       settings = {};
       request.html = settings;
     }
     return settings;
   }
   prepare: IRequestHandler = (request, response) => {
-    _.defaultsDeep(this.getSettings(request), this.defaults);
+    mergeDefaults(this.getSettings(request), this.defaults);
     if (!response.ast) {
       throw new ArgdownPluginError(this.name, "No AST field in response.");
     }
     if (!response.statements) {
-      throw new ArgdownPluginError(this.name, "No statements field in response.");
+      throw new ArgdownPluginError(
+        this.name,
+        "No statements field in response."
+      );
     }
     if (!response.arguments) {
-      throw new ArgdownPluginError(this.name, "No arguments field in response.");
+      throw new ArgdownPluginError(
+        this.name,
+        "No arguments field in response."
+      );
     }
   };
   constructor(config?: IHtmlExportSettings) {
-    this.defaults = _.defaultsDeep({}, config, defaultSettings);
+    this.defaults = defaultsDeep({}, config, defaultSettings);
     const $ = this;
     this.tokenListeners = {
-      [TokenNames.STATEMENT_DEFINITION]: (_request, response, token, parentNode) => {
-        let htmlId = utils.getHtmlId("statement", token.title!, response.htmlIds!);
+      [TokenNames.STATEMENT_DEFINITION]: (
+        _request,
+        response,
+        token,
+        parentNode
+      ) => {
+        let htmlId = getHtmlId("statement", token.title!, response.htmlIds!);
         response.htmlIds![htmlId] = true;
         let classes = "definition statement-definition definiendum";
-        if (parentNode!.equivalenceClass && parentNode!.equivalenceClass!.tags) {
-          classes += " " + $.getCssClassesFromTags(response, parentNode!.equivalenceClass!.tags!);
+        if (
+          parentNode!.equivalenceClass &&
+          parentNode!.equivalenceClass!.tags
+        ) {
+          classes +=
+            " " +
+            $.getCssClassesFromTags(
+              response,
+              parentNode!.equivalenceClass!.tags!
+            );
         }
-        response.html += `<span id="${htmlId}" class="${classes}">[<span class="title statement-title">${_.escape(
+        response.html += `<span id="${htmlId}" class="${classes}">[<span class="title statement-title">${escapeHtml(
           token.title
         )}</span>]: </span>`;
       },
-      [TokenNames.STATEMENT_REFERENCE]: (_request, response, token, parentNode) => {
-        let htmlId = utils.getHtmlId("statement", token.title!);
+      [TokenNames.STATEMENT_REFERENCE]: (
+        _request,
+        response,
+        token,
+        parentNode
+      ) => {
+        let htmlId = getHtmlId("statement", token.title!);
         let classes = "reference statement-reference";
-        if (parentNode!.equivalenceClass && parentNode!.equivalenceClass!.tags) {
-          classes += " " + $.getCssClassesFromTags(response, parentNode!.equivalenceClass!.tags!);
+        if (
+          parentNode!.equivalenceClass &&
+          parentNode!.equivalenceClass!.tags
+        ) {
+          classes +=
+            " " +
+            $.getCssClassesFromTags(
+              response,
+              parentNode!.equivalenceClass!.tags!
+            );
         }
-        response.html += `<a href="#${htmlId}" class="${classes}">[<span class="title statement-title">${_.escape(
+        response.html += `<a href="#${htmlId}" class="${classes}">[<span class="title statement-title">${escapeHtml(
           token.title
         )}</span>] </a>`;
       },
@@ -131,40 +172,41 @@ export class HtmlExportPlugin implements IArgdownPlugin {
           console.log("Mentioned statement not found: " + token.title);
         }
         if (equivalenceClass && equivalenceClass.tags) {
-          classes += " " + $.getCssClassesFromTags(response, equivalenceClass.tags);
+          classes +=
+            " " + $.getCssClassesFromTags(response, equivalenceClass.tags);
         }
-        let htmlId = utils.getHtmlId("statement", token.title!);
-        response.html += `<a href="#${htmlId}" class="${classes}">@[<span class="title statement-title">${_.escape(
+        let htmlId = getHtmlId("statement", token.title!);
+        response.html += `<a href="#${htmlId}" class="${classes}">@[<span class="title statement-title">${escapeHtml(
           token.title
         )}</span>]</a>${token.trailingWhitespace}`;
       },
       [TokenNames.ARGUMENT_REFERENCE]: (_request, response, token) => {
         const argument = response.arguments![token.title!];
-        let htmlId = utils.getHtmlId("argument", argument.title!);
+        let htmlId = getHtmlId("argument", argument.title!);
         let classes = "reference argument-reference";
         if (argument!.tags) {
           classes += " " + $.getCssClassesFromTags(response, argument!.tags!);
         }
         response.html += `<a href="#${htmlId}" data-line="${
           token.startLine
-        }" class="has-line ${classes}">&lt;<span class="title argument-title">${_.escape(
+        }" class="has-line ${classes}">&lt;<span class="title argument-title">${escapeHtml(
           argument!.title
         )}</span>&gt; </a>`;
       },
       [TokenNames.ARGUMENT_DEFINITION]: (_request, response, token) => {
         const argument = response.arguments![token.title!];
-        let htmlId = utils.getHtmlId("argument", argument!.title!, response.htmlIds!);
+        let htmlId = getHtmlId("argument", argument!.title!, response.htmlIds!);
         response.htmlIds![htmlId] = true;
         let classes = "definition argument-definition definiendum";
         if (argument!.tags) {
           classes += " " + $.getCssClassesFromTags(response, argument!.tags!);
         }
-        response.html += `<span id="${htmlId}" class="${classes}">&lt;<span class="title argument-title">${_.escape(
+        response.html += `<span id="${htmlId}" class="${classes}">&lt;<span class="title argument-title">${escapeHtml(
           argument!.title
         )}</span>&gt;: </span>`;
       },
       [TokenNames.ARGUMENT_MENTION]: (_request, response, token) => {
-        let htmlId = utils.getHtmlId("argument", token.title!);
+        let htmlId = getHtmlId("argument", token.title!);
         let classes = "mention argument-mention";
         const argument = response.arguments![token.title!];
         if (!argument) {
@@ -173,7 +215,7 @@ export class HtmlExportPlugin implements IArgdownPlugin {
         if (argument && argument.tags) {
           classes += " " + $.getCssClassesFromTags(response, argument.tags);
         }
-        response.html += `<a href="#${htmlId}" class="${classes}">@&lt;<span class="title argument-title">${_.escape(
+        response.html += `<a href="#${htmlId}" class="${classes}">@&lt;<span class="title argument-title">${escapeHtml(
           token.title
         )}</span>&gt;</a>${token.trailingWhitespace}`;
       },
@@ -181,18 +223,23 @@ export class HtmlExportPlugin implements IArgdownPlugin {
         let settings = $.getSettings(request);
         let linkUrl = settings.normalizeLink!(token.url!);
         let linkText = token.text;
-        if (!settings.validateLink!(linkUrl, settings.allowFileProtocol || false)) {
+        if (
+          !settings.validateLink!(linkUrl, settings.allowFileProtocol || false)
+        ) {
           linkUrl = "";
           linkText = "removed insecure url.";
         }
-        response.html += `<a href="${linkUrl}">${linkText}</a>${token.trailingWhitespace}`;
+        response.html += `<a href="${linkUrl}">${linkText}</a>${
+          token.trailingWhitespace
+        }`;
       },
       [TokenNames.TAG]: (_request, response, node) => {
         const token = node as ITokenNode;
         if (token.text) {
-          response.html += `<span class="tag ${$.getCssClassesFromTags(response, [token.tag!])}">${_.escape(
-            token.text
-          )}</span>`;
+          response.html += `<span class="tag ${$.getCssClassesFromTags(
+            response,
+            [token.tag!]
+          )}">${escapeHtml(token.text)}</span>`;
         }
       }
     };
@@ -208,7 +255,9 @@ export class HtmlExportPlugin implements IArgdownPlugin {
         if (!settings.headless) {
           let head = settings.head;
           if (!head) {
-            head = `<!doctype html><html lang="${settings.lang}"><head><meta charset="${
+            head = `<!doctype html><html lang="${
+              settings.lang
+            }"><head><meta charset="${
               settings.charset
             }"><title>${title}</title>`;
             if (settings.cssFile) {
@@ -217,10 +266,17 @@ export class HtmlExportPlugin implements IArgdownPlugin {
             if (settings.css) {
               head += `<style>${settings.css}</style>`;
             }
-            if (response.tags && (!request.color || request.color.colorizeByTag !== false)) {
+            if (
+              response.tags &&
+              (!request.color || request.color.colorizeByTag !== false)
+            ) {
               let tagColorCss = "";
               for (let tag of Object.values(response.tags)) {
-                if (tag.cssClass && tag.color && utils.validateColorString(tag.color)) {
+                if (
+                  tag.cssClass &&
+                  tag.color &&
+                  validateColorString(tag.color)
+                ) {
                   tagColorCss += `.${tag.cssClass}{color: ${tag.color};}\n`;
                 }
               }
@@ -248,45 +304,60 @@ export class HtmlExportPlugin implements IArgdownPlugin {
       [RuleNames.STATEMENT + "Entry"]: (_request, response, node) => {
         let classes = "statement has-line";
         if (node.equivalenceClass && node.equivalenceClass.tags) {
-          classes += " " + $.getCssClassesFromTags(response, node.equivalenceClass.tags);
+          classes +=
+            " " + $.getCssClassesFromTags(response, node.equivalenceClass.tags);
         }
-        response.html += `<div data-line="${node.startLine}" class="${classes}">`;
+        response.html += `<div data-line="${
+          node.startLine
+        }" class="${classes}">`;
       },
-      [RuleNames.STATEMENT + "Exit"]: (_request, response) => (response.html += "</div>"),
+      [RuleNames.STATEMENT + "Exit"]: (_request, response) =>
+        (response.html += "</div>"),
       [RuleNames.ARGUMENT + "Entry"]: (_request, response, node) => {
         let classes = "argument has-line";
         if (node.argument && node.argument.tags) {
-          classes += " " + $.getCssClassesFromTags(response, node.argument.tags);
+          classes +=
+            " " + $.getCssClassesFromTags(response, node.argument.tags);
         }
-        response.html += `<div data-line="${node.startLine}" class="${classes}">`;
+        response.html += `<div data-line="${
+          node.startLine
+        }" class="${classes}">`;
       },
-      [RuleNames.ARGUMENT + "Exit"]: (_request, response) => (response.html += "</div>"),
+      [RuleNames.ARGUMENT + "Exit"]: (_request, response) =>
+        (response.html += "</div>"),
       [RuleNames.PCS + "Entry"]: (_request, response, node) => {
         let classes = "pcs has-line";
         if (node.argument && node.argument.tags && node.argument.tags) {
-          classes += " " + $.getCssClassesFromTags(response, node.argument.tags);
+          classes +=
+            " " + $.getCssClassesFromTags(response, node.argument.tags);
         }
-        response.html += `<div data-line="${node.startLine}" class="${classes}">`;
+        response.html += `<div data-line="${
+          node.startLine
+        }" class="${classes}">`;
       },
-      [RuleNames.PCS + "Exit"]: (_request, response) => (response.html += "</div>"),
+      [RuleNames.PCS + "Exit"]: (_request, response) =>
+        (response.html += "</div>"),
       [RuleNames.INCOMING_SUPPORT + "Entry"]: (_request, response, node) => {
         response.html += `<div data-line="${
           node.startLine
         }" class="has-line incoming support relation"><div class="incoming support relation-symbol"><span>+&gt;</span></div>`;
       },
-      [RuleNames.INCOMING_SUPPORT + "Exit"]: (_request, response) => (response.html += "</div>"),
+      [RuleNames.INCOMING_SUPPORT + "Exit"]: (_request, response) =>
+        (response.html += "</div>"),
       [RuleNames.INCOMING_ATTACK + "Entry"]: (_request, response, node) => {
         response.html += `<div data-line="${
           node.startLine
         }" class="has-line incoming attack relation"><div class="incoming attack relation-symbol"><span>-&gt;</span></div>`;
       },
-      [RuleNames.INCOMING_ATTACK + "Exit"]: (_request, response) => (response.html += "</div>"),
+      [RuleNames.INCOMING_ATTACK + "Exit"]: (_request, response) =>
+        (response.html += "</div>"),
       [RuleNames.INCOMING_UNDERCUT + "Entry"]: (_request, response, node) => {
         response.html += `<div data-line="${
           node.startLine
         }" class="has-line incoming undercut relation"><div class="incoming undercut relation-symbol"><span>_&gt;</span></div>`;
       },
-      [RuleNames.INCOMING_UNDERCUT + "Exit"]: (_request, response) => (response.html += "</div>"),
+      [RuleNames.INCOMING_UNDERCUT + "Exit"]: (_request, response) =>
+        (response.html += "</div>"),
       [RuleNames.OUTGOING_SUPPORT + "Entry"]: (_request, response, node) => {
         response.html += `<div data-line="${
           node.startLine
@@ -325,49 +396,80 @@ export class HtmlExportPlugin implements IArgdownPlugin {
       [RuleNames.RELATIONS + "Exit"]: (_request, response) => {
         response.html += "</div>";
       },
-      [RuleNames.ORDERED_LIST + "Entry"]: (_request, response) => (response.html += "<ol>"),
-      [RuleNames.ORDERED_LIST + "Exit"]: (_request, response) => (response.html += "</ol>"),
-      [RuleNames.UNORDERED_LIST + "Entry"]: (_request, response) => (response.html += "<ul>"),
-      [RuleNames.UNORDERED_LIST + "Exit"]: (_request, response) => (response.html += "</ul>"),
+      [RuleNames.ORDERED_LIST + "Entry"]: (_request, response) =>
+        (response.html += "<ol>"),
+      [RuleNames.ORDERED_LIST + "Exit"]: (_request, response) =>
+        (response.html += "</ol>"),
+      [RuleNames.UNORDERED_LIST + "Entry"]: (_request, response) =>
+        (response.html += "<ul>"),
+      [RuleNames.UNORDERED_LIST + "Exit"]: (_request, response) =>
+        (response.html += "</ul>"),
       [RuleNames.ORDERED_LIST_ITEM + "Entry"]: (_request, response, node) =>
-        (response.html += `<li data-line="${node.startLine}" class="has-line">`),
-      [RuleNames.ORDERED_LIST_ITEM + "Exit"]: (_request, response) => (response.html += "</li>"),
+        (response.html += `<li data-line="${
+          node.startLine
+        }" class="has-line">`),
+      [RuleNames.ORDERED_LIST_ITEM + "Exit"]: (_request, response) =>
+        (response.html += "</li>"),
       [RuleNames.UNORDERED_LIST_ITEM + "Entry"]: (_request, response, node) =>
-        (response.html += `<li data-line="${node.startLine}" class="has-line">`),
-      [RuleNames.UNORDERED_LIST_ITEM + "Exit"]: (_request, response) => (response.html += "</li>"),
+        (response.html += `<li data-line="${
+          node.startLine
+        }" class="has-line">`),
+      [RuleNames.UNORDERED_LIST_ITEM + "Exit"]: (_request, response) =>
+        (response.html += "</li>"),
       [RuleNames.HEADING + "Entry"]: (request, response, node) => {
         let settings = $.getSettings(request);
         if (node.level === 1) {
-          if ((!response.frontMatter || !response.frontMatter.title) && settings.title == "Argdown Document") {
+          if (
+            (!response.frontMatter || !response.frontMatter.title) &&
+            settings.title == "Argdown Document"
+          ) {
             response.html = response.html!.replace(
               "<title>Argdown Document</title>",
-              "<title>" + _.escape(node.text) + "</title>"
+              "<title>" + escapeHtml(node.text) + "</title>"
             );
           }
         }
-        let htmlId = utils.getHtmlId("heading", node.text!, response.htmlIds!);
+        let htmlId = getHtmlId("heading", node.text!, response.htmlIds!);
         response.htmlIds![htmlId] = true;
-        response.html += `<h${node.level} data-line="${node.startLine}" id="${htmlId}" class="has-line heading">`;
+        response.html += `<h${node.level} data-line="${
+          node.startLine
+        }" id="${htmlId}" class="has-line heading">`;
       },
       [RuleNames.HEADING + "Exit"]: (_request, response, node) =>
         (response.html += "</h" + (<IRuleNode>node).level + ">"),
-      [RuleNames.FREESTYLE_TEXT + "Entry"]: (_request, response, node, parentNode) => {
+      [RuleNames.FREESTYLE_TEXT + "Entry"]: (
+        _request,
+        response,
+        node,
+        parentNode
+      ) => {
         if (parentNode && parentNode.name != "inferenceRules") {
-          response.html += _.escape(node.text);
+          response.html += escapeHtml(node.text) || "";
         }
       },
-      [RuleNames.BOLD + "Entry"]: (_request, response) => (response.html += "<b>"),
-      [RuleNames.BOLD + "Exit"]: (_request, response, node) => (response.html += "</b>" + node.trailingWhitespace),
-      [RuleNames.ITALIC + "Entry"]: (_request, response) => (response.html += "<i>"),
-      [RuleNames.ITALIC + "Exit"]: (_request, response, node) => (response.html += "</i>" + node.trailingWhitespace),
+      [RuleNames.BOLD + "Entry"]: (_request, response) =>
+        (response.html += "<b>"),
+      [RuleNames.BOLD + "Exit"]: (_request, response, node) =>
+        (response.html += "</b>" + node.trailingWhitespace),
+      [RuleNames.ITALIC + "Entry"]: (_request, response) =>
+        (response.html += "<i>"),
+      [RuleNames.ITALIC + "Exit"]: (_request, response, node) =>
+        (response.html += "</i>" + node.trailingWhitespace),
       [RuleNames.PCS_STATEMENT + "Entry"]: (_request, response, node) => {
         const statement = node.statement;
         if (statement && isConclusion(statement) && statement.inference) {
           let inference = statement.inference;
-          if (!inference.inferenceRules || inference.inferenceRules.length == 0) {
-            response.html += `<div data-line="${inference.startLine}" class="has-line inference">`;
+          if (
+            !inference.inferenceRules ||
+            inference.inferenceRules.length == 0
+          ) {
+            response.html += `<div data-line="${
+              inference.startLine
+            }" class="has-line inference">`;
           } else {
-            response.html += `<div data-line="${inference.startLine}" class="has-line inference with-data">`;
+            response.html += `<div data-line="${
+              inference.startLine
+            }" class="has-line inference with-data">`;
           }
 
           response.html += `<span class="inference-rules">`;
@@ -384,9 +486,12 @@ export class HtmlExportPlugin implements IArgdownPlugin {
         }
         response.html += `<div data-line="${node.startLine}" class="has-line ${
           node.statement!.role
-        } pcs-statement"><div class="statement-nr">(<span>${node.statementNr}</span>)</div>`;
+        } pcs-statement"><div class="statement-nr">(<span>${
+          node.statementNr
+        }</span>)</div>`;
       },
-      [RuleNames.PCS_STATEMENT + "Exit"]: (_request, response) => (response.html += "</div>")
+      [RuleNames.PCS_STATEMENT + "Exit"]: (_request, response) =>
+        (response.html += "</div>")
     };
   }
   getCssClassesFromTags(response: IArgdownResponse, tags: string[]): string {

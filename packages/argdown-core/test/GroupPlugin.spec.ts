@@ -12,7 +12,6 @@ import {
   StatementSelectionPlugin,
   GroupPlugin
 } from "../src/index";
-import { toJSON } from "../src/model/toJSON";
 
 const app = new ArgdownApplication();
 const parserPlugin = new ParserPlugin();
@@ -140,7 +139,7 @@ describe("GroupPlugin", function() {
       process: ["parse-input", "build-model", "build-map"],
       input: source
     });
-    console.log(toJSON(result.map!.nodes, null, 2));
+    // console.log(toJSON(result.map!.nodes, null, 2));
     //app.parser.logAst(result.ast);
     //preprocessor.logRelations(result);
     //console.log(result.arguments);

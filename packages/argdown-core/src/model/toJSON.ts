@@ -1,7 +1,23 @@
-import { ArgdownTypes, IRelation, ISection, IMapEdge, IMapNode, IStatement, IArgument, IGroupMapNode } from "./model";
-import { clone } from "lodash";
+import {
+  ArgdownTypes,
+  IRelation,
+  ISection,
+  IMapEdge,
+  IMapNode,
+  IStatement,
+  IArgument,
+  IGroupMapNode,
+  IEquivalenceClass
+} from "./model";
+const prepareEquivalenceClassForJSON = (s: IEquivalenceClass): any => {
+  let copy: any = Object.assign({}, s);
+  if (copy.section) {
+    copy.section = copy.section.id;
+  }
+  return copy;
+};
 const prepareStatementForJSON = (s: IStatement): any => {
-  let copy: any = clone(s);
+  let copy: any = Object.assign({}, s);
   if (copy.section) {
     copy.section = copy.section.id;
   }
@@ -11,7 +27,7 @@ const prepareStatementForJSON = (s: IStatement): any => {
  * Substitutes sections with their ids.
  */
 const prepareArgumentForJSON = (a: IArgument) => {
-  let copy: any = clone(a);
+  let copy: any = Object.assign({}, a);
   if (copy.section) {
     copy.section = copy.section.id;
   }
@@ -79,7 +95,7 @@ const prepareRelationForJSON = (r: IRelation): any => {
  * Substitutes parent with parent's id.
  */
 const prepareSectionForJSON = (s: ISection) => {
-  let copy: any = clone(s);
+  let copy: any = Object.assign({}, s);
   if (copy.parent) {
     copy.parent = copy.parent.id;
   }
@@ -96,7 +112,7 @@ const jsonReplacer = (value: any): any => {
       case ArgdownTypes.ARGUMENT_MAP_NODE:
         return prepareMapNodeForJSON(value);
       case ArgdownTypes.EQUIVALENCE_CLASS:
-        return value;
+        return prepareEquivalenceClassForJSON(value);
       case ArgdownTypes.GROUP_MAP_NODE:
         return prepareGroupMapNodeForJSON(value);
       case ArgdownTypes.INFERENCE:

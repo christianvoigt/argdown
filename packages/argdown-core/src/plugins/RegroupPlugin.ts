@@ -3,6 +3,7 @@ import { ArgdownPluginError } from "../ArgdownPluginError";
 import { IArgdownRequest, IArgdownResponse } from "../index";
 import { ArgdownTypes, ISection } from "../model/model";
 import { IGroupSettings, ISectionConfig } from "./GroupPlugin";
+import { isObject } from "../utils";
 /**
  * Applies the regroup group setting by deleting all sections derived from headings and creating new ones based on the settings.
  *
@@ -12,7 +13,7 @@ import { IGroupSettings, ISectionConfig } from "./GroupPlugin";
 export class RegroupPlugin implements IArgdownPlugin {
   name = "RegroupPlugin";
   getSettings = (request: IArgdownRequest): IGroupSettings => {
-    if (request.group) {
+    if (isObject(request.group)) {
       return request.group;
     } else {
       request.group = {};
@@ -21,7 +22,7 @@ export class RegroupPlugin implements IArgdownPlugin {
   };
   run: IRequestHandler = (request, response) => {
     const settings = this.getSettings(request);
-    if (settings.regroup) {
+    if (settings.regroup && settings.regroup.length) {
       if (!response.statements) {
         throw new ArgdownPluginError(
           this.name,
@@ -49,6 +50,9 @@ export class RegroupPlugin implements IArgdownPlugin {
       }
       for (let i = 0; i < settings.regroup.length; i++) {
         const sectionConfig = settings.regroup[i];
+        if (!isObject(sectionConfig)) {
+          continue;
+        }
         const section = regroupRecursively(sectionConfig, response, 1, i);
         response.sections.push(section);
       }

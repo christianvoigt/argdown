@@ -1,8 +1,11 @@
-import * as _ from "lodash";
 import { IArgdownPlugin, IRequestHandler } from "../IArgdownPlugin";
 import { ArgdownPluginError } from "../ArgdownPluginError";
-import { reduceToMap } from "../utils";
-import { IArgdownRequest, IArgdownResponse, ISelectionSettings } from "../index";
+import { reduceToMap, mergeDefaults, isObject } from "../utils";
+import {
+  IArgdownRequest,
+  IArgdownResponse,
+  ISelectionSettings
+} from "../index";
 import {
   IEquivalenceClass,
   IArgument,
@@ -13,6 +16,8 @@ import {
   IRelation
 } from "../model/model";
 import { otherRelationMemberIsInSelection } from "./utils";
+import defaultsDeep from "lodash.defaultsdeep";
+
 declare module "../index" {
   interface ISelectionSettings {
     /**
@@ -44,10 +49,10 @@ export class ArgumentSelectionPlugin implements IArgdownPlugin {
   name = "ArgumentSelectionPlugin";
   defaults: ISelectionSettings;
   constructor(config?: ISelectionSettings) {
-    this.defaults = _.defaultsDeep({}, config, defaultSettings);
+    this.defaults = defaultsDeep({}, config, defaultSettings);
   }
   getSettings = (request: IArgdownRequest): ISelectionSettings => {
-    if (request.selection) {
+    if (isObject(request.selection)) {
       return request.selection;
     } else {
       request.selection = {};
@@ -56,26 +61,49 @@ export class ArgumentSelectionPlugin implements IArgdownPlugin {
   };
   prepare: IRequestHandler = (request, response) => {
     if (!response.statements) {
-      throw new ArgdownPluginError(this.name, "No statements field in response.");
+      throw new ArgdownPluginError(
+        this.name,
+        "No statements field in response."
+      );
     }
     if (!response.arguments) {
-      throw new ArgdownPluginError(this.name, "No arguments field in response.");
+      throw new ArgdownPluginError(
+        this.name,
+        "No arguments field in response."
+      );
     }
     if (!response.relations) {
-      throw new ArgdownPluginError(this.name, "No relations field in response.");
+      throw new ArgdownPluginError(
+        this.name,
+        "No relations field in response."
+      );
     }
-    _.defaultsDeep(this.getSettings(request), this.defaults);
+    mergeDefaults(this.getSettings(request), this.defaults);
   };
   run: IRequestHandler = (request, response) => {
     if (!response.selection) {
-      throw new ArgdownPluginError(this.name, "No selection field in response.");
+      throw new ArgdownPluginError(
+        this.name,
+        "No selection field in response."
+      );
     }
     const settings = this.getSettings(request);
-    const selectedArgumentsMap = reduceToMap(response.selection!.arguments, curr => curr.title!);
-    const selectedStatementsMap = reduceToMap(response.selection!.statements, curr => curr.title!);
+    const selectedArgumentsMap = reduceToMap(
+      response.selection!.arguments,
+      curr => curr.title!
+    );
+    const selectedStatementsMap = reduceToMap(
+      response.selection!.statements,
+      curr => curr.title!
+    );
 
     response.selection!.arguments = response.selection!.arguments.filter(
-      isArgumentSelected(settings, response, selectedStatementsMap, selectedArgumentsMap)
+      isArgumentSelected(
+        settings,
+        response,
+        selectedStatementsMap,
+        selectedArgumentsMap
+      )
     );
   };
 }
@@ -96,7 +124,10 @@ const isArgumentSelected = (
   selectedStatements: Map<string, IEquivalenceClass>,
   selectedArguments: Map<string, IArgument>
 ) => (argument: IArgument) => {
-  if (!settings.excludeDisconnected || (!settings.ignoreIsInMap && argument.data && argument.data.isInMap === true)) {
+  if (
+    !settings.excludeDisconnected ||
+    (!settings.ignoreIsInMap && argument.data && argument.data.isInMap === true)
+  ) {
     return true;
   }
   let hasConnections = false;
@@ -104,7 +135,12 @@ const isArgumentSelected = (
     hasConnections =
       undefined !==
       argument.relations.find(r =>
-        otherRelationMemberIsInSelection(r, argument, selectedStatements, selectedArguments)
+        otherRelationMemberIsInSelection(
+          r,
+          argument,
+          selectedStatements,
+          selectedArguments
+        )
       );
   }
   if (hasConnections) {
@@ -116,12 +152,20 @@ const isArgumentSelected = (
       argument.pcs.find(s => {
         let hasConnections = false;
         // find incoming undercuts
-        if (isConclusion(s) && (<IConclusion>s).inference!.relations!.length > 0) {
+        if (
+          isConclusion(s) &&
+          (<IConclusion>s).inference!.relations!.length > 0
+        ) {
           const inference = (<IConclusion>s).inference!;
           hasConnections =
             undefined !==
             inference.relations!.find(r =>
-              otherRelationMemberIsInSelection(r, inference, selectedStatements, selectedArguments)
+              otherRelationMemberIsInSelection(
+                r,
+                inference,
+                selectedStatements,
+                selectedArguments
+              )
             );
         }
         if (hasConnections) {
@@ -135,12 +179,25 @@ const isArgumentSelected = (
               const isSymmetric = IRelation.isSymmetric(r);
               if (s.role === StatementRole.INTERMEDIARY_CONCLUSION) {
                 return false;
-              } else if (!isSymmetric && s.role === StatementRole.PREMISE && r.from! === equivalenceClass) {
+              } else if (
+                !isSymmetric &&
+                s.role === StatementRole.PREMISE &&
+                r.from! === equivalenceClass
+              ) {
                 return false;
-              } else if (!isSymmetric && s.role === StatementRole.MAIN_CONCLUSION && r.to === equivalenceClass) {
+              } else if (
+                !isSymmetric &&
+                s.role === StatementRole.MAIN_CONCLUSION &&
+                r.to === equivalenceClass
+              ) {
                 return false;
               }
-              return otherRelationMemberIsInSelection(r, equivalenceClass, selectedStatements, selectedArguments);
+              return otherRelationMemberIsInSelection(
+                r,
+                equivalenceClass,
+                selectedStatements,
+                selectedArguments
+              );
             });
           if (hasConnections) {
             return true;
@@ -149,7 +206,12 @@ const isArgumentSelected = (
         if (hasConnections) {
           return true;
         }
-        return isPCSStatementConnectedByEquivalence(response, s, selectedStatements, selectedArguments);
+        return isPCSStatementConnectedByEquivalence(
+          response,
+          s,
+          selectedStatements,
+          selectedArguments
+        );
       });
   }
   return hasConnections;
@@ -160,7 +222,10 @@ const isPCSStatementConnectedByEquivalence = (
   selectedStatements: Map<string, IEquivalenceClass>,
   selectedArguments: Map<string, IArgument>
 ): boolean => {
-  if (s.role === StatementRole.MAIN_CONCLUSION || s.role === StatementRole.PREMISE) {
+  if (
+    s.role === StatementRole.MAIN_CONCLUSION ||
+    s.role === StatementRole.PREMISE
+  ) {
     let requiredRole = StatementRole.MAIN_CONCLUSION;
     if (s.role === StatementRole.MAIN_CONCLUSION) {
       requiredRole = StatementRole.PREMISE;
@@ -172,7 +237,9 @@ const isPCSStatementConnectedByEquivalence = (
     return (
       undefined !==
       ec.members.find(
-        s => s.role === requiredRole && selectedArguments.get((<IPCSStatement>s).argumentTitle!) !== undefined
+        s =>
+          s.role === requiredRole &&
+          selectedArguments.get((<IPCSStatement>s).argumentTitle!) !== undefined
       )
     );
   }
