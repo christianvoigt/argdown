@@ -12,20 +12,18 @@
 
 <script>
 /*eslint-disable */
-import * as dagreD3 from "dagre-d3";
-import * as pixelWidth from "string-pixel-width";
-import * as d3 from "d3";
+import { DagreMap } from "@argdown/map-views";
 import { EventBus } from "../event-bus.js";
 import { saveAsSvg, saveAsPng } from "../map-export.js";
-import { ArgdownTypes } from "@argdown/core";
-import { splitByLineWidth } from "@argdown/core";
-import { createDagreMap } from "./dagre-map.js";
 
 var saveDagreAsPng = null;
 var saveDagreAsSvg = null;
 
 export default {
   name: "dagre-d3-output",
+  created: function() {
+    this.$_dagreMap = null;
+  },
   computed: {
     map: function() {
       // console.log('map called!')
@@ -34,36 +32,23 @@ export default {
       this.$store.getters.config;
       return this.$store.getters.map;
     },
-    rankDir: function() {
+    settings: function() {
       // console.log('rankDir called!')
       this.updateSVG();
-      return this.$store.state.config.dagre.rankDir;
-    },
-    nodeSep: function() {
-      // console.log('nodeSep called!')
-      this.updateSVG();
-      return this.$store.state.config.dagre.nodeSep;
-    },
-    rankSep: function() {
-      // console.log('nodeSep called!')
-      this.updateSVG();
-      return this.$store.state.config.dagre.rankSep;
+      return this.$store.getters.config.dagre;
     }
   },
   watch: {
     map: function() {
       // console.log('map watcher called!')
     },
-    rankDir: function() {
-      // console.log('rankDir watcher called!')
-    },
-    nodeSep: function() {},
-    rankSep: function() {}
+    settings: function() {}
   },
   mounted: function() {
-    this.updateSVG();
     var el = this.$refs.svg;
     var $store = this.$store;
+    this.$_dagreMap = new DagreMap(el);
+    this.updateSVG();
     saveDagreAsPng = function() {
       var scale = $store.state.pngScale;
       saveAsPng(el, scale, true);
@@ -80,12 +65,19 @@ export default {
   },
   methods: {
     updateSVG: function() {
-      createDagreMap(
-        this.$store.getters.map,
-        this.$refs.svg,
-        this.$store.getters.config.dagre,
-        this.$store.getters.tags
-      );
+      if (!this.$_dagreMap) {
+        return;
+      }
+      const exceptions = this.$store.getters.argdownData.exceptions;
+      if (exceptions && exceptions.length > 0) {
+        return;
+      }
+      const props = {
+        settings: this.$store.getters.config.dagre,
+        map: this.$store.getters.map,
+        tags: this.$store.getters.tags
+      };
+      this.$_dagreMap.render(props);
     }
   }
 };
@@ -93,7 +85,7 @@ export default {
 
 <style lang="scss" scoped>
 .dagre-d3-output {
-  @import "../scss/dagre.css";
+  @import "../../node_modules/@argdown/map-views/dist/src/argdown-dagre.css";
   .content {
     flex: 1;
     overflow: auto;
