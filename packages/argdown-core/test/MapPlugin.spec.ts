@@ -22,7 +22,9 @@ app.addPlugin(dataPlugin, "build-model");
 app.addPlugin(modelPlugin, "build-model");
 const preselectionPlugin = new PreselectionPlugin();
 app.addPlugin(preselectionPlugin, "build-map");
-const statementSelectionPlugin = new StatementSelectionPlugin({ statementSelectionMode: StatementSelectionMode.ALL });
+const statementSelectionPlugin = new StatementSelectionPlugin({
+  statementSelectionMode: StatementSelectionMode.ALL
+});
 app.addPlugin(statementSelectionPlugin, "build-map");
 const argumentSelectionPlugin = new ArgumentSelectionPlugin();
 app.addPlugin(argumentSelectionPlugin, "build-map");
@@ -200,7 +202,9 @@ describe("MapPlugin", function() {
       process: ["parse-input", "build-model", "build-map"],
       input: source,
       logLevel: "error",
-      selection: { statementSelectionMode: StatementSelectionMode.WITH_RELATIONS }
+      selection: {
+        statementSelectionMode: StatementSelectionMode.WITH_RELATIONS
+      }
     });
     //console.log(toJSON(result.relations!, null, 2));
     //app.parser.logAst(result.ast);
@@ -227,5 +231,62 @@ describe("MapPlugin", function() {
     // expect(section3.children!.length).to.equal(2);
     // expect(section3.children![0].title).to.equal("A");
     // expect(section3.children![1].title).to.equal("B");
+  });
+  it("does not add duplicate arrows for contradictions", function() {
+    let source = `<A>
+
+(1) A
+----
+(2) [T1]: C
+  >< [T2]: B
+
+`;
+    let request = {
+      process: ["parse-input", "build-model", "build-map"],
+      input: source,
+      selection: {
+        statementSelectionMode: StatementSelectionMode.WITH_RELATIONS
+      }
+    };
+    let result = app.run(request);
+    //console.log(toJSON(result.map!, null, 2));
+    expect(result.map!.edges.length).to.equal(2);
+    expect(result.map!.nodes.length).to.equal(3);
+  });
+  it("does not draw c2c attacks in strict mode", function() {
+    let source = `
+    ===
+    model:
+        mode: strict 
+    selection:
+      statementSelectionMode: not-used-in-argument
+    ===
+    
+    
+    <A>
+      
+    (1) [t]: T {isInMap: false}
+    ----
+    (2) C
+    
+    <B>
+      
+    (1) P
+    ----
+    (2) [t]: T {isInMap: false}
+    
+    <C>
+    
+    (1) P
+    ----
+    (2) non-T
+      - [t]
+  `;
+    let result = app.run({
+      process: ["parse-input", "build-model", "build-map"],
+      input: source,
+      logLevel: "error"
+    });
+    expect(result.map!.edges.length).to.equal(2);
   });
 });

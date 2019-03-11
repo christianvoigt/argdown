@@ -145,7 +145,7 @@ export class MapPlugin implements IArgdownPlugin {
     // Create edges
     // a) Create edges from relations
     const edges = selectedRelations.reduce<IMapEdge[]>(
-      createEdgesFromRelation(statementNodesMap, argumentNodesMap, response),
+      createEdgesFromRelation(statementNodesMap, argumentNodesMap),
       []
     );
     // b) Create edges from equivalences
@@ -225,15 +225,14 @@ const createArgumentNode = (
   }
   return node;
 };
-const createEdgesFromRelation = (
+const getFroms = (
+  rel: IRelation,
   statementNodesMap: Map<string, IMapNode>,
   argumentNodesMap: Map<string, IMapNode>,
-  response: IArgdownResponse
-) => (acc: IMapEdge[], rel: IRelation): IMapEdge[] => {
-  const isSymmetric = IRelation.isSymmetric(rel);
+  isReverseRelation: boolean
+) => {
   const froms: IMapNode[] = [];
-  const tos: IMapNode[] = [];
-  if (rel.from!.type === ArgdownTypes.ARGUMENT) {
+  if (!isReverseRelation && rel.from!.type === ArgdownTypes.ARGUMENT) {
     froms.push(argumentNodesMap.get(rel.from!.title!)!);
   } else if (rel.from!.type === ArgdownTypes.EQUIVALENCE_CLASS) {
     const statementNode = statementNodesMap.get(rel.from!.title!);
@@ -242,12 +241,7 @@ const createEdgesFromRelation = (
     } else {
       const ec = <IEquivalenceClass>rel.from!;
       ec.members.reduce((acc, s) => {
-        const isSymmetricPremiseRelation =
-          isSymmetric && s.role === StatementRole.PREMISE;
-        if (
-          s.role === StatementRole.MAIN_CONCLUSION ||
-          isSymmetricPremiseRelation
-        ) {
+        if (s.role === StatementRole.MAIN_CONCLUSION) {
           const node = argumentNodesMap.get((<IPCSStatement>s).argumentTitle!);
           if (node) {
             acc.push(node);
@@ -257,23 +251,30 @@ const createEdgesFromRelation = (
       }, froms);
     }
   }
-  if (rel.to!.type === ArgdownTypes.ARGUMENT) {
+  return froms;
+};
+const getTos = (
+  rel: IRelation,
+  statementNodesMap: Map<string, IMapNode>,
+  argumentNodesMap: Map<string, IMapNode>,
+  isReverseRelation: boolean
+) => {
+  const tos: IMapNode[] = [];
+  if (!isReverseRelation && rel.to!.type === ArgdownTypes.ARGUMENT) {
     tos.push(argumentNodesMap.get(rel.to!.title!)!);
-  } else if (rel.to!.type === ArgdownTypes.INFERENCE) {
+  } else if (!isReverseRelation && rel.to!.type === ArgdownTypes.INFERENCE) {
     const argumentNode = argumentNodesMap.get(
       (<IInference>rel.to).argumentTitle!
     );
     tos.push(argumentNode!);
   } else if (rel.to!.type === ArgdownTypes.EQUIVALENCE_CLASS) {
     const statementNode = statementNodesMap.get(rel.to!.title!);
-    if (statementNode) {
+    if (!isReverseRelation && statementNode) {
       tos.push(statementNode);
-    } else {
+    } else if (!statementNode) {
       const ec = <IEquivalenceClass>rel.to;
       ec.members.reduce((acc, s) => {
-        const isSymmetricConclusionRelation =
-          isSymmetric && s.role === StatementRole.MAIN_CONCLUSION;
-        if (s.role === StatementRole.PREMISE || isSymmetricConclusionRelation) {
+        if (s.role === StatementRole.PREMISE) {
           const node = argumentNodesMap.get((<IPCSStatement>s).argumentTitle!);
           if (node) {
             acc.push(node);
@@ -283,66 +284,104 @@ const createEdgesFromRelation = (
       }, tos);
     }
   }
-  for (let from of froms) {
-    for (let to of tos) {
-      let addEdge = true;
-      const edge: IMapEdge = {
-        type: ArgdownTypes.MAP_EDGE,
-        from: from,
-        to: to,
-        id: "e" + Number(acc.length + 1),
-        relationType: rel.relationType
-      };
-      if (rel.from!.type === ArgdownTypes.EQUIVALENCE_CLASS) {
-        edge.fromEquivalenceClass = <IEquivalenceClass>rel.from;
-      }
-      if (rel.to!.type === ArgdownTypes.EQUIVALENCE_CLASS) {
-        edge.toEquivalenceClass = <IEquivalenceClass>rel.to;
-      }
-      // If the relation is ec2ec, but the edge is s2a or a2s, we have to change the relation type to SUPPORT or ATTACK.
-      let s2sEdge =
-        from.type === ArgdownTypes.STATEMENT_MAP_NODE &&
-        to.type === ArgdownTypes.STATEMENT_MAP_NODE;
-      if (!s2sEdge) {
-        // Check if we have to reverse the edge direction or dismiss the edge entirely
-        if (isSymmetric) {
-          let fromIsPremise = false;
-          let toIsPremise = false;
-          let toIsConclusion = false;
-          if (from.type === ArgdownTypes.ARGUMENT_MAP_NODE) {
-            const fromArgument = response.arguments![from.title!];
-            fromIsPremise =
-              fromArgument.pcs[fromArgument.pcs.length - 1].title !==
-              rel.from!.title;
-          }
-          if (to.type === ArgdownTypes.ARGUMENT_MAP_NODE) {
-            const toArgument = response.arguments![to.title!];
-            toIsPremise =
-              toArgument.pcs[toArgument.pcs.length - 1].title !== rel.to!.title;
-            toIsConclusion = !toIsPremise;
-          }
-          if (fromIsPremise && toIsPremise) {
-            // ignore relations from premise to premise
-            addEdge = false;
-          } else if (fromIsPremise || toIsConclusion) {
-            edge.from = to;
-            edge.to = from;
+  return tos;
+};
+const createEdgesFromRelation = (
+  statementNodesMap: Map<string, IMapNode>,
+  argumentNodesMap: Map<string, IMapNode>
+) => {
+  const funcInst = (
+    acc: IMapEdge[],
+    rel: IRelation,
+    currentIndex: number,
+    array: IRelation[],
+    isReverseRelation?: boolean
+  ): IMapEdge[] => {
+    const froms: IMapNode[] = getFroms(
+      rel,
+      statementNodesMap,
+      argumentNodesMap,
+      !!isReverseRelation
+    );
+    const tos: IMapNode[] = getTos(
+      rel,
+      statementNodesMap,
+      argumentNodesMap,
+      !!isReverseRelation
+    );
+
+    for (let from of froms) {
+      for (let to of tos) {
+        // let addEdge = true;
+        const edge: IMapEdge = {
+          type: ArgdownTypes.MAP_EDGE,
+          from: from,
+          to: to,
+          id: "e" + Number(acc.length + 1),
+          relationType: rel.relationType
+        };
+        if (rel.from!.type === ArgdownTypes.EQUIVALENCE_CLASS) {
+          edge.fromEquivalenceClass = <IEquivalenceClass>rel.from;
+        }
+        if (rel.to!.type === ArgdownTypes.EQUIVALENCE_CLASS) {
+          edge.toEquivalenceClass = <IEquivalenceClass>rel.to;
+        }
+        // If the relation is ec2ec, but the edge is s2a or a2s, we have to change the relation type to SUPPORT or ATTACK.
+        // let s2sEdge =
+        //   from.type === ArgdownTypes.STATEMENT_MAP_NODE &&
+        //   to.type === ArgdownTypes.STATEMENT_MAP_NODE;
+        // // if (!s2sEdge) {
+        //   // Check if we have to reverse the edge direction or dismiss the edge entirely
+        //   if (isSymmetric) {
+        //     let fromIsPremise = false;
+        //     let toIsPremise = false;
+        //     let toIsConclusion = false;
+        //     if (from.type === ArgdownTypes.ARGUMENT_MAP_NODE) {
+        //       const fromArgument = response.arguments![from.title!];
+        //       fromIsPremise =
+        //         fromArgument.pcs[fromArgument.pcs.length - 1].title !==
+        //         rel.from!.title;
+        //     }
+        //     if (to.type === ArgdownTypes.ARGUMENT_MAP_NODE) {
+        //       const toArgument = response.arguments![to.title!];
+        //       toIsPremise =
+        //         toArgument.pcs[toArgument.pcs.length - 1].title !== rel.to!.title;
+        //       toIsConclusion = !toIsPremise;
+        //     }
+        //     if (fromIsPremise && toIsPremise) {
+        //       // ignore relations from premise to premise
+        //       addEdge = false;
+        //     } else if (fromIsPremise || toIsConclusion) {
+        //       edge.from = to;
+        //       edge.to = from;
+        //     }
+        //   }
+        let s2sEdge =
+          from.type === ArgdownTypes.STATEMENT_MAP_NODE &&
+          to.type === ArgdownTypes.STATEMENT_MAP_NODE;
+        if (!s2sEdge) {
+          if (rel.relationType === RelationType.CONTRADICTORY) {
+            edge.relationType = RelationType.ATTACK;
+          } else if (rel.relationType === RelationType.CONTRARY) {
+            edge.relationType = RelationType.ATTACK;
+          } else if (rel.relationType === RelationType.ENTAILS) {
+            edge.relationType = RelationType.SUPPORT;
           }
         }
-        if (rel.relationType === RelationType.CONTRADICTORY) {
-          edge.relationType = RelationType.ATTACK;
-        } else if (rel.relationType === RelationType.CONTRARY) {
-          edge.relationType = RelationType.ATTACK;
-        } else if (rel.relationType === RelationType.ENTAILS) {
-          edge.relationType = RelationType.SUPPORT;
-        }
-      }
-      if (addEdge) {
         acc.push(edge);
       }
+      // if (addEdge) {
+      // }
     }
-  }
-  return acc;
+    if (!isReverseRelation && IRelation.isSymmetric(rel)) {
+      const revRel = { ...rel };
+      revRel.from = rel.to;
+      revRel.to = rel.from;
+      acc = funcInst(acc, revRel, currentIndex, array, true);
+    }
+    return acc;
+  };
+  return funcInst;
 };
 /**
  * Add implicit support edges derived from statement-statement equivalences:
