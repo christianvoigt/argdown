@@ -33,6 +33,7 @@ export interface IRank {
 export interface IDotSettings {
   useHtmlLabels?: boolean;
   graphname?: string;
+  graphBgColor?: string;
   measureLinePixelWidth?: boolean;
   group?: {
     lineWidth?: number;
@@ -98,6 +99,7 @@ declare module "../index" {
 const defaultSettings: DefaultSettings<IDotSettings> = {
   useHtmlLabels: true,
   graphname: "Argument Map",
+  graphBgColor: "transparent",
   measureLinePixelWidth: false,
   group: ensure.object({
     lineWidth: 400,
@@ -212,6 +214,7 @@ export class DotExportPlugin implements IArgdownPlugin {
         dot += key + ' = "' + value + '";\n';
       }
     }
+    dot += `graph [bgcolor = "${settings.graphBgColor}"]`;
     if (settings.sameRank && settings.sameRank.length > 0) {
       const nodeMaps = getNodeIdsMaps(response.map!);
       for (let rank of settings.sameRank) {
