@@ -27,7 +27,8 @@ export default {
       }
 
       const props = {
-        dot: this.$store.getters.dot
+        dot: this.$store.getters.dot,
+        settings: this.$store.getters.config.vizJs
       };
       this.$_vizJsMap.render(props).catch(e => console.log(e));
     }
@@ -48,7 +49,7 @@ export default {
   mounted: function() {
     const svgContainer = this.$refs.container;
     const urlToFullRenderJs = "/full.render.js";
-    this.$_vizJsMap = new VizJsMap(svgContainer, urlToFullRenderJs);
+    this.$_vizJsMap = new VizJsMap(svgContainer, {workerURL: urlToFullRenderJs});
     this.updateMap();
     var el = this.$refs.container;
     var $store = this.$store;

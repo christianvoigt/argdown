@@ -74,8 +74,7 @@ export default {
       }
       const props = {
         settings: this.$store.getters.config.dagre,
-        map: this.$store.getters.map,
-        tags: this.$store.getters.tags
+        map: this.$store.getters.map
       };
       this.$_dagreMap.render(props);
     }

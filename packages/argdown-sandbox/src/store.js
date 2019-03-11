@@ -1,7 +1,8 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import _ from "lodash";
-import { defaultSettings as dagreDefaultSettings } from "@argdown/map-views";
+import { dagreDefaultSettings } from "@argdown/map-views";
+import { vizJsDefaultSettings } from "@argdown/map-views";
 import {
   ArgdownApplication,
   ParserPlugin,
@@ -126,6 +127,7 @@ export default new Vuex.Store({
         }
       },
       dagre: _.defaultsDeep({}, dagreDefaultSettings),
+      vizJs: _.defaultsDeep({}, vizJsDefaultSettings),
       model: {
         removeTagsFromText: false
       },
