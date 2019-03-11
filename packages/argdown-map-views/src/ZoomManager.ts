@@ -52,12 +52,6 @@ export class ZoomManager {
       }
     });
     this.svg!.call(this.zoom!).on("dblclick.zoom", null);
-    if (!this.state.didInitiate) {
-      this.showAllAndCenterMap();
-    } else {
-      this.resetZoom();
-    }
-    this.state.didInitiate = true;
   }
   showAllAndCenterMap() {
     if (!this.svg) {

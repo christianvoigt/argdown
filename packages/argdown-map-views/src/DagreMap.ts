@@ -5,17 +5,17 @@ import {
   ArgdownTypes,
   IMapNode,
   IGroupMapNode,
-  ITagData,
   isGroupMapNode,
   IMap,
   mergeDefaults,
   ensure,
-  DefaultSettings
+  DefaultSettings,
+  isObject
 } from "@argdown/core";
 import { splitByLineWidth, splitByCharactersInLine } from "@argdown/core";
 import { graphlib } from "dagre-d3";
 import { ZoomManager, OnZoomChangedHandler } from "./ZoomManager";
-import { CanSelectNode } from "./CanSelectNode";
+import { CanSelectNode, OnSelectionChangedHandler } from "./CanSelectNode";
 
 export interface IDagreLabelSettings {
   bold?: boolean;
@@ -42,7 +42,7 @@ export interface IDagreSettings {
     title?: IDagreLabelSettings;
   };
 }
-export const defaultSettings: DefaultSettings<IDagreSettings> = {
+export const dagreDefaultSettings: DefaultSettings<IDagreSettings> = {
   rankDir: "BT",
   rankSep: 50,
   nodeSep: 70,
@@ -92,21 +92,31 @@ export const defaultSettings: DefaultSettings<IDagreSettings> = {
   })
 };
 export interface IDagreMapProps {
-  settings: IDagreSettings;
+  settings?: IDagreSettings;
   map: IMap;
-  tags: { [key: string]: ITagData };
+  selectedNode?: string | null;
+  position?: { x?: number; y?: number };
+  scale?: number;
 }
 export class DagreMap implements CanSelectNode {
   svgElement: SVGSVGElement;
   zoomManager: ZoomManager;
   selectedElement?: SVGGraphicsElement | null;
-  constructor(svgElement: SVGSVGElement, onZoomChanged?: OnZoomChangedHandler) {
+  onSelectionChanged?: OnSelectionChangedHandler;
+  constructor(
+    svgElement: SVGSVGElement,
+    onZoomChanged?: OnZoomChangedHandler,
+    onSelectionChanged?: OnSelectionChangedHandler
+  ) {
     this.svgElement = svgElement;
     this.zoomManager = new ZoomManager(onZoomChanged);
+    this.onSelectionChanged = onSelectionChanged;
   }
   render(props: IDagreMapProps) {
-    let settings = props.settings;
-    settings = mergeDefaults(settings, defaultSettings) as IDagreSettings;
+    const settings: IDagreSettings = isObject(props.settings)
+      ? props.settings
+      : {};
+    mergeDefaults(settings, dagreDefaultSettings);
     // eslint-disable-next-line
     if (
       !this.svgElement ||
@@ -134,7 +144,7 @@ export class DagreMap implements CanSelectNode {
       });
 
     for (let node of props.map.nodes) {
-      createDagreNode(node, g, null, settings, props.tags);
+      createDagreNode(node, g, null, settings);
     }
 
     for (let edge of props.map.edges) {
@@ -145,7 +155,10 @@ export class DagreMap implements CanSelectNode {
         props.arrowhead = "diamond";
         props.arrowtail = "diamond";
       }
-      g.setEdge(edge.from.id, edge.to.id, props);
+      // if the map data is json data, from and to will be ids, otherwise the original objects
+      const from = isObject(edge.from) ? edge.from.id : edge.from;
+      const to = isObject(edge.to) ? edge.to.id : edge.to;
+      g.setEdge(from, to, props);
     }
 
     //   const nodes = g.nodes();
@@ -191,29 +204,55 @@ export class DagreMap implements CanSelectNode {
     svgGraph.attr("class", "dagre");
 
     // Run the renderer. This is what draws the final graph.
-    render(svgGraph as any, g);
+    try {
+      render(svgGraph as any, g);
+    } catch (e) {
+      console.log(e);
+    }
     const width = g.graph().width;
     const height = g.graph().height;
 
     this.zoomManager.init(svg, svgGraph, width, height);
+    if (!props.scale || !props.position) {
+      this.zoomManager.showAllAndCenterMap();
+    } else {
+      this.zoomManager.setZoom(
+        props.position.x || 0,
+        props.position.y || 0,
+        props.scale,
+        0
+      );
+    }
     svgGraph!.attr(
       "height",
       this.zoomManager.state.size.width * this.zoomManager.state.scale + 40
     );
+    if (props.selectedNode) {
+      this.selectNode(props.selectedNode);
+    }
   }
   deselectNode() {
+    this._deselectNode();
+    if (this.onSelectionChanged) {
+      this.onSelectionChanged(null);
+    }
+  }
+  private _deselectNode() {
     if (this.selectedElement) {
       this.selectedElement.classList.remove("selected");
     }
   }
   selectNode(id: string): void {
-    this.deselectNode();
+    this._deselectNode();
     this.selectedElement = d3
       .select<SVGGraphicsElement, null>(`#${id}`)
       .node()!;
     if (this.selectedElement) {
       this.selectedElement.classList.add("selected");
       this.zoomManager.moveToElement(this.selectedElement);
+    }
+    if (this.onSelectionChanged) {
+      this.onSelectionChanged(id);
     }
   }
 }
@@ -263,8 +302,7 @@ const createDagreNode = function(
   node: IMapNode,
   g: graphlib.Graph,
   currentGroup: IGroupMapNode | null,
-  settings: IDagreSettings,
-  tags: { [key: string]: ITagData }
+  settings: IDagreSettings
 ) {
   var svgLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
 
@@ -343,6 +381,7 @@ const createDagreNode = function(
   svgLabel.setAttribute("transform", `translate(${translate})`);
   const nodeProperties: { [key: string]: any } = {
     labelType: "svg",
+    id: node.id,
     label: svgLabel,
     class: <string>node.type,
     rx,
@@ -363,13 +402,6 @@ const createDagreNode = function(
   //   nodeProperties.label += "<p>" + escapeHtml(node.labelText) + "</p>";
   // }
   // nodeProperties.label += "</div>";
-  if (node.tags) {
-    for (let tag of node.tags) {
-      nodeProperties.class += " ";
-      // eslint-disable-next-line
-      nodeProperties.class += tags[tag].cssClass;
-    }
-  }
   if (node.color) {
     if (node.type === ArgdownTypes.STATEMENT_MAP_NODE) {
       nodeProperties.style = `stroke:${node.color};`;
@@ -388,7 +420,7 @@ const createDagreNode = function(
   }
   if (isGroupMapNode(node) && node.children) {
     for (let child of node.children) {
-      createDagreNode(child, g, node, settings, tags);
+      createDagreNode(child, g, node, settings);
     }
   }
 };

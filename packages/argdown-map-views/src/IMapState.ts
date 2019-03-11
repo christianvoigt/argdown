@@ -8,12 +8,10 @@ export interface IMapState {
     y: number;
   };
   scale: number;
-  didInitiate: boolean;
   selectedNode?: string | null;
 }
 export const defaultMapState: IMapState = {
   size: { width: 0, height: 0 },
   position: { x: 0, y: 0 },
-  scale: 1,
-  didInitiate: false
+  scale: 1
 };
