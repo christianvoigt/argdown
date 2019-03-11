@@ -5,8 +5,18 @@ let path = require("path");
 let mkdirp = require("mkdirp");
 import * as SVGtoPDF from "svg-to-pdfkit";
 import * as _ from "lodash";
-import { IAsyncArgdownPlugin, IAsyncRequestHandler } from "../IAsyncArgdownPlugin";
-import { IArgdownRequest, IRequestHandler, ArgdownPluginError } from "@argdown/core";
+import {
+  IAsyncArgdownPlugin,
+  IAsyncRequestHandler
+} from "../IAsyncArgdownPlugin";
+import {
+  IArgdownRequest,
+  IRequestHandler,
+  ArgdownPluginError,
+  ensure,
+  DefaultSettings,
+  mergeDefaults
+} from "@argdown/core";
 import { IFileNameProvider } from "./SaveAsFilePlugin";
 
 export interface IPdfSettings {
@@ -16,6 +26,15 @@ export interface ISvgToPdfSettings {
   outputDir?: string;
   format?: string;
   fileName?: string | IFileNameProvider;
+  pdf?: { compress?: boolean };
+  svg?: {
+    useCSS?: boolean;
+    assumePt?: boolean;
+    preserveAspectRatio?: string;
+  };
+  width?: number;
+  height?: number;
+  padding?: number;
 }
 declare module "@argdown/core" {
   interface IArgdownRequest {
@@ -29,14 +48,26 @@ declare module "@argdown/core" {
     svgToPdf?: ISvgToPdfSettings;
   }
 }
+const defaultSettings: DefaultSettings<ISvgToPdfSettings> = {
+  outputDir: "./pdf",
+  format: "svg",
+  width: 612,
+  height: 792,
+  padding: 10,
+  pdf: ensure.object({
+    compress: false
+  }),
+  svg: ensure.object({
+    useCss: true,
+    assumePt: true,
+    preserveAspectRatio: "xMidYMid meet"
+  })
+};
 export class SvgToPdfExportPlugin implements IAsyncArgdownPlugin {
   name = "SvgToPdfExportPlugin";
   defaults: ISvgToPdfSettings;
   constructor(config?: ISvgToPdfSettings) {
-    this.defaults = _.defaultsDeep({}, config, {
-      outputDir: "./pdf",
-      format: "svg"
-    });
+    this.defaults = _.defaultsDeep({}, config, defaultSettings);
   }
   getSettings(request: IArgdownRequest): ISvgToPdfSettings {
     request.svgToPdf = request.svgToPdf || {};
@@ -46,7 +77,7 @@ export class SvgToPdfExportPlugin implements IAsyncArgdownPlugin {
     if (!response.svg) {
       throw new ArgdownPluginError(this.name, "Missing svg field in response.");
     }
-    _.defaults(this.getSettings(request), this.defaults);
+    mergeDefaults(this.getSettings(request), this.defaults);
   };
   runAsync: IAsyncRequestHandler = async (request, response) => {
     const settings = this.getSettings(request);
@@ -79,8 +110,15 @@ export class SvgToPdfExportPlugin implements IAsyncArgdownPlugin {
         resolve();
       });
     });
-    const doc = new PDFDocument(settings);
-    SVGtoPDF(doc, response.svg, 0, 0, settings);
+    const doc = new PDFDocument({
+      size: [settings.width, settings.height],
+      ...settings.pdf
+    });
+    SVGtoPDF(doc, response.svg, settings.padding, settings.padding, {
+      width: settings.width! - settings.padding! * 2,
+      height: settings.height! - settings.padding! * 2,
+      ...settings.svg
+    });
     await this.savePdfToFile(doc, filePath);
   };
   // https://github.com/devongovett/pdfkit/issues/265
