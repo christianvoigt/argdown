@@ -153,4 +153,5 @@ export * from "./IArgdownPlugin";
 export * from "./IArgdownLogger";
 export * from "./ArgdownPluginError";
 export * from "./model/model";
+export * from "./model/toJSON";
 export * from "./utils";

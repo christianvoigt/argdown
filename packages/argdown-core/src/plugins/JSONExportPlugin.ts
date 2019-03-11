@@ -1,6 +1,6 @@
 import { IArgdownPlugin, IRequestHandler } from "../IArgdownPlugin";
 import { ArgdownPluginError } from "../ArgdownPluginError";
-import { toJSON } from "../model/toJSON";
+import { stringifyArgdownData } from "../model/toJSON";
 import { ArgdownTypes } from "../model/model";
 import { IArgdownRequest } from "../index";
 import defaultsDeep from "lodash.defaultsdeep";
@@ -126,7 +126,7 @@ export class JSONExportPlugin implements IArgdownPlugin {
     if (settings.exportTags && response.tags) {
       argdown.tags = response.tags;
     }
-    response.json = toJSON(
+    response.json = stringifyArgdownData(
       argdown,
       function(this: any, key, value) {
         if (!settings.exportData && key === "data") {

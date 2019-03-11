@@ -9,6 +9,7 @@ import {
   IGroupMapNode,
   IEquivalenceClass
 } from "./model";
+import { isObject } from "../utils";
 const prepareEquivalenceClassForJSON = (s: IEquivalenceClass): any => {
   let copy: any = Object.assign({}, s);
   if (copy.section) {
@@ -57,7 +58,8 @@ const prepareMapNodeForJSON = (n: IMapNode) => {
     labelTitle: n.labelTitle,
     labelText: n.labelText,
     tags: n.tags,
-    color: n.color
+    color: n.color,
+    fontColor: n.fontColor
   };
   return node;
 };
@@ -66,6 +68,10 @@ const prepareGroupMapNodeForJSON = (n: IGroupMapNode) => {
     id: n.id,
     title: n.title,
     type: n.type,
+    color: n.color,
+    fontColor: n.fontColor,
+    isClosed: n.isClosed,
+    level: n.level,
     labelTitle: n.labelTitle,
     labelText: n.labelText,
     children: n.children,
@@ -104,7 +110,7 @@ const prepareSectionForJSON = (s: ISection) => {
   }
   return copy;
 };
-const jsonReplacer = (value: any): any => {
+export const jsonReplacer = (_key: string, value: any): any => {
   if (value && value.type) {
     switch (value.type) {
       case ArgdownTypes.ARGUMENT:
@@ -135,16 +141,33 @@ const jsonReplacer = (value: any): any => {
   }
   return value;
 };
-export const toJSON = (
+export const prepareForJSON = (obj: any): any => {
+  if (isObject(obj)) {
+    const data = jsonReplacer("", obj);
+    for (let key of Object.keys(data)) {
+      data[key] = prepareForJSON(data[key]);
+    }
+    return data;
+  } else if (Array.isArray(obj)) {
+    const arr = [];
+    for (let e of obj) {
+      arr.push(prepareForJSON(e));
+    }
+    return arr;
+  } else {
+    return obj;
+  }
+};
+export const stringifyArgdownData = (
   obj: object,
   replacer?: ((key: string, value: any) => any) | undefined | null,
   space?: number
 ): string => {
   const wrapper = (key: string, value: any) => {
     if (replacer) {
-      return jsonReplacer(replacer(key, value));
+      return jsonReplacer(key, replacer(key, value));
     }
-    return jsonReplacer(value);
+    return jsonReplacer(key, value);
   };
   return JSON.stringify(obj, wrapper, space);
 };
