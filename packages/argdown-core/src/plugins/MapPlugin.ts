@@ -168,7 +168,8 @@ const createStatementNode = (
   ) {
     if (
       settings.statementLabelMode === LabelMode.TITLE ||
-      !ec.title!.startsWith("Untitled")
+      !ec.title!.startsWith("Untitled") ||
+      !node.labelText
     ) {
       node.labelTitle = ec.title;
     }
@@ -197,7 +198,8 @@ const createArgumentNode = (
   ) {
     if (
       !a.title!.startsWith("Untitled") ||
-      settings.argumentLabelMode == LabelMode.TITLE
+      settings.argumentLabelMode == LabelMode.TITLE ||
+      !node.labelText
     ) {
       node.labelTitle = a.title;
     }
