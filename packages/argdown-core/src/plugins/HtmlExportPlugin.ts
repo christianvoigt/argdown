@@ -1,6 +1,6 @@
 import { IArgdownPlugin, IRequestHandler } from "../IArgdownPlugin";
 import { IRuleNodeHandler, ITokenNodeHandler } from "../ArgdownTreeWalker";
-import { ArgdownPluginError } from "../ArgdownPluginError";
+import { checkResponseFields } from "../ArgdownPluginError";
 import { ITokenNode, IRuleNode, isConclusion } from "../model/model";
 import { TokenNames } from "../TokenNames";
 import { RuleNames } from "../RuleNames";
@@ -97,22 +97,8 @@ export class HtmlExportPlugin implements IArgdownPlugin {
     return settings;
   }
   prepare: IRequestHandler = (request, response) => {
+    checkResponseFields(this, response, ["statements", "arguments", "ast"]);
     mergeDefaults(this.getSettings(request), this.defaults);
-    if (!response.ast) {
-      throw new ArgdownPluginError(this.name, "No AST field in response.");
-    }
-    if (!response.statements) {
-      throw new ArgdownPluginError(
-        this.name,
-        "No statements field in response."
-      );
-    }
-    if (!response.arguments) {
-      throw new ArgdownPluginError(
-        this.name,
-        "No arguments field in response."
-      );
-    }
   };
   constructor(config?: IHtmlExportSettings) {
     this.defaults = defaultsDeep({}, config, defaultSettings);

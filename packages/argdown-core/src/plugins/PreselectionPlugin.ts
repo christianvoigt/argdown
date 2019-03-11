@@ -1,5 +1,5 @@
 import { IArgdownPlugin, IRequestHandler } from "../IArgdownPlugin";
-import { ArgdownPluginError } from "../ArgdownPluginError";
+import { checkResponseFields } from "../ArgdownPluginError";
 import { IArgdownRequest, ISelectionSettings } from "../index";
 import { IEquivalenceClass, IArgument, ArgdownTypes } from "../model/model";
 import { mergeDefaults, isObject } from "../utils";
@@ -56,24 +56,11 @@ export class PreselectionPlugin implements IArgdownPlugin {
     }
   };
   prepare: IRequestHandler = (request, response) => {
-    if (!response.statements) {
-      throw new ArgdownPluginError(
-        this.name,
-        "No statements field in response."
-      );
-    }
-    if (!response.arguments) {
-      throw new ArgdownPluginError(
-        this.name,
-        "No arguments field in response."
-      );
-    }
-    if (!response.relations) {
-      throw new ArgdownPluginError(
-        this.name,
-        "No relations field in response."
-      );
-    }
+    checkResponseFields(this, response, [
+      "statements",
+      "arguments",
+      "relations"
+    ]);
     mergeDefaults(this.getSettings(request), this.defaults);
   };
   run: IRequestHandler = (request, response) => {

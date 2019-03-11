@@ -1,5 +1,5 @@
 import { IArgdownPlugin, IRequestHandler } from "../IArgdownPlugin";
-import { ArgdownPluginError } from "../ArgdownPluginError";
+import { checkResponseFields } from "../ArgdownPluginError";
 import { stringifyArgdownData } from "../model/toJSON";
 import { ArgdownTypes } from "../model/model";
 import { IArgdownRequest } from "../index";
@@ -84,24 +84,12 @@ export class JSONExportPlugin implements IArgdownPlugin {
     mergeDefaults(this.getSettings(request), this.defaults);
   };
   run: IRequestHandler = (request, response) => {
-    if (!response.statements) {
-      throw new ArgdownPluginError(
-        this.name,
-        "No statements field in response."
-      );
-    }
-    if (!response.arguments) {
-      throw new ArgdownPluginError(
-        this.name,
-        "No arguments field in response."
-      );
-    }
-    if (!response.relations) {
-      throw new ArgdownPluginError(
-        this.name,
-        "No relations field in response."
-      );
-    }
+    checkResponseFields(this, response, [
+      "statements",
+      "arguments",
+      "relations"
+    ]);
+
     const argdown: any = {
       arguments: response.arguments,
       statements: response.statements,

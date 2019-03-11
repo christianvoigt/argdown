@@ -1,5 +1,5 @@
 import { IArgdownPlugin, IRequestHandler } from "../IArgdownPlugin";
-import { ArgdownPluginError } from "../ArgdownPluginError";
+import { checkResponseFields } from "../ArgdownPluginError";
 import { IArgdownRequest, IArgdownResponse } from "../index";
 import { ArgdownTypes, ISection } from "../model/model";
 import { IGroupSettings, ISectionConfig } from "./GroupPlugin";
@@ -23,29 +23,17 @@ export class RegroupPlugin implements IArgdownPlugin {
   run: IRequestHandler = (request, response) => {
     const settings = this.getSettings(request);
     if (settings.regroup && settings.regroup.length) {
-      if (!response.statements) {
-        throw new ArgdownPluginError(
-          this.name,
-          "No statements field in response."
-        );
-      }
-      if (!response.arguments) {
-        throw new ArgdownPluginError(
-          this.name,
-          "No arguments field in response."
-        );
-      }
-      if (!response.relations) {
-        throw new ArgdownPluginError(
-          this.name,
-          "No relations field in response."
-        );
-      }
+      checkResponseFields(this, response, [
+        "statements",
+        "arguments",
+        "relations"
+      ]);
+
       response.sections = [];
-      for (let ec of Object.values(response.statements)) {
+      for (let ec of Object.values(response.statements!)) {
         ec.section = null;
       }
-      for (let a of Object.values(response.arguments)) {
+      for (let a of Object.values(response.arguments!)) {
         a.section = null;
       }
       for (let i = 0; i < settings.regroup.length; i++) {

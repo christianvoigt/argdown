@@ -2,7 +2,7 @@ import { tokenMatcher } from "chevrotain";
 import * as argdownLexer from "./../lexer";
 import { IArgdownPlugin, IRequestHandler } from "../IArgdownPlugin";
 import { IRuleNodeHandler, ITokenNodeHandler } from "../ArgdownTreeWalker";
-import { ArgdownPluginError } from "../ArgdownPluginError";
+import { ArgdownPluginError, checkResponseFields } from "../ArgdownPluginError";
 import { IArgdownRequest, IArgdownResponse } from "../index";
 import defaultsDeep from "lodash.defaultsdeep";
 import last from "lodash.last";
@@ -33,6 +33,7 @@ import {
 import { RuleNames } from "../RuleNames";
 import { TokenNames } from "../TokenNames";
 import { stringToClassName, isObject, mergeDefaults } from "../utils";
+import { other } from "./utils";
 
 export interface ITagData {
   tag: string;
@@ -139,10 +140,18 @@ export class ModelPlugin implements IArgdownPlugin {
     for (let relation of response.relations!) {
       let addRelation = true;
       if (!relation.from) {
-        throw new ArgdownPluginError(this.name, "Relation without source.");
+        throw new ArgdownPluginError(
+          this.name,
+          "missing-relation-source",
+          "Relation without source."
+        );
       }
       if (!relation.to) {
-        throw new ArgdownPluginError(this.name, "Relation without target.");
+        throw new ArgdownPluginError(
+          this.name,
+          "missing-relation-target",
+          "Relation without target."
+        );
       }
       const fromIsReconstructedArgument =
         relation.from.type === ArgdownTypes.ARGUMENT &&
@@ -158,8 +167,7 @@ export class ModelPlugin implements IArgdownPlugin {
         let argument = <IArgument>relation.from;
 
         //remove from argument
-        let index = argument.relations!.indexOf(relation);
-        argument.relations!.splice(index, 1);
+        this.removeRelationFromSource(relation);
 
         let conclusionStatement = argument.pcs![argument.pcs!.length - 1];
         let equivalenceClass = response.statements![conclusionStatement.title!];
@@ -182,20 +190,21 @@ export class ModelPlugin implements IArgdownPlugin {
           equivalenceClass.relations!.push(relation);
         } else {
           //remove relation from target
-          let index = relation.to.relations!.indexOf(relation);
-          relation.to.relations!.splice(index, 1);
+          this.removeRelationFromTarget(relation);
           addRelation = false;
         }
       }
       // For reconstructed arguments: change incoming undercut relations
       // to incoming relations of last inference, removing duplicates
-      if (toIsReconstructedArgument) {
+      if (
+        toIsReconstructedArgument &&
+        relation.relationType === RelationType.UNDERCUT
+      ) {
         let argument = <IArgument>relation.to;
         let inference = (<IConclusion>last(argument.pcs)!).inference!;
         relation.to = inference;
         // remove relation from argument
-        let index = argument.relations!.indexOf(relation);
-        argument.relations!.splice(index, 1);
+        this.removeRelationFromTarget(relation);
 
         let relationExists = false;
         for (let existingRelation of inference.relations!) {
@@ -212,8 +221,7 @@ export class ModelPlugin implements IArgdownPlugin {
           inference.relations!.push(relation);
         } else {
           //remove relation from source
-          let index = relation.from.relations!.indexOf(relation);
-          relation.from.relations!.splice(index, 1);
+          this.removeRelationFromSource(relation);
           //remove relation from relations
           addRelation = false;
         }
@@ -249,12 +257,8 @@ export class ModelPlugin implements IArgdownPlugin {
             );
           });
           if (relationExists !== undefined) {
-            //remove relation from source
-            let indexSource = relation.from!.relations!.indexOf(relation);
-            relation.from!.relations!.splice(indexSource, 1);
-            //remove relation from target
-            let indexTarget = relation.from!.relations!.indexOf(relation);
-            relation.from!.relations!.splice(indexTarget, 1);
+            this.removeRelationFromSource(relation);
+            this.removeRelationFromTarget(relation);
             addRelation = false;
           } else {
             relation.relationType = RelationType.CONTRARY;
@@ -267,6 +271,62 @@ export class ModelPlugin implements IArgdownPlugin {
     }
     response.relations = newRelations;
   };
+  removeRelationFromSource = (relation: IRelation) => {
+    let indexSource = relation.from!.relations!.indexOf(relation);
+    relation.from!.relations!.splice(indexSource, 1);
+  };
+  removeRelationFromTarget = (relation: IRelation) => {
+    //remove relation from target
+    let indexTarget = relation.to!.relations!.indexOf(relation);
+    relation.to!.relations!.splice(indexTarget, 1);
+  };
+  /**
+   * Removes redundant ec2a attack relations that can be inferred from
+   * existing ec2ec attack/contrary/contradiction relations
+   */
+  removeRedundantEC2ARelations = (response: IArgdownResponse) => {
+    const newRelations: IRelation[] = [];
+    for (let relation of response.relations!) {
+      if (
+        relation.from!.type !== ArgdownTypes.EQUIVALENCE_CLASS ||
+        relation.relationType !== RelationType.ATTACK ||
+        relation.to!.type !== ArgdownTypes.ARGUMENT
+      ) {
+        newRelations.push(relation);
+        continue;
+      }
+      const argument = relation.to! as IArgument;
+      if (!argument.pcs) {
+        newRelations.push(relation);
+        continue;
+      }
+      const ec = relation.from as IEquivalenceClass;
+      const ec2ecRelation = ec.relations!.find(
+        otherRelation =>
+          other(otherRelation, ec).type === ArgdownTypes.EQUIVALENCE_CLASS &&
+          ((otherRelation.relationType === RelationType.ATTACK &&
+            otherRelation.from === ec) ||
+            otherRelation.relationType === RelationType.CONTRADICTORY ||
+            otherRelation.relationType === RelationType.CONTRARY) &&
+          !!argument.pcs.find(
+            s =>
+              s.title === other(otherRelation, ec)!.title &&
+              s.role === StatementRole.PREMISE
+          )
+      );
+      if (ec2ecRelation) {
+        // relation is redundant, we have to remove it
+        this.removeRelationFromSource(relation);
+        this.removeRelationFromTarget(relation);
+        ec2ecRelation.occurrences.push(...relation.occurrences);
+        continue;
+      } else {
+        newRelations.push(relation);
+        continue;
+      }
+    }
+    response.relations = newRelations;
+  };
   assignSectionOfFirstMemberIfWithoutSection = (
     node: IArgument | IEquivalenceClass
   ) => {
@@ -275,33 +335,19 @@ export class ModelPlugin implements IArgdownPlugin {
     }
   };
   run: IRequestHandler = (request, response) => {
-    if (!response.ast) {
-      throw new ArgdownPluginError(this.name, "No AST field in response.");
-    }
-    if (!response.statements) {
-      throw new ArgdownPluginError(
-        this.name,
-        "No statements field in response."
-      );
-    }
-    if (!response.arguments) {
-      throw new ArgdownPluginError(
-        this.name,
-        "No arguments field in response."
-      );
-    }
-    if (!response.relations) {
-      throw new ArgdownPluginError(
-        this.name,
-        "No relations field in response."
-      );
-    }
+    checkResponseFields(this, response, [
+      "ast",
+      "statements",
+      "arguments",
+      "relations"
+    ]);
+
     // If an equivalence class has no definition as a member, we use the first reference's section
-    for (let ec of Object.values(response.statements)) {
+    for (let ec of Object.values(response.statements!)) {
       this.assignSectionOfFirstMemberIfWithoutSection(ec);
     }
     // If an argument has neither a pcs nor a description, we use the first reference's section
-    for (let argument of Object.values(response.arguments)) {
+    for (let argument of Object.values(response.arguments!)) {
       this.assignSectionOfFirstMemberIfWithoutSection(argument);
     }
     const settings = this.getSettings(request);
@@ -311,6 +357,7 @@ export class ModelPlugin implements IArgdownPlugin {
     if (settings.mode === InterpretationModes.STRICT) {
       this.transformStatementRelations(response);
     }
+    this.removeRedundantEC2ARelations(response);
     return response;
   };
   constructor(config?: IModelPluginSettings) {
@@ -404,12 +451,20 @@ export class ModelPlugin implements IArgdownPlugin {
     const onRelationExit: IRuleNodeHandler = (_request, response, node) => {
       let relation = node.relation;
       if (!node.children || node.children.length < 2) {
-        throw new ArgdownPluginError(this.name, "Relation without children.");
+        throw new ArgdownPluginError(
+          this.name,
+          "missing-ast-node-children",
+          "Relation without children."
+        );
       }
       let contentNode = node.children[1] as IRuleNode;
       let content = contentNode.argument || contentNode.statement;
       if (!content) {
-        throw new ArgdownPluginError(this.name, "Relation member not found.");
+        throw new ArgdownPluginError(
+          this.name,
+          "missing-ast-node-relation-member",
+          "Relation member not found."
+        );
       }
       let target = getRelationMember(response, content);
       if (relation) {
@@ -443,6 +498,7 @@ export class ModelPlugin implements IArgdownPlugin {
           if (!relation.from || !relation.to) {
             throw new ArgdownPluginError(
               this.name,
+              "missing-relation-member",
               "Missing relation source or target."
             );
           }
@@ -559,7 +615,11 @@ export class ModelPlugin implements IArgdownPlugin {
         }
         let match = linkPattern.exec(token.image);
         if (!match || match.length < 3) {
-          throw new ArgdownPluginError(this.name, "Could not match link.");
+          throw new ArgdownPluginError(
+            this.name,
+            "invalid-link",
+            "Could not match link."
+          );
         }
         token.url = match[2];
         token.text = match[1];
@@ -590,7 +650,11 @@ export class ModelPlugin implements IArgdownPlugin {
         }
         let match = tagPattern.exec(token.image);
         if (!match || match.length < 2) {
-          throw new ArgdownPluginError(this.name, "Could not parse tag.");
+          throw new ArgdownPluginError(
+            this.name,
+            "invalid-tag",
+            "Could not parse tag."
+          );
         }
         let tag = match[1] || match[2];
         const settings = $.getSettings(request);
@@ -667,7 +731,11 @@ export class ModelPlugin implements IArgdownPlugin {
       },
       [RuleNames.HEADING + "Exit"]: (request, response, node) => {
         if (!currentHeading) {
-          throw new ArgdownPluginError(this.name, "Missing heading.");
+          throw new ArgdownPluginError(
+            this.name,
+            "missing-heading",
+            "Missing heading."
+          );
         }
         if (node.children) {
           let headingStart = node.children[0] as ITokenNode;
@@ -828,6 +896,7 @@ export class ModelPlugin implements IArgdownPlugin {
         if (!desc) {
           throw new ArgdownPluginError(
             this.name,
+            "missing-argument-description",
             "Missing argument description."
           );
         }
@@ -872,8 +941,7 @@ export class ModelPlugin implements IArgdownPlugin {
         response,
         node,
         parentNode,
-        childIndex,
-        logger
+        childIndex
       ) => {
         let argument = null;
         let argumentDescription: IStatement | undefined;
@@ -910,11 +978,14 @@ export class ModelPlugin implements IArgdownPlugin {
         if (currentSection) {
           argument.section = currentSection;
         }
-        //if there is a previous reconstruction, overwrite it
+        //if there is a previous reconstruction, throw an error as this might lead to chaos and confusion
         if (argument.pcs.length > 0) {
-          logger.log(
-            "warning",
-            "[ModelPlugin]: Overwriting duplicate pcs: " + argument.title
+          throw new ArgdownPluginError(
+            this.name,
+            "multiple-pcs-assignments",
+            `Multiple premise-conclusion-structures assigned to argument <${
+              argument.title
+            }>. You can only assign one pcs per argument.`
           );
         }
         argument.pcs = [];
@@ -928,11 +999,16 @@ export class ModelPlugin implements IArgdownPlugin {
       [RuleNames.PCS + "Exit"]: (_request, response, node) => {
         const argument = node.argument;
         if (!argument) {
-          throw new ArgdownPluginError(this.name, "Missing argument.");
+          throw new ArgdownPluginError(
+            this.name,
+            "missing-argument",
+            "Missing argument."
+          );
         }
         if (argument.pcs.length == 0) {
           throw new ArgdownPluginError(
             this.name,
+            "missing-argument-statements",
             "Missing argument statements."
           );
         }
@@ -949,7 +1025,11 @@ export class ModelPlugin implements IArgdownPlugin {
             ec.isUsedAsIntermediaryConclusion = false;
           }
         } else {
-          throw new ArgdownPluginError(this.name, "Missing main conclusions.");
+          throw new ArgdownPluginError(
+            this.name,
+            "missing-main-conclusion",
+            "Missing main conclusions."
+          );
         }
         argument.startLine = node.startLine;
         argument.startColumn = node.startColumn;
@@ -969,6 +1049,7 @@ export class ModelPlugin implements IArgdownPlugin {
         if (!currentPCS) {
           throw new ArgdownPluginError(
             this.name,
+            "missing-argument-reconstruction",
             "Missing argument reconstruction."
           );
         }
@@ -977,7 +1058,11 @@ export class ModelPlugin implements IArgdownPlugin {
           let statementNode = node.children[1] as IRuleNode;
           let statement: IPCSStatement = <IPCSStatement>statementNode.statement;
           if (!statement) {
-            throw new ArgdownPluginError(this.name, "Missing statement.");
+            throw new ArgdownPluginError(
+              this.name,
+              "missing-statement",
+              "Missing statement."
+            );
           }
           let ec = getEquivalenceClass(response.statements!, statement.title!);
           statement.role = StatementRole.PREMISE;
@@ -1138,6 +1223,7 @@ export class ModelPlugin implements IArgdownPlugin {
         if (!currentRelationParent) {
           throw new ArgdownPluginError(
             this.name,
+            "missing-ast-node-relation-parent",
             "Parent of relation missing."
           );
         }

@@ -18,7 +18,7 @@ describe("Application", function() {
       },
       run: ({}, response: IArgdownResponse) => {
         (<any>response).testRunCompleted = true;
-        throw new ArgdownPluginError("TestPlugin", "Test error.");
+        throw new ArgdownPluginError("TestPlugin", "test", "Test error.");
       }
     };
     app.addPlugin(plugin, "test");
@@ -33,11 +33,19 @@ describe("Application", function() {
     expect(result).to.not.be.null;
     expect(statements).to.equal(1);
     expect(result!.exceptions!.length).to.equal(1);
-    expect((<ArgdownPluginError>result!.exceptions![0]).plugin).to.equal("TestPlugin");
+    expect((<ArgdownPluginError>result!.exceptions![0]).plugin).to.equal(
+      "TestPlugin"
+    );
+    expect((<ArgdownPluginError>result!.exceptions![0]).code).to.equal("test");
     expect((<any>result).testRunCompleted).to.be.true;
     statements = 0;
     app.removePlugin(plugin, "test");
-    result = app.run({ process: ["parse-input", "test"], input: source, logExceptions: false, throwExceptions: false });
+    result = app.run({
+      process: ["parse-input", "test"],
+      input: source,
+      logExceptions: false,
+      throwExceptions: false
+    });
     expect(statements).to.equal(0);
     expect((<any>result).testRunCompleted).to.be.undefined;
   });

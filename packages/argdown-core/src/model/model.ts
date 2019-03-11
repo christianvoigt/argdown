@@ -466,10 +466,10 @@ export interface IRelation extends HasColor {
   occurrences: IRuleNode[];
 }
 export namespace IRelation {
-  export const relationToString = (r: IRelation) => {
-    return `Relation(from: ${r.from!.title}, to: ${r.to!.title}, type: ${
-      r.type
-    })`;
+  export const toString = (r: IRelation) => {
+    return `Relation(from: ${r.from!.title}, to: ${
+      r.to!.title
+    }, relationType: ${r.relationType})`;
   };
   export const isSymmetric = (r: IRelation) => {
     return (

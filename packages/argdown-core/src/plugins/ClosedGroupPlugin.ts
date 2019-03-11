@@ -1,5 +1,5 @@
 import { IArgdownPlugin, IRequestHandler } from "../IArgdownPlugin";
-import { ArgdownPluginError } from "../ArgdownPluginError";
+import { createMissingResponseFieldError } from "../ArgdownPluginError";
 import { IArgdownResponse } from "../index";
 import {
   isGroupMapNode,
@@ -23,7 +23,7 @@ export class ClosedGroupPlugin implements IArgdownPlugin {
   name = "ClosedGroupPlugin";
   run: IRequestHandler = (_request, response) => {
     if (!response.map) {
-      throw new ArgdownPluginError("No map field in response.");
+      throw createMissingResponseFieldError(this, "map");
     }
     for (let node of response.map.nodes) {
       closeGroupsRecursively(node, response);

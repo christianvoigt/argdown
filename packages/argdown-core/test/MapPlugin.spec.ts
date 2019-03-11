@@ -253,7 +253,7 @@ describe("MapPlugin", function() {
     expect(result.map!.edges.length).to.equal(2);
     expect(result.map!.nodes.length).to.equal(3);
   });
-  it("does not draw c2c attacks in strict mode", function() {
+  it("does not add c2c attacks in strict mode", function() {
     let source = `
     ===
     model:
@@ -288,5 +288,70 @@ describe("MapPlugin", function() {
       logLevel: "error"
     });
     expect(result.map!.edges.length).to.equal(2);
+  });
+  it("does not add redundant edges from equivalence classes", function() {
+    let source = `
+===
+model:
+    mode: strict 
+selection:
+  statementSelectionMode: not-used-in-argument
+===
+
+<Test 1>
++> <Test 2>
+ 
+ <Test 1>
+ 
+ (1) Premise
+ ----
+ (2) [Conclusion 2]
+ 
+ <Test 2>
+ 
+ (1) [Conclusion 2]
+ ----
+ (2) Conclusion
+  `;
+    let result = app.run({
+      process: ["parse-input", "build-model", "build-map"],
+      input: source,
+      logLevel: "error"
+    });
+    expect(result.map!.edges.length).to.equal(1);
+  });
+  it("does not add redundant edges from ec2ec contrary and ec2a attack relations", function() {
+    let source = `
+  ===
+  selection:
+    statementSelectionMode: not-used-in-argument
+  ===
+  
+  [A]
+    - [B]
+    
+  <a1>
+  
+  (1) asdsa
+  (2) asdasdas
+  -----
+  (3) [B]
+    -> <a2>
+  
+  
+  <a2>
+  
+  (1) [A]
+  (2) asdasd
+  ----
+  (3) sadsd
+    
+  `;
+    let result = app.run({
+      process: ["parse-input", "build-model", "build-map"],
+      input: source,
+      logLevel: "error"
+    });
+    expect(result.map!.edges.length).to.equal(1);
   });
 });

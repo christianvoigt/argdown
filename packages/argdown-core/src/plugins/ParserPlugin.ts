@@ -68,7 +68,11 @@ export class ParserPlugin implements IArgdownPlugin {
     logger: IArgdownLogger
   ) {
     if (!request.input) {
-      throw new ArgdownPluginError(this.name, "No input field in request.");
+      throw new ArgdownPluginError(
+        this.name,
+        "missing-input-request-field",
+        "No input field in request."
+      );
     }
 
     let lexResult = argdownLexer.tokenize(request.input);

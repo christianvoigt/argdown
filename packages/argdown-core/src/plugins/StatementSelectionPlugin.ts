@@ -1,5 +1,5 @@
 import { IArgdownPlugin, IRequestHandler } from "../IArgdownPlugin";
-import { ArgdownPluginError } from "../ArgdownPluginError";
+import { checkResponseFields } from "../ArgdownPluginError";
 import { reduceToMap, mergeDefaults, isObject } from "../utils";
 import { IArgdownRequest, ISelectionSettings } from "../index";
 import {
@@ -88,33 +88,16 @@ export class StatementSelectionPlugin implements IArgdownPlugin {
     }
   };
   prepare: IRequestHandler = (request, response) => {
-    if (!response.statements) {
-      throw new ArgdownPluginError(
-        this.name,
-        "No statements field in response."
-      );
-    }
-    if (!response.arguments) {
-      throw new ArgdownPluginError(
-        this.name,
-        "No arguments field in response."
-      );
-    }
-    if (!response.relations) {
-      throw new ArgdownPluginError(
-        this.name,
-        "No relations field in response."
-      );
-    }
+    checkResponseFields(this, response, [
+      "statements",
+      "arguments",
+      "relations"
+    ]);
+
     mergeDefaults(this.getSettings(request), this.defaults);
   };
   run: IRequestHandler = (request, response) => {
-    if (!response.selection) {
-      throw new ArgdownPluginError(
-        this.name,
-        "No selection field in response."
-      );
-    }
+    checkResponseFields(this, response, ["selection"]);
     const settings = this.getSettings(request);
     const selectedStatementsMap = reduceToMap(
       response.selection!.statements,

@@ -1,5 +1,5 @@
 import { IArgdownPlugin, IRequestHandler } from "../IArgdownPlugin";
-import { ArgdownPluginError } from "../ArgdownPluginError";
+import { checkResponseFields } from "../ArgdownPluginError";
 import { IArgdownRequest, IArgdownResponse } from "../index";
 import {
   validateColorString,
@@ -133,24 +133,8 @@ export class ColorPlugin implements IArgdownPlugin {
     return request.color;
   }
   run: IRequestHandler = (request, response) => {
-    if (!response.tags) {
-      throw new ArgdownPluginError(
-        this.name,
-        "Missing tags field in response."
-      );
-    }
-    if (!response.statements) {
-      throw new ArgdownPluginError(
-        this.name,
-        "Missing statements field in response."
-      );
-    }
-    if (!response.arguments) {
-      throw new ArgdownPluginError(
-        this.name,
-        "Missing arguments field in response."
-      );
-    }
+    checkResponseFields(this, response, ["statements", "arguments", "tags"]);
+
     //needs to be done here, to allow the DataPlugin to run in the same processor
     const settings = this.getSettings(request);
     mergeDefaults(settings, this.defaults);
@@ -169,7 +153,7 @@ export class ColorPlugin implements IArgdownPlugin {
     let groupColorScheme: string[] = settings.groupColorScheme!;
 
     if (settings.colorizeByTag || settings.colorizeGroupsByTag) {
-      for (let tagData of Object.values(response.tags)) {
+      for (let tagData of Object.values(response.tags!)) {
         const tag = tagData.tag;
         if (!tag) {
           continue;
@@ -208,7 +192,7 @@ export class ColorPlugin implements IArgdownPlugin {
         }
       }
     }
-    for (let ec of Object.values(response.statements)) {
+    for (let ec of Object.values(response.statements!)) {
       ec.fontColor = settings.statementFontColor;
       if (!settings.ignoreColorData && ec.data && ec.data.color !== undefined) {
         ec.color = getColor(colorScheme, ec.data.color);
@@ -218,7 +202,7 @@ export class ColorPlugin implements IArgdownPlugin {
       ) {
         ec.color = getColor(colorScheme, settings.statementColors[ec.title!]);
       } else if (settings.colorizeByTag && ec.tags && ec.tags.length > 0) {
-        const tag = getTagWithHighestPriority(ec.tags, response.tags);
+        const tag = getTagWithHighestPriority(ec.tags, response.tags!);
         ec.color = getColor(colorScheme, tagColors[tag]);
       } else if (colorScheme && colorScheme.length > 0) {
         ec.color = colorScheme[0];
@@ -234,7 +218,7 @@ export class ColorPlugin implements IArgdownPlugin {
           });
       }
     }
-    for (let a of Object.values(response.arguments)) {
+    for (let a of Object.values(response.arguments!)) {
       a.fontColor = settings.argumentFontColor;
       if (!settings.ignoreColorData && a.data && a.data.color !== undefined) {
         a.color = getColor(colorScheme, a.data.color);
@@ -244,7 +228,7 @@ export class ColorPlugin implements IArgdownPlugin {
       ) {
         a.color = getColor(colorScheme, settings.argumentColors[a.title!]);
       } else if (settings.colorizeByTag && a.tags && a.tags.length > 0) {
-        const tag = getTagWithHighestPriority(a.tags, response.tags);
+        const tag = getTagWithHighestPriority(a.tags, response.tags!);
         a.color = getColor(colorScheme, tagColors[tag]);
       } else if (colorScheme && colorScheme.length > 0) {
         a.color = colorScheme[0];
@@ -267,7 +251,7 @@ export class ColorPlugin implements IArgdownPlugin {
         settings,
         groupColorScheme,
         groupTagColors,
-        response.tags
+        response.tags!
       );
     }
     // copy statement, argument and section colors to map nodes

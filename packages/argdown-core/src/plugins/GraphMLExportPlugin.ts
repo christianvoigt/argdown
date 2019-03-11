@@ -2,7 +2,7 @@ import * as builder from "xmlbuilder";
 import pixelWidth from "string-pixel-width";
 
 import { IArgdownPlugin, IRequestHandler } from "../IArgdownPlugin";
-import { ArgdownPluginError } from "../ArgdownPluginError";
+import { checkResponseFields } from "../ArgdownPluginError";
 import {
   RelationType,
   IMapNode,
@@ -114,27 +114,12 @@ export class GraphMLExportPlugin implements IArgdownPlugin {
     }
   }
   prepare: IRequestHandler = (request, response) => {
-    if (!response.map) {
-      throw new ArgdownPluginError(this.name, "No map property in response.");
-    }
-    if (!response.statements) {
-      throw new ArgdownPluginError(
-        this.name,
-        "No statements property in response."
-      );
-    }
-    if (!response.arguments) {
-      throw new ArgdownPluginError(
-        this.name,
-        "No arguments property in response."
-      );
-    }
-    if (!response.relations) {
-      throw new ArgdownPluginError(
-        this.name,
-        "No relations property in response."
-      );
-    }
+    checkResponseFields(this, response, [
+      "statements",
+      "arguments",
+      "map",
+      "relations"
+    ]);
     let settings = this.getSettings(request);
     mergeDefaults(settings, this.defaults);
   };

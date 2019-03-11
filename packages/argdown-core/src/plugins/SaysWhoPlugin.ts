@@ -1,5 +1,5 @@
 import { IArgdownPlugin, IRequestHandler } from "../IArgdownPlugin";
-import { ArgdownPluginError } from "../ArgdownPluginError";
+import { checkResponseFields } from "../ArgdownPluginError";
 import { IMapNode, ArgdownTypes, isGroupMapNode } from "../model/model";
 import { IArgdownResponse } from "..";
 
@@ -14,14 +14,10 @@ export class SaysWhoPlugin implements IArgdownPlugin {
   // Will be called by the application:
   run: IRequestHandler = (_request, response) => {
     // let's first check that the required data is present in the response:
-    if (!response.arguments) {
-      throw new ArgdownPluginError(this.name, "Missing argument field in response.");
-    }
-    if (!response.map) {
-      throw new ArgdownPluginError(this.name, "Missing map field in response.");
-    }
+    checkResponseFields(this, response, ["map", "arguments"]);
+
     // now let's search for all argument nodes and change their label
-    for (let node of response.map.nodes) {
+    for (let node of response.map!.nodes) {
       processNodesRecursively(node, response);
     }
   };
@@ -30,7 +26,10 @@ export class SaysWhoPlugin implements IArgdownPlugin {
  * We have to use a recursive method as response.map.nodes may contain groups that can have
  * other groups as children.
  **/
-const processNodesRecursively = (node: IMapNode, response: IArgdownResponse): void => {
+const processNodesRecursively = (
+  node: IMapNode,
+  response: IArgdownResponse
+): void => {
   if (node.type === ArgdownTypes.ARGUMENT_MAP_NODE) {
     const argument = response.arguments![node.title!];
     // look for the proponent data and change the label

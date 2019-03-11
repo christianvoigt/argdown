@@ -13,7 +13,8 @@ import {
   IArgument,
   InterpretationModes,
   DataPlugin,
-  isConclusion
+  isConclusion,
+  ArgdownPluginError
 } from "../src/index";
 import * as fs from "fs";
 
@@ -615,7 +616,9 @@ describe("ModelPlugin", function() {
       logExceptions: false
     });
     expect(result.exceptions!.length).to.equal(1);
-    expect(result.exceptions![0].message).to.contain("No AST field");
+    expect((<ArgdownPluginError>result.exceptions![0]).code).to.contain(
+      "missing-ast-response-field"
+    );
   });
   it("throws exception if statements are missing", function() {
     const source = "[Test]: Hello _World_!";
@@ -629,7 +632,9 @@ describe("ModelPlugin", function() {
       { ast: <IAstNode>{} }
     );
     expect(result.exceptions!.length).to.equal(1);
-    expect(result.exceptions![0].message).to.contain("No statements field");
+    expect((<ArgdownPluginError>result.exceptions![0]).code).to.contain(
+      "missing-statements-response-field"
+    );
   });
   it("throws exception if arguments are missing", function() {
     const source = "[Test]: Hello _World_!";
@@ -643,7 +648,9 @@ describe("ModelPlugin", function() {
       { ast: <IAstNode>{}, statements: {} }
     );
     expect(result.exceptions!.length).to.equal(1);
-    expect(result.exceptions![0].message).to.contain("No arguments field");
+    expect((<ArgdownPluginError>result.exceptions![0]).code).to.contain(
+      "missing-arguments-response-field"
+    );
   });
   it("throws exception if relations are missing", function() {
     const source = "[Test]: Hello _World_!";
@@ -657,7 +664,9 @@ describe("ModelPlugin", function() {
       { ast: <IAstNode>{}, statements: {}, arguments: {} }
     );
     expect(result.exceptions!.length).to.equal(1);
-    expect(result.exceptions![0].message).to.contain("No relations field");
+    expect((<ArgdownPluginError>result.exceptions![0]).code).to.contain(
+      "missing-relations-response-field"
+    );
   });
   it("throws exception if relation source is missing", function() {
     const source = "[Test]: Hello _World_!";
@@ -825,5 +834,79 @@ describe("ModelPlugin", function() {
     expect(response.relations![1].relationType).to.equal(RelationType.UNDERCUT);
     expect(response.relations![1].from!.title).to.equal("C");
     expect(response.relations![1].to!.title).to.equal("D");
+  });
+  it("can remove redundant ec2a attack relations", () => {
+    const input = `
+===
+model:
+  mode: strict
+===
+
+[A]
+  - [B]
+  
+  
+<a1>
+
+(1) asdsa
+(2) asdasdas
+-----
+(3) [B]
+    -> <a2>
+
+<a2>
+
+(1) [A]
+(2) asdasd
+----
+(3) sadsd
+
+    `;
+    const response = app.run({
+      process: ["parse-input", "build-model"],
+      input,
+      model: {
+        mode: InterpretationModes.STRICT
+      }
+    });
+    expect(response.relations!.length).to.equal(1);
+  });
+  it("throws exception on multiple pcs assignments", () => {
+    const input = `
+===
+model:
+  mode: strict
+===
+
+<a>
+
+(1) s
+(2) s
+-----
+(3) s
+
+<a>
+
+(1) s
+(2) s
+-----
+(3) s
+
+    `;
+    const response = app.run({
+      process: ["parse-input", "build-model"],
+      input,
+      model: {
+        mode: InterpretationModes.STRICT
+      },
+      logExceptions: false
+    });
+    expect(response.exceptions!.length).to.equal(1);
+    expect((<ArgdownPluginError>response.exceptions![0]).plugin).to.equal(
+      "ModelPlugin"
+    );
+    expect((<ArgdownPluginError>response.exceptions![0]).code).to.equal(
+      "multiple-pcs-assignments"
+    );
   });
 });

@@ -1,5 +1,5 @@
 import { IArgdownPlugin, IRequestHandler } from "../IArgdownPlugin";
-import { ArgdownPluginError } from "../ArgdownPluginError";
+import { checkResponseFields } from "../ArgdownPluginError";
 import { IArgdownRequest, IArgdownResponse } from "../index";
 import {
   IMapNode,
@@ -57,31 +57,16 @@ export class GroupPlugin implements IArgdownPlugin {
     }
   };
   prepare: IRequestHandler = (request, response) => {
-    if (!response.statements) {
-      throw new ArgdownPluginError(
-        this.name,
-        "No statements field in response."
-      );
-    }
-    if (!response.arguments) {
-      throw new ArgdownPluginError(
-        this.name,
-        "No arguments field in response."
-      );
-    }
-    if (!response.relations) {
-      throw new ArgdownPluginError(
-        this.name,
-        "No relations field in response."
-      );
-    }
+    checkResponseFields(this, response, [
+      "statements",
+      "arguments",
+      "relations"
+    ]);
     let settings = this.getSettings(request);
     mergeDefaults(settings, this.defaults);
   };
   run: IRequestHandler = (request, response) => {
-    if (!response.map) {
-      throw new ArgdownPluginError(this.name, "No map field in response.");
-    }
+    checkResponseFields(this, response, ["map"]);
     const settings = this.getSettings(request);
     // Create group nodes and node tree structure
     const minGroupLevel =

@@ -1,5 +1,5 @@
 import { IArgdownPlugin, IRequestHandler } from "../IArgdownPlugin";
-import { ArgdownPluginError } from "../ArgdownPluginError";
+import { checkResponseFields } from "../ArgdownPluginError";
 import { reduceToMap, mergeDefaults, stringIsEmpty, isObject } from "../utils";
 import { IArgdownRequest, IArgdownResponse } from "../index";
 import {
@@ -82,33 +82,15 @@ export class MapPlugin implements IArgdownPlugin {
     }
   };
   prepare: IRequestHandler = (request, response) => {
-    if (!response.statements) {
-      throw new ArgdownPluginError(
-        this.name,
-        "No statements field in response."
-      );
-    }
-    if (!response.arguments) {
-      throw new ArgdownPluginError(
-        this.name,
-        "No arguments field in response."
-      );
-    }
-    if (!response.relations) {
-      throw new ArgdownPluginError(
-        this.name,
-        "No relations field in response."
-      );
-    }
+    checkResponseFields(this, response, [
+      "statements",
+      "arguments",
+      "relations"
+    ]);
     mergeDefaults(this.getSettings(request), this.defaults);
   };
   run: IRequestHandler = (request, response) => {
-    if (!response.selection) {
-      throw new ArgdownPluginError(
-        this.name,
-        "No selection field in response."
-      );
-    }
+    checkResponseFields(this, response, ["selection"]);
     const settings = this.getSettings(request);
     let selectedStatementsMap = reduceToMap(
       response.selection!.statements,
@@ -388,6 +370,8 @@ const createEdgesFromRelation = (
  * 1. For all argument-nodes: Create support edges for conclusion-in-argument-node +> statement-node equivalences
  * 2. For all argument-nodes: Create support edges for conclusion-in-argument-node +> premise-in-argument-node
  * 3. For all statement-nodes: Create support edges for statement-node +> premise-in-argument-node equivalences
+ *
+ * Check for redundant edges from explicitely defined relations in all cases
  **/
 const createSupportEdgesFromEquivalences = (
   response: IArgdownResponse,
@@ -407,7 +391,10 @@ const createSupportEdgesFromEquivalences = (
     const ec = response.statements![conclusion.title!];
     const statementNode = statementNodesMap.get(conclusion.title!);
     // 1)
-    if (statementNode) {
+    if (
+      statementNode &&
+      !edgeExists(edges, argumentNode, statementNode, RelationType.SUPPORT)
+    ) {
       edges.push({
         type: ArgdownTypes.MAP_EDGE,
         relationType: RelationType.SUPPORT,
@@ -425,7 +412,10 @@ const createSupportEdgesFromEquivalences = (
         const argumentNode2 = argumentNodesMap.get(
           (<IPCSStatement>statement).argumentTitle!
         );
-        if (argumentNode2) {
+        if (
+          argumentNode2 &&
+          !edgeExists(edges, argumentNode, argumentNode2, RelationType.SUPPORT)
+        ) {
           edges.push({
             type: ArgdownTypes.MAP_EDGE,
             relationType: RelationType.SUPPORT,
@@ -447,7 +437,10 @@ const createSupportEdgesFromEquivalences = (
           (<IPCSStatement>statement).argumentTitle!
         );
         // 3)
-        if (argumentNode) {
+        if (
+          argumentNode &&
+          !edgeExists(edges, statementNode, argumentNode, RelationType.SUPPORT)
+        ) {
           edges.push({
             type: ArgdownTypes.MAP_EDGE,
             relationType: RelationType.SUPPORT,
@@ -462,6 +455,16 @@ const createSupportEdgesFromEquivalences = (
     }
   }
   return edges;
+};
+const edgeExists = (
+  edges: IMapEdge[],
+  from: IMapNode,
+  to: IMapNode,
+  relationType: RelationType
+) => {
+  return !!edges.find(
+    e => e.from === from && e.to === to && e.relationType === relationType
+  );
 };
 const isRelationSelected = (
   selectedStatements: Map<string, IEquivalenceClass>,
