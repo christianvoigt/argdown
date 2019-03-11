@@ -20,13 +20,31 @@ const requestProviders: IDictionary<(r: any) => any> = {
   "vizjs-to-svg": r => {
     return {
       ...r,
-      process: ["parse-input", "build-model", "build-map", "export-dot", "export-svg", "save-svg-as-svg"]
+      process: [
+        "parse-input",
+        "build-model",
+        "build-map",
+        "transform-closed-groups",
+        "colorize",
+        "export-dot",
+        "export-svg",
+        "save-svg-as-svg"
+      ]
     };
   },
   "vizjs-to-pdf": r => {
     return {
       ...r,
-      process: ["parse-input", "build-model", "build-map", "export-dot", "export-svg", "save-svg-as-pdf"]
+      process: [
+        "parse-input",
+        "build-model",
+        "build-map",
+        "transform-closed-groups",
+        "colorize",
+        "export-dot",
+        "export-svg",
+        "save-svg-as-pdf"
+      ]
     };
   },
   "dagre-to-pdf": r => {
@@ -38,23 +56,61 @@ const requestProviders: IDictionary<(r: any) => any> = {
   dot: r => {
     return {
       ...r,
-      process: ["parse-input", "build-model", "build-map", "export-dot", "save-as-dot"]
+      process: [
+        "parse-input",
+        "build-model",
+        "build-map",
+        "transform-closed-groups",
+        "colorize",
+        "export-dot",
+        "save-as-dot"
+      ]
+    };
+  },
+  graphml: r => {
+    return {
+      ...r,
+      process: [
+        "parse-input",
+        "build-model",
+        "build-map",
+        "colorize",
+        "export-graphml",
+        "save-as-graphml"
+      ]
     };
   },
   html: r => {
     return {
       ...r,
-      process: ["parse-input", "build-model", "export-html", "save-as-html", "copy-default-css"]
+      process: [
+        "parse-input",
+        "build-model",
+        "colorize",
+        "export-html",
+        "save-as-html",
+        "copy-default-css"
+      ]
     };
   },
   json: r => {
     return {
       ...r,
-      process: ["parse-input", "build-model", "build-map", "export-json", "save-as-json"]
+      process: [
+        "parse-input",
+        "build-model",
+        "build-map",
+        "colorize",
+        "export-json",
+        "save-as-json"
+      ]
     };
   }
 };
-export const exportContent = async (argdownEngine: AsyncArgdownApplication, args: ExportContentArgs) => {
+export const exportContent = async (
+  argdownEngine: AsyncArgdownApplication,
+  args: ExportContentArgs
+) => {
   let request: IArgdownRequest = {};
   if (args.process === "vizjs-to-pdf" || args.process === "dagre-to-pdf") {
     request.outputPath = Uri.parse(args.target).fsPath;

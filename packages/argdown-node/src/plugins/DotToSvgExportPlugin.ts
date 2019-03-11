@@ -20,7 +20,7 @@ export enum GraphvizEngine {
   TWOPI = "twopi"
 }
 
-export interface IDotToSvgSettings {
+export interface IVizJsSettings {
   removeProlog?: boolean;
   engine?: GraphvizEngine;
   nop?: number;
@@ -28,9 +28,9 @@ export interface IDotToSvgSettings {
 declare module "@argdown/core" {
   interface IArgdownRequest {
     /**
-     * Settings for the [[DotToSvgExportPlugin]]
+     * Settings for any plugin using Viz.js, for example the [[DotToSvgExportPlugin]]
      */
-    dotToSvg?: IDotToSvgSettings;
+    vizJs?: IVizJsSettings;
   }
   export interface IArgdownResponse {
     /**
@@ -44,8 +44,8 @@ declare module "@argdown/core" {
 const viz = new Viz({ Module, render });
 export class DotToSvgExportPlugin implements IAsyncArgdownPlugin {
   name = "DotToSvgExportPlugin";
-  defaults: IDotToSvgSettings;
-  constructor(config?: IDotToSvgSettings) {
+  defaults: IVizJsSettings;
+  constructor(config?: IVizJsSettings) {
     this.defaults = _.defaultsDeep({}, config, {
       removeProlog: true,
       engine: GraphvizEngine.DOT
@@ -55,9 +55,9 @@ export class DotToSvgExportPlugin implements IAsyncArgdownPlugin {
     const settings = this.getSettings(request);
     _.defaultsDeep(settings, this.defaults);
   };
-  getSettings = (request: IArgdownRequest): IDotToSvgSettings => {
-    request.dotToSvg = request.dotToSvg || {};
-    return request.dotToSvg;
+  getSettings = (request: IArgdownRequest): IVizJsSettings => {
+    request.vizJs = request.vizJs || {};
+    return request.vizJs;
   };
   runAsync: IAsyncRequestHandler = async (request, response) => {
     if (!response.dot) {
