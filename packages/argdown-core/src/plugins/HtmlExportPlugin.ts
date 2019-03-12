@@ -168,12 +168,21 @@ export class HtmlExportPlugin implements IArgdownPlugin {
       },
       [TokenNames.ARGUMENT_REFERENCE]: (_request, response, token) => {
         const argument = response.arguments![token.title!];
-        let htmlId = getHtmlId("argument", argument.title!);
+        let htmlId = "";
+        if (argument.members.length == 0 && argument.pcs.length == 0) {
+          let htmlId = getHtmlId(
+            "argument",
+            argument!.title!,
+            response.htmlIds!
+          );
+          response.htmlIds![htmlId] = true;
+        }
+        let htmlIdLink = getHtmlId("argument", argument.title!);
         let classes = "reference argument-reference";
         if (argument!.tags) {
           classes += " " + $.getCssClassesFromTags(response, argument!.tags!);
         }
-        response.html += `<a href="#${htmlId}" data-line="${
+        response.html += `<a id="${htmlId}" href="#${htmlIdLink}" data-line="${
           token.startLine
         }" class="has-line ${classes}">&lt;<span class="title argument-title">${escapeHtml(
           argument!.title
@@ -181,15 +190,19 @@ export class HtmlExportPlugin implements IArgdownPlugin {
       },
       [TokenNames.ARGUMENT_DEFINITION]: (_request, response, token) => {
         const argument = response.arguments![token.title!];
-        let htmlId = getHtmlId("argument", argument!.title!, response.htmlIds!);
+        let htmlId = "";
+        if (argument.pcs.length == 0) {
+          htmlId = getHtmlId("argument", argument!.title!, response.htmlIds!);
+        }
+        let htmlIdLink = getHtmlId("argument", argument.title!);
         response.htmlIds![htmlId] = true;
         let classes = "definition argument-definition definiendum";
         if (argument!.tags) {
           classes += " " + $.getCssClassesFromTags(response, argument!.tags!);
         }
-        response.html += `<span id="${htmlId}" class="${classes}">&lt;<span class="title argument-title">${escapeHtml(
+        response.html += `<a id="${htmlId}" href="#${htmlIdLink}" class="${classes}">&lt;<span class="title argument-title">${escapeHtml(
           argument!.title
-        )}</span>&gt;: </span>`;
+        )}</span>&gt;: </a>`;
       },
       [TokenNames.ARGUMENT_MENTION]: (_request, response, token) => {
         let htmlId = getHtmlId("argument", token.title!);
@@ -313,11 +326,18 @@ export class HtmlExportPlugin implements IArgdownPlugin {
         (response.html += "</div>"),
       [RuleNames.PCS + "Entry"]: (_request, response, node) => {
         let classes = "pcs has-line";
+        let htmlId = getHtmlId(
+          "argument",
+          node.argument!.title!,
+          response.htmlIds!
+        );
+        response.htmlIds![htmlId] = true;
+
         if (node.argument && node.argument.tags && node.argument.tags) {
           classes +=
             " " + $.getCssClassesFromTags(response, node.argument.tags);
         }
-        response.html += `<div data-line="${
+        response.html += `<div id="${htmlId}" data-line="${
           node.startLine
         }" class="${classes}">`;
       },
