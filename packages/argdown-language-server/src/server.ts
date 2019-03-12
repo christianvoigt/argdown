@@ -36,7 +36,7 @@ import {
   provideCompletion,
   provideRenameWorkspaceEdit
 } from "./providers/index";
-import { argdown } from "@argdown/node";
+import { argdown, IArgdownRequest } from "@argdown/node";
 import {
   WorkspaceFoldersInitializeParams,
   WorkspaceFoldersClientCapabilities
@@ -106,7 +106,7 @@ connection.onInitialize(
         // },
         documentSymbolProvider: true,
         foldingRangeProvider: true,
-        workspaceSymbolProvider: true,
+        // workspaceSymbolProvider: true,
         definitionProvider: true,
         referencesProvider: true,
         documentHighlightProvider: true,
@@ -277,12 +277,17 @@ const processDocForProviders = async (textDocument: TextDocumentIdentifier) => {
   return null;
 };
 const processTextForProviders = async (text: string, path: string) => {
-  const request = {
+  const request: IArgdownRequest = {
     input: text,
     inputPath: path,
-    process: ["parse-input", "build-model"]
+    process: ["parse-input", "build-model"],
+    throwExceptions: true
   };
-  return await argdown.runAsync(request);
+  try {
+    return await argdown.runAsync(request);
+  } catch (e) {
+    return null;
+  }
 };
 connection.onRenameRequest(async (params: RenameParams) => {
   const { newName, position, textDocument } = params;
@@ -325,7 +330,11 @@ connection.onCompletion(async (params: TextDocumentPositionParams) => {
       }
     }
     const response = await processTextForProviders(input, path);
-    return provideCompletion(response, char, position, txt, offset);
+    if (response) {
+      return provideCompletion(response, char, position, txt, offset);
+    } else {
+      return null;
+    }
   }
   return null;
 });
@@ -363,14 +372,19 @@ connection.onDocumentSymbol(async (params: DocumentSymbolParams) => {
   const path = Uri.parse(params.textDocument.uri).fsPath;
   const doc = documents.get(params.textDocument.uri);
   if (doc) {
-    const request = {
+    const request: IArgdownRequest & { inputUri: string } = {
       inputPath: path,
       input: doc.getText(),
       process: ["parse-input", "build-model", "add-document-symbols"],
-      inputUri: params.textDocument.uri
+      inputUri: params.textDocument.uri,
+      throwExceptions: true
     };
-    const response = await argdown.runAsync(request);
-    return response.documentSymbols;
+    try {
+      const response = await argdown.runAsync(request);
+      return response.documentSymbols;
+    } catch (e) {
+      return null;
+    }
   }
   return null;
 });
@@ -379,13 +393,18 @@ argdown.addPlugin(new FoldingRangesPlugin(), "add-folding-ranges");
 connection.onFoldingRanges(async (params: FoldingRangeParams) => {
   const doc = documents.get(params.textDocument.uri);
   if (doc) {
-    const request = {
+    const request: IArgdownRequest & { inputUri: string } = {
       input: doc.getText(),
       process: ["parse-input", "build-model", "add-folding-ranges"],
-      inputUri: params.textDocument.uri
+      inputUri: params.textDocument.uri,
+      throwExceptions: true
     };
-    const response = await argdown.runAsync(request);
-    return response.foldingRanges;
+    try {
+      const response = await argdown.runAsync(request);
+      return response.foldingRanges;
+    } catch (e) {
+      return null;
+    }
   }
   return null;
 });
