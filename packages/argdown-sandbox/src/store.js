@@ -170,8 +170,14 @@ export default new Vuex.Store({
         },
         state.config
       );
-      const response = app.run(request);
-      return response;
+      try {
+        return app.run(request);
+      } catch (e) {
+        if (request.logLevel === "verbose") {
+          console.log(e);
+        }
+        return {};
+      }
     },
     config: (state, getters) => {
       const data = getters.argdownData;

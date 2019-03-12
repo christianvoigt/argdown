@@ -1,41 +1,65 @@
 <template>
-<div id="app" v-bind:class="viewStateClass">
-  <div id="top-slot" v-if="$store.state.viewState != 'input-maximized' && $store.state.viewState != 'output-maximized' ">
-    <app-header></app-header>
-    <app-navigation></app-navigation>
-  </div>
-  <div class="main-window">
-    <div id="left-slot" v-if="$store.state.viewState != 'output-maximized'">
-      <div class="input-header">
-        <InputNavigation/>
-        <button v-if="$store.state.viewState != 'input-maximized'" class="button" v-on:click="$store.commit('setViewState','input-maximized')">
-          <img class="expand icon" src="./assets/expand.svg" alt="Expand">
-        </button>
-        <button v-if="$store.state.viewState == 'input-maximized'" class="button" v-on:click="$store.commit('setViewState','default')">
-          <img class="expand icon" src="./assets/compress.svg" alt="Compress">
-        </button>
-      </div>
-      <argdown-input v-bind:value="$store.state.argdownInput" v-on:change="value => { $store.commit('setArgdownInput',value)}"></argdown-input>
+  <div id="app" v-bind:class="viewStateClass">
+    <div
+      id="top-slot"
+      v-if="$store.state.viewState != 'input-maximized' && $store.state.viewState != 'output-maximized' "
+    >
+      <app-header></app-header>
+      <app-navigation></app-navigation>
     </div>
-    <div id="right-slot" v-if="$store.state.viewState != 'input-maximized'">
-      <div class="output-header">
-        <div class="output-sub-menu"><router-view name="output-header"></router-view></div>
-        <div class="output-view-state-buttons">
-          <button v-if="$store.state.viewState != 'output-maximized'" class="button" v-on:click="$store.commit('setViewState','output-maximized')">
+    <div class="main-window">
+      <div id="left-slot" v-if="$store.state.viewState != 'output-maximized'">
+        <div class="input-header">
+          <InputNavigation/>
+          <button
+            v-if="$store.state.viewState != 'input-maximized'"
+            class="button"
+            v-on:click="$store.commit('setViewState','input-maximized')"
+          >
             <img class="expand icon" src="./assets/expand.svg" alt="Expand">
           </button>
-          <button v-if="$store.state.viewState == 'output-maximized'" class="button" v-on:click="$store.commit('setViewState','default')">
+          <button
+            v-if="$store.state.viewState == 'input-maximized'"
+            class="button"
+            v-on:click="$store.commit('setViewState','default')"
+          >
             <img class="expand icon" src="./assets/compress.svg" alt="Compress">
           </button>
-          <button class="button" v-on:click="$store.commit('toggleSettings')">
-            <img class="toggle-settings icon" src="./assets/cog.svg" alt="Settings">
-          </button>
         </div>
+        <argdown-input
+          v-bind:value="$store.state.argdownInput"
+          v-on:change="value => { $store.commit('setArgdownInput',value)}"
+        ></argdown-input>
       </div>
-      <router-view></router-view>
-      <router-view name="output-footer"></router-view>
-    </div>
-    <settings v-if="$store.state.showSettings"></settings>
+      <div id="right-slot" v-if="$store.state.viewState != 'input-maximized'">
+        <div class="output-header">
+          <div class="output-sub-menu">
+            <router-view name="output-header"></router-view>
+          </div>
+          <div class="output-view-state-buttons">
+            <button
+              v-if="$store.state.viewState != 'output-maximized'"
+              class="button"
+              v-on:click="$store.commit('setViewState','output-maximized')"
+            >
+              <img class="expand icon" src="./assets/expand.svg" alt="Expand">
+            </button>
+            <button
+              v-if="$store.state.viewState == 'output-maximized'"
+              class="button"
+              v-on:click="$store.commit('setViewState','default')"
+            >
+              <img class="expand icon" src="./assets/compress.svg" alt="Compress">
+            </button>
+            <!-- <button class="button" v-on:click="$store.commit('toggleSettings')">
+            <img class="toggle-settings icon" src="./assets/cog.svg" alt="Settings">
+            </button>-->
+          </div>
+        </div>
+        <router-view></router-view>
+        <router-view name="output-footer"></router-view>
+      </div>
+      <!-- <settings v-if="$store.state.showSettings"></settings> -->
     </div>
   </div>
 </template>
@@ -45,7 +69,7 @@
 import AppHeader from "@/components/AppHeader";
 import ArgdownInput from "@/components/ArgdownInput";
 import AppNavigation from "@/components/AppNavigation";
-import Settings from "@/components/Settings";
+// import Settings from "@/components/Settings";
 import InputNavigation from "@/components/InputNavigation";
 
 import "../node_modules/@argdown/core/dist/src/plugins/argdown.css";
@@ -60,8 +84,8 @@ export default {
   computed: {
     viewStateClass: function() {
       return {
-        [this.$store.state.viewState]: true,
-        "show-settings": this.$store.state.showSettings
+        [this.$store.state.viewState]: true
+        // "show-settings": this.$store.state.showSettings
       };
     }
   },
@@ -69,8 +93,9 @@ export default {
     AppHeader,
     ArgdownInput,
     AppNavigation,
-    InputNavigation,
-    Settings
+    InputNavigation
+    // ,
+    // Settings
   },
   created() {
     this.$store.commit("setArgdownInput", this.$store.state.argdownInput); // ensure that the initial input is parsed
@@ -92,16 +117,16 @@ body {
   margin: 0;
   padding: 0;
   width: 100%;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans,
-    Helvetica Neue, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   -moz-osx-font-smoothing: grayscale;
 }
 h1,
 h2,
 h3,
 h4 {
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans,
-    Helvetica Neue, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   font-weight: 500;
 }
 button {
@@ -314,7 +339,7 @@ button .icon {
     position: absolute;
     background-color: #f9f9f9;
     min-width: 350px;
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,.2);
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
     padding: 0px;
     z-index: 1000;
   }
@@ -325,12 +350,12 @@ button .icon {
   }
 }
 .sub-nav ul.nav-list .dropdown ul li a {
-    display: flex;
-    height: auto;
-    width: 100%;
-    padding: 1em 0.5em;
-    border: 1px solid #ccc;
-    margin-top: -1px;
-    border-radius: 0;
+  display: flex;
+  height: auto;
+  width: 100%;
+  padding: 1em 0.5em;
+  border: 1px solid #ccc;
+  margin-top: -1px;
+  border-radius: 0;
 }
 </style>
