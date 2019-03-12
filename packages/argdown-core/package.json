@@ -60,6 +60,7 @@
     "test": "mocha -r ts-node/register --full-trace --require source-map-support/register ./test/**/*.spec.ts",
     "test:map": "mocha -r ts-node/register --full-trace --require source-map-support/register ./test/MapPlugin.spec.ts",
     "test:model": "mocha -r ts-node/register --full-trace --require source-map-support/register ./test/ModelPlugin.spec.ts",
+    "test:deriveImplicitRelations": "mocha -r ts-node/register --full-trace --require source-map-support/register ./test/deriveImplicitRelations.spec.ts",
     "test:defaults": "mocha -r ts-node/register --full-trace --require source-map-support/register ./test/DefaultSettings.spec.ts",
     "coverage": "nyc mocha -r ts-node/register --full-trace --bail --require source-map-support/register ./test/**/*.spec.ts",
     "report": "nyc report",

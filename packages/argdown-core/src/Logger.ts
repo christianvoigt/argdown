@@ -10,12 +10,15 @@ const getPriority = (level: string): number => {
       return 2;
     case "error":
       return 3;
+    case "off":
+    case "none":
+      return 4;
     default:
       return -1;
   }
 };
 export class Logger {
-  logLevel: string = "";
+  logLevel: string = "error";
   setLevel(level: string) {
     this.logLevel = level;
   }

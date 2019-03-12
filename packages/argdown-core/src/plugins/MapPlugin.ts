@@ -15,7 +15,7 @@ import {
   RelationType,
   IInference
 } from "../model/model";
-import { relationMemberIsInSelection } from "./utils";
+import { relationMemberIsInSelection } from "./selectionUtils";
 import defaultsDeep from "lodash.defaultsdeep";
 
 export enum LabelMode {

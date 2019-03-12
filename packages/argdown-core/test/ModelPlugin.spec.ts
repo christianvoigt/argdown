@@ -204,7 +204,7 @@ describe("ModelPlugin", function() {
     expect(Object.keys(result.statements!).length).to.equal(2);
     expect(Object.keys(result.relations!).length).to.equal(1);
   });
-  it("can parse undercuts", function() {
+  it("can parse undercuts for unreconstructed arguments", function() {
     let source = `[A]: A
       _> <B>
     
@@ -225,6 +225,31 @@ describe("ModelPlugin", function() {
     expect(result.relations![1].relationType!).to.equal(RelationType.UNDERCUT);
     expect(result.relations![1].from!.title).to.equal("D");
     expect(result.relations![1].to!.title).to.equal("B");
+  });
+  it("can parse undercuts for inferences", () => {
+    const input = `
+    <a1>
+
+    (1) s
+    ----
+      <_ Undercut!
+    (2) s
+    `;
+    const response = app.run({
+      process: ["parse-input", "build-model"],
+      input,
+      model: {
+        mode: InterpretationModes.STRICT
+      }
+    });
+    expect(response.relations![0]).to.exist;
+    expect(response.relations![0].relationType).to.equal(RelationType.UNDERCUT);
+    const inference = (<IConclusion>response.arguments!["a1"].pcs[1]).inference;
+    expect(inference).to.exist;
+    expect(inference!.relations!.length).to.be.equal(1);
+    expect(inference!.relations![0].relationType).to.equal(
+      RelationType.UNDERCUT
+    );
   });
   it("can process a single argument", function() {
     let source = "(1) [s1]: A\n(2) [s2]: B\n----\n(3) [s3]: C";

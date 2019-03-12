@@ -33,7 +33,7 @@ import {
 import { RuleNames } from "../RuleNames";
 import { TokenNames } from "../TokenNames";
 import { stringToClassName, isObject, mergeDefaults } from "../utils";
-import { other } from "./utils";
+import { other } from "../utils";
 
 export interface ITagData {
   tag: string;

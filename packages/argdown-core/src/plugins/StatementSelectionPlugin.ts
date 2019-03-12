@@ -11,9 +11,9 @@ import {
   IRelation,
   IPCSStatement,
   IStatement,
-  isArgumentStatement
+  isPCSStatement
 } from "../model/model";
-import { otherRelationMemberIsInSelection } from "./utils";
+import { otherRelationMemberIsInSelection } from "./selectionUtils";
 import defaultsDeep from "lodash.defaultsdeep";
 /**
  * The StatementSelectionMode in the [[ISelectionSettings]] determines which statements will be added as nodes to the argument map.
@@ -192,7 +192,7 @@ const isUsedInSelectedArgument = (
   selectedArguments: Map<string, IArgument>
 ) => (statement: IStatement) => {
   if (
-    isArgumentStatement(statement) &&
+    isPCSStatement(statement) &&
     statement.role !== StatementRole.INTERMEDIARY_CONCLUSION
   ) {
     return selectedArguments.get(statement.argumentTitle!) !== undefined;

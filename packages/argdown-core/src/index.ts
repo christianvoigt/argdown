@@ -155,3 +155,4 @@ export * from "./ArgdownPluginError";
 export * from "./model/model";
 export * from "./model/toJSON";
 export * from "./utils";
+export * from "./deriveImplicitRelations";

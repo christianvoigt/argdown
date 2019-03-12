@@ -15,7 +15,7 @@ import {
   isConclusion,
   IRelation
 } from "../model/model";
-import { otherRelationMemberIsInSelection } from "./utils";
+import { otherRelationMemberIsInSelection } from "./selectionUtils";
 import defaultsDeep from "lodash.defaultsdeep";
 
 declare module "../index" {

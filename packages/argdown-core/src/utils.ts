@@ -1,4 +1,4 @@
-import { IAstNode } from "./model/model";
+import { IAstNode, IRelation, RelationMember } from "./model/model";
 import { isTokenNode, isRuleNode } from "./model/model";
 import { IToken } from "chevrotain";
 import pixelWidth from "string-pixel-width";
@@ -468,4 +468,14 @@ export const ensure = {
       }
     };
   }
+};
+/**
+ * Given a relation member, returns the other relation member
+ *
+ * @param r the relation
+ * @param e the first relation member
+ * @returns the second relation member
+ */
+export const other = (r: IRelation, e: RelationMember): RelationMember => {
+  return r.from === e ? r.to! : r.from!;
 };

@@ -7,7 +7,8 @@ import {
   IStatement,
   IArgument,
   IGroupMapNode,
-  IEquivalenceClass
+  IEquivalenceClass,
+  IInference
 } from "./model";
 import { isObject } from "../utils";
 const prepareEquivalenceClassForJSON = (s: IEquivalenceClass): any => {
@@ -93,6 +94,10 @@ const prepareRelationForJSON = (r: IRelation): any => {
   if (r.to) {
     rel.to = r.to.title;
     rel.toType = r.to.type;
+  }
+  if (r.to!.type === ArgdownTypes.INFERENCE) {
+    rel.to = (<IInference>r.to).argumentTitle!;
+    rel.conclusionIndex = (<IInference>r.to).conclusionIndex;
   }
 
   return rel;

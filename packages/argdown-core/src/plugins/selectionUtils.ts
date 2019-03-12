@@ -7,7 +7,7 @@ import {
   StatementRole,
   IPCSStatement
 } from "../model/model";
-
+import { other } from "../utils";
 export const otherRelationMemberIsInSelection = (
   relation: IRelation,
   relationMember: RelationMember,
@@ -56,7 +56,4 @@ export const relationMemberIsInSelection = (
     return true;
   }
   return false;
-};
-export const other = (r: IRelation, e: RelationMember) => {
-  return r.from === e ? r.to! : r.from!;
 };

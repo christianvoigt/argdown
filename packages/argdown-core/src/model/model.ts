@@ -597,7 +597,7 @@ export const isConclusion = (s: IStatement): s is IConclusion => {
     (<IConclusion>s).inference != undefined
   );
 };
-export const isArgumentStatement = (s: IStatement): s is IPCSStatement => {
+export const isPCSStatement = (s: IStatement): s is IPCSStatement => {
   return (
     s.role === StatementRole.PREMISE ||
     s.role === StatementRole.INTERMEDIARY_CONCLUSION ||
