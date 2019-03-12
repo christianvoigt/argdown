@@ -1,5 +1,10 @@
 import { findNodesContainingPosition } from "./findNodesContainingPosition";
-import { TokenNames, IArgdownResponse, IRuleNode, IAstNode } from "@argdown/core";
+import {
+  TokenNames,
+  IArgdownResponse,
+  IRuleNode,
+  IAstNode
+} from "@argdown/core";
 /**
  *
  * Returns the smallest node containing the position, if the node is of one of the following types:
@@ -17,12 +22,20 @@ import { TokenNames, IArgdownResponse, IRuleNode, IAstNode } from "@argdown/core
  * @param line the position's line (one-based). This is one-based so if coming from VS Code, add 1.
  * @param character the position's character. This is one-based so if coming from VS Code, add 1.
  */
-export const findNodeAtPosition = (response: IArgdownResponse, line: number, character: number): IAstNode | null => {
-  if (!response.ast || (<IRuleNode>response.ast!).children) {
+export const findNodeAtPosition = (
+  response: IArgdownResponse,
+  line: number,
+  character: number
+): IAstNode | null => {
+  if (!response.ast || !(<IRuleNode>response.ast!).children) {
     return null;
   }
   var children = (<IRuleNode>response.ast!).children!;
-  const containingNodes: any[] = findNodesContainingPosition(children, line, character);
+  const containingNodes: any[] = findNodesContainingPosition(
+    children,
+    line,
+    character
+  );
   return containingNodes.reverse().find(n => {
     if (!n.tokenType) {
       return false;

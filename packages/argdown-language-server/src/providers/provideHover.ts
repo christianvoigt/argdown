@@ -1,8 +1,14 @@
 import { Hover, Position } from "vscode-languageserver";
 import { findNodeAtPosition } from "./findNodeAtPosition";
-import { generateMarkdownForArgument, generateMarkdownForStatement } from "./utils";
+import {
+  generateMarkdownForArgument,
+  generateMarkdownForStatement
+} from "./utils";
 import { IArgdownResponse, isTokenNode } from "@argdown/core";
-export const provideHover = (response: IArgdownResponse, position: Position) => {
+export const provideHover = (
+  response: IArgdownResponse,
+  position: Position
+) => {
   const line = position.line + 1;
   const character = position.character + 1;
   const nodeAtPosition = findNodeAtPosition(response, line, character);
@@ -11,12 +17,12 @@ export const provideHover = (response: IArgdownResponse, position: Position) => 
     if (tokenName!.startsWith("Statement")) {
       const eqClass = response.statements![nodeAtPosition.title!];
       return <Hover>{
-        contents: generateMarkdownForStatement(eqClass)
+        contents: generateMarkdownForStatement(eqClass, response)
       };
     } else if (tokenName!.startsWith("Argument")) {
       const argument = response.arguments![nodeAtPosition.title!];
       return <Hover>{
-        contents: generateMarkdownForArgument(argument)
+        contents: generateMarkdownForArgument(argument, response)
       };
     } else if (tokenName!.startsWith("Tag") && nodeAtPosition.tag) {
       const tag = nodeAtPosition.tag;
@@ -36,5 +42,5 @@ ${statementsStr}${argumentsStr}`;
       };
     }
   }
-  return <Hover>{};
+  return null;
 };

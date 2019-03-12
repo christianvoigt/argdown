@@ -1,4 +1,10 @@
-import { CompletionItem, CompletionItemKind, Position, Range, TextEdit } from "vscode-languageserver";
+import {
+  CompletionItem,
+  CompletionItemKind,
+  Position,
+  Range,
+  TextEdit
+} from "vscode-languageserver";
 import { IArgument, IEquivalenceClass, IArgdownResponse } from "@argdown/core";
 const statementPattern = /\[([^\[]+?)\]$/;
 const argumentPattern = /<([^<]+?)>$/;
@@ -9,7 +15,12 @@ export const provideCompletion = (
   text: string,
   offset: number
 ) => {
-  const range = Range.create(position.line, position.character - 1, position.line, position.character + 1);
+  const range = Range.create(
+    position.line,
+    position.character - 1,
+    position.line,
+    position.character + 1
+  );
   if (!response.statements || !response.arguments) {
     return [];
   }
@@ -42,6 +53,9 @@ export const provideCompletion = (
     if (statementMatch && statementMatch.length > 1) {
       const title = statementMatch[1];
       const eqClass = response.statements![title];
+      if (!eqClass.members) {
+        return [];
+      }
       return eqClass.members
         .filter(member => !member.isReference)
         .map(member => {

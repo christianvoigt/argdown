@@ -133,7 +133,7 @@ export const exportDocument = async (
   args: ExportDocumentArgs,
   doc: TextDocument | undefined
 ) => {
-  let request: any = { logLevel: "verbose" };
+  let request: any = { logLevel: "none" };
   request.inputPath = Uri.parse(args.source).fsPath;
   request.outputPath = Uri.parse(args.target).fsPath;
   const getRequest = requestProviders[args.process];

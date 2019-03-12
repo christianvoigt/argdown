@@ -22,7 +22,12 @@ import {
 } from "vscode-languageserver";
 import Uri from "vscode-uri";
 import { IArgdownSettings } from "./IArgdownSettings";
-import { exportDocument, exportContent, ExportContentArgs, ExportDocumentArgs } from "./commands/Export";
+import {
+  exportDocument,
+  exportContent,
+  ExportContentArgs,
+  ExportDocumentArgs
+} from "./commands/Export";
 import { DocumentSymbolPlugin } from "./providers/DocumentSymbolPlugin";
 import {
   provideDefinitions,
@@ -69,17 +74,21 @@ let workspaceFolders: WorkspaceFolder[];
 // After the server has started the client sends an initilize request. The server receives
 // in the passed params the rootPath of the workspace plus the client capabilites.
 connection.onInitialize(
-  (params: InitializeParams & WorkspaceFoldersInitializeParams): InitializeResult => {
+  (
+    params: InitializeParams & WorkspaceFoldersInitializeParams
+  ): InitializeResult => {
     let capabilities = params.capabilities;
 
     // Does the client support the `workspace/configuration` request?
     // If not, we will fall back using global settings
     hasWorkspaceFolderCapability =
       !!(capabilities as WorkspaceFoldersClientCapabilities).workspace &&
-      !!(capabilities as WorkspaceFoldersClientCapabilities).workspace!.workspaceFolders;
+      !!(capabilities as WorkspaceFoldersClientCapabilities).workspace!
+        .workspaceFolders;
     hasConfigurationCapability =
       !!(capabilities as ConfigurationClientCapabilities).workspace &&
-      !!(capabilities as ConfigurationClientCapabilities).workspace!.configuration;
+      !!(capabilities as ConfigurationClientCapabilities).workspace!
+        .configuration;
 
     if (params.workspaceFolders) {
       workspaceFolders = params.workspaceFolders;
@@ -107,7 +116,11 @@ connection.onInitialize(
           triggerCharacters: ["[", "<", ":", "#"]
         },
         executeCommandProvider: {
-          commands: [EXPORT_DOCUMENT_COMMAND, EXPORT_CONTENT_COMMAND, RUN_COMMAND]
+          commands: [
+            EXPORT_DOCUMENT_COMMAND,
+            EXPORT_CONTENT_COMMAND,
+            RUN_COMMAND
+          ]
         }
       }
     };
@@ -120,7 +133,9 @@ connection.onInitialized(() => {
     connection.workspace.onDidChangeWorkspaceFolders(event => {
       // Removed folders.
       for (const workspaceFolder of event.removed) {
-        const index = workspaceFolders.findIndex(folder => folder.uri === workspaceFolder.uri);
+        const index = workspaceFolders.findIndex(
+          folder => folder.uri === workspaceFolder.uri
+        );
 
         if (index !== -1) {
           workspaceFolders.splice(index, 1);
@@ -171,7 +186,9 @@ connection.onDidChangeConfiguration(change => {
     // Reset all cached document settings
     documentSettings.clear();
   } else {
-    globalSettings = <IArgdownSettings>(change.settings.lspMultiRootSample || defaultSettings);
+    globalSettings = <IArgdownSettings>(
+      (change.settings.lspMultiRootSample || defaultSettings)
+    );
   }
 
   // Revalidate all open text documents
@@ -250,58 +267,6 @@ connection.onDidChangeWatchedFiles(_change => {
   // Monitored files have change in VSCode
   connection.console.log("We recevied an file change event");
 });
-
-// // This handler provides the initial list of the completion items.
-// connection.onCompletion((_textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
-// 	// The pass parameter contains the position of the text document in
-// 	// which code complete got requested. For the example we ignore this
-// 	// info and always provide the same completion items.
-// 	return [
-// 		{
-// 			label: 'TypeScript',
-// 			kind: CompletionItemKind.Text,
-// 			data: 1
-// 		},
-// 		{
-// 			label: 'JavaScript',
-// 			kind: CompletionItemKind.Text,
-// 			data: 2
-// 		}
-// 	]
-// });
-
-// // This handler resolve additional information for the item selected in
-// // the completion list.
-// connection.onCompletionResolve((item: CompletionItem): CompletionItem => {
-// 	if (item.data === 1) {
-// 		item.detail = 'TypeScript details',
-// 			item.documentation = 'TypeScript documentation'
-// 	} else if (item.data === 2) {
-// 		item.detail = 'JavaScript details',
-// 			item.documentation = 'JavaScript documentation'
-// 	}
-// 	return item;
-// });
-
-/*
-connection.onDidOpenTextDocument((params) => {
-	// A text document got opened in VSCode.
-	// params.uri uniquely identifies the document. For documents store on disk this is a file URI.
-	// params.text the initial full content of the document.
-	connection.console.log(`${params.textDocument.uri} opened.`);
-});
-connection.onDidChangeTextDocument((params) => {
-	// The content of a text document did change in VSCode.
-	// params.uri uniquely identifies the document.
-	// params.contentChanges describe the content changes to the document.
-	connection.console.log(`${params.textDocument.uri} changed: ${JSON.stringify(params.contentChanges)}`);
-});
-connection.onDidCloseTextDocument((params) => {
-	// A text document got closed in VSCode.
-	// params.uri uniquely identifies the document.
-	connection.console.log(`${params.textDocument.uri} closed.`);
-});
-*/
 const processDocForProviders = async (textDocument: TextDocumentIdentifier) => {
   const doc = documents.get(textDocument.uri);
   if (doc) {
@@ -368,8 +333,8 @@ connection.onDocumentHighlight(async (params: TextDocumentPositionParams) => {
   const { textDocument, position } = params;
   const response = await processDocForProviders(textDocument);
   if (response) {
-    return provideReferences(response, textDocument.uri, position).map((l: Location) =>
-      DocumentHighlight.create(l.range, 1)
+    return provideReferences(response, textDocument.uri, position).map(
+      (l: Location) => DocumentHighlight.create(l.range, 1)
     );
   }
   return null;

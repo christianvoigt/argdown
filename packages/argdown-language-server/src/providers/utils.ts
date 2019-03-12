@@ -1,5 +1,17 @@
 import { Location, Range } from "vscode-languageserver";
-import { IAstNode, IEquivalenceClass, IArgument, ArgdownTypes, isRuleNode, HasLocation } from "@argdown/core";
+import {
+  IAstNode,
+  IEquivalenceClass,
+  IArgument,
+  ArgdownTypes,
+  isRuleNode,
+  HasLocation,
+  IArgdownResponse,
+  RelationMember,
+  IRelation,
+  RelationType,
+  deriveImplicitRelations
+} from "@argdown/core";
 
 export const createLocation = (uri: string, el: HasLocation): Location => {
   return Location.create(uri, createRange(el));
@@ -10,48 +22,12 @@ export const createLocation = (uri: string, el: HasLocation): Location => {
  * Chevrotain locations have to be transformed to VS Code locations
  **/
 export const createRange = (el: HasLocation): Range => {
-  return Range.create((el.startLine || 1) - 1, (el.startColumn || 1) - 1, (el.endLine || 1) - 1, el.endColumn || 1);
-};
-
-export const generateMarkdownForStatement = (eqClass: IEquivalenceClass): string => {
-  let relationsStr = "";
-  if (eqClass.relations) {
-    for (let relation of eqClass.relations) {
-      const isOutgoing = relation.to === eqClass;
-      const relationSymbol = getRelationSymbol(relation.relationType, isOutgoing);
-      const relationPartner = isOutgoing ? relation.from : relation.to;
-      const relationPartnerStr =
-        relationPartner!.type === ArgdownTypes.ARGUMENT ? `<${relationPartner!.title}>` : `[${relationPartner!.title}]`;
-      relationsStr += `
-  ${relationSymbol} ${relationPartnerStr}`;
-    }
-  }
-  return `
-\`\`\`argdown
-[${eqClass.title}]: ${IEquivalenceClass.getCanonicalMemberText(eqClass)}${relationsStr}
-\`\`\``;
-};
-export const generateMarkdownForArgument = (argument: any): string => {
-  let relationsStr = "";
-  if (argument.relations) {
-    for (let relation of argument.relations) {
-      const isOutgoing = relation.to === argument;
-      const relationSymbol = getRelationSymbol(relation.relationType, isOutgoing);
-      const relationPartner = isOutgoing ? relation.from : relation.to;
-      const relationPartnerStr =
-        relationPartner.type === ArgdownTypes.ARGUMENT ? `<${relationPartner.title}>` : `[${relationPartner.title}]`;
-      relationsStr += `
-  ${relationSymbol} ${relationPartnerStr}`;
-    }
-  }
-  let desc = IArgument.getCanonicalMemberText(argument);
-  if (desc) {
-    desc = ":" + desc;
-  }
-  return `
-\`\`\`argdown
-<${argument.title}>${desc}${relationsStr}
-\`\`\``;
+  return Range.create(
+    (el.startLine || 1) - 1,
+    (el.startColumn || 1) - 1,
+    (el.endLine || 1) - 1,
+    el.endColumn || 1
+  );
 };
 const relationSymbols: { [key: string]: string } = {
   support: "+",
@@ -61,7 +37,10 @@ const relationSymbols: { [key: string]: string } = {
   undercut: "_",
   contradictory: "><"
 };
-const getRelationSymbol = (relationType: string, isOutgoing: boolean): string => {
+const getRelationSymbol = (
+  relationType: string,
+  isOutgoing: boolean
+): string => {
   let symbol = relationSymbols[relationType];
   if (relationType !== "contradictory") {
     if (isOutgoing) {
@@ -72,6 +51,133 @@ const getRelationSymbol = (relationType: string, isOutgoing: boolean): string =>
   }
   return symbol;
 };
+const generateArgdownRelationString = function(
+  relationType: RelationType,
+  isOutgoing: boolean,
+  title: string,
+  type: ArgdownTypes
+) {
+  let relationPartnerStr =
+    type === ArgdownTypes.ARGUMENT ? `<${title}>` : `[${title}]`;
+  const relationSymbol = getRelationSymbol(relationType, isOutgoing);
+  return `
+  ${relationSymbol} ${relationPartnerStr}`;
+};
+const generateArgdownRelationStringFromRelation = function(
+  relation: IRelation,
+  member: RelationMember
+) {
+  const isOutgoing = relation.to === member;
+  const otherRelationMember = isOutgoing ? relation.from! : relation.to!;
+  return generateArgdownRelationString(
+    relation.relationType,
+    isOutgoing,
+    otherRelationMember.title!,
+    otherRelationMember.type
+  );
+};
+const caveat = `
+
+// Additional implicit relations may be derivable from relation combination.`;
+export const generateMarkdownForStatement = (
+  eqClass: IEquivalenceClass,
+  response: IArgdownResponse
+): string => {
+  const explicitRelations = eqClass.relations || [];
+  const implicitRelations = deriveImplicitRelations(
+    eqClass,
+    response.statements!,
+    response.arguments!
+  );
+  let explicitRelationsStr = "";
+  for (let relation of explicitRelations) {
+    if (relation.to!.type === ArgdownTypes.INFERENCE) {
+      //we can not refer directly to inferences, only to arguments (undercuts will only appear in implicit relations)
+      continue;
+    }
+    explicitRelationsStr += generateArgdownRelationStringFromRelation(
+      relation,
+      eqClass
+    );
+  }
+  let implicitRelationsStr = "";
+  if (implicitRelations.length > 0) {
+    implicitRelationsStr = "\n  // implicit relations derived from pcs";
+    for (let relation of implicitRelations) {
+      if (relation.to!.type === ArgdownTypes.INFERENCE) {
+        //we can not refer directly to inferences, only to arguments (undercuts will only appear in implicit relations)
+        continue;
+      }
+
+      implicitRelationsStr += generateArgdownRelationStringFromRelation(
+        relation,
+        eqClass
+      );
+    }
+  }
+
+  let text = IEquivalenceClass.getCanonicalMemberText(eqClass);
+  if (text) {
+    text = ": " + text;
+  } else {
+    text = "";
+  }
+  return `
+\`\`\`argdown
+[${eqClass.title}]${text}${explicitRelationsStr}${implicitRelationsStr}${caveat}
+\`\`\``;
+};
+
+export const generateMarkdownForArgument = (
+  argument: IArgument,
+  response: IArgdownResponse
+): string => {
+  const explicitRelations = argument.relations || [];
+  const implicitRelations = deriveImplicitRelations(
+    argument,
+    response.statements!,
+    response.arguments!
+  );
+  let explicitRelationsStr = "";
+  for (let relation of explicitRelations) {
+    if (relation.to!.type === ArgdownTypes.INFERENCE) {
+      //we can not refer directly to inferences, only to arguments (undercuts will only appear in implicit relations)
+      continue;
+    }
+    explicitRelationsStr += generateArgdownRelationStringFromRelation(
+      relation,
+      argument
+    );
+  }
+  let implicitRelationsStr = "";
+  if (implicitRelations.length > 0) {
+    implicitRelationsStr = " \n // implicit relations derived from pcs";
+    for (let relation of implicitRelations) {
+      if (relation.to!.type === ArgdownTypes.INFERENCE) {
+        //we can not refer directly to inferences, only to arguments (undercuts will only appear in implicit relations)
+        continue;
+      }
+
+      implicitRelationsStr += generateArgdownRelationStringFromRelation(
+        relation,
+        argument
+      );
+    }
+  }
+  let desc = IArgument.getCanonicalMemberText(argument);
+  if (desc) {
+    desc = ": " + desc;
+  } else {
+    desc = "";
+  }
+  return `
+\`\`\`argdown
+<${
+    argument.title
+  }>${desc}${explicitRelationsStr}${implicitRelationsStr}${caveat}
+\`\`\``;
+};
+
 export const walkTree = (
   node: IAstNode,
   parentNode: any,
