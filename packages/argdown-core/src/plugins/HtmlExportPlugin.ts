@@ -28,11 +28,18 @@ export interface IHtmlExportSettings {
    */
   headless?: boolean;
   /**
+   * Create a document header from config data
+   *
+   * Looks for config.title,  config.author, config.date, config.subTitle and config.abstract.
+   * If present will insert the data into a header section, using h1 for the title.
+   * The only field required for this is the title field.
+   *
+   */
+  createHeaderFromConfig?: boolean;
+  /**
    * External CSS file to include in the HTML head section.
    */
   cssFile?: string;
-  /** Title of the HTML document. If not provided, the first top-level heading will be used. */
-  title?: string;
   lang?: string;
   charset?: string;
   allowFileProtocol?: boolean;
@@ -48,8 +55,8 @@ export interface IHtmlExportSettings {
 }
 const defaultSettings: DefaultSettings<IHtmlExportSettings> = {
   headless: false,
+  createHeaderFromConfig: true,
   cssFile: "./argdown.css",
-  title: "Argdown Document",
   lang: "en",
   charset: "utf8",
   allowFileProtocol: false,
@@ -124,6 +131,11 @@ export class HtmlExportPlugin implements IArgdownPlugin {
               parentNode!.equivalenceClass!.tags!
             );
         }
+        const isTopLevel = parentNode!.statement!.isTopLevel;
+        if (isTopLevel) {
+          classes += " top-level";
+        }
+
         response.html += `<span id="${htmlId}" class="${classes}">[<span class="title statement-title">${escapeHtml(
           token.title
         )}</span>]: </span>`;
@@ -147,6 +159,11 @@ export class HtmlExportPlugin implements IArgdownPlugin {
               parentNode!.equivalenceClass!.tags!
             );
         }
+        const isTopLevel = parentNode!.statement!.isTopLevel;
+        if (isTopLevel) {
+          classes += " top-level";
+        }
+
         response.html += `<a href="#${htmlId}" class="${classes}">[<span class="title statement-title">${escapeHtml(
           token.title
         )}</span>] </a>`;
@@ -166,7 +183,12 @@ export class HtmlExportPlugin implements IArgdownPlugin {
           token.title
         )}</span>]</a>${token.trailingWhitespace}`;
       },
-      [TokenNames.ARGUMENT_REFERENCE]: (_request, response, token) => {
+      [TokenNames.ARGUMENT_REFERENCE]: (
+        _request,
+        response,
+        token,
+        parentNode
+      ) => {
         const argument = response.arguments![token.title!];
         let htmlId = "";
         if (argument.members.length == 0 && argument.pcs.length == 0) {
@@ -179,6 +201,10 @@ export class HtmlExportPlugin implements IArgdownPlugin {
         }
         let htmlIdLink = getHtmlId("argument", argument.title!);
         let classes = "reference argument-reference";
+        const isTopLevel = parentNode!.statement!.isTopLevel;
+        if (isTopLevel) {
+          classes += " top-level";
+        }
         if (argument!.tags) {
           classes += " " + $.getCssClassesFromTags(response, argument!.tags!);
         }
@@ -188,7 +214,12 @@ export class HtmlExportPlugin implements IArgdownPlugin {
           argument!.title
         )}</span>&gt; </a>`;
       },
-      [TokenNames.ARGUMENT_DEFINITION]: (_request, response, token) => {
+      [TokenNames.ARGUMENT_DEFINITION]: (
+        _request,
+        response,
+        token,
+        parentNode
+      ) => {
         const argument = response.arguments![token.title!];
         let htmlId = "";
         if (argument.pcs.length == 0) {
@@ -197,6 +228,11 @@ export class HtmlExportPlugin implements IArgdownPlugin {
         let htmlIdLink = getHtmlId("argument", argument.title!);
         response.htmlIds![htmlId] = true;
         let classes = "definition argument-definition definiendum";
+        const isTopLevel = parentNode!.statement!.isTopLevel;
+        if (isTopLevel) {
+          classes += " top-level";
+        }
+
         if (argument!.tags) {
           classes += " " + $.getCssClassesFromTags(response, argument!.tags!);
         }
@@ -247,7 +283,7 @@ export class HtmlExportPlugin implements IArgdownPlugin {
         response.html = "";
         response.htmlIds = {};
         let settings = $.getSettings(request);
-        let title = settings.title;
+        let title = request.title || "Argdown Document";
         if (response.frontMatter && response.frontMatter.title) {
           title = response.frontMatter.title;
         }
@@ -289,6 +325,39 @@ export class HtmlExportPlugin implements IArgdownPlugin {
           response.html += "<body>";
         }
         response.html += `<div class="argdown">`;
+        if (settings.createHeaderFromConfig) {
+          const headerTitle = request.title
+            ? `<h1>${escapeHtml(request.title)}</h1>`
+            : "";
+          const headerSubTitle = request.subTitle
+            ? `<h2 class="subtitle">${escapeHtml(request.subTitle)}</h2>`
+            : "";
+          let author = "";
+          if (request.author) {
+            let authorData = request.author;
+            if (!Array.isArray(authorData)) {
+              authorData = [authorData];
+            }
+            let i = 0;
+            for (let authorStr of authorData) {
+              if (i > 0) {
+                author += `<span class="separator">, </span>`;
+              }
+              author += `<span class="author">${authorStr}</>`;
+              i++;
+            }
+            author = `<div class="authors">${author}</div>`;
+          }
+          const date = request.date
+            ? `<div class="date">${escapeHtml(request.date)}</div>`
+            : "";
+          const abstract = request.abstract
+            ? `<div class="abstract">${escapeHtml(request.abstract)}</div>`
+            : "";
+          if (headerTitle) {
+            response.html += `<header>${headerTitle}${headerSubTitle}${author}${date}${abstract}</header>`;
+          }
+        }
       },
       [RuleNames.ARGDOWN + "Exit"]: (request, response) => {
         let settings = $.getSettings(request);
@@ -306,6 +375,9 @@ export class HtmlExportPlugin implements IArgdownPlugin {
           classes +=
             " " + $.getCssClassesFromTags(response, node.equivalenceClass.tags);
         }
+        if (node.statement && node.statement.isTopLevel) {
+          classes += " top-level";
+        }
         response.html += `<div data-line="${
           node.startLine
         }" class="${classes}">`;
@@ -317,6 +389,9 @@ export class HtmlExportPlugin implements IArgdownPlugin {
         if (node.argument && node.argument.tags) {
           classes +=
             " " + $.getCssClassesFromTags(response, node.argument.tags);
+        }
+        if (node.statement && node.statement.isTopLevel) {
+          classes += " top-level";
         }
         response.html += `<div data-line="${
           node.startLine
@@ -423,12 +498,8 @@ export class HtmlExportPlugin implements IArgdownPlugin {
       [RuleNames.UNORDERED_LIST_ITEM + "Exit"]: (_request, response) =>
         (response.html += "</li>"),
       [RuleNames.HEADING + "Entry"]: (request, response, node) => {
-        let settings = $.getSettings(request);
         if (node.level === 1) {
-          if (
-            (!response.frontMatter || !response.frontMatter.title) &&
-            settings.title == "Argdown Document"
-          ) {
+          if (!request.title) {
             response.html = response.html!.replace(
               "<title>Argdown Document</title>",
               "<title>" + escapeHtml(node.text) + "</title>"
@@ -443,6 +514,23 @@ export class HtmlExportPlugin implements IArgdownPlugin {
       },
       [RuleNames.HEADING + "Exit"]: (_request, response, node) =>
         (response.html += "</h" + (<IRuleNode>node).level + ">"),
+      [RuleNames.STATEMENT_CONTENT + "Entry"]: (
+        _request,
+        response,
+        _node,
+        parentNode
+      ) => {
+        let classes = "statement-content";
+        const isTopLevel =
+          parentNode!.statement && parentNode!.statement!.isTopLevel;
+        if (isTopLevel) {
+          classes += " top-level";
+        }
+        response.html += `<span class="${classes}">`;
+      },
+      [RuleNames.STATEMENT_CONTENT + "Exit"]: (_request, response) => {
+        response.html += `</span>`;
+      },
       [RuleNames.FREESTYLE_TEXT + "Entry"]: (
         _request,
         response,

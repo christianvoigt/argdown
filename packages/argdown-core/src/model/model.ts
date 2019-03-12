@@ -267,6 +267,7 @@ export interface IStatement
   type: ArgdownTypes.STATEMENT;
   role?: StatementRole;
   isReference?: boolean;
+  isTopLevel?: boolean;
 }
 /**
  * The role of a statement occurrence in an Argdown document.

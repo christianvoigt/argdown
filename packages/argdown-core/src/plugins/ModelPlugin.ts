@@ -821,6 +821,7 @@ export class ModelPlugin implements IArgdownPlugin {
         };
         if (parentNode!.name === "argdown") {
           currentStatement.role = StatementRole.TOP_LEVEL_STATEMENT;
+          currentStatement.isTopLevel = true;
         } else if (currentRelation) {
           currentStatement.role = StatementRole.RELATION_STATEMENT;
         }
@@ -874,7 +875,12 @@ export class ModelPlugin implements IArgdownPlugin {
         }
         currentStatement = null;
       },
-      [RuleNames.ARGUMENT + "Entry"]: (_request, _response, node) => {
+      [RuleNames.ARGUMENT + "Entry"]: (
+        _request,
+        _response,
+        node,
+        parentNode
+      ) => {
         const desc: IArgumentDescription = {
           type: ArgdownTypes.STATEMENT,
           role: StatementRole.ARGUMENT_DESCRIPTION,
@@ -885,6 +891,7 @@ export class ModelPlugin implements IArgdownPlugin {
         desc.endLine = node.endLine;
         desc.startColumn = node.startColumn;
         desc.endColumn = node.endColumn;
+        desc.isTopLevel = !parentNode || parentNode.name === RuleNames.ARGDOWN;
         if (currentSection) {
           currentStatement.section = currentSection;
         }

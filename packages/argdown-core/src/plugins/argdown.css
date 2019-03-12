@@ -5,17 +5,31 @@
   margin: 0 auto;
 }
 
-.argdown > .statement,
-.argdown > .argument {
-  display: block;
-  margin-bottom: 2em;
-  margin-top: 2em;
+.argdown header {
+  text-align: center;
+  border-bottom: 1px solid #888;
+  margin-bottom: 5em;
+  padding-bottom: 1em;
+}
+.argdown header h1 {
+  color: #0582ca;
+}
+.argdown header .subtitle {
+  color: #76bae2;
+}
+.argdown header .authors {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  color: #888;
+}
+.argdown header .date {
+  color: #888;
 }
 
 .argdown .statement-reference,
 .argdown .statement-definition,
 .argdown .statement-mention {
-  color: cornflowerblue;
+  color: #76bae2;
   text-decoration: none;
 }
 
@@ -43,32 +57,34 @@
 }
 
 .argdown .support.relation-symbol {
-  color: green;
-  background-color: lightgreen;
+  color: #04c93f;
+  background-color: #cee7d6;
 }
 
 .argdown .attack.relation-symbol,
 .argdown .contradiction.relation-symbol {
-  color: red;
+  color: #c93504;
   background-color: lightpink;
 }
 .argdown .undercut.relation-symbol {
-  color: purple;
-  background-color: lightcoral;
+  color: #ff00d4;
+  background-color: #ffb9f3;
 }
 
 .argdown .pcs {
-  margin-top: 1em;
-  margin-bottom: 2em;
+  margin-top: 2em;
+  margin-bottom: 4em;
 }
 
 .argdown .argument-reference,
 .argdown .argument-definition,
 .argdown .argument-mention {
-  color: blue;
+  color: #0582ca;
   text-decoration: none;
 }
-
+.argdown .argument.top-level > .statement-content {
+  font-weight: 600;
+}
 .argdown .statement-reference:hover,
 .argdown .statement-mention:hover,
 .argdown .argument-reference:hover,
@@ -89,19 +105,19 @@
 .argdown .statement-nr {
   margin-left: -2em;
   float: left;
-  color: blue;
+  color: #76bae2;
 }
-
 .argdown .inference {
-  border-top: 1px solid black;
+  border-top: 1px solid #0582ca;
   font-size: 0.8em;
   margin-top: 1em;
   margin-bottom: 1em;
+  color: #0582ca;
 }
 
 .argdown .inference.with-data {
-  border-top: 1px solid black;
-  border-bottom: 1px solid black;
+  border-top: 1px solid #0582ca;
+  border-bottom: 1px solid #0582ca;
   padding: 0.5em;
   padding-left: 1.5em;
 }

@@ -33,7 +33,7 @@ describe("HtmlExport", function() {
     let result = app.run(request);
     // console.log(result.html);
     expect(result.html).to.equal(
-      `<!doctype html><html lang="en"><head><meta charset="utf8"><title>Title</title><link rel="stylesheet" href="./argdown.css"></head><body><div class="argdown"><h1 data-line="1" id="heading-title" class="has-line heading">Title</h1><div data-line="3" class="statement has-line"><span id="statement-statement" class="definition statement-definition definiendum">[<span class="title statement-title">Statement</span>]: </span>Hello World!<div class="relations"><div data-line="4" class="has-line outgoing support relation"><div class="outgoing support relation-symbol"><span>+</span></div><div data-line="4" class="argument has-line"><a id="" href="#argument-argument" data-line="4" class="has-line reference argument-reference">&lt;<span class="title argument-title">Argument</span>&gt; </a></div></div></div></div><div data-line="6" class="argument has-line"><a id="argument-argument" href="#argument-argument" class="definition argument-definition definiendum">&lt;<span class="title argument-title">Argument</span>&gt;: </a>Description 1 &lt; 2</div></div></body></html>`
+      `<!doctype html><html lang="en"><head><meta charset="utf8"><title>Title</title><link rel="stylesheet" href="./argdown.css"></head><body><div class="argdown"><h1 data-line="1" id="heading-title" class="has-line heading"><span class="statement-content">Title</span></h1><div data-line="3" class="statement has-line top-level"><span id="statement-statement" class="definition statement-definition definiendum top-level">[<span class="title statement-title">Statement</span>]: </span><span class="statement-content top-level">Hello World!</span><div class="relations"><div data-line="4" class="has-line outgoing support relation"><div class="outgoing support relation-symbol"><span>+</span></div><div data-line="4" class="argument has-line"><a id="" href="#argument-argument" data-line="4" class="has-line reference argument-reference">&lt;<span class="title argument-title">Argument</span>&gt; </a></div></div></div></div><div data-line="6" class="argument has-line top-level"><a id="argument-argument" href="#argument-argument" class="definition argument-definition definiendum top-level">&lt;<span class="title argument-title">Argument</span>&gt;: </a><span class="statement-content top-level">Description 1 &lt; 2</span></div></div></body></html>`
     );
   });
   it("can export the argdown intro", function() {
@@ -52,8 +52,9 @@ describe("HtmlExport", function() {
       input: source,
       html: { headless: true }
     });
+    // console.log(result.html);
     expect(result.html).to.equal(
-      `<div class="argdown"><h1 data-line="1" id="heading-title-italic-bold" class="has-line heading">title <i>italic</i> <b>bold</b></h1></div>`
+      `<div class="argdown"><h1 data-line="1" id="heading-title-italic-bold" class="has-line heading"><span class="statement-content">title <i><span class="statement-content">italic</span></i> <b><span class="statement-content">bold</span></b></span></h1></div>`
     );
   });
 });

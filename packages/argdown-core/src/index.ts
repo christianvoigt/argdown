@@ -20,6 +20,11 @@ export interface IProcess extends IArgdownRequest {
 
 // Exporting interfaces here that are meant to be augmented by external plugins
 export interface IArgdownRequest {
+  title?: string;
+  subTitle?: string;
+  abstract?: string;
+  author?: string | string[];
+  date?: string;
   /**
    * The Argdown input that should be parsed.
    */
