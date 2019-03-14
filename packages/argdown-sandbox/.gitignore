@@ -19,3 +19,5 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
+
+public/examples
