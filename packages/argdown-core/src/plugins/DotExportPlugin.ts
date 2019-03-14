@@ -34,7 +34,7 @@ export interface IDotSettings {
   useHtmlLabels?: boolean;
   graphname?: string;
   graphBgColor?: string;
-  measureLinePixelWidth?: boolean;
+  measureLineWidth?: boolean;
   group?: {
     lineWidth?: number;
     charactersInLine?: number;
@@ -100,12 +100,13 @@ const defaultSettings: DefaultSettings<IDotSettings> = {
   useHtmlLabels: true,
   graphname: "Argument Map",
   graphBgColor: "transparent",
-  measureLinePixelWidth: false,
+  measureLineWidth: false,
   group: ensure.object({
     lineWidth: 400,
     charactersInLine: 80,
     font: "arial",
-    fontSize: 12
+    fontSize: 12,
+    bold:false
   }),
   argument: ensure.object({
     lineWidth: 180,
@@ -200,6 +201,26 @@ export class DotExportPlugin implements IArgdownPlugin {
       }
     }
     dot += `graph [bgcolor = "${settings.graphBgColor}"]`;
+
+    for (let node of response.map!.nodes) {
+      dot += this.exportNodesRecursive(node, response, settings);
+    }
+
+    dot += "\n\n";
+    const edges = response.map!.edges;
+    for (let edge of edges) {
+      let attributes = `type="${edge.relationType}", `;
+      attributes += `color="${edge.color}"`;
+      switch (edge.relationType) {
+        case RelationType.CONTRARY:
+          attributes += `, dir="both"`;
+          break;
+        case RelationType.CONTRADICTORY:
+          attributes += `, dir="both", arrowtail="diamond", arrowhead="diamond"`;
+          break;
+      }
+      dot += `  ${edge.from.id} -> ${edge.to.id} [${attributes}];\n`;
+    }
     if (settings.sameRank && settings.sameRank.length > 0) {
       const nodeMaps = getNodeIdsMaps(response.map!);
       for (let rank of settings.sameRank) {
@@ -222,25 +243,6 @@ export class DotExportPlugin implements IArgdownPlugin {
       }
     }
 
-    for (let node of response.map!.nodes) {
-      dot += this.exportNodesRecursive(node, response, settings);
-    }
-
-    dot += "\n\n";
-    const edges = response.map!.edges;
-    for (let edge of edges) {
-      let attributes = `type="${edge.relationType}", `;
-      attributes += `color="${edge.color}"`;
-      switch (edge.relationType) {
-        case RelationType.CONTRARY:
-          attributes += `, dir="both"`;
-          break;
-        case RelationType.CONTRADICTORY:
-          attributes += `, dir="both", arrowtail="diamond", arrowhead="diamond"`;
-          break;
-      }
-      dot += `  ${edge.from.id} -> ${edge.to.id} [${attributes}];\n`;
-    }
     dot += "\n}";
 
     response.dot = dot;
@@ -260,7 +262,7 @@ export class DotExportPlugin implements IArgdownPlugin {
       let dotGroupId = "cluster_" + response.groupCount;
       let groupLabel = node.labelTitle || "";
       if (settings.useHtmlLabels) {
-        groupLabel = settings.measureLinePixelWidth
+        groupLabel = settings.measureLineWidth
           ? addLineBreaksAndEscape(groupLabel, true, {
               maxWidth: settings.group!.lineWidth!,
               fontSize: settings.group!.fontSize!,
@@ -366,7 +368,7 @@ const getLabel = (node: IMapNode, settings: IDotSettings): string => {
       let { fontSize, font, bold, charactersInLine } = isArgumentNode
         ? settings.argument!.title!
         : settings.statement!.title!;
-      let titleLabel = settings.measureLinePixelWidth
+      let titleLabel = settings.measureLineWidth
         ? addLineBreaksAndEscape(title!, true, {
             maxWidth,
             fontSize,
@@ -386,7 +388,7 @@ const getLabel = (node: IMapNode, settings: IDotSettings): string => {
       let { fontSize, font, bold, charactersInLine } = isArgumentNode
         ? settings.argument!.text!
         : settings.statement!.text!;
-      let textLabel = settings.measureLinePixelWidth
+      let textLabel = settings.measureLineWidth
         ? addLineBreaksAndEscape(text!, true, {
             maxWidth,
             fontSize,

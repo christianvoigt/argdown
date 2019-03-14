@@ -22,17 +22,40 @@ import {
 import defaultsDeep from "lodash.defaultsdeep";
 
 export interface IGraphMLSettings {
-  node?: {
+  argument?: {
     width?: number;
     horizontalPadding?: number;
     verticalPadding?: number;
     text?: {
+      font?: string;
       fontSize?: number;
+      bold?: boolean;
       /// does not affect the space between lines, is only used to account for default line height in yEd
       lineHeight?: number;
     };
     title?: {
+      font?: string;
       fontSize?: number;
+      bold?: boolean;
+      /// does not affect the space between lines, is only used to account for default line height in yEd
+      lineHeight?: number;
+    };
+  };
+  statement?: {
+    width?: number;
+    horizontalPadding?: number;
+    verticalPadding?: number;
+    text?: {
+      font?: string;
+      fontSize?: number;
+      bold?: boolean;
+      /// does not affect the space between lines, is only used to account for default line height in yEd
+      lineHeight?: number;
+    };
+    title?: {
+      font?: string;
+      fontSize?: number;
+      bold?: boolean;
       /// does not affect the space between lines, is only used to account for default line height in yEd
       lineHeight?: number;
     };
@@ -41,9 +64,10 @@ export interface IGraphMLSettings {
     width?: number;
   };
   group?: {
+    font?: string;
     fontSize?: number;
-    lineHeight?: number;
     bold?: boolean;
+    lineHeight?: number;
     horizontalPadding?: number;
     verticalPadding?: number;
   };
@@ -69,16 +93,37 @@ declare module "../index" {
   }
 }
 const defaultSettings: DefaultSettings<IGraphMLSettings> = {
-  node: ensure.object({
+  statement: ensure.object({
     width: 135,
     horizontalPadding: 10,
     verticalPadding: 7,
     text: ensure.object({
+      font: "arial",
       fontSize: 13,
+      bold: false,
       lineHeight: 1.1
     }),
     title: ensure.object({
+      font: "arial",
       fontSize: 13,
+      bold: true,
+      lineHeight: 1.1
+    })
+  }),
+  argument: ensure.object({
+    width: 135,
+    horizontalPadding: 10,
+    verticalPadding: 7,
+    text: ensure.object({
+      font: "arial",
+      fontSize: 13,
+      bold: false,
+      lineHeight: 1.1
+    }),
+    title: ensure.object({
+      font: "arial",
+      fontSize: 13,
+      bold: true,
       lineHeight: 1.1
     })
   }),
@@ -86,6 +131,7 @@ const defaultSettings: DefaultSettings<IGraphMLSettings> = {
     width: 0.3
   }),
   group: ensure.object({
+    font: "arial",
     fontSize: 16,
     lineHeight: 1.1,
     bold: false,
@@ -209,7 +255,7 @@ export class GraphMLExportPlugin implements IArgdownPlugin {
     settings: IGraphMLSettings
   ): builder.XMLElementOrXMLNode {
     const labelWidth = pixelWidth(groupMapNode.labelTitle, {
-      font: "arial",
+      font: settings.group!.font,
       size: settings.group!.fontSize,
       bold: settings.group!.bold
     });
@@ -245,9 +291,9 @@ export class GraphMLExportPlugin implements IArgdownPlugin {
         alignment: "center",
         autoSizePolicy: "node_width",
         // borderDistance: "2.0",
-        fontFamily: "Arial",
+        fontFamily: settings.group!.font,
         fontSize: settings.group!.fontSize!.toString(),
-        fontStyle: "plain",
+        fontStyle: settings.group!.bold ? "bold" : "plain",
         hasBackgroundColor: "false",
         hasLineColor: "false",
         horizontalTextPosition: "center",
@@ -368,46 +414,50 @@ export class GraphMLExportPlugin implements IArgdownPlugin {
     if (isGroupMapNode(mapNode)) {
       return this.createGroupElement(parent, mapNode, settings);
     }
+    let nodeSettings = settings.statement;
     let borderColor = mapNode.color || "#63AEF2";
     let fillColor = "#FFFFFF";
     let borderWidth = 3.0;
     if (mapNode.type === ArgdownTypes.ARGUMENT_MAP_NODE) {
+      nodeSettings = settings.argument;
       fillColor = mapNode.color || "#63AEF2";
       borderColor = "#000000";
       borderWidth = 0.3;
     }
     const fontColor = mapNode.fontColor || "#000000";
     const innerNodeWidth =
-      settings.node!.width! - settings.node!.horizontalPadding! * 2;
+      nodeSettings!.width! - nodeSettings!.horizontalPadding! * 2;
     const showTitle = mapNode.labelTitle != null;
     const showText = mapNode.labelText != null;
     const labelTitle = addLineBreaks(mapNode.labelTitle!, true, {
       maxWidth: innerNodeWidth,
-      fontSize: settings.node!.title!.fontSize!,
-      bold: true
+      font: nodeSettings!.title!.font,
+      fontSize: nodeSettings!.title!.fontSize!,
+      bold: nodeSettings!.title!.bold
     });
     const labelText = addLineBreaks(mapNode.labelText!, true, {
       maxWidth: innerNodeWidth,
-      fontSize: settings.node!.text!.fontSize!,
-      bold: false
+      font: nodeSettings!.text!.font,
+      fontSize: nodeSettings!.text!.fontSize!,
+      bold: nodeSettings!.text!.bold
     });
     const titleHeight =
       labelTitle.lines *
-      settings.node!.title!.fontSize! *
-      settings.node!.title!.lineHeight!;
+      nodeSettings!.title!.fontSize! *
+      nodeSettings!.title!.lineHeight!;
     const textHeight =
       labelText.lines *
-      settings.node!.text!.fontSize! *
-      settings.node!.text!.lineHeight!;
+      nodeSettings!.text!.fontSize! *
+      nodeSettings!.text!.lineHeight!;
     const nrOfVerticalPaddings = showTitle && showText ? 3 : 2;
     const nodeHeight =
       titleHeight +
       textHeight +
-      settings.node!.verticalPadding! * nrOfVerticalPaddings;
+      nodeSettings!.verticalPadding! * nrOfVerticalPaddings;
     const nodeEl = parent.e("node", { id: mapNode.id });
     let shapeNode = nodeEl.e("data", { key: "d0" }).e("y:ShapeNode");
     shapeNode.e("y:Geometry", {
-      width: settings.node!.width!.toString(),
+      width: nodeSettings!.width!.toString(),
       height: nodeHeight,
       x: "0",
       y: "0"
@@ -427,21 +477,21 @@ export class GraphMLExportPlugin implements IArgdownPlugin {
         {
           alignment: "center",
           autoSizePolicy: "content",
-          fontFamily: "Arial",
-          fontSize: settings.node!.title!.fontSize!.toString(),
-          fontStyle: "bold",
+          fontFamily: nodeSettings!.title!.font,
+          fontSize: nodeSettings!.title!.fontSize!.toString(),
+          fontStyle: nodeSettings!.title!.bold! ? "bold" : "plain",
           hasBackgroundColor: "false",
           hasLineColor: "false",
           modelName: "internal",
-          topInset: settings.node!.verticalPadding!.toString(),
-          bottomInset: settings.node!.verticalPadding!.toString(),
+          topInset: nodeSettings!.verticalPadding!.toString(),
+          bottomInset: nodeSettings!.verticalPadding!.toString(),
           borderDistance: 0,
           modelPosition: "t",
           textColor: fontColor,
           visible: "true",
           width: innerNodeWidth.toString(),
-          height: titleHeight + settings.node!.verticalPadding! * 2,
-          x: settings.node!.horizontalPadding!.toString()
+          height: titleHeight + nodeSettings!.verticalPadding! * 2,
+          x: nodeSettings!.horizontalPadding!.toString()
         },
         labelTitle.text
       );
@@ -452,13 +502,13 @@ export class GraphMLExportPlugin implements IArgdownPlugin {
         {
           alignment: "center",
           autoSizePolicy: "content",
-          fontFamily: "Arial",
-          fontSize: settings.node!.text!.fontSize!.toString(),
+          fontFamily: nodeSettings!.text!.font,
+          fontSize: nodeSettings!.text!.fontSize!.toString(),
           topInset: !showTitle
-            ? settings.node!.verticalPadding!.toString()
+            ? nodeSettings!.verticalPadding!.toString()
             : "0",
-          bottomInset: settings.node!.verticalPadding!.toString(),
-          fontStyle: "plain",
+          bottomInset: nodeSettings!.verticalPadding!.toString(),
+          fontStyle: nodeSettings!.text!.bold ? "bold" : "plain",
           hasBackgroundColor: "false",
           hasLineColor: "false",
           modelName: "internal",
@@ -468,10 +518,10 @@ export class GraphMLExportPlugin implements IArgdownPlugin {
           visible: "true",
           width: innerNodeWidth,
           height: showTitle
-            ? textHeight + settings.node!.verticalPadding! * 2
-            : textHeight + settings.node!.verticalPadding!,
-          x: settings.node!.horizontalPadding!.toString(),
-          y: (settings.node!.verticalPadding! * 2 + titleHeight).toString()
+            ? textHeight + nodeSettings!.verticalPadding! * 2
+            : textHeight + nodeSettings!.verticalPadding!,
+          x: nodeSettings!.horizontalPadding!.toString(),
+          y: (nodeSettings!.verticalPadding! * 2 + titleHeight).toString()
         },
         labelText.text
       );

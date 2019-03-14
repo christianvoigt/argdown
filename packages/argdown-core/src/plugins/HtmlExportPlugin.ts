@@ -35,7 +35,7 @@ export interface IHtmlExportSettings {
    * The only field required for this is the title field.
    *
    */
-  createHeaderFromConfig?: boolean;
+  createHeaderFromMetadata?: boolean;
   /**
    * External CSS file to include in the HTML head section.
    */
@@ -55,7 +55,7 @@ export interface IHtmlExportSettings {
 }
 const defaultSettings: DefaultSettings<IHtmlExportSettings> = {
   headless: false,
-  createHeaderFromConfig: true,
+  createHeaderFromMetadata: true,
   cssFile: "./argdown.css",
   lang: "en",
   charset: "utf8",
@@ -325,7 +325,7 @@ export class HtmlExportPlugin implements IArgdownPlugin {
           response.html += "<body>";
         }
         response.html += `<div class="argdown">`;
-        if (settings.createHeaderFromConfig) {
+        if (settings.createHeaderFromMetadata) {
           const headerTitle = request.title
             ? `<h1>${escapeHtml(request.title)}</h1>`
             : "";
