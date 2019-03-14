@@ -110,7 +110,6 @@ export class VizJsMap implements CanSelectNode {
       .select<SVGTitleElement>("title")
       .node();
     if (title) {
-      console.log("id: " + title.textContent);
       return title.textContent || "";
     }
     return "";

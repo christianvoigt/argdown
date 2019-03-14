@@ -34,7 +34,7 @@ export interface IDagreSettings {
   rankDir?: string;
   rankSep?: number;
   nodeSep?: number;
-  measureLinePixelWidth?: boolean;
+  measureLineWidth?: boolean;
   argument?: IDagreNodeSettings;
   statement?: IDagreNodeSettings;
   group?: {
@@ -46,7 +46,7 @@ export const dagreDefaultSettings: DefaultSettings<IDagreSettings> = {
   rankDir: "BT",
   rankSep: 50,
   nodeSep: 70,
-  measureLinePixelWidth: false,
+  measureLineWidth: false,
   argument: ensure.object({
     lineWidth: 150,
     rx: 5,
@@ -332,7 +332,7 @@ const createDagreNode = function(
   }
   if (node.labelTitle) {
     let { bold, fontSize, font, charactersInLine } = titleSettings!;
-    var titleArr = settings.measureLinePixelWidth
+    var titleArr = settings.measureLineWidth
       ? splitByLineWidth(node.labelTitle, {
           maxWidth: lineWidth,
           fontSize,
@@ -354,7 +354,7 @@ const createDagreNode = function(
   }
   if (node.labelText) {
     let { bold, fontSize, font, charactersInLine } = textSettings!;
-    var textArr = settings.measureLinePixelWidth
+    var textArr = settings.measureLineWidth
       ? splitByLineWidth(node.labelText, {
           maxWidth: lineWidth,
           fontSize,
