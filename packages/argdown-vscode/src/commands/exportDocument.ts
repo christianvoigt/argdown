@@ -34,7 +34,9 @@ const executeExport = async (
   const fileDir: string = path.dirname(filePath);
   const extension: string = path.extname(filePath);
   const fileName: string = path.basename(filePath, extension);
-  const defaultUri = vscode.Uri.file(path.resolve(fileDir, fileName + "." + defaultExtension));
+  const defaultUri = vscode.Uri.file(
+    path.resolve(fileDir, fileName + "." + defaultExtension)
+  );
   const option: vscode.SaveDialogOptions = {
     defaultUri,
     filters: filters
@@ -56,7 +58,9 @@ export class ExportDocumentToHtmlCommand implements Command {
 
   public static createCommandUri(path: string, fragment: string): vscode.Uri {
     return vscode.Uri.parse(
-      `command:${ExportDocumentToHtmlCommand.id}?${encodeURIComponent(JSON.stringify({ path, fragment }))}`
+      `command:${ExportDocumentToHtmlCommand.id}?${encodeURIComponent(
+        JSON.stringify({ path, fragment })
+      )}`
     );
   }
   public execute(resource: vscode.Uri) {
@@ -69,7 +73,9 @@ export class ExportDocumentToJsonCommand implements Command {
 
   public static createCommandUri(path: string, fragment: string): vscode.Uri {
     return vscode.Uri.parse(
-      `command:${ExportDocumentToJsonCommand.id}?${encodeURIComponent(JSON.stringify({ path, fragment }))}`
+      `command:${ExportDocumentToJsonCommand.id}?${encodeURIComponent(
+        JSON.stringify({ path, fragment })
+      )}`
     );
   }
   public execute(resource: vscode.Uri) {
@@ -82,11 +88,28 @@ export class ExportDocumentToDotCommand implements Command {
 
   public static createCommandUri(path: string, fragment: string): vscode.Uri {
     return vscode.Uri.parse(
-      `command:${ExportDocumentToDotCommand.id}?${encodeURIComponent(JSON.stringify({ path, fragment }))}`
+      `command:${ExportDocumentToDotCommand.id}?${encodeURIComponent(
+        JSON.stringify({ path, fragment })
+      )}`
     );
   }
   public execute(resource: vscode.Uri) {
     executeExport(resource, { Dot: ["dot"] }, "dot", "dot");
+  }
+}
+export class ExportDocumentToGraphMLCommand implements Command {
+  private static readonly id = "argdown.exportDocumentToGraphML";
+  public readonly id = ExportDocumentToGraphMLCommand.id;
+
+  public static createCommandUri(path: string, fragment: string): vscode.Uri {
+    return vscode.Uri.parse(
+      `command:${ExportDocumentToGraphMLCommand.id}?${encodeURIComponent(
+        JSON.stringify({ path, fragment })
+      )}`
+    );
+  }
+  public execute(resource: vscode.Uri) {
+    executeExport(resource, { Dot: ["graphml"] }, "graphml", "graphml");
   }
 }
 export class ExportDocumentToVizjsSvgCommand implements Command {
@@ -95,7 +118,9 @@ export class ExportDocumentToVizjsSvgCommand implements Command {
 
   public static createCommandUri(path: string, fragment: string): vscode.Uri {
     return vscode.Uri.parse(
-      `command:${ExportDocumentToVizjsSvgCommand.id}?${encodeURIComponent(JSON.stringify({ path, fragment }))}`
+      `command:${ExportDocumentToVizjsSvgCommand.id}?${encodeURIComponent(
+        JSON.stringify({ path, fragment })
+      )}`
     );
   }
   public execute(resource: vscode.Uri) {
@@ -108,7 +133,9 @@ export class ExportDocumentToVizjsPdfCommand implements Command {
 
   public static createCommandUri(path: string, fragment: string): vscode.Uri {
     return vscode.Uri.parse(
-      `command:${ExportDocumentToVizjsPdfCommand.id}?${encodeURIComponent(JSON.stringify({ path, fragment }))}`
+      `command:${ExportDocumentToVizjsPdfCommand.id}?${encodeURIComponent(
+        JSON.stringify({ path, fragment })
+      )}`
     );
   }
   public execute(resource: vscode.Uri) {

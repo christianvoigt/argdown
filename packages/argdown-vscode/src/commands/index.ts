@@ -15,6 +15,7 @@ export { ToggleLockCommand } from "./toggleLock";
 export { ExportDocumentToHtmlCommand } from "./exportDocument";
 export { ExportDocumentToJsonCommand } from "./exportDocument";
 export { ExportDocumentToDotCommand } from "./exportDocument";
+export { ExportDocumentToGraphMLCommand } from "./exportDocument";
 export { ExportDocumentToVizjsSvgCommand } from "./exportDocument";
 export { ExportDocumentToVizjsPdfCommand } from "./exportDocument";
 export { ExportContentToVizjsPngCommand } from "./exportContent";
