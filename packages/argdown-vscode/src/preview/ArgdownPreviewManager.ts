@@ -7,12 +7,9 @@ import { ArgdownPreview, PreviewSettings } from "./ArgdownPreview";
 import { ArgdownPreviewConfigurationManager } from "./ArgdownPreviewConfiguration";
 import { ArgdownContentProvider } from "./ArgdownContentProvider";
 import { ArgdownEngine } from "./ArgdownEngine";
+import { IArgdownPreviewState } from "./IArgdownPreviewState";
 
-export class ArgdownPreviewManager
-// WebviewPanelSerializer is still a proposed api. Extensions can not be published if they use parts of the proposed api
-// So we have to wait until this becomes part of the adopted api.
-//implements vscode.WebviewPanelSerializer
-{
+export class ArgdownPreviewManager implements vscode.WebviewPanelSerializer {
   private static readonly argdownPreviewActiveContextKey =
     "argdownPreviewFocus";
 
@@ -30,7 +27,12 @@ export class ArgdownPreviewManager
     private readonly contributions: ArgdownExtensionContributions,
     private readonly argdownEngine: ArgdownEngine
   ) {
-    //this.disposables.push(vscode.window.registerWebviewPanelSerializer(ArgdownPreview.viewType, this));
+    this.disposables.push(
+      vscode.window.registerWebviewPanelSerializer(
+        ArgdownPreview.viewType,
+        this
+      )
+    );
   }
 
   public dispose(): void {
@@ -83,7 +85,7 @@ export class ArgdownPreviewManager
 
   public async deserializeWebviewPanel(
     webview: vscode.WebviewPanel,
-    state: any
+    state: IArgdownPreviewState
   ): Promise<void> {
     const preview = await ArgdownPreview.revive(
       webview,
@@ -96,13 +98,6 @@ export class ArgdownPreviewManager
     );
 
     this.registerPreview(preview);
-  }
-
-  public async serializeWebviewPanel(
-    webview: vscode.WebviewPanel
-  ): Promise<any> {
-    const preview = this.previews.find(preview => preview.isWebviewOf(webview));
-    return preview ? preview.state : undefined;
   }
 
   private getExistingPreview(

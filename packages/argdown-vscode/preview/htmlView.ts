@@ -1,12 +1,15 @@
 import { ActiveLineMarker } from "./activeLineMarker";
 import { onceDocumentLoaded } from "./events";
 import { createPosterForVsCode } from "./messaging";
-import { getEditorLineNumberForPageOffset, scrollToRevealSourceLine } from "./scroll-sync";
+import {
+  getEditorLineNumberForPageOffset,
+  scrollToRevealSourceLine
+} from "./scroll-sync";
 import { getSettings } from "./settings";
 import throttle = require("lodash.throttle");
 import { initMenu } from "./menu";
+import { ArgdownPreviewStore } from "./state";
 
-console.log("Index script executing...");
 declare var acquireVsCodeApi: any;
 
 var scrollDisabled = true;
@@ -15,6 +18,7 @@ const settings = getSettings();
 
 const vscode = acquireVsCodeApi();
 vscode.postMessage({});
+const store = new ArgdownPreviewStore(vscode);
 
 const messagePoster = createPosterForVsCode(vscode);
 initMenu(messagePoster);
@@ -25,7 +29,7 @@ window.styleLoadingMonitor.setPoster(messagePoster);
 onceDocumentLoaded(() => {
   if (settings.scrollPreviewWithEditor) {
     setTimeout(() => {
-      const initialLine = +settings.line;
+      const initialLine = +store.getState().html.line;
       if (!isNaN(initialLine)) {
         scrollDisabled = true;
         scrollToRevealSourceLine(initialLine);
@@ -34,6 +38,12 @@ onceDocumentLoaded(() => {
   }
 });
 
+const updateLine = (line: number) => {
+  store.transformState(s => {
+    s.html.line = line;
+    return s;
+  });
+};
 const onUpdateView = (() => {
   const doScroll = throttle((line: number) => {
     scrollDisabled = true;
@@ -42,7 +52,7 @@ const onUpdateView = (() => {
 
   return (line: number, settings: any) => {
     if (!isNaN(line)) {
-      settings.line = line;
+      updateLine(line);
       doScroll(line);
     }
   };
@@ -82,14 +92,21 @@ document.addEventListener("dblclick", event => {
   }
 
   // Ignore clicks on links
-  for (let node = event.target as HTMLElement; node; node = node.parentNode as HTMLElement) {
+  for (
+    let node = event.target as HTMLElement;
+    node;
+    node = node.parentNode as HTMLElement
+  ) {
     if (node.tagName === "A") {
       return;
     }
   }
 
   const offset = event.pageY;
-  const line = getEditorLineNumberForPageOffset(offset);
+  const line = getEditorLineNumberForPageOffset(
+    offset,
+    store.getState().html.lineCount || 0
+  );
   if (typeof line === "number" && !isNaN(line)) {
     messagePoster.postMessage("didClick", { line: Math.floor(line) });
   }
@@ -113,6 +130,8 @@ document.addEventListener(
             messagePoster.postCommand(command, [settings.source]);
           } else if (command === "argdown.exportDocumentToJson") {
             messagePoster.postCommand(command, [settings.source]);
+          } else if (command === "argdown.exportDocumentToGraphML") {
+            messagePoster.postCommand(command, [settings.source]);
           }
           event.preventDefault();
           event.stopPropagation();
@@ -122,9 +141,16 @@ document.addEventListener(
         if (node.getAttribute("href").startsWith("#")) {
           break;
         }
-        if (node.href.startsWith("file://") || node.href.startsWith("vscode-resource:")) {
-          const [path, fragment] = node.href.replace(/^(file:\/\/|vscode-resource:)/i, "").split("#");
-          messagePoster.postCommand("_markdown.openDocumentLink", [{ path, fragment }]);
+        if (
+          node.href.startsWith("file://") ||
+          node.href.startsWith("vscode-resource:")
+        ) {
+          const [path, fragment] = node.href
+            .replace(/^(file:\/\/|vscode-resource:)/i, "")
+            .split("#");
+          messagePoster.postCommand("_markdown.openDocumentLink", [
+            { path, fragment }
+          ]);
           event.preventDefault();
           event.stopPropagation();
           break;
@@ -144,7 +170,10 @@ if (settings.scrollEditorWithPreview) {
       if (scrollDisabled) {
         scrollDisabled = false;
       } else {
-        const line = getEditorLineNumberForPageOffset(window.scrollY);
+        const line = getEditorLineNumberForPageOffset(
+          window.scrollY,
+          store.getState().html.lineCount || 0
+        );
         if (typeof line === "number" && !isNaN(line)) {
           messagePoster.postMessage("revealLine", { line });
         }

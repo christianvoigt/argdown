@@ -10,7 +10,9 @@ import {
   IArgument,
   IMapNode,
   isGroupMapNode,
-  ArgdownTypes
+  ArgdownTypes,
+  IMap,
+  stringifyArgdownData
 } from "@argdown/core";
 argdown.addPlugin(findElementAtPositionPlugin, "find-element-at-position");
 
@@ -29,7 +31,8 @@ export class ArgdownEngine {
       html: {
         ...argdownConfig.html,
         headless: true
-      }
+      },
+      throwExceptions: true
     };
     const response = await argdown.runAsync(request);
     return response.html!;
@@ -53,8 +56,10 @@ export class ArgdownEngine {
         "parse-input",
         "build-model",
         "build-map",
+        "colorize",
         "find-element-at-position"
-      ]
+      ],
+      throwExceptions: true
     };
     const response = await argdown.runAsync(request);
     if (response.elementAtPosition) {
@@ -84,7 +89,8 @@ export class ArgdownEngine {
     const request: IArgdownRequest = {
       ...argdownConfig,
       input: input,
-      process: ["parse-input", "build-model"]
+      process: ["parse-input", "build-model"],
+      throwExceptions: true
     };
     const response = await argdown.runAsync(request);
     if (!response.sections || response.sections.length == 0) {
@@ -128,7 +134,8 @@ export class ArgdownEngine {
     const request: IArgdownRequest = {
       ...argdownConfig,
       input: input,
-      process: ["parse-input", "build-model", "build-map"]
+      process: ["parse-input", "build-model", "build-map", "colorize"],
+      throwExceptions: true
     };
     const response = await argdown.runAsync(request);
     const node = this.findNodeInMapNodeTree(
@@ -177,6 +184,34 @@ export class ArgdownEngine {
     }
     return null;
   }
+  public async getMap(
+    doc: vscode.TextDocument,
+    config: ArgdownPreviewConfiguration
+  ): Promise<IMap> {
+    const argdownConfig = config.argdownConfig;
+    const input = doc.getText();
+    const request = {
+      ...argdownConfig,
+      input: input,
+      process: [
+        "parse-input",
+        "build-model",
+        "build-map",
+        "transform-closed-groups",
+        "colorize"
+      ],
+      throwExceptions: true
+    };
+    const response = await argdown.runAsync(request);
+    return response.map!;
+  }
+  public async exportMapJson(
+    doc: vscode.TextDocument,
+    config: ArgdownPreviewConfiguration
+  ): Promise<string> {
+    const map = await this.getMap(doc, config);
+    return stringifyArgdownData(map);
+  }
   public async exportJson(
     doc: vscode.TextDocument,
     config: ArgdownPreviewConfiguration
@@ -186,12 +221,20 @@ export class ArgdownEngine {
     const request = {
       ...argdownConfig,
       input: input,
-      process: ["parse-input", "build-model", "build-map", "export-json"]
+      process: [
+        "parse-input",
+        "build-model",
+        "build-map",
+        "transform-closed-groups",
+        "colorize",
+        "export-json"
+      ],
+      throwExceptions: true
     };
     const response = await argdown.runAsync(request);
     return response.json!;
   }
-  public async exportVizjs(
+  public async exportDot(
     doc: vscode.TextDocument,
     config: ArgdownPreviewConfiguration
   ): Promise<string> {
@@ -204,16 +247,35 @@ export class ArgdownEngine {
         "parse-input",
         "build-model",
         "build-map",
-        "export-dot",
-        "export-svg"
+        "transform-closed-groups",
+        "colorize",
+        "export-dot"
       ],
-      html: {
-        ...argdownConfig.html,
-        headless: true
-      }
+      throwExceptions: true
     };
     const response = await argdown.runAsync(request);
-    return response.svg!;
+    return response.dot!;
+  }
+  public async exportGraphML(
+    doc: vscode.TextDocument,
+    config: ArgdownPreviewConfiguration
+  ): Promise<string> {
+    const argdownConfig = config.argdownConfig || {};
+    const input = doc.getText();
+    const request: IArgdownRequest = {
+      ...argdownConfig,
+      input: input,
+      process: [
+        "parse-input",
+        "build-model",
+        "build-map",
+        "colorize",
+        "export-graphml"
+      ],
+      throwExceptions: true
+    };
+    const response = await argdown.runAsync(request);
+    return response.graphml!;
   }
   public async loadConfig(
     configFile: string | undefined,

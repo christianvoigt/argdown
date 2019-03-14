@@ -1,16 +1,21 @@
 import * as d3 from "d3";
 import { onceDocumentLoaded } from "./events";
 import { createPosterForVsCode } from "./messaging";
-import { getSettings, IPreviewSettings } from "./settings";
+import { getSettings } from "./settings";
 import throttle = require("lodash.throttle");
 import { initMenu } from "./menu";
 import { getPngAsString } from "./export";
 import { openScaleDialog } from "./scaleDialog";
-import { convertCoordsL2L } from "./utils";
+import { VizJsMap } from "@argdown/map-views";
+import { OnZoomChangedHandler } from "@argdown/map-views/dist/src/ZoomManager";
+import { ArgdownPreviewStore } from "./state";
+import { OnSelectionChangedHandler } from "@argdown/map-views/dist/src/CanSelectNode";
 
 declare var acquireVsCodeApi: any;
 const vscode = acquireVsCodeApi();
 vscode.postMessage({});
+
+const store = new ArgdownPreviewStore(vscode);
 
 const messagePoster = createPosterForVsCode(vscode);
 initMenu(messagePoster);
@@ -18,183 +23,82 @@ initMenu(messagePoster);
 window.cspAlerter.setPoster(messagePoster);
 window.styleLoadingMonitor.setPoster(messagePoster);
 
-const settings = getSettings();
-interface IVizjsViewState {
-  settings: IPreviewSettings;
-  scale: number;
-  x: number;
-  y: number;
-  svg?: d3.Selection<SVGSVGElement, null, HTMLElement, any>;
-  svgGraph?: d3.Selection<SVGGraphicsElement, null, HTMLElement, any>;
-  selectedNode?: SVGGraphicsElement;
-  selectedNodeStrokeWidth?: string;
-  selectedNodeStroke?: string;
-  zoom?: d3.ZoomBehavior<SVGSVGElement, null>;
-  graphSize: {
-    width: number;
-    height: number;
-  };
-}
-const state: IVizjsViewState = {
-  settings: settings,
-  scale: settings.hasOwnProperty("scale") ? settings.scale! : 0.75,
-  x: settings.hasOwnProperty("x") ? settings.x! : 0,
-  y: settings.hasOwnProperty("y") ? settings.y! : 0,
-  graphSize: {
-    width: 0,
-    height: 0
-  }
-};
+const previewSettings = getSettings();
 
-const sendDidChangeZoom = throttle((state: IVizjsViewState) => {
-  messagePoster.postMessage("didChangeZoom", {
-    scale: state.scale,
-    x: state.x,
-    y: state.y
+const onZoomChanged: OnZoomChangedHandler = throttle(data => {
+  store.transformState(s => {
+    s.vizJs.scale = data.scale;
+    s.vizJs.position = data.position;
+    return s;
   });
 }, 50);
-
-const loadSvg = (
-  vizjsSvg: string = "",
-  state: IVizjsViewState,
-  isUpdate: boolean = false
-) => {
-  const svgContainer = d3.select<HTMLElement, null>("#svg-container")!;
-  if (vizjsSvg) {
-    svgContainer.select("*").remove();
-    svgContainer.html(vizjsSvg);
-  }
-  state.svg = svgContainer.select<SVGSVGElement>("svg");
-  state.svgGraph = state.svg.select<SVGGraphicsElement>("g");
-  state.svg.attr("class", "map-svg");
-  state.svg.attr("width", "100%");
-  state.svg.attr("height", "100%");
-  state.svg.attr("viewBox", null);
-  state.zoom = d3.zoom<SVGSVGElement, null>().on("zoom", function() {
-    // eslint-disable-next-line
-    state.svgGraph!.attr("transform", d3.event.transform);
-    state.scale = d3.event.transform.k;
-    state.x = d3.event.transform.x;
-    state.y = d3.event.transform.y;
-    sendDidChangeZoom(state);
+const onSelectionChanged: OnSelectionChangedHandler = id => {
+  store.transformState(s => {
+    s.selectedNode = id;
+    return s;
   });
-  // remove double click listener
-  state.svg.call(state.zoom).on("dblclick.zoom", null);
-  const groupNode: SVGGraphicsElement = state.svgGraph!.node() as SVGGraphicsElement;
-  const bBox = groupNode.getBBox();
-  state.graphSize.width = bBox.width;
-  state.graphSize.height = bBox.height;
-  if (!isUpdate && !settings.didInitiate) {
-    showAllAndCenterMap(state);
-  } else {
-    setZoom(state.x, state.y, state.scale, 0, state);
-  }
-  state.svgGraph.attr("height", state.graphSize.height * state.scale + 40);
-};
-const getNodeWithArgdownId = (id: string): SVGGraphicsElement | undefined => {
-  const nodes = state
-    .svgGraph!.selectAll<SVGGraphicsElement, null>("g.node")
-    .nodes();
-  return nodes.find(n => getArgdownId(n) === id);
-};
-const getArgdownId = (node: SVGGraphicsElement): string => {
-  const title = d3
-    .select(node)
-    .select<SVGTitleElement>("title")
-    .node();
-  if (title) {
-    console.log("id: " + title.textContent);
-    return title.textContent || "";
-  }
-  return "";
-};
-const showAllAndCenterMap = (state: IVizjsViewState) => {
-  if (!state.svg) {
-    return;
-  }
-  let positionInfo = state.svg.node()!.getBoundingClientRect();
-  const xScale = positionInfo.width / state.graphSize.width;
-  const yScale = positionInfo.height / state.graphSize.height;
-  const scale = Math.min(xScale, yScale);
-  const x = (positionInfo.width - state.graphSize.width * scale) / 2;
-  const scaledHeight = state.graphSize.height * scale;
-  const y = scaledHeight + (positionInfo.height - scaledHeight) / 2;
-  setZoom(x, y, scale, 0, state);
-};
-/**
- *
- * Because we cannot override inline styles, we have to save original inline stroke and strokeWidth attributes and put them back in on deselection.
- */
-const deselectSelectedNode = (): void => {
-  if (state.selectedNode) {
-    state.selectedNode.classList.remove("selected");
-    const path = state.selectedNode.getElementsByTagName("path")[0];
-    path.setAttribute("stroke-width", state.selectedNodeStrokeWidth || "");
-    //path.setAttribute("stroke", state.selectedNodeStroke || "");
-  }
-};
-const selectNode = (id: string): void => {
-  deselectSelectedNode();
-  state.selectedNode = getNodeWithArgdownId(id);
-  if (state.selectedNode) {
-    const path = state.selectedNode.getElementsByTagName("path")[0];
-    state.selectedNode.classList.add("selected");
-    //state.selectedNodeStroke = path.getAttribute("stroke") || "";
-    state.selectedNodeStrokeWidth = path.getAttribute("stroke-width") || "";
-    //path.setAttribute("stroke", "#40e0d0");
-    path.setAttribute("stroke-width", "8");
-    let positionInfo = state.svg!.node()!.getBoundingClientRect();
-    const point = convertCoordsL2L(
-      state.svg!.node()!,
-      state.selectedNode!,
-      state.svgGraph!.node()!
-    );
-    let x = -point.x * state.scale + positionInfo.width / 2;
-    let y = -point.y * state.scale + positionInfo.height / 2;
-
-    setZoom(x, y, state.scale, settings.transitionDuration, state);
-  }
-};
-const setZoom = (
-  x: number,
-  y: number,
-  scale: number,
-  duration: number,
-  state: IVizjsViewState
-) => {
-  if (!state.svg || !state.zoom) {
-    return;
-  }
-  state.svg
-    .transition()
-    .duration(duration)
-    .call(
-      state.zoom.transform,
-      // eslint-disable-next-line
-      d3.zoomIdentity.translate(x, y).scale(scale)
-    );
 };
 
+const svgContainer = d3.select<HTMLElement, null>("#svg-container")!;
+declare global {
+  interface Window {
+    Viz: { render?: any; Module?: any };
+  }
+}
+// create a global fake Viz so that full.render.js will register its objects
+window.Viz = {};
+let vizJsMap: VizJsMap | null = null;
+
+const updateMap = () => {
+  const {
+    selectedNode,
+    vizJs: { dot, settings, position, scale }
+  } = store.getState();
+  if (dot) {
+    vizJsMap!.render({
+      dot,
+      settings,
+      selectedNode,
+      position,
+      scale
+    });
+  }
+};
 onceDocumentLoaded(() => {
-  loadSvg("", state);
+  if (!window || !window.Viz || !window.Viz.render || !window.Viz.Module) {
+    return;
+  }
+  vizJsMap = new VizJsMap(
+    svgContainer.node()!,
+    { render: window.Viz.render, Module: window.Viz.Module },
+    onZoomChanged,
+    onSelectionChanged
+  );
+  updateMap();
 });
 
 window.addEventListener(
   "message",
   event => {
-    if (event.data.source !== settings.source) {
+    if (event.data.source !== previewSettings.source) {
       return;
     }
 
     switch (event.data.type) {
       case "didChangeTextDocument":
-        loadSvg(event.data.svg, state, true);
+        const dot = event.data.dot;
+        const settings = JSON.parse(event.data.settings);
+        store.transformState(s => {
+          s.vizJs.dot = dot;
+          s.vizJs.settings = settings;
+          return s;
+        });
+        updateMap();
         break;
       case "didSelectMapNode":
-        if (settings.syncPreviewSelectionWithEditor) {
+        if (previewSettings.syncPreviewSelectionWithEditor) {
           const id = event.data.id;
-          console.log("didSelectMapNode " + id);
-          selectNode(id);
+          vizJsMap!.selectNode(id);
         }
         break;
     }
@@ -203,7 +107,7 @@ window.addEventListener(
 );
 
 document.addEventListener("dblclick", event => {
-  if (!state.settings.doubleClickToSwitchToEditor) {
+  if (!previewSettings.doubleClickToSwitchToEditor) {
     return;
   }
   // Ignore clicks on links
@@ -215,8 +119,8 @@ document.addEventListener("dblclick", event => {
     if (node.tagName && node.tagName === "g" && node.classList) {
       if (node.classList.contains("node")) {
         const g = <SVGGraphicsElement>node;
-        const id = getArgdownId(g);
-        selectNode(id);
+        const id = vizJsMap!.getArgdownId(g);
+        vizJsMap!.selectNode(id);
         messagePoster.postMessage("didSelectMapNode", { id });
         return;
       } else if (node.classList.contains("cluster")) {
@@ -250,9 +154,9 @@ document.addEventListener(
         if (node.dataset.command) {
           const command = node.dataset.command;
           if (command === "argdown.exportDocumentToVizjsSvg") {
-            messagePoster.postCommand(command, [settings.source]);
+            messagePoster.postCommand(command, [previewSettings.source]);
           } else if (command === "argdown.exportDocumentToVizjsPdf") {
-            messagePoster.postCommand(command, [settings.source]);
+            messagePoster.postCommand(command, [previewSettings.source]);
           } else if (command === "argdown.exportContentToVizjsPng") {
             openScaleDialog(scale => {
               var svgContainer = document.getElementById("svg-container")!;
@@ -261,7 +165,7 @@ document.addEventListener(
               )[0];
               getPngAsString(svgEl, scale, "", pngString => {
                 messagePoster.postCommand(command, [
-                  settings.source,
+                  previewSettings.source,
                   pngString
                 ]);
               });
@@ -290,7 +194,7 @@ document.addEventListener(
         }
         break;
       } else if (node.tagName && node.tagName.toLowerCase() === "svg") {
-        deselectSelectedNode();
+        vizJsMap!.deselectNode();
         break;
       }
       node = node.parentNode;

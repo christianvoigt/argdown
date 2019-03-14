@@ -1,32 +1,16 @@
-const defaultsDeep = require("lodash.defaultsdeep");
+const defaultsDeep = require("lodash/defaultsDeep");
 export interface IPreviewSettings {
   source: string;
-  line: number;
-  lineCount: number;
-  scrollPreviewWithEditor?: boolean;
-  scrollEditorWithPreview: boolean;
   disableSecurityWarnings: boolean;
   doubleClickToSwitchToEditor: boolean;
-  scale?: number;
-  x?: number;
-  y?: number;
-  didInitiate?: boolean;
+  scrollPreviewWithEditor?: boolean;
+  scrollEditorWithPreview: boolean;
   syncPreviewSelectionWithEditor?: boolean;
   transitionDuration: number;
-  dagre: {
-    rankDir: string;
-    rankSep: number;
-    nodeSep: number;
-  };
 }
 
 let cachedSettings: IPreviewSettings | undefined = undefined;
 let defaults = {
-  dagre: {
-    rankDir: "BT",
-    rankSep: 50,
-    nodeSep: 70
-  },
   transitionDuration: 350,
   syncPreviewSelectionWithEditor: true
 };

@@ -14,6 +14,7 @@ import { ArgdownPreviewConfigurationManager } from "./ArgdownPreviewConfiguratio
 import { ArgdownExtensionContributions } from "./ArgdownExtensionContributions";
 import { isArgdownFile } from "./util/file";
 import { ArgdownEngine } from "./ArgdownEngine";
+import { IArgdownPreviewState } from "./IArgdownPreviewState";
 
 export namespace PreviewViews {
   export const HTML: string = "html";
@@ -26,6 +27,8 @@ export class ArgdownPreview {
 
   private _resource: vscode.Uri;
   private _locked: boolean;
+  private _currentView: string | null;
+  private _minDelayBetweenUpdates: number = 300;
 
   private readonly editor: vscode.WebviewPanel;
   private throttleTimer: any;
@@ -36,27 +39,28 @@ export class ArgdownPreview {
   private forceUpdate = false;
   private isScrolling = false;
   private _disposed: boolean = false;
-  private _stateStore: { [key: string]: any } = {};
   private throttledSendDidChangeTextDocumentMessage: () => void;
   private throttledSelectionSync: (selection: vscode.Selection) => void;
 
   public static async revive(
     webview: vscode.WebviewPanel,
-    state: any,
+    state: IArgdownPreviewState,
     contentProvider: ArgdownContentProvider,
     argdownEngine: ArgdownEngine,
     previewConfigurations: ArgdownPreviewConfigurationManager,
     logger: Logger,
     topmostLineMonitor: ArgdownFileTopmostLineMonitor
   ): Promise<ArgdownPreview> {
-    const resource = vscode.Uri.parse(state.resource);
+    const resource = vscode.Uri.parse(state.resource || "");
     const locked = state.locked;
-    const line = state.line;
+    const line = state.html.line;
+    const currentView = state.currentView || PreviewViews.VIZJS;
 
     const preview = new ArgdownPreview(
       webview,
+      currentView,
       resource,
-      locked,
+      !!locked,
       contentProvider,
       argdownEngine,
       previewConfigurations,
@@ -67,7 +71,7 @@ export class ArgdownPreview {
     if (!isNaN(line)) {
       preview.line = line;
     }
-    await preview.doUpdate();
+    await preview.doUpdate(state);
     return preview;
   }
 
@@ -99,6 +103,7 @@ export class ArgdownPreview {
 
     return new ArgdownPreview(
       webview,
+      null,
       resource,
       locked,
       contentProvider,
@@ -111,6 +116,7 @@ export class ArgdownPreview {
 
   private constructor(
     webview: vscode.WebviewPanel,
+    currentView: string | null,
     resource: vscode.Uri,
     locked: boolean,
     private readonly _contentProvider: ArgdownContentProvider,
@@ -124,6 +130,9 @@ export class ArgdownPreview {
     this.editor = webview;
     this._previewConfigurations.refreshArgdownConfig(this._resource);
 
+    const config = this._previewConfigurations.getConfiguration(this._resource);
+    this._currentView = currentView || config.defaultView || PreviewViews.VIZJS;
+    this._minDelayBetweenUpdates = config.minDelayBetweenUpdates;
     this.throttledSelectionSync = throttle(
       async (selection: vscode.Selection) => {
         const resource = this._resource;
@@ -143,22 +152,28 @@ export class ArgdownPreview {
           });
         }
       },
-      300
+      this._minDelayBetweenUpdates
     );
 
     this.throttledSendDidChangeTextDocumentMessage = throttle(async () => {
       const resource = this._resource;
       const document = await vscode.workspace.openTextDocument(resource);
       this.currentVersion = { resource, version: document.version };
-      const msg = await this._contentProvider.provideOnDidChangeTextDocumentMessage(
-        document,
-        this._previewConfigurations
-        // , this.line
-      );
-      msg.type = "didChangeTextDocument";
-      msg.source = resource.toString();
-      this.postMessage(msg);
-    }, 300);
+      const view = this._currentView || PreviewViews.VIZJS;
+      try {
+        const msg = await this._contentProvider.provideOnDidChangeTextDocumentMessage(
+          view,
+          document,
+          this._previewConfigurations
+          // , this.line
+        );
+        msg.type = "didChangeTextDocument";
+        msg.source = resource.toString();
+        this.postMessage(msg);
+      } catch (e) {
+        this._logger.log(e);
+      }
+    }, this._minDelayBetweenUpdates);
 
     this.editor.onDidDispose(
       () => {
@@ -211,9 +226,6 @@ export class ArgdownPreview {
           case "didChangeLockMenu":
             this.onDidChangeLockMenu(e.body.lockMenu == "true");
             break;
-          case "didChangeZoom":
-            this.onDidChangeZoom(e.body.x, e.body.y, e.body.scale);
-            break;
           case "didSelectMapNode":
             this.onDidSelectMapNode(e.body.id);
             break;
@@ -255,10 +267,7 @@ export class ArgdownPreview {
             character: event.selections[0].active.character,
             source: this.resource.toString()
           });
-          const config = this._previewConfigurations.getConfiguration(
-            this._resource
-          );
-          if (config && config.view !== PreviewViews.HTML) {
+          if (this._currentView !== PreviewViews.HTML) {
             await this.throttledSelectionSync(event.selections[0]);
           }
         }
@@ -291,14 +300,6 @@ export class ArgdownPreview {
     return this._resource;
   }
 
-  public get state() {
-    return {
-      resource: this.resource.toString(),
-      locked: this._locked,
-      line: this.line
-    };
-  }
-
   public dispose() {
     if (this._disposed) {
       return;
@@ -323,6 +324,9 @@ export class ArgdownPreview {
     // If we have changed resources, cancel any pending updates
     const isResourceChange = resource.fsPath !== this._resource.fsPath;
     if (isResourceChange) {
+      const config = this._previewConfigurations.getConfiguration(resource);
+      this._minDelayBetweenUpdates = config.minDelayBetweenUpdates;
+
       clearTimeout(this.throttleTimer);
       this.throttleTimer = undefined;
     }
@@ -334,7 +338,10 @@ export class ArgdownPreview {
       if (isResourceChange || this.firstUpdate) {
         this.doUpdate();
       } else {
-        this.throttleTimer = setTimeout(() => this.doUpdate(), 300);
+        this.throttleTimer = setTimeout(
+          () => this.doUpdate(),
+          this._minDelayBetweenUpdates
+        );
       }
     }
 
@@ -342,10 +349,7 @@ export class ArgdownPreview {
   }
 
   public refresh(forceReload: boolean = true) {
-    const config = this._previewConfigurations.loadAndCacheConfiguration(
-      this._resource
-    );
-    if (forceReload || config.view === PreviewViews.HTML) {
+    if (forceReload || this._currentView === PreviewViews.HTML) {
       this.forceUpdate = true;
       this.update(this._resource);
     } else {
@@ -442,7 +446,7 @@ export class ArgdownPreview {
     }
   }
 
-  private async doUpdate(): Promise<void> {
+  private async doUpdate(initialState?: IArgdownPreviewState): Promise<void> {
     const resource = this._resource;
 
     clearTimeout(this.throttleTimer);
@@ -463,21 +467,34 @@ export class ArgdownPreview {
     this.forceUpdate = false;
 
     this.currentVersion = { resource, version: document.version };
-    const content = await this._contentProvider.provideHtmlContent(
-      document,
-      this._previewConfigurations,
-      this.line,
-      this._stateStore
-    );
-    const config = this._previewConfigurations.getConfiguration(this._resource);
-    this._stateStore[config.view] = this._stateStore[config.view] || {};
-    this._stateStore[config.view].didInitiate = true;
-    if (this._resource === resource) {
-      this.editor.title = ArgdownPreview.getPreviewTitle(
-        this._resource,
-        this._locked
+    initialState = initialState || {
+      resource: document.uri.toString(),
+      currentView: this._currentView,
+      vizJs: { position: {} },
+      dagre: { position: {} },
+      html: { line: 0 }
+    };
+    if (initialState.currentView == null) {
+      initialState.currentView = this._currentView;
+    } else {
+      this._currentView = initialState.currentView!;
+    }
+    initialState.html.line = this.line || initialState.html.line;
+    try {
+      const content = await this._contentProvider.provideHtmlContent(
+        document,
+        this._previewConfigurations,
+        initialState
       );
-      this.editor.webview.html = content;
+      if (this._resource === resource) {
+        this.editor.title = ArgdownPreview.getPreviewTitle(
+          this._resource,
+          this._locked
+        );
+        this.editor.webview.html = content;
+      }
+    } catch (e) {
+      this._logger.log(e);
     }
   }
 
@@ -541,38 +558,21 @@ export class ArgdownPreview {
       view == PreviewViews.DAGRE ||
       view == PreviewViews.VIZJS
     ) {
-      // reload argdown config on view change
-      this._previewConfigurations.refreshArgdownConfig(this._resource);
-      vscode.workspace
-        .getConfiguration("argdown")
-        .update("preview.view", view, true);
+      if (view !== this._currentView) {
+        this.forceUpdate = true;
+        // reload argdown config on view change
+        this._logger.log("new view: " + view);
+        this._previewConfigurations.refreshArgdownConfig(this._resource);
+        this._currentView = view;
+        this.doUpdate();
+      }
     }
   }
-  private onDidChangeLockMenu(lockMenu: boolean) {
+  private async onDidChangeLockMenu(lockMenu: boolean) {
     this._logger.log("received didChangeLockMenu: " + lockMenu);
-    vscode.workspace
+    await vscode.workspace
       .getConfiguration("argdown")
       .update("preview.lockMenu", lockMenu, true);
-  }
-  private onDidChangeZoom(x: number, y: number, scale: number) {
-    const config = this._previewConfigurations.getConfiguration(this._resource);
-    if (config.view === PreviewViews.DAGRE) {
-      if (!this._stateStore[PreviewViews.DAGRE]) {
-        this._stateStore[PreviewViews.DAGRE] = {};
-      }
-      const dagreStore = this._stateStore[PreviewViews.DAGRE];
-      dagreStore.scale = scale;
-      dagreStore.x = x;
-      dagreStore.y = y;
-    } else if (config.view === PreviewViews.VIZJS) {
-      if (!this._stateStore[PreviewViews.VIZJS]) {
-        this._stateStore[PreviewViews.VIZJS] = {};
-      }
-      const vizjsStore = this._stateStore[PreviewViews.VIZJS];
-      vizjsStore.scale = scale;
-      vizjsStore.x = x;
-      vizjsStore.y = y;
-    }
   }
   private async onDidSelectMapNode(id: string) {
     const resource = this._resource;

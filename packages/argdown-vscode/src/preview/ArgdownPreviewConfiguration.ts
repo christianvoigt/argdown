@@ -16,17 +16,15 @@ export class ArgdownPreviewConfiguration {
   public readonly scrollPreviewWithEditor: boolean;
   public readonly syncPreviewSelectionWithEditor: boolean;
   public readonly markEditorSelection: boolean;
+  public readonly minDelayBetweenUpdates: number;
 
   public readonly lineHeight: number;
   public readonly fontSize: number;
   public readonly fontFamily: string | undefined;
   public readonly lockMenu: boolean;
-  public readonly dagreRankSep: number;
-  public readonly dagreNodeSep: number;
-  public readonly dagreRankDir: string;
-  public readonly view: string;
   public readonly styles: string[];
   public readonly argdownConfigFile?: string;
+  public readonly defaultView?: string;
   public argdownConfig?: IArgdownRequest;
 
   private constructor(resource: vscode.Uri, argdownEngine: ArgdownEngine) {
@@ -35,7 +33,10 @@ export class ArgdownPreviewConfiguration {
       "argdown",
       resource
     );
-
+    this.minDelayBetweenUpdates = argdownConfig.get<number>(
+      "preview.minDelayBetweenUpdates",
+      300
+    );
     this.scrollBeyondLastLine = editorConfig.get<boolean>(
       "scrollBeyondLastLine",
       false
@@ -60,14 +61,11 @@ export class ArgdownPreviewConfiguration {
       "preview.markEditorSelection",
       true
     );
-    this.lockMenu = !!argdownConfig.get<boolean>("preview.lockMenu", true);
-    this.view = argdownConfig.get<string>("preview.view", "html");
-    this.dagreRankSep = argdownConfig.get<number>("preview.dagre.rankSep", 50);
-    this.dagreNodeSep = argdownConfig.get<number>("preview.dagre.nodeSep", 70);
-    this.dagreRankDir = argdownConfig.get<string>(
-      "preview.dagre.rankDir",
-      "BT"
+    this.defaultView = argdownConfig.get<string>(
+      "preview.defaultView",
+      "vizjs"
     );
+    this.lockMenu = !!argdownConfig.get<boolean>("preview.lockMenu", true);
     this.argdownConfigFile = argdownConfig.get<string | undefined>(
       "configFile",
       undefined
