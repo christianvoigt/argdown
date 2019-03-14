@@ -12,7 +12,7 @@ import {
 import {
   IArgdownRequest,
   IRequestHandler,
-  ArgdownPluginError,
+  checkResponseFields,
   ensure,
   DefaultSettings,
   mergeDefaults
@@ -74,9 +74,7 @@ export class SvgToPdfExportPlugin implements IAsyncArgdownPlugin {
     return request.svgToPdf;
   }
   prepare: IRequestHandler = (request, response) => {
-    if (!response.svg) {
-      throw new ArgdownPluginError(this.name, "Missing svg field in response.");
-    }
+    checkResponseFields(this, response, ["svg"]);
     mergeDefaults(this.getSettings(request), this.defaults);
   };
   runAsync: IAsyncRequestHandler = async (request, response) => {

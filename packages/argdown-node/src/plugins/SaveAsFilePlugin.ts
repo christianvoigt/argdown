@@ -2,11 +2,23 @@ let fs = require("fs");
 let path = require("path");
 let mkdirp = require("mkdirp");
 import * as _ from "lodash";
-import { IArgdownRequest, IArgdownResponse, IArgdownLogger, ArgdownPluginError } from "@argdown/core";
-import { IAsyncArgdownPlugin, IAsyncRequestHandler } from "../IAsyncArgdownPlugin";
+import {
+  IArgdownRequest,
+  IArgdownResponse,
+  IArgdownLogger,
+  ArgdownPluginError
+} from "@argdown/core";
+import {
+  IAsyncArgdownPlugin,
+  IAsyncRequestHandler
+} from "../IAsyncArgdownPlugin";
 
 export interface IFileNameProvider {
-  (settings: ISaveAsSettings, request: IArgdownRequest, response: IArgdownResponse): string;
+  (
+    settings: ISaveAsSettings,
+    request: IArgdownRequest,
+    response: IArgdownResponse
+  ): string;
 }
 export interface ISaveAsSettings {
   dataKey?: string;
@@ -41,21 +53,40 @@ export class SaveAsFilePlugin implements IAsyncArgdownPlugin {
   runAsync: IAsyncRequestHandler = async (request, response, logger) => {
     const settings = this.getSettings(request);
     if (!settings.dataKey) {
-      throw new ArgdownPluginError(this.name, "No data key.");
+      throw new ArgdownPluginError(
+        this.name,
+        "missing-dataKey-setting",
+        "No data key."
+      );
     }
     let fileContent: string | undefined = !settings.isRequestData
       ? (<any>response)[settings.dataKey!]
       : (<any>request)[settings.dataKey!];
     if (fileContent === undefined) {
-      throw new ArgdownPluginError(this.name, "No content to save.");
+      throw new ArgdownPluginError(
+        this.name,
+        "missing-content",
+        "No content to save."
+      );
     }
     if (!_.isString(fileContent)) {
-      throw new ArgdownPluginError(this.name, "Content is not a string.");
+      throw new ArgdownPluginError(
+        this.name,
+        "invalid-content",
+        "Content is not a string."
+      );
     }
     if (_.isEmpty(fileContent)) {
-      throw new ArgdownPluginError(this.name, "Data field is empty string.");
+      throw new ArgdownPluginError(
+        this.name,
+        "missing-content",
+        "Data field is empty string."
+      );
     }
-    const dataSettings = !settings.isRequestData && settings.dataKey ? (<any>request)[settings.dataKey] : null;
+    const dataSettings =
+      !settings.isRequestData && settings.dataKey
+        ? (<any>request)[settings.dataKey]
+        : null;
     let fileName = "default";
     let outputDir = settings.outputDir;
     if (request.outputPath) {
@@ -79,14 +110,26 @@ export class SaveAsFilePlugin implements IAsyncArgdownPlugin {
       outputDir = dataSettings.outputDir;
     }
     if (outputDir && settings.extension) {
-      await this.saveAsFile(fileContent, outputDir, fileName, settings.extension, logger);
+      await this.saveAsFile(
+        fileContent,
+        outputDir,
+        fileName,
+        settings.extension,
+        logger
+      );
     }
   };
   getFileName(file: string): string {
     let extension = path.extname(file);
     return path.basename(file, extension);
   }
-  async saveAsFile(data: string, outputDir: string, fileName: string, extension: string, logger: IArgdownLogger) {
+  async saveAsFile(
+    data: string,
+    outputDir: string,
+    fileName: string,
+    extension: string,
+    logger: IArgdownLogger
+  ) {
     let absoluteOutputDir = path.resolve(process.cwd(), outputDir);
     await new Promise((resolve, reject) => {
       mkdirp(absoluteOutputDir, function(err: Error) {
@@ -97,13 +140,20 @@ export class SaveAsFilePlugin implements IAsyncArgdownPlugin {
       });
     });
     await new Promise((resolve, reject) => {
-      fs.writeFile(absoluteOutputDir + "/" + fileName + extension, data, function(err: Error) {
-        if (err) {
-          reject(err);
+      fs.writeFile(
+        absoluteOutputDir + "/" + fileName + extension,
+        data,
+        function(err: Error) {
+          if (err) {
+            reject(err);
+          }
+          logger.log(
+            "verbose",
+            "Saved " + absoluteOutputDir + "/" + fileName + extension
+          );
+          resolve();
         }
-        logger.log("verbose", "Saved " + absoluteOutputDir + "/" + fileName + extension);
-        resolve();
-      });
+      );
     });
   }
 }

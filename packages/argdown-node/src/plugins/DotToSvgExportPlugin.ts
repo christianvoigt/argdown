@@ -3,7 +3,7 @@ import { Module, render } from "viz.js/full.render";
 import * as _ from "lodash";
 import {
   IRequestHandler,
-  ArgdownPluginError,
+  checkResponseFields,
   IArgdownRequest
 } from "@argdown/core";
 import {
@@ -60,16 +60,27 @@ export class DotToSvgExportPlugin implements IAsyncArgdownPlugin {
     return request.vizJs;
   };
   runAsync: IAsyncRequestHandler = async (request, response) => {
-    if (!response.dot) {
-      throw new ArgdownPluginError(this.name, "Missing dot field in response.");
-    }
+    checkResponseFields(this, response, ["dot"]);
+
     let { engine, nop, removeProlog } = this.getSettings(request);
     response.svg = await viz.renderString(response.dot, { engine, nop });
     if (removeProlog) {
-      response.svg = response.svg!.replace(
-        /<\?[ ]*xml[\S ]+?\?>[\s]*<\![ ]*DOCTYPE[\S\s]+?\.dtd\"[ ]*>/,
-        ""
-      );
+      response.svg = this.removeProlog(response.svg!);
     }
+  };
+  run: IRequestHandler = (request, response) => {
+    checkResponseFields(this, response, ["dot"]);
+
+    let { engine, nop, removeProlog } = this.getSettings(request);
+    response.svg = viz.renderString(response.dot, { engine, nop });
+    if (removeProlog) {
+      response.svg = this.removeProlog(response.svg!);
+    }
+  };
+  removeProlog = (svg: string): string => {
+    return svg.replace(
+      /<\?[ ]*xml[\S ]+?\?>[\s]*<\![ ]*DOCTYPE[\S\s]+?\.dtd\"[ ]*>/,
+      ""
+    );
   };
 }

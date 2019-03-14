@@ -1,4 +1,7 @@
-import { IAsyncArgdownPlugin, IAsyncRequestHandler } from "../IAsyncArgdownPlugin";
+import {
+  IAsyncArgdownPlugin,
+  IAsyncRequestHandler
+} from "../IAsyncArgdownPlugin";
 import { ArgdownPluginError } from "@argdown/core";
 import { promisify } from "util";
 
@@ -11,10 +14,17 @@ export class LoadFilePlugin implements IAsyncArgdownPlugin {
   runAsync: IAsyncRequestHandler = async (request, _response, logger) => {
     const file = request.inputPath;
     if (!file) {
-      throw new ArgdownPluginError(this.name, "No inputPath field in request object.");
+      throw new ArgdownPluginError(
+        this.name,
+        "missing-inputPath-request-field",
+        "No inputPath field in request object."
+      );
     }
     const input = await readFileAsync(file, "utf8");
-    logger.log("verbose", "[LoadFilePlugin]: Reading file completed, starting processing: " + file);
+    logger.log(
+      "verbose",
+      "[LoadFilePlugin]: Reading file completed, starting processing: " + file
+    );
     request.input = input;
   };
 }

@@ -4,8 +4,15 @@ import { promisify } from "util";
 const readFileAsync = promisify(fs.readFile);
 let path = require("path");
 import * as _ from "lodash";
-import { IAsyncArgdownPlugin, IAsyncRequestHandler } from "../IAsyncArgdownPlugin";
-import { IArgdownRequest, IRequestHandler, ArgdownPluginError } from "@argdown/core";
+import {
+  IAsyncArgdownPlugin,
+  IAsyncRequestHandler
+} from "../IAsyncArgdownPlugin";
+import {
+  IArgdownRequest,
+  IRequestHandler,
+  ArgdownPluginError
+} from "@argdown/core";
 
 export interface IIncludeSettings {
   regEx?: RegExp;
@@ -35,16 +42,34 @@ export class IncludePlugin implements IAsyncArgdownPlugin {
   };
   runAsync: IAsyncRequestHandler = async request => {
     if (!request.input) {
-      throw new ArgdownPluginError(this.name, "Missing input.");
+      throw new ArgdownPluginError(
+        this.name,
+        "missing-input-request-field",
+        "Missing input."
+      );
     }
     if (!request.inputPath) {
-      throw new ArgdownPluginError(this.name, "Missing input path.");
+      throw new ArgdownPluginError(
+        this.name,
+        "missing-inputPath-request-field",
+        "Missing input path."
+      );
     }
     const settings = this.getSettings(request);
     settings.regEx!.lastIndex = 0;
-    request.input = await this.replaceIncludesAsync(request.inputPath!, request.input!, settings.regEx!, []);
+    request.input = await this.replaceIncludesAsync(
+      request.inputPath!,
+      request.input!,
+      settings.regEx!,
+      []
+    );
   };
-  async replaceIncludesAsync(currentFilePath: string, str: string, regEx: RegExp, filesAlreadyIncluded: string[]) {
+  async replaceIncludesAsync(
+    currentFilePath: string,
+    str: string,
+    regEx: RegExp,
+    filesAlreadyIncluded: string[]
+  ) {
     let match = null;
     const directoryPath = path.dirname(currentFilePath);
     regEx.lastIndex = 0;
@@ -60,12 +85,23 @@ export class IncludePlugin implements IAsyncArgdownPlugin {
         filesAlreadyIncluded.push(absoluteFilePath);
         strToInclude = await readFileAsync(absoluteFilePath, "utf8");
         if (strToInclude == null) {
-          strToInclude = "<!-- Include failed: File '" + absoluteFilePath + "' not found. -->\n";
+          strToInclude =
+            "<!-- Include failed: File '" +
+            absoluteFilePath +
+            "' not found. -->\n";
         } else {
-          strToInclude = await this.replaceIncludesAsync(absoluteFilePath, strToInclude, regEx, filesAlreadyIncluded);
+          strToInclude = await this.replaceIncludesAsync(
+            absoluteFilePath,
+            strToInclude,
+            regEx,
+            filesAlreadyIncluded
+          );
         }
       }
-      str = str.substr(0, match.index) + strToInclude + str.substr(match.index + match[0].length);
+      str =
+        str.substr(0, match.index) +
+        strToInclude +
+        str.substr(match.index + match[0].length);
       regEx.lastIndex = match.index + strToInclude.length;
     }
     return str;
