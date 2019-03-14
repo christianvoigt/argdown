@@ -1,0 +1,109 @@
+{
+  "$schema": "vscode://schemas/color-theme",
+  "include": "./light_plus.json",
+  "name": "Argdown Light (default light + Argdown token highlighting)",
+  "type": "light",
+  "tokenColors": [
+    {
+      "name": "Attack",
+      "scope": "markup.list.unordered.attack",
+      "settings": {
+        "foreground": "#C93504",
+        "fontStyle": "bold"
+      }
+    },
+    {
+      "name": "Contradiction",
+      "scope": "markup.list.unordered.contradiction",
+      "settings": {
+        "foreground": "#C93504",
+        "fontStyle": "bold"
+      }
+    },
+    {
+      "name": "Undercut",
+      "scope": "markup.list.unordered.undercut",
+      "settings": {
+        "foreground": "#ff00d4",
+        "fontStyle": "bold"
+      }
+    },
+    {
+      "name": "Support",
+      "scope": "markup.list.unordered.support",
+      "settings": {
+        "foreground": "#04C93F",
+        "fontStyle": "bold"
+      }
+    },
+    {
+      "name": "Statement Title",
+      "scope": [
+        "variable.statement-title",
+        "variable.statement-title punctuation"
+      ],
+      "settings": {
+        "foreground": "#76BAE2",
+        "fontStyle": "bold"
+      }
+    },
+    {
+      "name": "Argument Title",
+      "scope": [
+        "variable.argument-title",
+        "variable.argument-title punctuation"
+      ],
+      "settings": {
+        "foreground": "#0582CA",
+        "fontStyle": "bold"
+      }
+    },
+    {
+      "name": "Inference",
+      "scope": [
+        "variable.inference",
+        "variable.inference variable.inference-rule",
+        "variable.inference variable.inference-meta"
+      ],
+      "settings": {
+        "foreground": "#0582CA",
+        "fontStyle": "bold"
+      }
+    },
+    {
+      "name": "YAML Data",
+      "scope": [
+        "meta.block.data",
+        "meta.block.frontmatter",
+        "string.unquoted.plain.out.yaml"
+      ],
+      "settings": {
+        "foreground": "#AAAAAA",
+        "fontStyle": ""
+      }
+    },
+    {
+      "name": "YAML name",
+      "scope": ["entity.name.tag.yaml"],
+      "settings": {
+        "foreground": "#777777",
+        "fontStyle": ""
+      }
+    },
+    {
+      "name": "YAML punctuation",
+      "scope": ["punctuation.yaml"],
+      "settings": {
+        "foreground": "#777777",
+        "fontStyle": ""
+      }
+    },
+    {
+      "name": "Argdown Tags",
+      "scope": ["meta.tag.argdown"],
+      "settings": {
+        "foreground": "#777777"
+      }
+    }
+  ]
+}

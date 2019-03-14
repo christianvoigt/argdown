@@ -1,5 +1,10 @@
 body {
   padding: 0;
+  color: var(--vscode-editor-foreground);
+  background-color: var(--vscode-editor-background);
+  font-size: var(--vscode-editor-font-size);
+  font-family: var(--vscode-editor-font-family);
+  font-weight: var(--vscode-editor-font-weight);
 }
 .main-menu-hover-field {
   position: fixed;
@@ -16,21 +21,21 @@ body {
   top: 0;
 }
 a.lock-menu {
-  background: url("output_unlock.svg") center center no-repeat;
+  background-image: url("output_unlock.svg");
 }
 
-.vs-dark a.lock-menu,
+.vscode-dark a.lock-menu,
 .hc-black a.lock-menu {
-  background: url("output_unlock_inverse.svg") center center no-repeat;
+  background-image: url("output_unlock_inverse.svg");
 }
 
 a.unlock-menu {
-  background: url("output_lock.svg") center center no-repeat;
+  background-image: url("output_lock.svg");
 }
 
-.vs-dark a.unlock-menu,
+.vscode-dark a.unlock-menu,
 .hc-black a.unlock-menu {
-  background: url("output_lock_inverse.svg") center center no-repeat;
+  background-image: url("output_lock_inverse.svg");
 }
 a.icon-button {
   outline-offset: -2px;
@@ -64,7 +69,7 @@ a.unlock-menu {
   left: 0;
   right: 0;
   height: 3em;
-  background-color: #fff;
+  background-color: var(--vscode-editorGroupHeader-tabsBackground);
   z-index: 1000000;
 }
 .main-menu ul {
@@ -85,14 +90,20 @@ a.unlock-menu {
   padding: 1em;
   color: inherit;
   text-decoration: none;
-  background: #fafafa;
-  border-right: 1px solid #ccc;
+  color: var(--vscode-tab-inactiveForeground);
+  background: var(--vscode-tab-inactiveBackground);
+  border-right: 1px solid var(--vscode-tab-border);
 }
 .main-menu li a:hover {
-  background-color: #eaeaea;
+  background-color: var(--vscode-tab-hoverBackground);
 }
 .main-menu li a.active {
-  background-color: #ddd;
+  background-color: var(--vscode-tab-activeBackground);
+  color: var(--vscode-tab-activeForeground);
+}
+.main-menu li.active a:hover {
+  background-color: var(--vscode-tab-activeBackground);
+  color: var(--vscode-tab-activeForeground);
 }
 .main-menu li:last-child a {
   border-right: 0px;
@@ -103,6 +114,13 @@ a.unlock-menu {
   padding: 1em;
   overflow: hidden;
   white-space: nowrap;
+}
+.submenu a {
+  color: var(--vscode-textLink-foreground);
+}
+.submenu a:active,
+.submenu .a:hover {
+  color: var(--vscode-textLink-activeForeground);
 }
 #scale-dialog {
   z-index: 1000000;
@@ -126,9 +144,18 @@ a.unlock-menu {
   text-align: center;
 }
 #scale-dialog button {
-  font-size: 1.25em;
+  border: 0;
   padding: 0.5em;
   margin: 0.25em;
+  background-color: var(--vscode-button-background);
+  color: var(--vscode-button-foreground);
+  border-radius: 0;
+  font-size: var(--vscode-editor-font-size);
+  font-family: var(--vscode-editor-font-family);
+  font-weight: var(--vscode-editor-font-weight);
+}
+#scale-dialog button:hover {
+  background-color: var(--vscode-button-hoverBackground);
 }
 #scale-dialog input {
   box-sizing: border-box;
@@ -181,7 +208,7 @@ a.unlock-menu {
 .html-view .argdown .statement-reference,
 .html-view .argdown .statement-definition,
 .html-view .argdown .statement-mention {
-  color: cornflowerblue;
+  color: #76bae2;
   text-decoration: none;
 }
 
@@ -209,32 +236,53 @@ a.unlock-menu {
 }
 
 .html-view .argdown .support.relation-symbol {
-  color: green;
-  background-color: lightgreen;
+  color: #04c93f;
+  background-color: #cee7d6;
 }
 
 .html-view .argdown .attack.relation-symbol,
 .html-view .argdown .contradiction.relation-symbol {
-  color: red;
+  color: #c93504;
   background-color: lightpink;
 }
 .html-view .argdown .undercut.relation-symbol {
-  color: purple;
-  background-color: lightcoral;
+  color: #ff00d4;
+  background-color: #ffb9f3;
 }
 
 .html-view .argdown .pcs {
-  margin-top: 1em;
-  margin-bottom: 2em;
+  margin-top: 2em;
+  margin-bottom: 4em;
 }
-
+.html-view .argdown header {
+  text-align: center;
+  border-bottom: 1px solid #888;
+  margin-bottom: 5em;
+  padding-bottom: 1em;
+}
+.html-view .argdown header h1 {
+  color: #0582ca;
+}
+.html-view .argdown header .subtitle {
+  color: #76bae2;
+}
+.html-view .argdown header .authors {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  color: #888;
+}
+.html-view .argdown header .date {
+  color: #888;
+}
 .html-view .argdown .argument-reference,
 .html-view .argdown .argument-definition,
 .html-view .argdown .argument-mention {
-  color: blue;
+  color: #0582ca;
   text-decoration: none;
 }
-
+.html-view .argdown .argument.top-level > .statement-content {
+  font-weight: 600;
+}
 .html-view .argdown .statement-reference:hover,
 .html-view .argdown .statement-mention:hover,
 .html-view .argdown .argument-reference:hover,
@@ -255,19 +303,20 @@ a.unlock-menu {
 .html-view .argdown .statement-nr {
   margin-left: -2em;
   float: left;
-  color: blue;
+  color: #76bae2;
 }
 
 .html-view .argdown .inference {
-  border-top: 1px solid black;
+  border-top: 1px solid #0582ca;
   font-size: 0.8em;
   margin-top: 1em;
   margin-bottom: 1em;
+  color: #0582ca;
 }
 
 .html-view .argdown .inference.with-data {
-  border-top: 1px solid black;
-  border-bottom: 1px solid black;
+  border-top: 1px solid #0582ca;
+  border-bottom: 1px solid #0582ca;
   padding: 0.5em;
   padding-left: 1.5em;
 }
@@ -286,62 +335,6 @@ a.unlock-menu {
 
 .html-view .argdown .conclusion.pcs-statement .relations {
   font-weight: normal;
-}
-.html-view .argument-definition.tag7 > .definiendum,
-.statement.tag7 > .statement-definition,
-.html-view .reference.tag7,
-.mention.tag7,
-.tag.tag7 {
-  color: #666666;
-}
-.html-view .argument-definition.tag6 > .definiendum,
-.statement.tag6 > .statement-definition,
-.html-view .reference.tag6,
-.html-view .mention.tag6,
-.tag.tag6 {
-  color: #a6761d;
-}
-.html-view .argument-definition.tag5 > .definiendum,
-.statement.tag5 > .statement-definition,
-.html-view .reference.tag5,
-.html-view .mention.tag5,
-.tag.tag5 {
-  color: #e6ab02;
-}
-.html-view .argument-definition.tag4 > .definiendum,
-.statement.tag4 > .statement-definition,
-.html-view .reference.tag4,
-.mention.tag4,
-.tag.tag4 {
-  color: #66a61e;
-}
-.html-view .argument-definition.tag3 > .definiendum,
-.statement.tag3 > .statement-definition,
-.html-view .reference.tag3,
-.mention.tag3,
-.tag.tag3 {
-  color: #e7298a;
-}
-.html-view .argument-definition.tag2 > .definiendum,
-.statement.tag2 > .statement-definition,
-.html-view .reference.tag2,
-.mention.tag2,
-.tag.tag2 {
-  color: #7570b3;
-}
-.html-view .argument-definition.tag1 > .definiendum,
-.statement.tag1 > .statement-definition,
-.html-view .reference.tag1,
-.mention.tag1,
-.tag.tag1 {
-  color: #d95f02;
-}
-.html-view .argument-definition.tag0 > .definiendum,
-.statement.tag0 > .statement-definition,
-.html-view .reference.tag0,
-.mention.tag0,
-.tag.tag0 {
-  color: #1b9e77;
 }
 
 .dagre * {
@@ -489,55 +482,6 @@ a.unlock-menu {
 }
 .dagre .node-label h3 {
   font-weight: normal;
-}
-
-.dagre .node.statement-map-node.tag7 rect {
-  stroke: #666666;
-}
-.dagre .node.argument-map-node.tag7 rect {
-  fill: #666666;
-}
-.dagre .node.statement-map-node.tag6 rect {
-  stroke: #a6761d;
-}
-.dagre .node.argument-map-node.tag6 rect {
-  fill: #a6761d;
-}
-.dagre .node.statement-map-node.tag5 rect {
-  stroke: #e6ab02;
-}
-.dagre .node.argument-map-node.tag5 rect {
-  fill: #e6ab02;
-}
-.dagre .node.statement-map-node.tag4 rect {
-  stroke: #66a61e;
-}
-.dagre .node.argument-map-node.tag4 rect {
-  fill: #66a61e;
-}
-.dagre .node.statement-map-node.tag3 rect {
-  stroke: #e7298a;
-}
-.dagre .node.argument-map-node.tag3 rect {
-  fill: #e7298a;
-}
-.dagre .node.statement-map-node.tag2 rect {
-  stroke: #7570b3;
-}
-.dagre .node.argument-map-node.tag2 rect {
-  fill: #7570b3;
-}
-.dagre .node.statement-map-node.tag1 rect {
-  stroke: #d95f02;
-}
-.dagre .node.argument-map-node.tag1 rect {
-  fill: #d95f02;
-}
-.dagre .node.statement-map-node.tag0 rect {
-  stroke: #1b9e77;
-}
-.dagre .node.argument-map-node.tag0 rect {
-  fill: #1b9e77;
 }
 
 .dagre .node.statement-map-node.selected rect {

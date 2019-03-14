@@ -16,7 +16,7 @@
     "url": "https://github.com/christianvoigt/argdown/issues"
   },
   "engines": {
-    "vscode": "^1.28.0"
+    "vscode": "^1.31.1"
   },
   "categories": [
     "Programming Languages",
@@ -32,6 +32,7 @@
     "onLanguage:argdown",
     "onCommand:argdown.exportDocumentToHtml",
     "onCommand:argdown.exportDocumentToDot",
+    "onCommand:argdown.exportDocumentToGraphML",
     "onCommand:argdown.exportDocumentToJson",
     "onCommand:argdown.exportDocumentToVizjsSvg",
     "onCommand:argdown.exportDocumentToVizjsPdf",
@@ -44,6 +45,7 @@
     "onCommand:argdown.showSource",
     "onCommand:argdown.showPreviewSecuritySelector",
     "onView:argdown.preview",
+    "onWebviewPanel:argdown.preview",
     "workspaceContains:**/*.{argdown,ad,argdn,adown}"
   ],
   "main": "./out/extension",
@@ -83,9 +85,14 @@
     ],
     "themes": [
       {
-        "label": "Argdown Theme",
+        "label": "Argdown Light (default light + Argdown token highlighting)",
         "uiTheme": "vs",
-        "path": "./themes/argdown-theme.json"
+        "path": "./themes/argdown-light.json"
+      },
+      {
+        "label": "Argdown Dark (default dark + Argdown token highlighting)",
+        "uiTheme": "vs-dark",
+        "path": "./themes/argdown-dark.json"
       }
     ],
     "commands": [
@@ -102,6 +109,11 @@
       {
         "command": "argdown.exportDocumentToDot",
         "title": "Export map data to DOT",
+        "category": "Argdown"
+      },
+      {
+        "command": "argdown.exportDocumentToGraphML",
+        "title": "Export map data to GraphML",
         "category": "Argdown"
       },
       {
@@ -242,6 +254,11 @@
           "group": "export"
         },
         {
+          "command": "argdown.exportDocumentToGraphML",
+          "when": "resourceLangId == argdown",
+          "group": "export"
+        },
+        {
           "command": "argdown.exportDocumentToVizjsSvg",
           "when": "resourceLangId == argdown",
           "group": "export"
@@ -274,6 +291,11 @@
           "group": "export"
         },
         {
+          "command": "argdown.exportDocumentToGraphML",
+          "when": "resourceLangId == argdown",
+          "group": "export"
+        },
+        {
           "command": "argdown.exportDocumentToVizjsSvg",
           "when": "resourceLangId == argdown",
           "group": "export"
@@ -300,6 +322,11 @@
         },
         {
           "command": "argdown.exportDocumentToDot",
+          "when": "resourceLangId == argdown",
+          "group": "export"
+        },
+        {
+          "command": "argdown.exportDocumentToGraphML",
           "when": "resourceLangId == argdown",
           "group": "export"
         },
@@ -403,40 +430,22 @@
           "default": true,
           "description": "If false the preview menu will only be shown if the mouse moves over to the top of the preview window."
         },
-        "argdown.preview.view": {
+        "argdown.preview.minDelayBetweenUpdates": {
+          "scope": "application",
+          "type": "number",
+          "default": 300,
+          "description": "The time in milliseconds the extension waits for further changes before updating the preview if the text or the selection has changed. Requires restart if changed."
+        },
+        "argdown.preview.defaultView": {
           "scope": "application",
           "type": "string",
-          "default": "dagre",
+          "default": "vizjs",
           "enum": [
             "html",
             "dagre",
             "vizjs"
           ],
-          "description": "The type of preview currently used"
-        },
-        "argdown.preview.dagre.rankSep": {
-          "scope": "application",
-          "type": "number",
-          "default": 50,
-          "description": "The space between ranks in the Dagre map"
-        },
-        "argdown.preview.dagre.nodeSep": {
-          "scope": "application",
-          "type": "number",
-          "default": 70,
-          "description": "The space between nodes in the Dagre map"
-        },
-        "argdown.preview.dagre.rankDir": {
-          "scope": "application",
-          "type": "string",
-          "default": "BT",
-          "description": "The direction of the ranks in the Dagre map",
-          "enum": [
-            "BT",
-            "TB",
-            "LR",
-            "RL"
-          ]
+          "description": "The type of preview used by default for new previews"
         }
       }
     }
@@ -446,31 +455,31 @@
     "build": "npm run build-extension && npm run build-preview",
     "watch": "tsc -w -p ./",
     "update-vscode": "node ./node_modules/vscode/bin/install",
-    "postinstall": "node ./node_modules/vscode/bin/install",
     "build-extension": "tsc -p ./",
     "build-preview": "webpack --mode development"
   },
   "dependencies": {
     "@argdown/core": "^1.0.3",
     "@argdown/language-server": "^1.0.3",
+    "@argdown/map-views": "^1.0.0",
     "@argdown/node": "^1.0.0",
-    "d3": "^5.4.0",
-    "dagre-d3": "^0.6.1",
+    "d3": "^5.9.1",
+    "dagre-d3": "^0.6.3",
     "lodash.defaultsdeep": "^4.6.0",
     "lodash.throttle": "^4.1.1",
-    "vscode-languageclient": "^5.1.0"
+    "vscode-languageclient": "^5.3.0-next.1"
   },
   "devDependencies": {
-    "@types/d3": "^5.0.0",
-    "@types/dagre-d3": "^0.4.37",
-    "@types/lodash.defaultsdeep": "^4.6.3",
-    "@types/lodash.throttle": "^4.1.3",
-    "@types/node": "^9.4.6",
-    "raw-loader": "^0.5.1",
-    "ts-loader": "^4.3.0",
-    "typescript": "^2.8.3",
-    "vscode": "^1.1.22",
-    "webpack": "^4.26.1",
-    "webpack-cli": "^3.1.2"
+    "@types/d3": "^5.7.1",
+    "@types/dagre-d3": "^0.4.39",
+    "@types/lodash.defaultsdeep": "^4.6.5",
+    "@types/lodash.throttle": "^4.1.5",
+    "@types/node": "^11.10.4",
+    "raw-loader": "^1.0.0",
+    "ts-loader": "^5.3.3",
+    "typescript": "^3.3.3333",
+    "vscode": "^1.1.30",
+    "webpack": "^4.26.6",
+    "webpack-cli": "^3.2.3"
   }
 }
