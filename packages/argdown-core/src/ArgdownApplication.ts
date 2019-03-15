@@ -167,14 +167,14 @@ export class ArgdownApplication {
    * @param plugin
    * @param processorId
    */
-  removePlugin(plugin: IArgdownPlugin, processorId: string) {
+  removePlugin(plugin: IArgdownPlugin, processorId?: string) {
     if (!processorId) {
       processorId = "default";
     }
 
     let processor = this.processors[processorId];
     if (!processor) {
-      return;
+      throw new Error(`Could not find processor "${processorId}"`);
     }
 
     let index = processor.plugins.indexOf(plugin);
@@ -190,6 +190,44 @@ export class ArgdownApplication {
         }
       }
       processor.plugins.splice(index, 1);
+    } else {
+      `Could not find plugin "${plugin.name}" in processor "${processorId}"`;
+    }
+  }
+  /**
+   * Replaces a plugin within a processor, keeping the original plugin execution order within the processor
+   *
+   * @param oldPluginId the id of the plugin that should be removed
+   * @param newPlugin the new plugin that should be added
+   * @param processorId the processor to which the plugin should be added (if undefined, the default processor is used)
+   */
+  replacePlugin(
+    oldPluginId: string,
+    newPlugin: IArgdownPlugin,
+    processorId?: string
+  ) {
+    if (!processorId) {
+      processorId = "default";
+    }
+
+    let processor = this.processors[processorId];
+    if (!processor) {
+      throw new Error(`Could not find processor "${processorId}"`);
+    }
+
+    const oldPlugin = this.getPlugin(oldPluginId, processorId);
+    if (!oldPlugin) {
+      throw new Error(
+        `Could not find plugin "${oldPluginId}" in processor "${processorId}"`
+      );
+    }
+    const plugins = [...processor.plugins];
+    const pluginIndex = plugins.indexOf(oldPlugin);
+    plugins[pluginIndex] = newPlugin;
+    // remove and recreate processor to keep order of listeners
+    this.removeProcessor(processorId);
+    for (let plugin of plugins) {
+      this.addPlugin(plugin, processorId);
     }
   }
   /**
@@ -231,7 +269,7 @@ export class ArgdownApplication {
   removeProcessor(processorId: string): void {
     let processor = this.processors[processorId];
     if (!processor) {
-      return;
+      throw new Error(`Could not find processor "${processorId}"`);
     }
     for (let plugin of processor.plugins) {
       this.removePlugin(plugin, processorId);
