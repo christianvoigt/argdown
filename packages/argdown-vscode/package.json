@@ -462,7 +462,7 @@
   "dependencies": {
     "@argdown/core": "^1.1.0",
     "@argdown/language-server": "^1.1.0",
-    "@argdown/map-views": "^1.1.0",
+    "@argdown/map-views": "^1.1.1",
     "@argdown/node": "^1.1.0",
     "d3": "^5.9.1",
     "dagre-d3": "^0.6.3",

@@ -192,7 +192,7 @@ export class ArgdownPreview {
     );
 
     this.editor.webview.onDidReceiveMessage(
-      e => {
+      async e => {
         if (e.source !== this._resource.toString()) {
           return;
         }
@@ -207,30 +207,25 @@ export class ArgdownPreview {
             ) {
               args[0] = this._resource;
             }
-            if (e.body.command === "argdown.exportContentToDagreSvg") {
-              this._logger.log("exportDocumentToDagreSvg: " + args[1]);
-            }
             vscode.commands.executeCommand(e.body.command, ...args);
             break;
-
           case "revealLine":
             this.onDidScrollPreview(e.body.line);
             break;
-
           case "didClick":
-            this.onDidClickPreview(e.body.line);
+            await this.onDidClickPreview(e.body.line);
             break;
           case "didChangeView":
-            this.onDidChangeView(e.body.view);
+            await this.onDidChangeView(e.body.view);
             break;
           case "didChangeLockMenu":
-            this.onDidChangeLockMenu(e.body.lockMenu == "true");
+            await this.onDidChangeLockMenu(e.body.lockMenu === "true");
             break;
           case "didSelectMapNode":
-            this.onDidSelectMapNode(e.body.id);
+            await this.onDidSelectMapNode(e.body.id);
             break;
           case "didSelectCluster":
-            this.onDidSelectCluster(e.body.heading);
+            await this.onDidSelectCluster(e.body.heading);
             break;
         }
       },
@@ -359,6 +354,7 @@ export class ArgdownPreview {
 
   public updateConfiguration() {
     if (this._previewConfigurations.hasConfigurationChanged(this._resource)) {
+      this._previewConfigurations.loadAndCacheConfiguration(this._resource);
       this.refresh(true);
     }
   }
