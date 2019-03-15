@@ -347,6 +347,7 @@ export const addLineBreaks = (
     font?: string;
     bold?: boolean;
     lineBreak?: string;
+    escapeAsHtmlEntities?: boolean;
   }
 ): { text: string; lines: number } => {
   if (!str) {
@@ -356,6 +357,11 @@ export const addLineBreaks = (
     ? splitByLineWidth(str, options)
     : splitByCharactersInLine(str, options.charactersInLine || 0, true);
   const lineBreak = options.lineBreak || "\n";
+  if (options.escapeAsHtmlEntities) {
+    for (let i = 0; i < arr.length; i++) {
+      arr[i] = escapeAsHtmlEntities(arr[i]);
+    }
+  }
   return { lines: arr.length, text: arr.join(lineBreak) };
 };
 /**

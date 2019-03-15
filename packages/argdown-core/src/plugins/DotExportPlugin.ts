@@ -19,7 +19,7 @@ import {
   stringIsEmpty,
   isObject
 } from "../utils";
-import { escapeAsHtmlEntities, addLineBreaks } from "../utils";
+import { addLineBreaks } from "../utils";
 import defaultsDeep from "lodash.defaultsdeep";
 import merge from "lodash.merge";
 
@@ -33,13 +33,17 @@ export interface IRank {
 export interface IDotSettings {
   useHtmlLabels?: boolean;
   graphname?: string;
-  graphBgColor?: string;
   measureLineWidth?: boolean;
-  graph?: {
-    bgColor?: string;
+  mapBgColor?: string;
+  group?: {
+    lineWidth?: number;
+    charactersInLine?: number;
+    font?: string;
+    fontSize?: number;
+    bold?: boolean;
     margin?: string;
   };
-  group?: {
+  closedGroup?: {
     lineWidth?: number;
     charactersInLine?: number;
     font?: string;
@@ -108,12 +112,8 @@ declare module "../index" {
 const defaultSettings: DefaultSettings<IDotSettings> = {
   useHtmlLabels: true,
   graphname: "Argument Map",
-  graphBgColor: "transparent",
+  mapBgColor: "transparent",
   measureLineWidth: false,
-  graph: ensure.object({
-    bgColor: "transparent",
-    margin: "8"
-  }),
   group: ensure.object({
     lineWidth: 400,
     charactersInLine: 80,
@@ -121,6 +121,14 @@ const defaultSettings: DefaultSettings<IDotSettings> = {
     fontSize: 12,
     bold: false,
     margin: "8"
+  }),
+  closedGroup: ensure.object({
+    lineWidth: 400,
+    charactersInLine: 80,
+    font: "arial",
+    fontSize: 12,
+    bold: false,
+    margin: "0.2"
   }),
   argument: ensure.object({
     lineWidth: 180,
@@ -218,9 +226,7 @@ export class DotExportPlugin implements IArgdownPlugin {
         dot += key + ' = "' + value + '";\n';
       }
     }
-    dot += `graph [bgcolor = "${settings.graph!.bgColor}" margin = "${
-      settings.graph!.margin
-    }" ]`;
+    dot += `graph [bgcolor = "${settings.mapBgColor}" ]`;
 
     for (let node of response.map!.nodes) {
       dot += this.exportNodesRecursive(node, response, settings);
@@ -281,19 +287,22 @@ export class DotExportPlugin implements IArgdownPlugin {
       response.groupCount++;
       let dotGroupId = "cluster_" + response.groupCount;
       let groupLabel = node.labelTitle || "";
+      const groupSettings = groupNode.isClosed
+        ? settings.closedGroup
+        : settings.group;
       if (settings.useHtmlLabels) {
         groupLabel = settings.measureLineWidth
           ? addLineBreaksAndEscape(groupLabel, true, {
-              maxWidth: settings.group!.lineWidth!,
-              fontSize: settings.group!.fontSize!,
-              bold: settings.group!.bold!,
-              font: settings.group!.font!
+              maxWidth: groupSettings!.lineWidth!,
+              fontSize: groupSettings!.fontSize!,
+              bold: groupSettings!.bold!,
+              font: groupSettings!.font!
             })
           : addLineBreaksAndEscape(groupLabel, false, {
-              charactersInLine: settings.group!.charactersInLine!
+              charactersInLine: groupSettings!.charactersInLine!
             });
-        groupLabel = `<<FONT FACE="${settings.group!
-          .font!}" POINT-SIZE="${settings.group!.fontSize!}" COLOR="${
+        groupLabel = `<<FONT FACE="${groupSettings!
+          .font!}" POINT-SIZE="${groupSettings!.fontSize!}" COLOR="${
           node.fontColor
         }">${groupLabel}</FONT>>`;
       } else {
@@ -302,12 +311,14 @@ export class DotExportPlugin implements IArgdownPlugin {
       let groupColor = node.color || "#CCCCCC";
       if (groupNode.isClosed) {
         dot += `  ${node.id} [label=${groupLabel}, shape="box", margin="${
-          settings.group!.margin
+          groupSettings!.margin
         }", style="filled", penwidth="0" fillcolor="${groupColor}", fontcolor="${
           node.fontColor
         }",  type="${node.type}"];\n`;
       } else {
-        dot += `\nsubgraph ${dotGroupId} {\n  label = ${groupLabel};\n  color = "${groupColor}";\n  style = filled;\n`;
+        dot += `\nsubgraph ${dotGroupId} {\n  label = ${groupLabel};\n  color = "${groupColor}";\n  margin="${
+          groupSettings!.margin
+        }" style = filled;\n`;
         let labelloc = "t";
         if (
           settings.graphVizSettings &&
@@ -359,11 +370,12 @@ const addLineBreaksAndEscape = (
   }
 ): string => {
   const result = addLineBreaks(
-    escapeAsHtmlEntities(str),
+    str,
     measurePixelWidth,
     merge(
       {
-        lineBreak: "<BR/>"
+        lineBreak: "<BR/>",
+        escapeAsHtmlEntities: true
       },
       options
     )
