@@ -452,11 +452,12 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run build",
-    "build": "npm run build-extension && npm run build-preview",
+    "build": "npm run build-extension && npm run build-preview && npm run copy-changelog",
     "watch": "tsc -w -p ./",
     "update-vscode": "node ./node_modules/vscode/bin/install",
     "build-extension": "tsc -p ./",
-    "build-preview": "webpack --mode development"
+    "build-preview": "webpack --mode development",
+    "copy-changelog": "node ./copy-changelog.js"
   },
   "dependencies": {
     "@argdown/core": "^1.0.3",

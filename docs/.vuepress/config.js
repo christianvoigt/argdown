@@ -1,11 +1,22 @@
 var argdown = require("../../packages/argdown-node/dist/src/index.js").argdown;
+var stringifyArgdownData = require("../../packages/argdown-core/dist/src/index.js")
+  .stringifyArgdownData;
 var container = require("markdown-it-container");
+var SyncDotToSvgExportPlugin = require("./SyncDotToSvgExportPlugin");
 
 //var domain = "http://1px-solid-black.com/argdown";
 var domain = "https://argdown.org";
 
-var SaysWhoPlugin = require("../../packages/argdown-core/dist/src/plugins/SaysWhoPlugin.js").SaysWhoPlugin;
+var SaysWhoPlugin = require("../../packages/argdown-core/dist/src/plugins/SaysWhoPlugin.js")
+  .SaysWhoPlugin;
 argdown.addPlugin(new SaysWhoPlugin(), "add-proponents");
+if (argdown.getPlugin("DotToSvgExportPlugin", "export-svg")) {
+  argdown.replacePlugin(
+    "DotToSvgExportPlugin",
+    new SyncDotToSvgExportPlugin(),
+    "export-svg"
+  );
+}
 argdown.defaultProcesses["says-who-map"] = [
   "load-file", // loads Argdown files (request.input)
   "parse-input", // parses them (response.ast)
@@ -19,7 +30,10 @@ argdown.defaultProcesses["says-who-map"] = [
 require("../../packages/argdown-prism/index.js");
 var UNESCAPE_MD_RE = /\\([!"#$%&'()*+,\-.\/:;<=>?@[\\\]^_`{|}~])/g;
 var ENTITY_RE = /&([a-z#][a-z0-9]{1,31});/gi;
-var UNESCAPE_ALL_RE = new RegExp(UNESCAPE_MD_RE.source + "|" + ENTITY_RE.source, "gi");
+var UNESCAPE_ALL_RE = new RegExp(
+  UNESCAPE_MD_RE.source + "|" + ENTITY_RE.source,
+  "gi"
+);
 function unescapeAll(str) {
   if (str.indexOf("\\") < 0 && str.indexOf("&") < 0) {
     return str;
@@ -41,11 +55,40 @@ module.exports = {
     "Argdown is a simple syntax for complex argumentation. Writing pro & contra lists in Argdown is as simple as writing a twitter message, but you can also use it to logically reconstruct whole debates and visualize them as argument maps.",
   base: "/",
   head: [
-    ["link", { rel: "shortcut icon", type: "image/x-icon", href: `${domain}/favicon.ico` }],
-    ["link", { rel: "icon", type: "image/png", href: `${domain}/favicon-32x32.png`, sizes: "32x32" }],
-    ["link", { rel: "icon", type: "image/png", href: `${domain}/favicon-16x16.png`, sizes: "16x16" }],
+    [
+      "link",
+      {
+        rel: "shortcut icon",
+        type: "image/x-icon",
+        href: `${domain}/favicon.ico`
+      }
+    ],
+    [
+      "link",
+      {
+        rel: "icon",
+        type: "image/png",
+        href: `${domain}/favicon-32x32.png`,
+        sizes: "32x32"
+      }
+    ],
+    [
+      "link",
+      {
+        rel: "icon",
+        type: "image/png",
+        href: `${domain}/favicon-16x16.png`,
+        sizes: "16x16"
+      }
+    ],
     ["link", { rel: "manifest", href: `${domain}/site.webmanifest` }],
-    ["link", { rel: "apple-touch-icon-precomposed", href: `${domain}/apple-touch-icon.png` }]
+    [
+      "link",
+      {
+        rel: "apple-touch-icon-precomposed",
+        href: `${domain}/apple-touch-icon.png`
+      }
+    ]
   ],
   markdown: {
     config: md => {
@@ -69,9 +112,19 @@ module.exports = {
         if (langName === "argdown" || langName === "argdown-map") {
           var request = {
             input: token.content,
-            process: ["parse-input", "build-model", "build-map", "export-dot", "export-svg"],
+            process: [
+              "parse-input",
+              "build-model",
+              "build-map",
+              "transform-closed-groups",
+              "colorize",
+              "export-dot",
+              "export-svg"
+            ],
             dotToSvg: { removeProlog: true },
-            logExceptions: false
+            logExceptions: true,
+            throwExceptions: true,
+            logLevel: "error"
           };
           var result = argdown.run(request);
           var initialView = "source";
@@ -83,19 +136,29 @@ module.exports = {
             mapTitle = result.frontMatter.title;
           }
           if (result.frontMatter && result.frontMatter.runSaysWhoPlugin) {
-            result = argdown.run({ process: ["add-proponents", "export-dot", "export-svg"] }, result);
+            result = argdown.run(
+              { process: ["add-proponents", "export-dot", "export-svg"] },
+              result
+            );
           }
           if (result.frontMatter && result.frontMatter.hide) {
             token.content = removeFrontMatter(token.content);
           }
           return `<ArgdownSnippet initial-view="${initialView}" title="${mapTitle}"><template slot="map">${
             result.svg
-          }</template><template slot="source">${oldFence(tokens, idx, options, env, slf)}</template></ArgdownSnippet>`;
+          }</template><template slot="source">${oldFence(
+            tokens,
+            idx,
+            options,
+            env,
+            slf
+          )}</template></ArgdownSnippet>`;
         } else if (langName === "argdown-cheatsheet") {
           var request = {
             input: token.content,
             process: ["parse-input", "build-model"],
-            logExceptions: false
+            logExceptions: true,
+            throwExceptions: true
           };
           var result = argdown.run(request);
           var explanation = "";
@@ -133,14 +196,7 @@ module.exports = {
       "/changes/": [
         {
           title: "Changes",
-          children: [
-            "argdown-vscode",
-            "argdown-core",
-            "argdown-node",
-            "argdown-cli",
-            "argdown-language-server",
-            "argdown-sandbox"
-          ]
+          children: [["", "2019"], ["2018", "2018"]]
         }
       ],
       "/guide/": [
@@ -158,11 +214,13 @@ module.exports = {
           children: [
             ["creating-argument-maps", "Introduction"],
             "elements-of-an-argument-map",
+            "changing-the-graph-layout",
             "creating-statement-and-argument-nodes",
             "creating-edges",
             "creating-group-nodes",
-            "changing-the-appearance-of-nodes",
-            "colorizing-nodes"
+            "changing-the-node-style",
+            "changing-the-node-size",
+            "colorizing-maps"
           ]
         },
         {

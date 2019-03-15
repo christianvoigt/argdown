@@ -1,21 +1,51 @@
 <template>
-<div class="argdown-snippet" :class="snippetClasses">
+  <div class="argdown-snippet" :class="snippetClasses">
     <ArgdownMark/>
     <div class="menu">
-        <a href="#" v-if="activeView === 'source'" v-on:click.prevent="activeView ='map'" class='button map'>Map</a>
-        <a href="#" v-if="activeView === 'map'" v-on:click.prevent="activeView ='source'" class="button source">Source</a>
-        <a href="#" v-if="!fullscreen" v-on:click.prevent="fullscreen = true" class='button fullscreen'><ExpandIcon/></a>
-        <a href="#" v-if="fullscreen" v-on:click.prevent="fullscreen = false" class='button embedded'><CompressIcon/></a>
+      <a
+        href="#"
+        v-if="activeView === 'source'"
+        v-on:click.prevent="activeView ='map'"
+        class="button map"
+      >Map</a>
+      <a
+        href="#"
+        v-if="activeView === 'map'"
+        v-on:click.prevent="activeView ='source'"
+        class="button source"
+      >Source</a>
+      <a
+        href="#"
+        v-if="!fullscreen"
+        v-on:click.prevent="fullscreen = true"
+        class="button fullscreen"
+      >
+        <ExpandIcon/>
+      </a>
+      <a href="#" v-if="fullscreen" v-on:click.prevent="fullscreen = false" class="button embedded">
+        <CompressIcon/>
+      </a>
     </div>
     <div v-if="activeView === 'source'" class="source-view">
-        <slot name="source"></slot>
+      <slot name="source"></slot>
     </div>
-    <div v-if="activeView === 'map'" ref="mapView" class="map-view">
-        <div v-if="zoomMessage" class="zoom-message"><span>{{zoomMessage}}</span></div>
-        <div class="map-wrap" v-on:click="addZoom()" v-on:mouseover="onMouseoverMap()" v-on:mouseout="onMouseoutMap()"><slot name="map"></slot></div>
-        <div v-if="title" class="map-title">{{title}}</div>
+    <div
+      v-if="activeView === 'map'"
+      ref="mapView"
+      :class="mapClasses"
+      v-on:click="addZoom()"
+      v-on:mouseover="onMouseoverMap()"
+      v-on:mouseout="onMouseoutMap()"
+    >
+      <div v-if="zoomMessage" class="zoom-message">
+        <span>{{zoomMessage}}</span>
+      </div>
+      <div class="map-wrap">
+        <slot name="map"></slot>
+      </div>
+      <div v-if="title" class="map-title">{{title}}</div>
     </div>
-</div>
+  </div>
 </template>
 
 <script>
@@ -25,12 +55,19 @@ const showAllAndCenterMap = component => {
     return;
   }
   let positionInfo = component.svg.node().getBoundingClientRect();
-  const xScale = positionInfo.width / component.graphSize.width;
-  const yScale = positionInfo.height / component.graphSize.height;
+  const horizontalPadding = 10;
+  const verticalPadding = 10;
+  const availableWidth = positionInfo.width - horizontalPadding * 2;
+  const availableHeight = positionInfo.height - verticalPadding * 2 - 40; // takes into account padding-top
+  const xScale = availableWidth / component.graphSize.width;
+  const yScale = availableHeight / component.graphSize.height;
   const scale = Math.min(xScale, yScale);
-  const x = (positionInfo.width - component.graphSize.width * scale) / 2;
+  const x =
+    horizontalPadding +
+    (availableWidth - component.graphSize.width * scale) / 2;
   const scaledHeight = component.graphSize.height * scale;
-  const y = scaledHeight + (positionInfo.height - scaledHeight) / 2;
+  const y =
+    verticalPadding + scaledHeight + (availableHeight - scaledHeight) / 2;
   setZoom(x, y, scale, 0, component);
 };
 const setZoom = (x, y, scale, duration, component) => {
@@ -58,7 +95,8 @@ export default {
       zoomMessage: "",
       isMounted: false,
       zoomIsInitialized: false,
-      fullscreen: false
+      fullscreen: false,
+      hasZoomed: false
     };
   },
   mounted: function() {
@@ -73,19 +111,31 @@ export default {
       }
     },
     activeView: function(newValue, oldValue) {
-      if (newValue !== "map" && this.$data.isMounted && this.$data.zoomIsInitialized) {
+      if (
+        newValue !== "map" &&
+        this.$data.isMounted &&
+        this.$data.zoomIsInitialized
+      ) {
         if (this.removeZoomTimeout) {
           clearTimeout(this.removeZoomTimeout);
           this.removeZoomTimeout = null;
         }
         this.removeZoom();
       }
+        this.$data.hasZoomed = false;
     }
   },
   computed: {
     snippetClasses: function() {
       let classes = this.$data.fullscreen ? "fullscreen" : "embedded";
       classes += " " + this.$data.activeView + "-active";
+      return classes;
+    },
+    mapClasses: function() {
+      let classes = "map-view";
+      if (this.$data.hasZoomed) {
+        classes += " has-zoomed";
+      }
       return classes;
     }
   },
@@ -101,7 +151,10 @@ export default {
         clearTimeout(this.removeZoomTimeout);
         this.removeZoomTimeout = null;
       }
-      if (!this.$data.zoomIsInitialized) {
+      if (
+        !this.$data.zoomIsInitialized &&
+        (!this.$data.zoomMessage || this.$data.zoomMessage == "")
+      ) {
         this.$data.zoomMessage = "Click once to enable zoom";
       }
     },
@@ -132,6 +185,7 @@ export default {
         self.graphSize.height = bBox.height;
         showAllAndCenterMap(self);
         self.$data.zoomIsInitialized = true;
+        self.$data.hasZoomed = true;
         self.$data.zoomMessage = "";
       });
     },
@@ -247,11 +301,17 @@ $grey = #7a8388;
       min-height: 150px;
       height: auto;
       margin: 0 auto;
+      padding-top: 40px;
     }
 
     .map-title {
       padding: 0.8rem;
       border-top: 1px solid #EEE;
+    }
+  }
+  .map-view.has-zoomed{
+    svg{
+      padding-top: 0;
     }
   }
 
@@ -306,6 +366,7 @@ $grey = #7a8388;
     right: 0px;
     top: 6px;
     text-align: center;
+    cursor: pointer;
 
     span {
       display: inline-block;

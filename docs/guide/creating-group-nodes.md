@@ -1,8 +1,8 @@
 ---
 title: Creating group nodes
 meta:
-    - name: description
-      content: How you can assign statements and arguments to group nodes in your argument map.
+  - name: description
+    content: How you can assign statements and arguments to group nodes in your argument map.
 ---
 
 # Creating group nodes
@@ -11,9 +11,9 @@ Headings define sections in the Argdown document. In the argument map, sections 
 
 :::definition How groups are assigned to statements and arguments
 
-__Statements:__ If a statement is used in several sections in the Argdown document, it will appear in the group of the section where it was __first defined__.
+**Statements:** If a statement (equivalence class) is used in several sections in the Argdown document, it will appear in the group of the section where it was **first defined**. If no definition exists for this statement, it will appear in the group where it was **first referred** to.
 
-__Arguments:__ The same is true for arguments, except for recontructed arguments. In this case the argument belongs to the group of the section in which its (last) __premise-conclusion-structure (pcs)__ was defined. 
+**Arguments:** The same is true for arguments, except for recontructed arguments. In this case the argument belongs to the group of the section in which its **premise-conclusion-structure (pcs)** was defined.
 
 :::
 
@@ -45,9 +45,9 @@ hide: true
 (3) text
 ```
 
-Because __H2__ is a subsection of __H1__, its group is a child group of __H1's__ group. Notice that argument __a__ is first used in section __H1__, but is a member of __H2's__ group because it was not defined in __H1__.
+Because **H2** is a subsection of **H1**, its group is a child group of **H1's** group. Notice that argument **a** is first used in section **H1**, but is a member of **H2's** group because it was not defined in **H1**.
 
-On the other hand, argument __b__ is defined in __H1__, but it is reconstructed in __H2__ and reconstructions take precedence over definitions. So __b__ is a member of __H2's__ group.
+On the other hand, argument **b** is defined in **H1**, but it is reconstructed in **H2** and reconstructions take precedence over definitions. So **b** is a member of **H2's** group.
 
 ## The `groupDepth` group setting
 
@@ -57,7 +57,7 @@ To understand how the `groupDepth` setting works, we need to first define the le
 Let us call the number of ancestors a section or group has its "level", starting with level 1 for a section or group that is not a subsection or child group of another one of its kind. So a subsection has level 2, a subsubsection has level 3 and so on (you can simply count the number of # characters in a heading to get the level of a section).
 :::
 
-Sometimes it is useful to use the lowest section levels of an Argdown document for structuring the text, while only using the higher levels to define groups in the argument map. You can achieve that by using the `groupDepth` parameter of the group settings. In general, if the following is true for a section, it will be ignored in the map: 
+Sometimes it is useful to use the lowest section levels of an Argdown document for structuring the text, while only using the higher levels to define groups in the argument map. You can achieve that by using the `groupDepth` parameter of the group settings. In general, if the following is true for a section, it will be ignored in the map:
 
 :::definition Ignored sections
 
@@ -191,4 +191,94 @@ group:
 [p]
     + <c>: text
     + <d>: text
+```
+
+## Closing Groups
+
+A group can be closed to hide all its children. This is useful to reduce complexity in huge maps.
+
+### Usage with Data Flag:
+
+```argdown-map
+[s1]
+
+<a4>
+    -> <a2>
+
+# A Closed Group  {isClosed: true}
+
+[s1]
+    - <a2> {isInGroup: true}
+    + <a3>
+```
+
+### Usage in Group Configuration:
+
+The new `group.sections` setting allows to define which sections are closed and which are not groups:
+
+```argdown
+===
+group:
+    sections: {"A Closed Group": {isClosed: true}, "Just a Heading": {isGroup: false}}
+===
+
+# A Closed Group
+
+<s1>: I am hidden.
+    -> [s2]
+
+# Just a Heading
+
+[s2]: I am free!
+```
+
+This allows to use headings as groups without "polluting" the Argdown document with data flags.
+
+### Usage in Regroup Configuration:
+
+```argdown
+===
+group:
+    regroup: [{
+            title: "first group",
+            statements: ["s1"], arguments: ["a1"],
+            children: [
+                {
+                    title: "some other group",
+                    isClosed: true,
+                    arguments: ["a2"]
+                }
+            ]
+            }]
+===
+
+
+[s1]: I am a proud member of the first group
+    - <a1>: I am a proud member of the first group
+        - <a2>: The other group is much more exclusive!
+
+<a3>: Who needs groups?
+    -> [s1]
+```
+
+## Ignoring Group Data flags
+
+Group data flags can be ignored by using `group.ignoreIsGroup` and `group.ignoreIsClosed`
+
+```argdown
+===
+group:
+    ignoreIsClosed: true
+===
+
+[s1]
+
+<a4>
+    -> <a2>
+
+# A Closed Group  {isClosed: true}
+
+[s1]
+    - <a2> {isInGroup: true}
+    + <a3>
 ```

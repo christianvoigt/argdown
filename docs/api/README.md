@@ -2,8 +2,8 @@
 sidebar: auto
 title: API
 meta:
-    - name: description
-      content: API documentation for the packages of the Argdown project.
+  - name: description
+    content: API documentation for the packages of the Argdown project.
 ---
 
 # API
@@ -24,11 +24,17 @@ Contains the Argdown parser and lexer, the basic ArgdownApplication class that m
 
 Contains the AsynArgdownApplication subclass supporting asynchronous plugin methods. Instantiates this class with all plugins and processes preconfigured and predefined so that you can use it directly without any additional setup. Provides plugins that are specific to Argdown applications that are running in Node.js and not in the browser, for example the LoadFilePlugin and the SaveAsPlugin.
 
+## @argdown/map-views
+
+[README](https://github.com/christianvoigt/argdown/blob/master/packages/argdown-map-views/README.md)
+
+Contains the VizJs and Dagre map views used in the live previews of @argdown/sandbox and argdown-vscode.
+
 ## @argdown/sandbox
 
 [README](https://github.com/christianvoigt/argdown/blob/master/packages/argdown-sandbox/README.md)
 
-The browser-based editor. This is a Vue-application depending on @argdown/core.
+The browser-based editor. This is a Vue-application depending on @argdown/core and @argdown/map-views.
 
 ## @argdown/language-server
 
@@ -40,7 +46,7 @@ An editor-agnostic language server for the Argdown language with code linter, co
 
 [README](https://github.com/christianvoigt/argdown/blob/master/packages/argdown-vscode/README.md)
 
-The VS Code extension, depending on @argdown/core, @argdown/node and @argdown/language-server.
+The VS Code extension, depending on @argdown/core, @argdown/node, @argdown/language-server and @argdown/map-views
 
 ## @argdown/cli
 
