@@ -35,15 +35,22 @@ export interface IDotSettings {
   graphname?: string;
   graphBgColor?: string;
   measureLineWidth?: boolean;
+  graph?: {
+    bgColor?: string;
+    margin?: string;
+  };
   group?: {
     lineWidth?: number;
     charactersInLine?: number;
     font?: string;
     fontSize?: number;
     bold?: boolean;
+    margin?: string;
   };
   statement?: {
     lineWidth?: number;
+    minWidth?: number;
+    margin?: string;
     title?: {
       font: string;
       fontSize: number;
@@ -59,6 +66,8 @@ export interface IDotSettings {
   };
   argument?: {
     lineWidth?: number;
+    minWidth?: number;
+    margin?: string;
     title?: {
       font: string;
       fontSize: number;
@@ -101,15 +110,22 @@ const defaultSettings: DefaultSettings<IDotSettings> = {
   graphname: "Argument Map",
   graphBgColor: "transparent",
   measureLineWidth: false,
+  graph: ensure.object({
+    bgColor: "transparent",
+    margin: "8"
+  }),
   group: ensure.object({
     lineWidth: 400,
     charactersInLine: 80,
     font: "arial",
     fontSize: 12,
-    bold:false
+    bold: false,
+    margin: "8"
   }),
   argument: ensure.object({
     lineWidth: 180,
+    minWidth: 180,
+    margin: "0.11,0.055",
     title: ensure.object({
       font: "arial",
       fontSize: 10,
@@ -125,6 +141,8 @@ const defaultSettings: DefaultSettings<IDotSettings> = {
   }),
   statement: ensure.object({
     lineWidth: 180,
+    minWidth: 180,
+    margin: "0.11,0.055",
     title: ensure.object({
       font: "arial",
       fontSize: 10,
@@ -200,7 +218,9 @@ export class DotExportPlugin implements IArgdownPlugin {
         dot += key + ' = "' + value + '";\n';
       }
     }
-    dot += `graph [bgcolor = "${settings.graphBgColor}"]`;
+    dot += `graph [bgcolor = "${settings.graph!.bgColor}" margin = "${
+      settings.graph!.margin
+    }" ]`;
 
     for (let node of response.map!.nodes) {
       dot += this.exportNodesRecursive(node, response, settings);
@@ -281,9 +301,9 @@ export class DotExportPlugin implements IArgdownPlugin {
       }
       let groupColor = node.color || "#CCCCCC";
       if (groupNode.isClosed) {
-        dot += `  ${
-          node.id
-        } [label=${groupLabel}, shape="box", style="filled", penwidth="0" fillcolor="${groupColor}", fontcolor="${
+        dot += `  ${node.id} [label=${groupLabel}, shape="box", margin="${
+          settings.group!.margin
+        }", style="filled", penwidth="0" fillcolor="${groupColor}", fontcolor="${
           node.fontColor
         }",  type="${node.type}"];\n`;
       } else {
@@ -311,15 +331,15 @@ export class DotExportPlugin implements IArgdownPlugin {
       node.color && validateColorString(node.color) ? node.color : "#63AEF2";
     label = getLabel(node, settings);
     if (node.type === ArgdownTypes.ARGUMENT_MAP_NODE) {
-      dot += `  ${
-        node.id
-      } [label=${label}, shape="box", style="filled,rounded", fillcolor="${color}", fontcolor="${
+      dot += `  ${node.id} [label=${label}, margin="${
+        settings.argument!.margin
+      }", shape="box", style="filled,rounded", fillcolor="${color}", fontcolor="${
         node.fontColor
       }",  type="${node.type}"];\n`;
     } else if (node.type === ArgdownTypes.STATEMENT_MAP_NODE) {
-      dot += `  ${
-        node.id
-      } [label=${label}, shape="box", style="filled,rounded,bold", color="${color}", fillcolor="white", labelfontcolor="white", fontcolor="${
+      dot += `  ${node.id} [label=${label}, shape="box",  margin="${
+        settings.statement!.margin
+      }", style="filled,rounded,bold", color="${color}", fillcolor="white", labelfontcolor="white", fontcolor="${
         node.fontColor
       }", type="${node.type}"];\n`;
     }
@@ -360,17 +380,20 @@ const getLabel = (node: IMapNode, settings: IDotSettings): string => {
   const color = node.fontColor;
   let label = "";
   if (settings.useHtmlLabels) {
-    const maxWidth = isArgumentNode
+    const maxLineWidth = isArgumentNode
       ? settings.argument!.lineWidth!
       : settings.statement!.lineWidth!;
-    label += `<<TABLE WIDTH="${maxWidth}" ALIGN="CENTER" BORDER="0" CELLSPACING="0">`;
+    const minNodeWidth = isArgumentNode
+      ? settings.argument!.minWidth!
+      : settings.statement!.minWidth!;
+    label += `<<TABLE WIDTH="${minNodeWidth}" ALIGN="CENTER" BORDER="0" CELLSPACING="0">`;
     if (!stringIsEmpty(title)) {
       let { fontSize, font, bold, charactersInLine } = isArgumentNode
         ? settings.argument!.title!
         : settings.statement!.title!;
       let titleLabel = settings.measureLineWidth
         ? addLineBreaksAndEscape(title!, true, {
-            maxWidth,
+            maxWidth: maxLineWidth,
             fontSize,
             bold,
             font
@@ -381,7 +404,7 @@ const getLabel = (node: IMapNode, settings: IDotSettings): string => {
       if (bold) {
         titleLabel = `<B>${titleLabel}</B>`;
       }
-      titleLabel = `<TR><TD WIDTH="${maxWidth}" ALIGN="TEXT" BALIGN="CENTER"><FONT FACE="${font}" POINT-SIZE="${fontSize}" COLOR="${color}">${titleLabel}</FONT></TD></TR>`;
+      titleLabel = `<TR><TD WIDTH="${minNodeWidth}" ALIGN="TEXT" BALIGN="CENTER"><FONT FACE="${font}" POINT-SIZE="${fontSize}" COLOR="${color}">${titleLabel}</FONT></TD></TR>`;
       label += titleLabel;
     }
     if (!stringIsEmpty(text)) {
@@ -390,7 +413,7 @@ const getLabel = (node: IMapNode, settings: IDotSettings): string => {
         : settings.statement!.text!;
       let textLabel = settings.measureLineWidth
         ? addLineBreaksAndEscape(text!, true, {
-            maxWidth,
+            maxWidth: maxLineWidth,
             fontSize,
             bold,
             font
@@ -401,7 +424,7 @@ const getLabel = (node: IMapNode, settings: IDotSettings): string => {
       if (bold) {
         textLabel = `<B>${textLabel}</B>`;
       }
-      textLabel = `<TR><TD ALIGN="TEXT" WIDTH="${maxWidth}" BALIGN="CENTER"><FONT FACE="${font}" POINT-SIZE="${fontSize}" COLOR="${color}">${textLabel}</FONT></TD></TR>`;
+      textLabel = `<TR><TD ALIGN="TEXT" WIDTH="${minNodeWidth}" BALIGN="CENTER"><FONT FACE="${font}" POINT-SIZE="${fontSize}" COLOR="${color}">${textLabel}</FONT></TD></TR>`;
       label += textLabel;
     }
     label += "</TABLE>>";
