@@ -264,12 +264,15 @@ export class GraphMLExportPlugin implements IArgdownPlugin {
     const groupFontColor = groupMapNode.fontColor || "#000000";
     const outerGroupEl = parent.e("node", {
       id: groupMapNode.id,
-      "yfiles.foldertype": "folder"
+      "yfiles.foldertype": "group"
     });
+
     const realizers = outerGroupEl
       .e("data", { key: "d0" })
       .e("y:ProxyAutoBoundsNode")
-      .e("y:Realizers", { active: groupMapNode.isClosed ? "1" : "0" });
+      .e("y:Realizers", {
+        active: groupMapNode.isClosed ? "1" : "0"
+      });
     const openGroup = realizers.e("y:GroupNode");
     openGroup.e("y:Geometry", {
       width: labelWidth + settings.group!.horizontalPadding! * 2,
@@ -328,6 +331,15 @@ export class GraphMLExportPlugin implements IArgdownPlugin {
       top: settings.group!.verticalPadding!.toString(),
       topF: settings.group!.verticalPadding!.toString()
     });
+    openGroup.e("y:BorderInsets", {
+      bottomF: "0.0",
+      left: "0",
+      leftF: "0.0",
+      right: "0",
+      rightF: "0.0",
+      top: "0",
+      topF: "0.0"
+    });
     const closedGroup = realizers.e("y:GroupNode");
     closedGroup.e("y:Geometry", {
       width: labelWidth + settings.group!.horizontalPadding! * 2,
@@ -385,6 +397,15 @@ export class GraphMLExportPlugin implements IArgdownPlugin {
       rightF: settings.group!.horizontalPadding!.toString(),
       top: settings.group!.verticalPadding!.toString(),
       topF: settings.group!.verticalPadding!.toString()
+    });
+    closedGroup.e("y:BorderInsets", {
+      bottomF: "0.0",
+      left: "0",
+      leftF: "0.0",
+      right: "0",
+      rightF: "0.0",
+      top: "0",
+      topF: "0.0"
     });
 
     // innerGroupEl.e("y:BorderInsets", {
