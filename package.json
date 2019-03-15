@@ -19,9 +19,10 @@
   "readmeFilename": "Readme.md",
   "preferGlobal": true,
   "devDependencies": {
+    "esm": "^3.2.18",
     "lerna": "^3.4.2",
-    "vuepress": "^0.14.10",
-    "viz.js": "^1.8.1"
+    "viz.js": "^1.8.1",
+    "vuepress": "^0.14.10"
   },
   "workspace-sources": {
     "*": [

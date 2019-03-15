@@ -10,12 +10,12 @@
   "engines": {
     "node": ">= 8.0.0"
   },
-  "version": "1.0.3",
+  "version": "1.1.0",
   "license": "MIT",
   "main": "dist/src/cli.js",
   "dependencies": {
-    "@argdown/core": "^1.0.3",
-    "@argdown/node": "^1.0.0",
+    "@argdown/core": "^1.1.0",
+    "@argdown/node": "^1.1.0",
     "@types/yargs": "^12.0.9",
     "nyc": "^13.3.0",
     "pkginfo": "^0.4.1",

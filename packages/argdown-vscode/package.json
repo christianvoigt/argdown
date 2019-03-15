@@ -5,7 +5,7 @@
   "icon": "media/argdown-mark-blue-256x256.png",
   "author": "Christian Voigt",
   "license": "MIT",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "publisher": "christianvoigt",
   "homepage": "https://argdown.org",
   "repository": {
@@ -460,10 +460,10 @@
     "copy-changelog": "node ./copy-changelog.js"
   },
   "dependencies": {
-    "@argdown/core": "^1.0.3",
-    "@argdown/language-server": "^1.0.3",
-    "@argdown/map-views": "^1.0.0",
-    "@argdown/node": "^1.0.0",
+    "@argdown/core": "^1.1.0",
+    "@argdown/language-server": "^1.1.0",
+    "@argdown/map-views": "^1.1.0",
+    "@argdown/node": "^1.1.0",
     "d3": "^5.9.1",
     "dagre-d3": "^0.6.3",
     "lodash.defaultsdeep": "^4.6.0",
