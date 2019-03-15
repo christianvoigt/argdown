@@ -63,7 +63,7 @@ export const handler = async function(
     config.html.headless = true;
   }
   if (args.title) {
-    config.html.title = args.title;
+    config.title = args.title;
   }
   if (args.lang) {
     config.html.lang = args.lang;
