@@ -557,7 +557,6 @@ export class ArgdownPreview {
       if (view !== this._currentView) {
         this.forceUpdate = true;
         // reload argdown config on view change
-        this._logger.log("new view: " + view);
         this._previewConfigurations.refreshArgdownConfig(this._resource);
         this._currentView = view;
         this.doUpdate();
@@ -565,7 +564,6 @@ export class ArgdownPreview {
     }
   }
   private async onDidChangeLockMenu(lockMenu: boolean) {
-    this._logger.log("received didChangeLockMenu: " + lockMenu);
     await vscode.workspace
       .getConfiguration("argdown")
       .update("preview.lockMenu", lockMenu, true);
