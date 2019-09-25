@@ -47,6 +47,7 @@ describe("Lexer", function() {
         expectToken(lexer.Contradiction);
         expectToken(lexer.IncomingUndercut);
         expectToken(lexer.OutgoingUndercut);
+        expectToken(lexer.OutgoingUndercut);
     });
     it("can distinguish between Emptyline and Newline", function() {
         let source = fs.readFileSync("./test/lexer-emptyline.argdown", "utf8");

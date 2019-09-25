@@ -171,7 +171,10 @@ const matchOutgoingSupport = partialRight(matchRelation, /^([' '\t]*)(<?\+)/);
 const matchOutgoingAttack = partialRight(matchRelation, /^([' '\t]*)(<?-)/);
 const matchContradiction = partialRight(matchRelation, /^([' '\t]*)(><)/);
 const matchIncomingUndercut = partialRight(matchRelation, /^([' '\t]*)(_>)/);
-const matchOutgoingUndercut = partialRight(matchRelation, /^([' '\t]*)(<_)/);
+const matchOutgoingUndercut = partialRight(
+    matchRelation,
+    /^([' '\t]*)(<_|(?:_(?=\s)))/
+);
 
 export const IncomingSupport = createToken({
     name: TokenNames.INCOMING_SUPPORT,
