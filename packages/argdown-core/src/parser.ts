@@ -361,14 +361,18 @@ class ArgdownParser extends Parser {
       {
         ALT: () => {
           children.push(this.CONSUME(lexer.UnderscoreBoldStart));
-          children.push(this.SUBRULE1(this.statementContent));
+          this.OPTION1(()=>{
+            children.push(this.SUBRULE1(this.statementContent));
+          })
           children.push(this.CONSUME(lexer.UnderscoreBoldEnd));
         }
       },
       {
         ALT: () => {
           children.push(this.CONSUME(lexer.AsteriskBoldStart));
-          children.push(this.SUBRULE2(this.statementContent));
+          this.OPTION2(()=>{
+            children.push(this.SUBRULE2(this.statementContent));
+          });
           children.push(this.CONSUME(lexer.AsteriskBoldEnd));
         }
       }
@@ -381,14 +385,18 @@ class ArgdownParser extends Parser {
       {
         ALT: () => {
           children.push(this.CONSUME(lexer.UnderscoreItalicStart));
-          children.push(this.SUBRULE3(this.statementContent));
+          this.OPTION1(()=>{
+            children.push(this.SUBRULE3(this.statementContent));
+          });
           children.push(this.CONSUME(lexer.UnderscoreItalicEnd));
         }
       },
       {
         ALT: () => {
           children.push(this.CONSUME(lexer.AsteriskItalicStart));
-          children.push(this.SUBRULE4(this.statementContent));
+          this.OPTION2(()=>{
+            children.push(this.SUBRULE4(this.statementContent));
+          });
           children.push(this.CONSUME(lexer.AsteriskItalicEnd));
         }
       }
