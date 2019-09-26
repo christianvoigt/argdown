@@ -16,9 +16,9 @@
     "dependencies": {
         "@argdown/core": "^1.1.0",
         "@argdown/node": "^1.1.0",
-        "@types/yargs": "^12.0.9",
+        "@types/yargs": "^13.0.3",
         "pkginfo": "^0.4.1",
-        "yargs": "^13.2.1"
+        "yargs": "^14.0.0"
     },
     "bin": {
         "argdown": "./dist/src/cli.js"
