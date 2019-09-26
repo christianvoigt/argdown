@@ -243,7 +243,7 @@ Statement
         expect(pcsTail.children[1].children[2]).to.exist; // relations
         expect(pcsTail.children[1].children[2].name).to.equal("relations"); // relations
         expect(
-            pcsTail.children[1].children[2].children[0].tokenType.tokenName
+            pcsTail.children[1].children[2].children[0].tokenType.name
         ).to.equal("Indent");
         expect(pcsTail.children[1].children[2].children[1].name).to.equal(
             "outgoingUndercut"

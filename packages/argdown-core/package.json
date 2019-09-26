@@ -25,7 +25,7 @@
         "@types/lodash.union": "^4.6.6",
         "@types/node": "^11.9.5",
         "@types/xmlbuilder": "^0.0.34",
-        "chevrotain": "^4.1.0",
+        "chevrotain": "^6.5.0",
         "eventemitter3": "^3.0.0",
         "js-yaml": "^3.12.0",
         "lodash.clonedeep": "^4.5.0",
@@ -35,7 +35,6 @@
         "lodash.partialright": "^4.2.1",
         "lodash.union": "^4.6.0",
         "mdurl": "^1.0.1",
-        "nyc": "^13.3.0",
         "punycode": "^2.1.0",
         "string-pixel-width": "^1.9.0",
         "xmlbuilder": "^11.0.0"
