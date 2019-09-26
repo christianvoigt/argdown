@@ -1,89 +1,89 @@
 {
-  "name": "@argdown/cli",
-  "description": "A command line interface for exporting Argdown files to html, dot or json.",
-  "keywords": [
-    "argumentation",
-    "argument mapping",
-    "Argdown",
-    "Markdown"
-  ],
-  "engines": {
-    "node": ">= 8.0.0"
-  },
-  "version": "1.1.0",
-  "license": "MIT",
-  "main": "dist/src/cli.js",
-  "dependencies": {
-    "@argdown/core": "^1.1.0",
-    "@argdown/node": "^1.1.0",
-    "@types/yargs": "^12.0.9",
-    "nyc": "^13.3.0",
-    "pkginfo": "^0.4.1",
-    "yargs": "^13.2.1"
-  },
-  "bin": {
-    "argdown": "./dist/src/cli.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/christianvoigt/argdown/tree/master/packages/argdown-cli"
-  },
-  "author": {
-    "name": "Christian Voigt",
-    "email": "1pxsolidblack@gmail.com"
-  },
-  "scripts": {
-    "deploy": "npm run version:patch && git push --tags origin HEAD:master",
-    "build": "npm run clean && npm run build:src",
-    "build:src": "tsc",
-    "test": "npm run build && mocha -r ts-node/register --full-trace --require source-map-support/register ./test/**/*.spec.ts",
-    "test:custom-process": "mocha -r ts-node/register --full-trace --require source-map-support/register ./test/**/*.spec.ts --fgrep \"custom process\"",
-    "coverage": "nyc mocha -r ts-node/register --full-trace --bail --require source-map-support/register ./test/**/*.spec.ts",
-    "report": "nyc report",
-    "prepublishOnly": "npm run-script build",
-    "clean": "rimraf \"dist/*\"",
-    "version:patch": "npm version patch"
-  },
-  "readmeFilename": "Readme.md",
-  "preferGlobal": true,
-  "devDependencies": {
-    "@types/chai": "^4.1.4",
-    "@types/mocha": "^5.2.3",
-    "@types/rimraf": "^2.0.2",
-    "chai": "^4.1.2",
-    "chai-fs": "^2.0.0",
-    "copyfiles": "^2.0.0",
-    "cpx": "^1.5.0",
-    "glob": "^7.1.1",
-    "intercept-stdout": "^0.1.2",
-    "jest": "^24.1.0",
-    "mkdirp": "^0.5.1",
-    "mocha": "^6.0.2",
-    "nyc": "^13.3.0",
-    "rimraf": "^2.6.3",
-    "source-map-support": "^0.5.6",
-    "ts-node": "^8.0.2",
-    "typedoc": "^0.14.2",
-    "typescript": "~3.3.3333",
-    "typescript-workspace-plugin": "^2.0.1"
-  },
-  "nyc": {
-    "include": [
-      "dist/src/**/*.js",
-      "dist/src/**/*.jsx"
+    "name": "@argdown/cli",
+    "description": "A command line interface for exporting Argdown files to html, dot or json.",
+    "keywords": [
+        "argumentation",
+        "argument mapping",
+        "Argdown",
+        "Markdown"
     ],
-    "extension": [
-      ".js",
-      ".jsx"
-    ],
-    "require": [
-      "ts-node/register"
-    ],
-    "reporter": [
-      "text",
-      "html"
-    ],
-    "sourceMap": true,
-    "instrument": true
-  }
+    "engines": {
+        "node": ">= 8.0.0"
+    },
+    "version": "1.1.0",
+    "license": "MIT",
+    "main": "dist/src/cli.js",
+    "dependencies": {
+        "@argdown/core": "^1.1.0",
+        "@argdown/node": "^1.1.0",
+        "@types/yargs": "^12.0.9",
+        "pkginfo": "^0.4.1",
+        "yargs": "^13.2.1"
+    },
+    "bin": {
+        "argdown": "./dist/src/cli.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/christianvoigt/argdown/tree/master/packages/argdown-cli"
+    },
+    "author": {
+        "name": "Christian Voigt",
+        "email": "1pxsolidblack@gmail.com"
+    },
+    "scripts": {
+        "deploy": "npm run version:patch && git push --tags origin HEAD:master",
+        "build": "npm run clean && npm run build:src",
+        "build:src": "tsc",
+        "test": "npm run build && mocha -r ts-node/register --full-trace --require source-map-support/register ./test/**/*.spec.ts",
+        "test:custom-process": "mocha -r ts-node/register --full-trace --require source-map-support/register ./test/**/*.spec.ts --fgrep \"custom process\"",
+        "coverage": "nyc mocha -r ts-node/register --full-trace --bail --require source-map-support/register ./test/**/*.spec.ts",
+        "report": "nyc report",
+        "prepublishOnly": "npm run-script build",
+        "clean": "rimraf \"dist/*\"",
+        "version:patch": "npm version patch"
+    },
+    "readmeFilename": "Readme.md",
+    "preferGlobal": true,
+    "devDependencies": {
+        "@types/chai": "^4.2.3",
+        "@types/chai-fs": "^2.0.2",
+        "@types/mocha": "^5.2.7",
+        "@types/rimraf": "^2.0.2",
+        "@types/node": "^12.7.8",
+        "chai": "^4.2.0",
+        "chai-fs": "^2.0.0",
+        "copyfiles": "^2.1.1",
+        "cpx": "^1.5.0",
+        "glob": "^7.1.4",
+        "intercept-stdout": "^0.1.2",
+        "mkdirp": "^0.5.1",
+        "mocha": "^6.2.0",
+        "nyc": "^14.1.1",
+        "rimraf": "^3.0.0",
+        "source-map-support": "^0.5.13",
+        "ts-node": "^8.4.1",
+        "typedoc": "^0.15.0",
+        "typescript": "^3.6.3",
+        "typescript-workspace-plugin": "^2.0.1"
+    },
+    "nyc": {
+        "include": [
+            "dist/src/**/*.js",
+            "dist/src/**/*.jsx"
+        ],
+        "extension": [
+            ".js",
+            ".jsx"
+        ],
+        "require": [
+            "ts-node/register"
+        ],
+        "reporter": [
+            "text",
+            "html"
+        ],
+        "sourceMap": true,
+        "instrument": true
+    }
 }

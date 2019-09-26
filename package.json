@@ -1,38 +1,38 @@
 {
-  "name": "@argdown/monorepo",
-  "author": "Christian Voigt <1pxsolidblack@googlemail.com>",
-  "repository": "https://github.com/christianvoigt/argdown",
-  "private": true,
-  "scripts": {
-    "lerna:bootstrap": "lerna bootstrap",
-    "lerna:version": "lerna version",
-    "test": "lerna run test",
-    "test:coverage": "lerna run test:coverage",
-    "build": "lerna run build",
-    "docs:dev": "vuepress dev ./docs",
-    "docs:sitemap": "vuepress-sitemap -H https://argdown.org -d docs/.vuepress/dist",
-    "docs:buildall": "./build-docs.sh",
-    "docs:build": "vuepress build docs",
-    "docs:deploy": "./deploy-docs.sh",
-    "prepare": "lerna run prepare"
-  },
-  "readmeFilename": "Readme.md",
-  "preferGlobal": true,
-  "devDependencies": {
-    "esm": "^3.2.18",
-    "lerna": "^3.4.2",
-    "viz.js": "^1.8.1",
-    "vuepress": "^0.14.10"
-  },
-  "workspace-sources": {
-    "*": [
-      "packages/*/src"
-    ]
-  },
-  "dependencies": {
-    "d3": "^5.5.0",
-    "markdown-it-container": "^2.0.0",
-    "save-dev": "^2.0.0",
-    "vuepress-plugin-sitemap": "^2.1.1"
-  }
+    "name": "@argdown/monorepo",
+    "author": "Christian Voigt <1pxsolidblack@googlemail.com>",
+    "repository": "https://github.com/christianvoigt/argdown",
+    "private": true,
+    "scripts": {
+        "lerna:bootstrap": "lerna bootstrap",
+        "lerna:version": "lerna version",
+        "test": "lerna run test",
+        "test:coverage": "lerna run test:coverage",
+        "build": "lerna run build",
+        "docs:dev": "vuepress dev ./docs",
+        "docs:sitemap": "vuepress-sitemap -H https://argdown.org -d docs/.vuepress/dist",
+        "docs:buildall": "./build-docs.sh",
+        "docs:build": "vuepress build docs",
+        "docs:deploy": "./deploy-docs.sh",
+        "prepare": "lerna run prepare"
+    },
+    "readmeFilename": "Readme.md",
+    "preferGlobal": true,
+    "devDependencies": {
+        "esm": "^3.2.18",
+        "lerna": "^3.16.4",
+        "viz.js": "^1.8.1",
+        "vuepress": "^0.14.10"
+    },
+    "workspace-sources": {
+        "*": [
+            "packages/*/src"
+        ]
+    },
+    "dependencies": {
+        "d3": "^5.5.0",
+        "markdown-it-container": "^2.0.0",
+        "save-dev": "^2.0.0",
+        "vuepress-plugin-sitemap": "^2.1.1"
+    }
 }
