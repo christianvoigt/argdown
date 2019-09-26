@@ -189,7 +189,7 @@ export class GraphMLExportPlugin implements IArgdownPlugin {
       allowEmpty: false
     });
   };
-  createGraphMLDocument(): builder.XMLElementOrXMLNode {
+  createGraphMLDocument(): builder.XMLElement {
     const graphml = builder
       .create("graphml", {
         version: "1.0",
@@ -216,10 +216,10 @@ export class GraphMLExportPlugin implements IArgdownPlugin {
     return graphml;
   }
   createEdgeElement(
-    graph: builder.XMLElementOrXMLNode,
+    graph: builder.XMLElement,
     edge: IMapEdge,
     settings: IGraphMLSettings
-  ): builder.XMLElementOrXMLNode {
+  ): builder.XMLElement {
     let edgeColor = edge.color;
     let sourceArrow = "none";
     let targetArrow = "standard";
@@ -250,10 +250,10 @@ export class GraphMLExportPlugin implements IArgdownPlugin {
     return edgeEl;
   }
   createGroupElement(
-    parent: builder.XMLElementOrXMLNode,
+    parent: builder.XMLElement,
     groupMapNode: IGroupMapNode,
     settings: IGraphMLSettings
-  ): builder.XMLElementOrXMLNode {
+  ): builder.XMLElement {
     const labelWidth = pixelWidth(groupMapNode.labelTitle, {
       font: settings.group!.font,
       size: settings.group!.fontSize,
@@ -428,10 +428,10 @@ export class GraphMLExportPlugin implements IArgdownPlugin {
     return outerGroupEl;
   }
   createNodeElement(
-    parent: builder.XMLElementOrXMLNode,
+    parent: builder.XMLElement,
     mapNode: IMapNode,
     settings: IGraphMLSettings
-  ): builder.XMLElementOrXMLNode {
+  ): builder.XMLElement {
     if (isGroupMapNode(mapNode)) {
       return this.createGroupElement(parent, mapNode, settings);
     }
