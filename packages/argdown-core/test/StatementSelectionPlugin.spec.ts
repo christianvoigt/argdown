@@ -158,6 +158,7 @@ describe("StatementSelectionPlugin", function() {
     selection:
         statementSelectionMode: not-used-in-argument
     ===
+
     <a>
     
     (1) [title]: I am not selected
@@ -186,6 +187,7 @@ describe("StatementSelectionPlugin", function() {
     selection:
         statementSelectionMode: with-title
     ===
+
     <a>
     
     (1) [title]: I am selected
@@ -214,6 +216,7 @@ describe("StatementSelectionPlugin", function() {
     selection:
         statementSelectionMode: with-relations
     ===
+
     <a>
     
     (1) [title]: I am not selected
@@ -242,6 +245,7 @@ describe("StatementSelectionPlugin", function() {
     selection:
         statementSelectionMode: with-more-than-one-relation
     ===
+
     <a>
     
     (1) [title]: I am not selected
@@ -270,6 +274,7 @@ describe("StatementSelectionPlugin", function() {
     selection:
         statementSelectionMode: top-level
     ===
+
     <a>
     
     (1) [title]: I am not selected
@@ -293,7 +298,8 @@ describe("StatementSelectionPlugin", function() {
     let result = app.run(request);
 
     expect(result.selection!.statements.length).to.equal(3);
-    expect(result.selection!.statements.find(s => s.title! === "another title")).to.exist;
+    expect(result.selection!.statements.find(s => s.title! === "another title"))
+      .to.exist;
     expect(result.selection!.arguments.length).to.equal(2);
   });
 });

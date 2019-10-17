@@ -828,6 +828,7 @@ describe("ModelPlugin", function() {
         mode: InterpretationModes.STRICT
       }
     });
+    expect(response.parserErrors!.length).to.equal(0);
     expect(response.arguments!["A1"]).to.exist;
     expect(response.arguments!["A1"].pcs[1]).to.exist;
     expect(isConclusion(response.arguments!["A1"].pcs[1])).to.be.true;

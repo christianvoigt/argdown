@@ -1,106 +1,107 @@
 {
-    "name": "@argdown/core",
-    "description": "A pluggable parser for the Argdown argumentation syntax",
-    "keywords": [
-        "argumentation",
-        "parser",
-        "argument mapping",
-        "Argdown",
-        "Markdown",
-        "Chevrotain"
+  "name": "@argdown/core",
+  "description": "A pluggable parser for the Argdown argumentation syntax",
+  "keywords": [
+    "argumentation",
+    "parser",
+    "argument mapping",
+    "Argdown",
+    "Markdown",
+    "Chevrotain"
+  ],
+  "version": "1.1.0",
+  "license": "MIT",
+  "main": "./dist/src/index",
+  "types": "./dist/src/index.d.ts",
+  "dependencies": {
+    "@babel/polyfill": "^7.6.0",
+    "@types/chai": "^4.2.3",
+    "@types/js-yaml": "^3.12.1",
+    "@types/lodash.clonedeep": "^4.5.6",
+    "@types/lodash.defaultsdeep": "^4.6.6",
+    "@types/lodash.last": "^3.0.6",
+    "@types/lodash.merge": "^4.6.6",
+    "@types/lodash.partialright": "^4.2.6",
+    "@types/lodash.union": "^4.6.6",
+    "@types/node": "^12.7.8",
+    "chevrotain": "^6.5.0",
+    "eventemitter3": "^4.0.0",
+    "js-yaml": "^3.13.1",
+    "lodash.clonedeep": "^4.5.0",
+    "lodash.defaultsdeep": "^4.6.1",
+    "lodash.last": "^3.0.0",
+    "lodash.merge": "^4.6.2",
+    "lodash.partialright": "^4.2.1",
+    "lodash.union": "^4.6.0",
+    "mdurl": "^1.0.1",
+    "punycode": "^2.1.1",
+    "string-pixel-width": "^1.10.0",
+    "xmlbuilder": "^13.0.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/christianvoigt/argdown/tree/master/packages/argdown-core"
+  },
+  "author": {
+    "name": "Christian Voigt",
+    "email": "1pxsolidblack@gmail.com"
+  },
+  "browserslist": "last 2 versions, ie 10",
+  "scripts": {
+    "deploy": "npm run test && npm run build && npm version patch && npm run push",
+    "type-check": "tsc --noEmit",
+    "build": "npm run clean && npm run build:src && npm run copy:argdown && npm run copy:css",
+    "build:src": "tsc",
+    "docs:build": "typedoc  --options ./typedoc.js",
+    "copy:argdown": "copyfiles \"test/**/*.{ad,argdown}\" dist",
+    "copy:css": "copyfiles \"src/**/*.css\" dist",
+    "test": "mocha -r ts-node/register --full-trace ./test/**/*.spec.ts",
+    "test:map": "mocha -r ts-node/register --full-trace ./test/MapPlugin.spec.ts",
+    "test:lexer": "mocha -r ts-node/register --full-trace ./test/lexer.spec.ts",
+    "test:parser": "mocha -r ts-node/register --full-trace ./test/parser.spec.ts",
+    "test:model": "mocha -r ts-node/register --full-trace ./test/ModelPlugin.spec.ts",
+    "test:statement-selection": "mocha -r ts-node/register --full-trace ./test/StatementSelectionPlugin.spec.ts",
+    "test:deriveImplicitRelations": "mocha -r ts-node/register --full-trace ./test/deriveImplicitRelations.spec.ts",
+    "test:defaults": "mocha -r ts-node/register --full-trace ./test/DefaultSettings.spec.ts",
+    "coverage": "nyc mocha -r ts-node/register --full-trace --bail ./test/**/*.spec.ts",
+    "report": "nyc report",
+    "clean": "rimraf \"dist/*\"",
+    "prepublishOnly": "npm run-script build",
+    "push": "git push --tags origin HEAD:master"
+  },
+  "readmeFilename": "Readme.md",
+  "devDependencies": {
+    "@types/mocha": "^5.2.7",
+    "chai": "^4.2.0",
+    "copyfiles": "^2.1.1",
+    "glob": "^7.1.4",
+    "mkdirp": "^0.5.1",
+    "mocha": "^6.2.0",
+    "nyc": "^14.1.1",
+    "rimraf": "^3.0.0",
+    "source-map-support": "^0.5.13",
+    "ts-node": "^8.4.1",
+    "typedoc": "^0.15.0",
+    "typescript": "^3.6.3",
+    "typescript-workspace-plugin": "^2.0.1"
+  },
+  "nyc": {
+    "include": [
+      "src/**/*.ts",
+      "src/**/*.tsx"
     ],
-    "version": "1.1.0",
-    "license": "MIT",
-    "main": "./dist/src/index",
-    "types": "./dist/src/index.d.ts",
-    "dependencies": {
-        "@babel/polyfill": "^7.6.0",
-        "@types/chai": "^4.2.3",
-        "@types/js-yaml": "^3.12.1",
-        "@types/lodash.clonedeep": "^4.5.6",
-        "@types/lodash.defaultsdeep": "^4.6.6",
-        "@types/lodash.last": "^3.0.6",
-        "@types/lodash.merge": "^4.6.6",
-        "@types/lodash.partialright": "^4.2.6",
-        "@types/lodash.union": "^4.6.6",
-        "@types/node": "^12.7.8",
-        "chevrotain": "^6.5.0",
-        "eventemitter3": "^4.0.0",
-        "js-yaml": "^3.13.1",
-        "lodash.clonedeep": "^4.5.0",
-        "lodash.defaultsdeep": "^4.6.1",
-        "lodash.last": "^3.0.0",
-        "lodash.merge": "^4.6.2",
-        "lodash.partialright": "^4.2.1",
-        "lodash.union": "^4.6.0",
-        "mdurl": "^1.0.1",
-        "punycode": "^2.1.1",
-        "string-pixel-width": "^1.10.0",
-        "xmlbuilder": "^13.0.2"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/christianvoigt/argdown/tree/master/packages/argdown-core"
-    },
-    "author": {
-        "name": "Christian Voigt",
-        "email": "1pxsolidblack@gmail.com"
-    },
-    "browserslist": "last 2 versions, ie 10",
-    "scripts": {
-        "deploy": "npm run test && npm run build && npm version patch && npm run push",
-        "type-check": "tsc --noEmit",
-        "build": "npm run clean && npm run build:src && npm run copy:argdown && npm run copy:css",
-        "build:src": "tsc",
-        "docs:build": "typedoc  --options ./typedoc.js",
-        "copy:argdown": "copyfiles \"test/**/*.{ad,argdown}\" dist",
-        "copy:css": "copyfiles \"src/**/*.css\" dist",
-        "test": "mocha -r ts-node/register --full-trace --require source-map-support/register ./test/**/*.spec.ts",
-        "test:map": "mocha -r ts-node/register --full-trace --require source-map-support/register ./test/MapPlugin.spec.ts",
-        "test:lexer": "mocha -r ts-node/register --full-trace --require source-map-support/register ./test/lexer.spec.ts",
-        "test:parser": "mocha -r ts-node/register --full-trace --require source-map-support/register ./test/parser.spec.ts",
-        "test:model": "mocha -r ts-node/register --full-trace --require source-map-support/register ./test/ModelPlugin.spec.ts",
-        "test:deriveImplicitRelations": "mocha -r ts-node/register --full-trace --require source-map-support/register ./test/deriveImplicitRelations.spec.ts",
-        "test:defaults": "mocha -r ts-node/register --full-trace --require source-map-support/register ./test/DefaultSettings.spec.ts",
-        "coverage": "nyc mocha -r ts-node/register --full-trace --bail --require source-map-support/register ./test/**/*.spec.ts",
-        "report": "nyc report",
-        "clean": "rimraf \"dist/*\"",
-        "prepublishOnly": "npm run-script build",
-        "push": "git push --tags origin HEAD:master"
-    },
-    "readmeFilename": "Readme.md",
-    "devDependencies": {
-        "@types/mocha": "^5.2.7",
-        "chai": "^4.2.0",
-        "copyfiles": "^2.1.1",
-        "glob": "^7.1.4",
-        "mkdirp": "^0.5.1",
-        "mocha": "^6.2.0",
-        "nyc": "^14.1.1",
-        "rimraf": "^3.0.0",
-        "source-map-support": "^0.5.13",
-        "ts-node": "^8.4.1",
-        "typedoc": "^0.15.0",
-        "typescript": "^3.6.3",
-        "typescript-workspace-plugin": "^2.0.1"
-    },
-    "nyc": {
-        "include": [
-            "src/**/*.ts",
-            "src/**/*.tsx"
-        ],
-        "extension": [
-            ".ts",
-            ".tsx"
-        ],
-        "require": [
-            "ts-node/register"
-        ],
-        "reporter": [
-            "text",
-            "html"
-        ],
-        "sourceMap": true,
-        "instrument": true
-    }
+    "extension": [
+      ".ts",
+      ".tsx"
+    ],
+    "require": [
+      "ts-node/register"
+    ],
+    "reporter": [
+      "text",
+      "html"
+    ],
+    "sourceMap": true,
+    "instrument": true
+  }
 }

@@ -37,6 +37,7 @@ describe("ColorPlugin", function() {
     color:
       colorScheme: iwanthue-red-roses
     ===
+    
     [Statement 1]: #tag1
       + [Statement 2]: #tag2 #tag3
         - [Statement 3]: #tag3

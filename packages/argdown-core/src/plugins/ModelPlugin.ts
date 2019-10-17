@@ -690,6 +690,26 @@ export class ModelPlugin implements IArgdownPlugin {
           response.tags![tag] = tagData;
           tagCounter++;
         }
+      },
+      [TokenNames.NEWLINE]: (
+        _request,
+        _response,
+        _token,
+        parentNode,
+        childIndex
+      ) => {
+        const target = currentHeading ? currentHeading : currentStatement;
+        if (!target) {
+          return;
+        }
+        const oldText = target.text || "";
+        // Add empty space if not already preceded by one and if this is not the end of the string.
+        if (
+          childIndex !== parentNode!.children!.length - 1 &&
+          oldText.charAt(oldText.length - 1) !== " "
+        ) {
+          target.text = oldText + " ";
+        }
       }
     };
     this.ruleListeners = {
@@ -990,9 +1010,7 @@ export class ModelPlugin implements IArgdownPlugin {
           throw new ArgdownPluginError(
             this.name,
             "multiple-pcs-assignments",
-            `Multiple premise-conclusion-structures assigned to argument <${
-              argument.title
-            }>. You can only assign one pcs per argument.`
+            `Multiple premise-conclusion-structures assigned to argument <${argument.title}>. You can only assign one pcs per argument.`
           );
         }
         argument.pcs = [];

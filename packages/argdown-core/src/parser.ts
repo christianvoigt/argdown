@@ -19,13 +19,24 @@ class ArgdownParser extends Parser {
     Parser.performSelfAnalysis(this);
   }
   //caches
+  private c0: any;
   private c1: any;
   private c2: any;
   private c3: any;
 
   public argdown = this.RULE<IAstNode>(RuleNames.ARGDOWN, () => {
     this.OPTION1(() => {
-      this.CONSUME1(lexer.Emptyline);
+      this.OR1(
+        this.c0 ||
+          (this.c0 = [
+            {
+              ALT: () => this.CONSUME1(lexer.Emptyline)
+            },
+            {
+              ALT: () => this.CONSUME1(lexer.Newline)
+            }
+          ])
+      );
     });
     const children: IAstNode[] = [];
     this.OPTION2(() => {
@@ -38,7 +49,7 @@ class ArgdownParser extends Parser {
       SEP: lexer.Emptyline,
       DEF: () => {
         atLeastOne.push(
-          this.OR(
+          this.OR2(
             this.c1 ||
               (this.c1 = [
                 {
@@ -75,8 +86,14 @@ class ArgdownParser extends Parser {
     this.AT_LEAST_ONE({
       DEF: () => children.push(this.SUBRULE(this.statementContent))
     });
-    this.OPTION(() => {
-      children.push(this.CONSUME2(lexer.Data));
+    this.OPTION1(() => {
+      this.OPTION2(() => {
+        children.push(this.CONSUME2(lexer.Newline));
+      });
+      children.push(this.CONSUME3(lexer.Data));
+      this.OPTION3(() => {
+        children.push(this.CONSUME4(lexer.Newline));
+      });
     });
     return IRuleNode.create(RuleNames.HEADING, children);
   });
@@ -111,25 +128,38 @@ class ArgdownParser extends Parser {
     let children: IAstNode[] = [];
     children.push(this.CONSUME1(lexer.InferenceStart));
     this.OPTION1(() => {
+      this.OPTION2(() => {
+        children.push(this.CONSUME1(lexer.Newline));
+      });
       children.push(this.SUBRULE1<IAstNode>(this.inferenceRules));
     });
-    this.OPTION2(() => {
-      children.push(this.CONSUME2(lexer.Data));
+    this.OPTION3(() => {
+      children.push(this.CONSUME2(lexer.Newline));
+    });
+    this.OPTION4(() => {
+      children.push(this.CONSUME3(lexer.Data));
+      this.OPTION5(() => {
+        children.push(this.CONSUME3(lexer.Newline));
+      });
     });
     children.push(this.CONSUME3(lexer.InferenceEnd));
-    this.OPTION3(() => {
-      children.push(this.SUBRULE2<IAstNode>(this.inferenceRelations));
+    children.push(this.CONSUME4(lexer.Newline));
+    this.OPTION6(() => {
+      children.push(this.SUBRULE4<IAstNode>(this.inferenceRelations));
     });
     return IRuleNode.create(RuleNames.INFERENCE, children);
   });
-  private inferenceRules = this.RULE<IAstNode>(RuleNames.INFERENCE_RULES, () => {
-    let children: IAstNode[] = [];
-    this.AT_LEAST_ONE_SEP1({
-      SEP: lexer.ListDelimiter,
-      DEF: () => children.push(this.SUBRULE(this.freestyleText))
-    });
-    return IRuleNode.create(RuleNames.INFERENCE_RULES, children);
-  });
+  private inferenceRules = this.RULE<IAstNode>(
+    RuleNames.INFERENCE_RULES,
+    () => {
+      let children: IAstNode[] = [];
+      this.AT_LEAST_ONE_SEP1({
+        SEP: lexer.ListDelimiter,
+        DEF: () => children.push(this.SUBRULE(this.freestyleText))
+      });
+      return IRuleNode.create(RuleNames.INFERENCE_RULES, children);
+    }
+  );
 
   private orderedList = this.RULE(RuleNames.ORDERED_LIST, () => {
     let children: IAstNode[] = [];
@@ -142,7 +172,9 @@ class ArgdownParser extends Parser {
   private unorderedList = this.RULE(RuleNames.UNORDERED_LIST, () => {
     let children: IAstNode[] = [];
     children.push(this.CONSUME(lexer.Indent));
-    this.AT_LEAST_ONE(() => children.push(this.SUBRULE(this.unorderedListItem)));
+    this.AT_LEAST_ONE(() =>
+      children.push(this.SUBRULE(this.unorderedListItem))
+    );
     this.CONSUME(lexer.Dedent); // Dedent is removed from AST
     // children.push(this.CONSUME(lexer.Dedent));
     return IRuleNode.create(RuleNames.UNORDERED_LIST, children);
@@ -185,13 +217,19 @@ class ArgdownParser extends Parser {
           this.MANY(() => {
             children.push(this.CONSUME2(lexer.Tag));
           });
+          this.OPTION1(() => {
+            children.push(this.CONSUME1(lexer.Newline));
+          });
         }
       }
     ]);
-    this.OPTION1(() => {
-      children.push(this.CONSUME2(lexer.Data));
-    });
     this.OPTION2(() => {
+      children.push(this.CONSUME4(lexer.Data));
+      this.OPTION3(() => {
+        children.push(this.CONSUME2(lexer.Newline));
+      });
+    });
+    this.OPTION4(() => {
       children.push(this.SUBRULE(this.relations));
     });
     return IRuleNode.create(RuleNames.ARGUMENT, children);
@@ -211,6 +249,9 @@ class ArgdownParser extends Parser {
           this.MANY(() => {
             children.push(this.CONSUME2(lexer.Tag));
           });
+          this.OPTION1(() => {
+            children.push(this.CONSUME1(lexer.Newline));
+          });
         }
       },
       {
@@ -218,14 +259,19 @@ class ArgdownParser extends Parser {
           let defChildren = [];
           defChildren.push(this.CONSUME3(lexer.StatementDefinition));
           defChildren.push(this.SUBRULE4(this.statementContent));
-          children.push(IRuleNode.create(RuleNames.STATEMENT_DEFINITION, defChildren));
+          children.push(
+            IRuleNode.create(RuleNames.STATEMENT_DEFINITION, defChildren)
+          );
         }
       }
     ]);
-    this.OPTION1(() => {
-      children.push(this.CONSUME5(lexer.Data));
-    });
     this.OPTION2(() => {
+      children.push(this.CONSUME4(lexer.Data));
+      this.OPTION3(() => {
+        children.push(this.CONSUME2(lexer.Newline));
+      });
+    });
+    this.OPTION4(() => {
       children.push(this.SUBRULE(this.relations));
     });
     return IRuleNode.create(RuleNames.STATEMENT, children);
@@ -361,16 +407,16 @@ class ArgdownParser extends Parser {
       {
         ALT: () => {
           children.push(this.CONSUME(lexer.UnderscoreBoldStart));
-          this.OPTION1(()=>{
+          this.OPTION1(() => {
             children.push(this.SUBRULE1(this.statementContent));
-          })
+          });
           children.push(this.CONSUME(lexer.UnderscoreBoldEnd));
         }
       },
       {
         ALT: () => {
           children.push(this.CONSUME(lexer.AsteriskBoldStart));
-          this.OPTION2(()=>{
+          this.OPTION2(() => {
             children.push(this.SUBRULE2(this.statementContent));
           });
           children.push(this.CONSUME(lexer.AsteriskBoldEnd));
@@ -385,7 +431,7 @@ class ArgdownParser extends Parser {
       {
         ALT: () => {
           children.push(this.CONSUME(lexer.UnderscoreItalicStart));
-          this.OPTION1(()=>{
+          this.OPTION1(() => {
             children.push(this.SUBRULE3(this.statementContent));
           });
           children.push(this.CONSUME(lexer.UnderscoreItalicEnd));
@@ -394,7 +440,7 @@ class ArgdownParser extends Parser {
       {
         ALT: () => {
           children.push(this.CONSUME(lexer.AsteriskItalicStart));
-          this.OPTION2(()=>{
+          this.OPTION2(() => {
             children.push(this.SUBRULE4(this.statementContent));
           });
           children.push(this.CONSUME(lexer.AsteriskItalicEnd));
@@ -431,13 +477,20 @@ class ArgdownParser extends Parser {
               },
               {
                 ALT: () => this.CONSUME(lexer.StatementMention)
+              },
+              {
+                ALT: () => this.CONSUME(lexer.Newline)
               }
+
               // , {
               //     ALT: () => children.push(this.CONSUME(lexer.StatementMentionByNumber))
               // }
             ])
         )
       );
+      // this.OPTION1(() => {
+      //   children.push(this.CONSUME1(lexer.Newline));
+      // });
     });
     return IRuleNode.create(RuleNames.STATEMENT_CONTENT, children);
   });

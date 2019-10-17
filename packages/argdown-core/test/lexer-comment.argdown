@@ -17,3 +17,10 @@ Another <!-- **Comment** --> Statement <!-- [Comment] -->
 // Another comment
 
 /* And another comment */
+
+Another statement
+    <!-- A comment with leading and trailing linebreak -->
+    + <an argument>
+    <!-- A comment with leading linebreak and trailing emtpy line (with empty spaces!) -->
+  
+THE END
