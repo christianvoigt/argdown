@@ -4,9 +4,9 @@
 
 [Argdown](https://christianvoigt.github.io/argdown) is a simple syntax for analyzing complex argumentation.
 
-- Writing pro & contra lists in Argdown is as simple as writing a twitter message. You don't have to learn anything new, except a few simple rules that will feel very natural.
-- With these simple rules you will be able to define complex dialectical relations between arguments or dive into the details of their logical premise-conclusion structures.
-- Your document is transformed into an argument map while you are typing. You can export your analysis as HTML, SVG, PDF, PNG or JSON. If that is not enough, you can easily extend Argdown with your own plugin.
+- Listing pros & cons in Argdown is as simple as writing a twitter message. You don't have to learn anything new, except a few simple rules that will feel very natural.
+- With these simple rules you will be able to define more complex relations between arguments or dive into the details of their logical premise-conclusion structures.
+- Your document is transformed into an [argument map](https://en.wikipedia.org/wiki/Argument_map) while you are typing. You can export your analysis as HTML, SVG, PDF, PNG or JSON. If that is not enough, you can easily extend Argdown with your own plugin.
 
 Start with [the docs](https://christianvoigt.github.io/argdown) or try it out in the [Browser Sandbox](http://christianvoigt.github.io/argdown).
 

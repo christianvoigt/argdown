@@ -2,11 +2,11 @@
 
 [Intro]: Argdown is a simple syntax for defining argumentative 
 structures, inspired by Markdown.
-  + Writing a *pro & contra list* in Argdown is as 
+  + Writing a list of *pros & cons* in Argdown is as 
     simple as writing a twitter message (actually we are 
     right in the middle of one).
   + But you can also 
-    **logically reconstruct** more complex dialectical 
+    **logically reconstruct** more complex 
     relations between arguments or dive into 
     the details of their premise-conclusion structures.
   + Finally, you can export Argdown as a graph and create 
