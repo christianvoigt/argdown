@@ -1,6 +1,6 @@
 # Argdown for Visual Studio Code
 
-![Argdown logo](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/argdown-arrow.png?sanitize=true)
+![Argdown logo](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/argdown-arrow.png)
 
 [Argdown](https://argdown.org) is a simple syntax for analyzing complex argumentation, inspired by Markdown. This extension provides full language support for Argdown in VS Code:
 
@@ -27,7 +27,7 @@ To tell VS Code that your document is an Argdown document, save your document wi
 
 Standard themes do not by default highlight Argdown relations and elements. To add complete Argdown syntax highlighting to VSCode you can activate one of the two default themes that are provided by the Argdown extension:
 
-![Activating the Argdown theme](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/ArgdownThemeScreencap.gif?sanitize=true "Activating the Argdown theme")
+![Activating the Argdown theme](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/ArgdownThemeScreencap.gif "Activating the Argdown theme")
 
 1. Go to `File/Preferences/Color Theme` (Windows) or `Code/Preferences/Color Theme` (OSX) in the main application menu
 2. Select `Argdown Light` or `Argdown Dark` from the list of available themes
@@ -38,21 +38,21 @@ If you prefer to work a different theme, you can also add custom Argdown colors 
 
 ## Map Preview
 
-![Map Preview](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/MapPreviewScreencap.gif?sanitize=true "Opening the map preview")
+![Map Preview](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/MapPreviewScreencap.gif "Opening the map preview")
 
 ## Code Completion
 
-![Code Completion](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/CodeCompletionScreencap.gif?sanitize=true "Using code completion")
+![Code Completion](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/CodeCompletionScreencap.gif "Using code completion")
 
 ## Document Outline, Breadcrumbs and Symbol Search
 
-![Document Outline](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/OutlineScreencap.gif?sanitize=true "Using the document outline")
+![Document Outline](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/OutlineScreencap.gif "Using the document outline")
 
-![Breadcrumbs](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/BreadcrumbsScreencap.gif?sanitize=true "Using breadcrumbs")
+![Breadcrumbs](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/BreadcrumbsScreencap.gif "Using breadcrumbs")
 
 ## Exporting
 
-![Export](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/ExportScreencap.gif?sanitize=true "Exporting Argdown document")
+![Export](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/ExportScreencap.gif "Exporting Argdown document")
 
 ### Adding custom Argdown colors to your settings
 

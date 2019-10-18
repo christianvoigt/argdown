@@ -1,6 +1,6 @@
 # @argdown/cli
 
-![Argdown logo](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/argdown-arrow.png?sanitize=true "Argdown logo")
+![Argdown logo](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/argdown-arrow.png "Argdown logo")
 
 A commandline interface to process Argdown data.
 
@@ -8,11 +8,11 @@ To learn more about the Argdown argumentation syntax, visit the [Argdown documen
 
 ## Features
 
-* export text document to html with `argdown html`
-* export argument map to pdf, svg or dot with `argdown map`
-* export data to json with `argdown json`
-* returns code diagnostics
-* extend @argdown/cli with custom plugins and processes in a `argdown.config.js` file and run them with `argdown run [processName]`
+- export text document to html with `argdown html`
+- export argument map to pdf, svg or dot with `argdown map`
+- export data to json with `argdown json`
+- returns code diagnostics
+- extend @argdown/cli with custom plugins and processes in a `argdown.config.js` file and run them with `argdown run [processName]`
 
 For a better editing experience we recommend to additionally install the [VS Code extension](https://argdown.org/guide/installing-the-vscode-extension.html).
 
@@ -38,11 +38,11 @@ npx @argdown/cli map
 
 Available commands:
 
-* `argdown html [input glob] [output folder]`: exports the input files as html files into the output folder.
-* `argdown map [input glob] [output folder]`: exports argument maps layouted with Graphviz. By default the maps are saved as pdf files. Use `--format svg` to save svg files and `--format dot` to save dot files.
-* `argdown json [input glob] [output folder]`: exports the input files as .json files into the output folder.
-* `argdown compile [input glob] [output folder]`: compiles the input files with included files into new .argdown files.
-* `argdown run [process name]`: runs a custom process defined in your `argdown.config.js`.
+- `argdown html [input glob] [output folder]`: exports the input files as html files into the output folder.
+- `argdown map [input glob] [output folder]`: exports argument maps layouted with Graphviz. By default the maps are saved as pdf files. Use `--format svg` to save svg files and `--format dot` to save dot files.
+- `argdown json [input glob] [output folder]`: exports the input files as .json files into the output folder.
+- `argdown compile [input glob] [output folder]`: compiles the input files with included files into new .argdown files.
+- `argdown run [process name]`: runs a custom process defined in your `argdown.config.js`.
 
 All commands can be used with the `-w` option: The cli will then watch your .argdown files continuously for changes and export them instantly.
 

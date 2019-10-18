@@ -1,6 +1,6 @@
 # @argdown/map-views
 
-![Argdown logo](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/argdown-arrow.png?sanitize=true "Argdown logo")
+![Argdown logo](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/argdown-arrow.png "Argdown logo")
 
 This package is part of the [Argdown project](https://argdown.org). It contains the two Argdown map views used in @argdown/vscode and @argdown/sandbox:
 
