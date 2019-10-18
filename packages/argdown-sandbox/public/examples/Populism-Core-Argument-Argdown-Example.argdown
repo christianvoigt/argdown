@@ -4,6 +4,7 @@ author: David Lanius
 date: 27/10/2018
 ===
 
+
 This is a recontruction of right-wing populist argumentation 
 based on the electoral platform of the German party 
 "Alternative für Deutschland" (AfD) from 2017. A commented 
@@ -23,21 +24,20 @@ from imminent doom. The argument builds then on several
 further arguments for why this should be the case. But 
 let's first look at the core argument itself in more detail.
 
-[Power]: Populists need to come to power. #populism 
-  <+ <Core Argument>: Populists are the only salvation of 
-  society from nemesis. #populism 
+[Power]: The populists must come to power. #populism 
+  <+ <Core Argument>: The populists are the only salvation of 
+  society from doom. #populism 
 
-<Core Argument>: Populists are the only salvation of society 
-from nemesis.
+<Core Argument>: The populists are the only salvation of society 
+from doom. #populism 
 
-(1) [Nemesis]: Society confronts nemesis and needs to be 
-saved. #populism 
-(2) [Salvation]: Society can only be saved, if populists come 
+(1) [Doom]: Society is doomed and must be saved. #populism 
+(2) [Salvation]: Society can only be saved, if the populists come 
 to power. #populism 
- + <Salvation by the People>: Only populists can realize the 
+ + <Salvation by the People>: Only the populists can realize the 
  will of the people. #populism 
 ----
-(3) Populist need to come to power.
+(3) [Power]: The populists must come to power.
 
 The second premise is supported by an argument, 
 which could be said to be quintessentially populist 
@@ -47,11 +47,11 @@ according to the political scientist Jan-Werner Müller.
 
 (1) [Will of the People]: Society can only be saved, if 
 the will of the people is realized. #populism 
-(2) [Voice of the People]: Only if populists come to 
+(2) [Voice of the People]: Only if the populists come to 
 power, the will of the people will be realized. #populism 
 ----
-(3) Society can only be saved, if the will of the people 
-is realized.
+(3) [Salvation]: Society can only be saved, if the populists come 
+to power.
 
 # Salvation
 
@@ -61,17 +61,15 @@ Three distinct arguments can be identified in the electoral
 platform of the AfD. Note that the numbers behind the 
 statements refer to the sections in the original electoral platform.
 
-[Voice of the People]: Only if populists come to power, 
+[Voice of the People]: Only if the populists come to power, 
 the will of the people will be realized.
  + <The "Establishment">: The "established parties" prevent 
- the people's will from being realized. (1) #establishment 
- + <The "Fake News">: The "fake news" prevents the people's 
- will from being realized. (9) #news 
- + <The "EU Dictate">: The European Union prevents the people's 
- will from being realized. (1) #eu 
+ the will of the people from being realized. (1) #establishment 
+ + <The "Fake News">: The "fake news" prevents the will of the people from being realized. (9) #news 
+ + <The "EU Dictate">: The European Union prevents the will of the people from being realized. (1) #eu 
 
-The first argument is based on the populists' aversion 
-to the so called "establishment".
+The first argument is based on the populists' critique 
+of the so called "establishment".
 
 <The "Establishment">
 
@@ -81,9 +79,9 @@ only the populists can come to power. #establishment
 and cannot realize the popular will. (1.7) #establishment 
 (3) [Realization]: The will of the people will only be realized 
 if a party comes to power that wants to and can realize the 
-people's will. #establishment
+will of the people. #establishment
 ----
-(4) Only if populists come to power, the will of the people 
+(4) [Voice of the People]: Only if the populists come to power, the will of the people 
 will be realized.
 
 The following argument supports the premise @[Lost Connection] 
@@ -101,24 +99,22 @@ people. #establishment
 ----
 (3) [Lost Connection]
 
-The second argument is based on the populists' aversion to 
+The second argument is based on the populists' critique of 
 supranational organisations and treaties.
 
 <The "EU Dictate">
 
-(1) [No Realization of the People's Will in EU]: The will 
+(1) [No People's Will in EU]: The will 
 of the people will only be realized if we leave the EU. (1.1) #eu 
-   + <No Democracy in EU>: : As long as we are in the EU, 
-   democracy can not be restored in society. (1.1) #eu 
-(2) [Exit from EU]: Only populists have the political goal 
+   + <No Democracy in EU>: As long as we are in the EU, 
+   democracy cannot be restored in society. (1.1) #eu 
+(2) [Exit from EU]: Only the populists have the political goal 
 of leaving the EU. #eu 
 ----
-(3) Only if populists come to power, the will of the people 
+(3) [Voice of the People]: Only if the populists come to power, the will of the people 
 will be realized.
 
-The following argument supports the premise 
-@[No Realization of the People's Will in EU] of 
-the previous argument.
+The following argument supports the premise @[No People's Will in EU] of the previous argument.
 
 <No Democracy in EU>
 
@@ -131,10 +127,10 @@ the people, there is no democracy. #eu
 (4) [No Democracy, No People's Will]: The will of the people 
 will only be realized if democracy is restored. #eu 
 ----
-(5) [No Realization of the People's Will in EU]
+(5) [No People's Will in EU]
   
-The third argument is based on the populists' aversion 
-to the media.
+The third argument is based on the populists' critique 
+of the media.
 
 <The "Fake News">
 
@@ -150,8 +146,8 @@ only be abolished if populists come to power. #news
 people will only be realized if freedom of expression is 
 not subject to any restrictions or censorship. #news 
 ----
-(4) The will of the people will only be realized if 
-populists come to power.
+(4) [Voice of the People]: Only if the populists come to power, the will of the people 
+will be realized.
 
 The following argument supports the premise 
 @["Fake News" and Censorship] of the previous argument.
@@ -159,70 +155,60 @@ The following argument supports the premise
 <Public Debate>
 
 (1) ["Political Correctness"]: If the "fake news" prevails, 
-the parties use the instrument of "political correctness" 
+the parties continue to use the instrument of "political correctness" 
 and bring the press in line. #news 
-(2) [Opinion Formation]: If the parties use the instrument 
+(2) [Opinion Formation]: If the parties continue to use the instrument 
 of "political correctness" and bring the press in line, 
-the freedom of expression is limited and censored. (9.4) #news 
+the freedom of expression will be limited and censored. (9.4) #news 
 ----
 (3) ["Fake News" and Censorship]
 
-# Nemesis
+# Doom
 
 What follows are arguments supporting the first premise 
-@[Nemesis] of the argument @<Core Argument>. Eight distinct 
+@[Doom] of the argument @<Core Argument>. Eight distinct 
 arguments can be identified in the electoral platform of 
 the AfD. The four most important have been highlighted. 
 They tackle the themes of immigration, Islam, crime, and 
 culture. Again the conclusions of all these arguments are 
-identical to the premise @[Nemesis] of the core argument.
+identical to the premise @[Doom] of the core argument.
 
 Here is an overview:
 
-[Nemesis]: Society is doomed and must be saved.
- + <Immigration>: The "refugee crisis" threatens 
+[Doom]: Society is doomed and must be saved.
+ + <Immigration>: The "refugee crisis" is a threat to 
  society. (5) #immigration 
- + <Injustice>: Social injustice threatens society. (10, 11)
- + <Islam>: Islam threatens society. (6) #islam 
- + <Crime>: Rising crime and terror threatens society. (4) #crime 
- + <Culture>: The disappearance of an identity-creating 
- culture threatens society. (8, 9) #culture 
- + <Globalization>: Globalization threatens society. (3)
- + <Demography>: Demographic change threatens society. (11)
- + <Healthcare System>: Failure of the health system 
- threatens society. (12)
- + <Innovation>: Techophobia threatens society. (13)
+ + <Injustice>: Social injustice is a threat to society. (10, 11)
+ + <Islam>: Islam is a threat to society. (6) #islam 
+ + <Crime>: Crime and terror is a threat to society. (4) #crime 
+ + <Culture>: The disappearance of cultural identity is a threat to society. (8, 9) #culture 
+ + <Globalization>: Globalization is a threat to society. (3)
+ + <Demography>: Demographic change is a threat to society. (11)
+ + <Healthcare>: Failure of healthcare is a threat to society. (12)
+ + <Innovation>: Technophobia is a threat to society. (13)
 
 First, the arguments that are most dominant in the electoral 
 platform are concerned with immigration.
 
 <Immigration>
 
-(1) [Destabilization]: Immigration to Europe threatens to 
-destabilize society. (5.1) #immigration 
+(1) [Destabilization]: Immigration to Europe threatens to destabilize society. (5.1) #immigration 
     +> <Islam>
     +> <Injustice>
-(2) The current laws and measures don't suffice to prevent 
-destabilization. #immigration 
-(3) [Destabilization]: If society threatens to destabilize 
-itself and the current laws and measures are not likely to 
-prevent destabilization, it is about to be destroyed and
- must be saved. (5.1) #immigration 
+(2) The current laws and measures don't suffice to prevent destabilization. #immigration 
+(3) If society is threatened by destabilization and the current laws and measures don't suffice to prevent destabilization, it is doomed and must be saved. (5.1) #immigration 
 ----
 (3) Society is doomed and must be saved.
 
 [Destabilization] 
     + <"Foreign Infiltration">: The cultures of the refugees 
     "alienate" the "German culture". (8.4, 8.8, 9.1)
-    + <Household Expenditure>: The supply of refugees places 
-    a burden on the state budget. (5.2, 5.6, 5.7) #immigration 
-    + <Disadvantage for families>: The focus on refugees 
-    disadvantaged "German" families. (11.2) #immigration 
-    + <Crime Rates by Refugees>: Refugees are above average 
-    criminal. (4.1, 4.9) #immigration 
+    + <Household Burden>: The immigration of refugees places an insurmountable burden on the state budget. (5.2, 5.6, 5.7) #immigration 
+    + <Disadvantage for Germans>: The political focus on refugees puts "German" families at a disadvantage. (11.2) #immigration 
+    + <Crime Rates by Refugees>: Refugees are more criminal than the average. (4.1, 4.9) #immigration 
       +> [Crime Rates Increase]
 
-Second, connected to, but to be separated from immigration 
+Second, connected to, but different from immigration 
 are arguments concerned with Islam and crime.
 
 <Islam>
@@ -246,7 +232,7 @@ situation is inadequate, society is doomed and must be saved.
 ----
 (4) Society is doomed and must be saved.
 
-Also very central to the electoral platform are arguments 
+Also central to the electoral platform are arguments 
 concerned with the perceived decline of the "German 
 identity-creating culture".
 
@@ -258,8 +244,7 @@ society is in danger. (9.1) #culture
     society. (8.6) #culture 
     + <"Multiculturalism">: "Multiculturalism" endangers 
     the culture of society. (9.1) #culture 
-    + <"Foreign Infiltration">: The refugees' cultures 
-    infiltrate the "German culture". (8.4, 8.8, 9.1) #immigration 
+    + <"Foreign Infiltration">: The refugees' cultures "alienate" the "German culture". (8.4, 8.8, 9.1) #immigration 
     + <Family>: The traditional family is losing 
     importance. (7.5) #culture 
 (2) Society cannot exist without an identity-creating culture.
@@ -267,7 +252,8 @@ society is in danger. (9.1) #culture
 (3) Society is doomed and must be saved.
 
 Somewhat less important are arguments concerned with social 
-injustice, healthcare, demography, and globalization.
+injustice, healthcare, demography, and globalization, all of
+which nevertheless have as their conclusion @[Doom].
 
 <Injustice>
 
@@ -277,7 +263,7 @@ to be destroyed and must be saved.
 ----
 (3) Society is doomed and must be saved.
 
-<Healthcare System>
+<Healthcare>
 
 (1) When the health care system is structurally overburdened, 
 society is in decline and must be saved.
@@ -286,16 +272,12 @@ society is in decline and must be saved.
 (3) Society is doomed and must be saved.
 
 [Overload]: The health system is structurally overloaded. (12.1)
- + <Euro Politics>: The Euro has failed and European 
- interest-rate policy weighs on the state budget. #eu
+ + <Euro Politics>: The Euro has failed and the European monetary policy strains the state budget. #eu
  
 <Demography>
 
-(1) [Insufficiency]: The current policy measures are 
-insufficient to counter demographic change and its 
-consequences. (11.4)
-  + <Household Expenditure>: The refugees place a 
-  burden on the state budget. (5.2, 5.6, 5.7) #immigration 
+(1) [Insufficiency]: The current policy measures are insufficient to counter demographic change and its consequences. (11.4)
+  + <Household Burden>: The immigration of refugees places an insurmountable burden on the state budget. (5.2, 5.6, 5.7) #immigration 
 (2) Demographic change is taking place.
 (3) When demographic change is taking place and the 
 current policies are inadequate, society is in decline 
@@ -306,23 +288,16 @@ and must be saved.
 <Globalization>
 
 (1) Globalization threatens society.
-(2) [Decline of the Nation State]: The nation state is 
-currently unable to face the challenges of globalization. (11.1)
-    + <Corruption and Incomptence>: The "established" parties 
-    are corrupt and incompetent. #establishment
-(3) If globalization threatens society and the nation-state 
-is unable to meet its challenges, society faces the downfall 
-and must be saved
+(2) [Decline of the Nation State]: The nation state is currently unable to face the challenges of globalization. (11.1)
+    + <Corruption and Incomptence>: The "establishment" is corrupt and incompetent. #establishment
+(3) If globalization threatens society and the nation-state is unable to meet its challenges, society is doomed and must be saved.
 ----
 (4) Society is doomed and must be saved.
 
 <Innovation>
 
-(1) [Technophobia]: Increasing hostility to technology is 
-spreading in society. (13.3)
-    + <Energy Transition>: The energy transition is based 
-    on falsehoods and prevents technological innovation. (13.1)
-(2) Without technological innovation and economic freedom, 
-society is in decline and must be saved.
+(1) [Technophobia]: Increasing hostility to technology is spreading in society. (13.3)
+    + <Turn in Climate Policy>: The turn in climate policy is based on falsehoods and prevents technological innovation. (13.1)
+(2) Without technological innovation and economic freedom, society is doomed and must be saved.
 ----
 (4) Society is doomed and must be saved.

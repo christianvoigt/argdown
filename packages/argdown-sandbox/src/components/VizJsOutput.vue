@@ -49,7 +49,9 @@ export default {
   mounted: function() {
     const svgContainer = this.$refs.container;
     const urlToFullRenderJs = "/full.render.js";
-    this.$_vizJsMap = new VizJsMap(svgContainer, {workerURL: urlToFullRenderJs});
+    this.$_vizJsMap = new VizJsMap(svgContainer, {
+      workerURL: urlToFullRenderJs
+    });
     this.updateMap();
     var el = this.$refs.container;
     var $store = this.$store;
