@@ -264,9 +264,7 @@ export class HtmlExportPlugin implements IArgdownPlugin {
           linkUrl = "";
           linkText = "removed insecure url.";
         }
-        response.html += `<a href="${linkUrl}">${linkText}</a>${
-          token.trailingWhitespace
-        }`;
+        response.html += `<a href="${linkUrl}">${linkText}</a>${token.trailingWhitespace}`;
       },
       [TokenNames.TAG]: (_request, response, node) => {
         const token = node as ITokenNode;
@@ -275,6 +273,20 @@ export class HtmlExportPlugin implements IArgdownPlugin {
             response,
             [token.tag!]
           )}">${escapeHtml(token.text)}</span>`;
+        }
+      },
+      [TokenNames.NEWLINE]: (
+        _request,
+        response,
+        _node,
+        parentNode,
+        childIndex
+      ) => {
+        if (
+          response.html!.charAt(response.html!.length - 1) !== " " &&
+          childIndex != parentNode!.children!.length - 1
+        ) {
+          response.html += " ";
         }
       }
     };
@@ -290,11 +302,7 @@ export class HtmlExportPlugin implements IArgdownPlugin {
         if (!settings.headless) {
           let head = settings.head;
           if (!head) {
-            head = `<!doctype html><html lang="${
-              settings.lang
-            }"><head><meta charset="${
-              settings.charset
-            }"><title>${title}</title>`;
+            head = `<!doctype html><html lang="${settings.lang}"><head><meta charset="${settings.charset}"><title>${title}</title>`;
             if (settings.cssFile) {
               head += `<link rel="stylesheet" href="${settings.cssFile}">`;
             }
@@ -378,9 +386,7 @@ export class HtmlExportPlugin implements IArgdownPlugin {
         if (node.statement && node.statement.isTopLevel) {
           classes += " top-level";
         }
-        response.html += `<div data-line="${
-          node.startLine
-        }" class="${classes}">`;
+        response.html += `<div data-line="${node.startLine}" class="${classes}">`;
       },
       [RuleNames.STATEMENT + "Exit"]: (_request, response) =>
         (response.html += "</div>"),
@@ -393,9 +399,7 @@ export class HtmlExportPlugin implements IArgdownPlugin {
         if (node.statement && node.statement.isTopLevel) {
           classes += " top-level";
         }
-        response.html += `<div data-line="${
-          node.startLine
-        }" class="${classes}">`;
+        response.html += `<div data-line="${node.startLine}" class="${classes}">`;
       },
       [RuleNames.ARGUMENT + "Exit"]: (_request, response) =>
         (response.html += "</div>"),
@@ -412,61 +416,45 @@ export class HtmlExportPlugin implements IArgdownPlugin {
           classes +=
             " " + $.getCssClassesFromTags(response, node.argument.tags);
         }
-        response.html += `<div id="${htmlId}" data-line="${
-          node.startLine
-        }" class="${classes}">`;
+        response.html += `<div id="${htmlId}" data-line="${node.startLine}" class="${classes}">`;
       },
       [RuleNames.PCS + "Exit"]: (_request, response) =>
         (response.html += "</div>"),
       [RuleNames.INCOMING_SUPPORT + "Entry"]: (_request, response, node) => {
-        response.html += `<div data-line="${
-          node.startLine
-        }" class="has-line incoming support relation"><div class="incoming support relation-symbol"><span>+&gt;</span></div>`;
+        response.html += `<div data-line="${node.startLine}" class="has-line incoming support relation"><div class="incoming support relation-symbol"><span>+&gt;</span></div>`;
       },
       [RuleNames.INCOMING_SUPPORT + "Exit"]: (_request, response) =>
         (response.html += "</div>"),
       [RuleNames.INCOMING_ATTACK + "Entry"]: (_request, response, node) => {
-        response.html += `<div data-line="${
-          node.startLine
-        }" class="has-line incoming attack relation"><div class="incoming attack relation-symbol"><span>-&gt;</span></div>`;
+        response.html += `<div data-line="${node.startLine}" class="has-line incoming attack relation"><div class="incoming attack relation-symbol"><span>-&gt;</span></div>`;
       },
       [RuleNames.INCOMING_ATTACK + "Exit"]: (_request, response) =>
         (response.html += "</div>"),
       [RuleNames.INCOMING_UNDERCUT + "Entry"]: (_request, response, node) => {
-        response.html += `<div data-line="${
-          node.startLine
-        }" class="has-line incoming undercut relation"><div class="incoming undercut relation-symbol"><span>_&gt;</span></div>`;
+        response.html += `<div data-line="${node.startLine}" class="has-line incoming undercut relation"><div class="incoming undercut relation-symbol"><span>_&gt;</span></div>`;
       },
       [RuleNames.INCOMING_UNDERCUT + "Exit"]: (_request, response) =>
         (response.html += "</div>"),
       [RuleNames.OUTGOING_SUPPORT + "Entry"]: (_request, response, node) => {
-        response.html += `<div data-line="${
-          node.startLine
-        }" class="has-line outgoing support relation"><div class="outgoing support relation-symbol"><span>+</span></div>`;
+        response.html += `<div data-line="${node.startLine}" class="has-line outgoing support relation"><div class="outgoing support relation-symbol"><span>+</span></div>`;
       },
       [RuleNames.OUTGOING_SUPPORT + "Exit"]: (_request, response) => {
         response.html += "</div>";
       },
       [RuleNames.OUTGOING_ATTACK + "Entry"]: (_request, response, node) => {
-        response.html += `<div data-line="${
-          node.startLine
-        }" class="has-line outgoing attack relation"><div class="outgoing attack relation-symbol"><span>-</span></div>`;
+        response.html += `<div data-line="${node.startLine}" class="has-line outgoing attack relation"><div class="outgoing attack relation-symbol"><span>-</span></div>`;
       },
       [RuleNames.OUTGOING_ATTACK + "Exit"]: (_request, response) => {
         response.html += "</div>";
       },
       [RuleNames.OUTGOING_UNDERCUT + "Entry"]: (_request, response, node) => {
-        response.html += `<div data-line="${
-          node.startLine
-        }" class="has-line outgoing undercut relation"><div class="outgoing undercut relation-symbol"><span>&lt;_</span></div>`;
+        response.html += `<div data-line="${node.startLine}" class="has-line outgoing undercut relation"><div class="outgoing undercut relation-symbol"><span>&lt;_</span></div>`;
       },
       [RuleNames.OUTGOING_UNDERCUT + "Exit"]: (_requst, response) => {
         response.html += "</div>";
       },
       [RuleNames.CONTRADICTION + "Entry"]: (_request, response, node) => {
-        response.html += `<div data-line="${
-          node.startLine
-        }" class="has-line contradiction relation"><div class="contradiction relation-symbol"><span>&gt;&lt;</span></div>`;
+        response.html += `<div data-line="${node.startLine}" class="has-line contradiction relation"><div class="contradiction relation-symbol"><span>&gt;&lt;</span></div>`;
       },
       [RuleNames.CONTRADICTION + "Exit"]: (_request, response) => {
         response.html += "</div>";
@@ -486,15 +474,11 @@ export class HtmlExportPlugin implements IArgdownPlugin {
       [RuleNames.UNORDERED_LIST + "Exit"]: (_request, response) =>
         (response.html += "</ul>"),
       [RuleNames.ORDERED_LIST_ITEM + "Entry"]: (_request, response, node) =>
-        (response.html += `<li data-line="${
-          node.startLine
-        }" class="has-line">`),
+        (response.html += `<li data-line="${node.startLine}" class="has-line">`),
       [RuleNames.ORDERED_LIST_ITEM + "Exit"]: (_request, response) =>
         (response.html += "</li>"),
       [RuleNames.UNORDERED_LIST_ITEM + "Entry"]: (_request, response, node) =>
-        (response.html += `<li data-line="${
-          node.startLine
-        }" class="has-line">`),
+        (response.html += `<li data-line="${node.startLine}" class="has-line">`),
       [RuleNames.UNORDERED_LIST_ITEM + "Exit"]: (_request, response) =>
         (response.html += "</li>"),
       [RuleNames.HEADING + "Entry"]: (request, response, node) => {
@@ -508,9 +492,7 @@ export class HtmlExportPlugin implements IArgdownPlugin {
         }
         let htmlId = getHtmlId("heading", node.text!, response.htmlIds!);
         response.htmlIds![htmlId] = true;
-        response.html += `<h${node.level} data-line="${
-          node.startLine
-        }" id="${htmlId}" class="has-line heading">`;
+        response.html += `<h${node.level} data-line="${node.startLine}" id="${htmlId}" class="has-line heading">`;
       },
       [RuleNames.HEADING + "Exit"]: (_request, response, node) =>
         (response.html += "</h" + (<IRuleNode>node).level + ">"),
@@ -557,13 +539,9 @@ export class HtmlExportPlugin implements IArgdownPlugin {
             !inference.inferenceRules ||
             inference.inferenceRules.length == 0
           ) {
-            response.html += `<div data-line="${
-              inference.startLine
-            }" class="has-line inference">`;
+            response.html += `<div data-line="${inference.startLine}" class="has-line inference">`;
           } else {
-            response.html += `<div data-line="${
-              inference.startLine
-            }" class="has-line inference with-data">`;
+            response.html += `<div data-line="${inference.startLine}" class="has-line inference with-data">`;
           }
 
           response.html += `<span class="inference-rules">`;
