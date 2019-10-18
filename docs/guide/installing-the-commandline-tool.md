@@ -10,7 +10,7 @@ meta:
 The Argdown commandline tool is a Node.js program and distributed as a npm package. To install it you first have to install Node.js:
 
 1.  [Download Node.js](https://nodejs.org/en/) and install it manually or use a [package manager](https://nodejs.org/en/download/package-manager/) to install it. You need at least Node 8.0.0, so if you already have node installed, please check its version ('node --version') and update it if needed. Npm is node's package manager and comes already installed with Node.js so you can now use it.
-2.  Run `npm install @argdown/cli` to install the comandline tool globally.
+2.  Run `npm install -g @argdown/cli` to install the comandline tool globally.
 3.  You can now run `argdown --help` in the commandline to get further help on using the commandline tool. The tool consists of several commands for exporting Argdown documents into other document formats. For example `argdown map` will export any Argdown files in the current directory as svg files that are saved in the "svg" folder. You can get help for the options of each command by using the `--help` parameter. For example, enter `argdown map --help` to see all options of the `map` command.
 
 :::tip Next step
