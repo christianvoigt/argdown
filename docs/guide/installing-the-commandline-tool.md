@@ -1,8 +1,8 @@
 ---
 title: Installing the Argdown commandline tool
 meta:
-    - name: description
-      content: How to install the Argdown commandline tool
+  - name: description
+    content: How to install the Argdown commandline tool
 ---
 
 # Installing the commandline-tool
@@ -27,6 +27,6 @@ If you are new to Argdown, the next step is to follow along with our [first exam
 
 ## Further help on using the commandline tool
 
-Please read the [README](https://github.com/christianvoigt/argdown/blob/master/packages/argdown-cli/README.md) of the commandline tool for further information.
+Please read the [README](https://github.com/christianvoigt/argdown/blob/master/packages/argdown-cli/Readme.md) of the commandline tool for further information.
 
 If you run into any issues while installing or running the commandline tool, you can search for existing issues or post a new issue in the [Argdown repository](https://github.com/christianvoigt/argdown/issues).

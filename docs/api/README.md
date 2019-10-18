@@ -50,6 +50,6 @@ The VS Code extension, depending on @argdown/core, @argdown/node, @argdown/langu
 
 ## @argdown/cli
 
-[README](https://github.com/christianvoigt/argdown/blob/master/packages/argdown-cli/README.md)
+[README](https://github.com/christianvoigt/argdown/blob/master/packages/argdown-cli/Readme.md)
 
 The commandline tool, depending on @argdown/node and @argdown/core.
