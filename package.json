@@ -19,10 +19,11 @@
     "readmeFilename": "Readme.md",
     "preferGlobal": true,
     "devDependencies": {
+        "@vuepress/plugin-pwa": "^1.0.0-rc.1",
         "esm": "^3.2.18",
         "lerna": "^3.16.4",
         "viz.js": "^1.8.1",
-        "vuepress": "^0.14.10"
+        "vuepress": "1.2.0"
     },
     "workspace-sources": {
         "*": [
@@ -33,6 +34,6 @@
         "d3": "^5.5.0",
         "markdown-it-container": "^2.0.0",
         "save-dev": "^2.0.0",
-        "vuepress-plugin-sitemap": "^2.1.1"
+        "vuepress-plugin-sitemap": "2.1.2"
     }
 }
