@@ -22,10 +22,10 @@ declare module "@argdown/core" {
   }
 }
 
-export class ArgdownSymbol extends DocumentSymbol {
-  public argdownType?: ArgdownTypes;
-  public argdownId?: string;
-  public level?: number;
+export interface ArgdownSymbol extends DocumentSymbol {
+  argdownType?: ArgdownTypes;
+  argdownId?: string;
+  level?: number;
 }
 
 const getRange = (node: IAstNode): Range => {
@@ -35,7 +35,11 @@ const getRange = (node: IAstNode): Range => {
   };
 };
 
-const addSymbol = (response: IArgdownResponse, symbol: ArgdownSymbol, parentsStack: ArgdownSymbol[]) => {
+const addSymbol = (
+  response: IArgdownResponse,
+  symbol: ArgdownSymbol,
+  parentsStack: ArgdownSymbol[]
+) => {
   if (parentsStack.length === 0) {
     response.documentSymbols!.push(symbol);
   } else {
@@ -49,8 +53,12 @@ const addSymbol = (response: IArgdownResponse, symbol: ArgdownSymbol, parentsSta
   }
 };
 
-const onRelationEntry = (parentsStack: ArgdownSymbol[], node: IRuleNode, relationSymbol: string) => {
-  const symbol = new ArgdownSymbol();
+const onRelationEntry = (
+  parentsStack: ArgdownSymbol[],
+  node: IRuleNode,
+  relationSymbol: string
+) => {
+  const symbol = {} as ArgdownSymbol;
   symbol.kind = SymbolKind.Variable;
   symbol.range = getRange(node);
   symbol.selectionRange = symbol.range;
@@ -58,7 +66,9 @@ const onRelationEntry = (parentsStack: ArgdownSymbol[], node: IRuleNode, relatio
   if (node.children && node.children.length > 1) {
     const secondChild = node.children![1];
     const firstGrandChild =
-      isRuleNode(secondChild) && secondChild.children && secondChild.children.length > 0
+      isRuleNode(secondChild) &&
+      secondChild.children &&
+      secondChild.children.length > 0
         ? secondChild.children[0]
         : null;
     if (firstGrandChild) {
@@ -75,7 +85,10 @@ const onRelationEntry = (parentsStack: ArgdownSymbol[], node: IRuleNode, relatio
   symbol.name = `${relationSymbol} ${relationMemberTitle}`;
   parentsStack.push(symbol);
 };
-const onRelationExit = (response: IArgdownResponse, parentsStack: ArgdownSymbol[]) => {
+const onRelationExit = (
+  response: IArgdownResponse,
+  parentsStack: ArgdownSymbol[]
+) => {
   const symbol = parentsStack.pop();
   addSymbol(response, symbol!, parentsStack);
 };
@@ -107,14 +120,24 @@ export class DocumentSymbolPlugin implements IArgdownPlugin {
         inRelations--;
       },
       [RuleNames.HEADING + "Exit"]: (_request, response, node) => {
-        let parent = parentsStack.length > 0 ? parentsStack[parentsStack.length - 1] : null;
+        let parent =
+          parentsStack.length > 0
+            ? parentsStack[parentsStack.length - 1]
+            : null;
         const level = node.section!.level;
-        while (parent && parent.argdownType === ArgdownTypes.SECTION && parent.level! >= level) {
+        while (
+          parent &&
+          parent.argdownType === ArgdownTypes.SECTION &&
+          parent.level! >= level
+        ) {
           parentsStack.pop();
           addSymbol(response, parent!, parentsStack);
-          parent = parentsStack.length > 0 ? parentsStack[parentsStack.length - 1] : null;
+          parent =
+            parentsStack.length > 0
+              ? parentsStack[parentsStack.length - 1]
+              : null;
         }
-        const symbol = new ArgdownSymbol();
+        const symbol = {} as ArgdownSymbol;
         let hashChars = "";
         for (let i = 0; i < level; i++) {
           hashChars += "#";
@@ -136,14 +159,16 @@ export class DocumentSymbolPlugin implements IArgdownPlugin {
         if (inRelations > 0 || inPcs) {
           return;
         }
-        const symbol = new ArgdownSymbol();
+        const symbol = {} as ArgdownSymbol;
         symbol.name = `[${node.statement!.title}]`;
         symbol.range = getRange(node);
-        const firstChild = node.children && node.children.length > 0 ? node.children[0] : null;
+        const firstChild =
+          node.children && node.children.length > 0 ? node.children[0] : null;
         if (
           firstChild &&
           isRuleNode(firstChild) &&
-          (firstChild.name === RuleNames.STATEMENT_DEFINITION || firstChild.name === RuleNames.STATEMENT_REFERENCE)
+          (firstChild.name === RuleNames.STATEMENT_DEFINITION ||
+            firstChild.name === RuleNames.STATEMENT_REFERENCE)
         ) {
           symbol.selectionRange = getRange(firstChild);
         } else {
@@ -163,14 +188,16 @@ export class DocumentSymbolPlugin implements IArgdownPlugin {
         if (inRelations > 0 || inPcs) {
           return;
         }
-        const symbol = new ArgdownSymbol();
+        const symbol = {} as ArgdownSymbol;
         symbol.name = `<${node.argument!.title}>`;
         symbol.range = getRange(node);
-        const firstChild = node.children && node.children.length > 0 ? node.children[0] : null;
+        const firstChild =
+          node.children && node.children.length > 0 ? node.children[0] : null;
         if (
           firstChild &&
           isTokenNode(firstChild) &&
-          (tokenMatcher(firstChild, ArgumentDefinition) || tokenMatcher(firstChild, ArgumentReference))
+          (tokenMatcher(firstChild, ArgumentDefinition) ||
+            tokenMatcher(firstChild, ArgumentReference))
         ) {
           symbol.selectionRange = getRange(firstChild);
         } else {
@@ -188,14 +215,16 @@ export class DocumentSymbolPlugin implements IArgdownPlugin {
       },
       [RuleNames.PCS + "Entry"]: (_request, _response, node) => {
         inPcs = true;
-        const symbol = new ArgdownSymbol();
+        const symbol = {} as ArgdownSymbol;
         symbol.name = `PCS <${node.argument!.title}>`;
         symbol.range = getRange(node);
-        const firstChild = node.children && node.children.length > 0 ? node.children[0] : null;
+        const firstChild =
+          node.children && node.children.length > 0 ? node.children[0] : null;
         if (
           firstChild &&
           isTokenNode(firstChild) &&
-          (tokenMatcher(firstChild, ArgumentDefinition) || tokenMatcher(firstChild, ArgumentReference))
+          (tokenMatcher(firstChild, ArgumentDefinition) ||
+            tokenMatcher(firstChild, ArgumentReference))
         ) {
           symbol.selectionRange = getRange(firstChild);
         } else {
@@ -210,14 +239,16 @@ export class DocumentSymbolPlugin implements IArgdownPlugin {
         addSymbol(response, symbol!, parentsStack);
       },
       [RuleNames.PCS_STATEMENT + "Entry"]: (_request, _response, node) => {
-        const symbol = new ArgdownSymbol();
+        const symbol = {} as ArgdownSymbol;
         symbol.name = `(${node.statementNr}) [${node.statement!.title}]`;
         symbol.range = getRange(node);
-        const firstChild = node.children && node.children.length > 0 ? node.children[0] : null;
+        const firstChild =
+          node.children && node.children.length > 0 ? node.children[0] : null;
         if (
           firstChild &&
           isRuleNode(firstChild) &&
-          (firstChild.name === RuleNames.STATEMENT_DEFINITION || firstChild.name === RuleNames.STATEMENT_REFERENCE)
+          (firstChild.name === RuleNames.STATEMENT_DEFINITION ||
+            firstChild.name === RuleNames.STATEMENT_REFERENCE)
         ) {
           symbol.selectionRange = getRange(firstChild);
         } else {
@@ -231,14 +262,16 @@ export class DocumentSymbolPlugin implements IArgdownPlugin {
         addSymbol(response, symbol!, parentsStack);
       },
       [RuleNames.INFERENCE + "Entry"]: (_request, _response, node) => {
-        const symbol = new ArgdownSymbol();
+        const symbol = {} as ArgdownSymbol;
         symbol.name = `----`;
         symbol.range = getRange(node);
-        const firstChild = node.children && node.children.length > 0 ? node.children[0] : null;
+        const firstChild =
+          node.children && node.children.length > 0 ? node.children[0] : null;
         if (
           firstChild &&
           isRuleNode(firstChild) &&
-          (firstChild.name === RuleNames.STATEMENT_DEFINITION || firstChild.name === RuleNames.STATEMENT_REFERENCE)
+          (firstChild.name === RuleNames.STATEMENT_DEFINITION ||
+            firstChild.name === RuleNames.STATEMENT_REFERENCE)
         ) {
           symbol.selectionRange = getRange(firstChild);
         } else {

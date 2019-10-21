@@ -20,7 +20,7 @@ import {
   DocumentSymbolParams,
   FoldingRangeParams
 } from "vscode-languageserver";
-import Uri from "vscode-uri";
+import { URI } from "vscode-uri";
 import { IArgdownSettings } from "./IArgdownSettings";
 import {
   exportDocument,
@@ -271,7 +271,7 @@ const processDocForProviders = async (textDocument: TextDocumentIdentifier) => {
   const doc = documents.get(textDocument.uri);
   if (doc) {
     const text = doc.getText();
-    const path = Uri.parse(textDocument.uri).fsPath;
+    const path = URI.parse(textDocument.uri).fsPath;
     return await processTextForProviders(text, path);
   }
   return null;
@@ -310,7 +310,7 @@ connection.onHover(async (params: TextDocumentPositionParams) => {
 const onlyWhitespacePattern = /^\s*$/;
 connection.onCompletion(async (params: TextDocumentPositionParams) => {
   const { textDocument, position } = params;
-  const path = Uri.parse(textDocument.uri).fsPath;
+  const path = URI.parse(textDocument.uri).fsPath;
   const doc = documents.get(textDocument.uri);
   if (doc) {
     const txt = doc.getText();
@@ -369,7 +369,7 @@ connection.onDefinition(async (params: TextDocumentPositionParams) => {
 argdown.addPlugin(new DocumentSymbolPlugin(), "add-document-symbols");
 
 connection.onDocumentSymbol(async (params: DocumentSymbolParams) => {
-  const path = Uri.parse(params.textDocument.uri).fsPath;
+  const path = URI.parse(params.textDocument.uri).fsPath;
   const doc = documents.get(params.textDocument.uri);
   if (doc) {
     const request: IArgdownRequest & { inputUri: string } = {
@@ -412,7 +412,7 @@ connection.onFoldingRanges(async (params: FoldingRangeParams) => {
 //   const workspaceSymbols: SymbolInformation[] = <SymbolInformation[]>[];
 //   const query = params.query;
 //   for (var workspaceFolder of workspaceFolders) {
-//     const rootPath = Uri.parse(workspaceFolder.uri).fsPath;
+//     const rootPath = URI.parse(workspaceFolder.uri).fsPath;
 //     const inputPath = rootPath + "/**/*.{ad,argdown}";
 //     const request = {
 //       inputPath,
@@ -446,7 +446,7 @@ connection.onExecuteCommand(async params => {
     }
     for (var workspaceFolder of workspaceFolders) {
       let settings = await getDocumentSettings(workspaceFolder.uri);
-      let rootPath = Uri.parse(workspaceFolder.uri).fsPath;
+      let rootPath = URI.parse(workspaceFolder.uri).fsPath;
       if (!settings.configFile || settings.configFile === "") {
         return;
       }

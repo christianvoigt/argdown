@@ -1,37 +1,37 @@
 {
-    "name": "@argdown/language-server",
-    "description": "Language Server for the Argdown argumentation syntax.",
-    "version": "1.1.0",
-    "author": "Christian Voigt",
-    "license": "MIT",
-    "main": "dist/src/server.js",
-    "types": "dist/src/server.d.ts",
-    "engines": {
-        "node": ">= 8.0.0"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/christianvoigt/argdown/tree/master/packages/argdown-language-server"
-    },
-    "dependencies": {
-        "@argdown/core": "^1.1.0",
-        "@argdown/node": "^1.1.0",
-        "@types/node": "^12.7.8",
-        "vscode-languageserver": "^5.3.0-next.1",
-        "vscode-uri": "^1.0.6"
-    },
-    "scripts": {
-        "build": "tsc -p .",
-        "watch": "tsc -w -p .",
-        "prepublishOnly": "npm run build",
-        "test": "mocha -r ts-node/register --full-trace --require source-map-support/register ./test/**/*.spec.ts"
-    },
-    "devDependencies": {
-        "@types/chai": "^4.2.3",
-        "@types/mocha": "^5.2.7",
-        "chai": "^4.2.0",
-        "mocha": "^6.2.0",
-        "ts-node": "^8.0.2",
-        "typescript": "^3.6.3"
-    }
+  "name": "@argdown/language-server",
+  "description": "Language Server for the Argdown argumentation syntax.",
+  "version": "1.1.0",
+  "author": "Christian Voigt",
+  "license": "MIT",
+  "main": "dist/src/server.js",
+  "types": "dist/src/server.d.ts",
+  "engines": {
+    "node": ">= 8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/christianvoigt/argdown/tree/master/packages/argdown-language-server"
+  },
+  "dependencies": {
+    "@argdown/core": "^1.1.0",
+    "@argdown/node": "^1.1.0",
+    "@types/node": "^12.11.1",
+    "vscode-languageserver": "^6.0.0-next.1",
+    "vscode-uri": "^2.0.3"
+  },
+  "scripts": {
+    "build": "tsc -p .",
+    "watch": "tsc -w -p .",
+    "prepublishOnly": "npm run build",
+    "test": "mocha -r ts-node/register --full-trace --require source-map-support/register ./test/**/*.spec.ts"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.2.3",
+    "@types/mocha": "^5.2.7",
+    "chai": "^4.2.0",
+    "mocha": "^6.2.2",
+    "ts-node": "^8.4.1",
+    "typescript": "^3.6.4"
+  }
 }

@@ -1,11 +1,16 @@
-import { Position, TextDocumentIdentifier, TextEdit, WorkspaceEdit } from "vscode-languageserver";
+import {
+  Position,
+  TextDocumentIdentifier,
+  TextEdit,
+  WorkspaceEdit
+} from "vscode-languageserver";
 import { createRange } from "./utils";
 import { findReferences } from "./findReferences";
 import { findNodeAtPosition } from "./findNodeAtPosition";
 import { IAstNode, isTokenNode } from "@argdown/core";
 const createTextEdit = (node: IAstNode, newName: string): TextEdit | null => {
   if (isTokenNode(node) && node.tokenType) {
-    switch (node.tokenType.tokenName) {
+    switch (node.tokenType.name) {
       case "ArgumentReference":
         return TextEdit.replace(createRange(node), `<${newName}>`);
       case "ArgumentDefinition":

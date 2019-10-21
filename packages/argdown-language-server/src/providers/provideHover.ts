@@ -13,7 +13,7 @@ export const provideHover = (
   const character = position.character + 1;
   const nodeAtPosition = findNodeAtPosition(response, line, character);
   if (nodeAtPosition && isTokenNode(nodeAtPosition)) {
-    const tokenName = nodeAtPosition.tokenType!.tokenName;
+    const tokenName = nodeAtPosition.tokenType!.name;
     if (tokenName!.startsWith("Statement")) {
       const eqClass = response.statements![nodeAtPosition.title!];
       return <Hover>{

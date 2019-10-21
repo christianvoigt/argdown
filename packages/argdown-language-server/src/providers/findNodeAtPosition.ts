@@ -40,7 +40,7 @@ export const findNodeAtPosition = (
     if (!n.tokenType) {
       return false;
     }
-    switch (n.tokenType.tokenName) {
+    switch (n.tokenType.name) {
       case TokenNames.STATEMENT_REFERENCE:
       case TokenNames.STATEMENT_DEFINITION:
       case TokenNames.STATEMENT_MENTION:

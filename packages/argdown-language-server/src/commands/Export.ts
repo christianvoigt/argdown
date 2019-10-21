@@ -1,4 +1,4 @@
-import Uri from "vscode-uri";
+import { URI } from "vscode-uri";
 import { TextDocument } from "vscode-languageserver";
 import { AsyncArgdownApplication } from "@argdown/node";
 import { IArgdownRequest } from "@argdown/core";
@@ -113,7 +113,7 @@ export const exportContent = async (
 ) => {
   let request: IArgdownRequest = {};
   if (args.process === "vizjs-to-pdf" || args.process === "dagre-to-pdf") {
-    request.outputPath = Uri.parse(args.target).fsPath;
+    request.outputPath = URI.parse(args.target).fsPath;
     const getRequest = requestProviders[args.process];
     request = getRequest(request);
     const response = {
@@ -122,7 +122,7 @@ export const exportContent = async (
     await argdownEngine.runAsync(request, response);
   } else {
     request.input = args.content;
-    request.outputPath = Uri.parse(args.target).fsPath;
+    request.outputPath = URI.parse(args.target).fsPath;
     const getRequest = requestProviders[args.process];
     request = getRequest(request);
     await argdownEngine.runAsync(request);
@@ -134,8 +134,8 @@ export const exportDocument = async (
   doc: TextDocument | undefined
 ) => {
   let request: any = { logLevel: "none" };
-  request.inputPath = Uri.parse(args.source).fsPath;
-  request.outputPath = Uri.parse(args.target).fsPath;
+  request.inputPath = URI.parse(args.source).fsPath;
+  request.outputPath = URI.parse(args.target).fsPath;
   const getRequest = requestProviders[args.process];
   request = getRequest(request);
   if (doc) {
