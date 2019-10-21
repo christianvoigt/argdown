@@ -9,7 +9,7 @@
     "Markdown",
     "Chevrotain"
   ],
-  "version": "1.1.0",
+  "version": "1.2.0",
   "license": "MIT",
   "main": "./dist/src/index",
   "types": "./dist/src/index.d.ts",
@@ -52,7 +52,7 @@
     "type-check": "tsc --noEmit",
     "build": "npm run clean && npm run build:src && npm run copy:argdown && npm run copy:css",
     "build:src": "tsc",
-    "docs:build": "typedoc  --options ./typedoc.js",
+    "docs:build": "node ./node_modules/typedoc/bin/typedoc",
     "copy:argdown": "copyfiles \"test/**/*.{ad,argdown}\" dist",
     "copy:css": "copyfiles \"src/**/*.css\" dist",
     "test": "mocha -r ts-node/register --full-trace ./test/**/*.spec.ts",

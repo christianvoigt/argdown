@@ -11,7 +11,7 @@ Vue.use(AsyncComputed);
 Vue.config.productionTip = false;
 
 Vue.filter("tokenName", function(token) {
-  return token.tokenType.tokenName;
+  return token.tokenType.name;
 });
 
 /* eslint-disable no-new */

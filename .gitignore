@@ -2,7 +2,6 @@
 node_modules
 
 /docs/.vuepress/dist/
-/docs/changes/
 
 .nyc_output
 
