@@ -100,6 +100,7 @@ export class ArgdownPreview {
         )
       }
     );
+    webview.iconPath = contentProvider.iconPath;
 
     return new ArgdownPreview(
       webview,
@@ -488,6 +489,7 @@ export class ArgdownPreview {
           this._locked
         );
         this.editor.webview.html = content;
+        this.editor.iconPath = this._contentProvider.iconPath;
       }
     } catch (e) {
       this._logger.log(e);

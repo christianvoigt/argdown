@@ -23,7 +23,12 @@ const getCodeLineElements = (() => {
   return () => {
     if (!elements) {
       elements = [{ element: document.body, line: 0 }];
-      for (const element of document.getElementsByClassName("has-line")) {
+      const hasLineEls = document.getElementsByClassName("has-line");
+      for (let i = 0; i < hasLineEls.length; i++) {
+        const element = hasLineEls.item(i);
+        if (!element) {
+          continue;
+        }
         const line = +element.getAttribute("data-line")! - 1; // argdown-parser/chevrotain lines are one based
         if (!isNaN(line)) {
           elements.push({ element: element as HTMLElement, line });

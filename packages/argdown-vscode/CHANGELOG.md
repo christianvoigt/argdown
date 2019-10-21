@@ -1,5 +1,35 @@
 # Release Notes 2019
 
+## v1.2.0 (October 2019)
+
+**Changes in:** @argdown/core, @argdown/node, @argdown/vscode, @argdown/sandbox, @argdown/language-server, docs
+
+This is a small maintenance release that updates the packages dependencies, fixes the current bugs and improves the way linebreaks behave in statements and argument descriptions.
+
+### Line breaks and empty spaces
+
+Until now, line breaks were simply ignored by the parser. As @sbrugman pointed out in [#117](https://github.com/christianvoigt/argdown/issues/117) the standard Markdown behaviour is that single line breaks in a paragraph are interpreted as empty spaces. Argdown will now behave in a similar way if
+
+- the line break is not already preceded by an empty space
+- the line break does not finish the statement text or argument description.
+
+### Bug fixes
+
+- Windows line feed (\r) in argdown cli prevents it from running on linux #121
+- 3 \*s cause problem #118
+- Add support for implicit relation direction of undercut (_ instead of <_) #112
+
+### Documentation
+
+- error in installation instructions for @argdown/cli #120
+- link to first example broken #115
+- make docs more welcoming for users not familiar with argument maps #114
+- Documentation: Broken Link to @argdown/cli Readme and API docs #108
+
+### Other
+
+- argdown-vscode: Update icons #122
+
 ## v1.1.0 (March 2019)
 
 **Changes in:** @argdown/core, @argdown/node, @argdown/vscode, @argdown/sandbox, @argdown/language-server

@@ -61,6 +61,13 @@ export class ArgdownContentProvider {
       config
     );
   }
+  public get iconPath() {
+    const root = path.join(this.context.extensionPath, "media", "icons");
+    return {
+      light: vscode.Uri.file(path.join(root, "light", "preview.svg")),
+      dark: vscode.Uri.file(path.join(root, "dark", "preview.svg"))
+    };
+  }
   public async provideHtmlContent(
     argdownDocument: vscode.TextDocument,
     previewConfigurations: ArgdownPreviewConfigurationManager,

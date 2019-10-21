@@ -50,7 +50,7 @@ const onUpdateView = (() => {
     scrollToRevealSourceLine(line);
   }, 50);
 
-  return (line: number, settings: any) => {
+  return (line: number) => {
     if (!isNaN(line)) {
       updateLine(line);
       doScroll(line);
@@ -79,7 +79,7 @@ window.addEventListener(
         break;
 
       case "updateView":
-        onUpdateView(event.data.line, settings);
+        onUpdateView(event.data.line);
         break;
     }
   },

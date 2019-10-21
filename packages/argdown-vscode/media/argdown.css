@@ -2,8 +2,9 @@ body {
   padding: 0;
   color: var(--vscode-editor-foreground);
   background-color: var(--vscode-editor-background);
-  font-size: var(--vscode-editor-font-size);
-  font-family: var(--vscode-editor-font-family);
+  /* font-size: var(--vscode-editor-font-size); */
+  /* font-family: var(--vscode-editor-font-family); */
+  font-family: Segoe WPC, Segoe UI, sans-serif;
   font-weight: var(--vscode-editor-font-weight);
 }
 .main-menu-hover-field {
@@ -21,21 +22,21 @@ body {
   top: 0;
 }
 a.lock-menu {
-  background-image: url("output_unlock.svg");
+  background-image: url("icons/light/unlock.svg");
 }
 
 .vscode-dark a.lock-menu,
 .hc-black a.lock-menu {
-  background-image: url("output_unlock_inverse.svg");
+  background-image: url("icons/dark/unlock.svg");
 }
 
 a.unlock-menu {
-  background-image: url("output_lock.svg");
+  background-image: url("icons/light/lock.svg");
 }
 
 .vscode-dark a.unlock-menu,
 .hc-black a.unlock-menu {
-  background-image: url("output_lock_inverse.svg");
+  background-image: url("icons/dark/lock.svg");
 }
 a.icon-button {
   outline-offset: -2px;
@@ -71,6 +72,7 @@ a.unlock-menu {
   height: 3em;
   background-color: var(--vscode-editorGroupHeader-tabsBackground);
   z-index: 1000000;
+  font-family: ;
 }
 .main-menu ul {
   display: flex;

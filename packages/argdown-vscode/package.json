@@ -16,7 +16,7 @@
     "url": "https://github.com/christianvoigt/argdown/issues"
   },
   "engines": {
-    "vscode": "^1.39.0"
+    "vscode": "^1.37.0"
   },
   "categories": [
     "Programming Languages",
@@ -151,8 +151,8 @@
         "title": "Open Preview",
         "category": "Argdown",
         "icon": {
-          "light": "./media/Preview.svg",
-          "dark": "./media/Preview_inverse.svg"
+          "light": "./media/icons/light/preview.svg",
+          "dark": "./media/icons/dark/preview.svg"
         }
       },
       {
@@ -160,8 +160,8 @@
         "title": "Open Preview to the Side",
         "category": "Argdown",
         "icon": {
-          "light": "./media/PreviewOnRightPane_16x.svg",
-          "dark": "./media/PreviewOnRightPane_16x_dark.svg"
+          "light": "./media/icons/light/open-preview.svg",
+          "dark": "./media/icons/dark/open-preview.svg"
         }
       },
       {
@@ -169,8 +169,8 @@
         "title": "Open locked Preview to the Side",
         "category": "Argdown",
         "icon": {
-          "light": "./media/PreviewOnRightPane_16x.svg",
-          "dark": "./media/PreviewOnRightPane_16x_dark.svg"
+          "light": "./media/icons/light/open-preview.svg",
+          "dark": "./media/icons/dark/open-preview.svg"
         }
       },
       {
@@ -178,8 +178,8 @@
         "title": "Show Source",
         "category": "Argdown",
         "icon": {
-          "light": "./media/ViewSource.svg",
-          "dark": "./media/ViewSource_inverse.svg"
+          "light": "./media/icons/light/go-to-file.svg",
+          "dark": "./media/icons/dark/go-to-file.svg"
         }
       },
       {
@@ -467,7 +467,7 @@
     "dagre-d3": "^0.6.3",
     "lodash.defaultsdeep": "^4.6.1",
     "lodash.throttle": "^4.1.1",
-    "vscode-languageclient": "^6.0.0-next.1"
+    "vscode-languageclient": "6.0.0-next.1"
   },
   "devDependencies": {
     "@types/d3": "^5.7.2",
@@ -475,7 +475,7 @@
     "@types/lodash.defaultsdeep": "^4.6.6",
     "@types/lodash.throttle": "^4.1.6",
     "@types/node": "^12.11.1",
-    "@types/vscode": "1.39.0",
+    "@types/vscode": "1.37.0",
     "raw-loader": "^3.1.0",
     "ts-loader": "^6.2.0",
     "typescript": "^3.6.4",
