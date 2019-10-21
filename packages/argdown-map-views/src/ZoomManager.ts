@@ -26,8 +26,8 @@ export class ZoomManager {
     this.graphIsBottomAligned = graphIsBottomAligned;
   }
   init(
-    svg: d3.Selection<SVGSVGElement, {}, null | HTMLElement, any>,
-    svgGraph: d3.Selection<SVGGraphicsElement, {}, null | HTMLElement, any>,
+    svg: d3.Selection<SVGSVGElement, any, null | HTMLElement, any>,
+    svgGraph: d3.Selection<SVGGraphicsElement, any, null | HTMLElement, any>,
     width: number,
     height: number
   ) {
