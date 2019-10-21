@@ -16,7 +16,7 @@
     "url": "https://github.com/christianvoigt/argdown/issues"
   },
   "engines": {
-    "vscode": "^1.31.1"
+    "vscode": "^1.39.0"
   },
   "categories": [
     "Programming Languages",
@@ -454,7 +454,6 @@
     "vscode:prepublish": "npm run build",
     "build": "npm run build-extension && npm run build-preview && npm run copy-changelog",
     "watch": "tsc -w -p ./",
-    "update-vscode": "node ./node_modules/vscode/bin/install",
     "build-extension": "tsc -p ./",
     "build-preview": "webpack --mode development",
     "copy-changelog": "node ./copy-changelog.js"
@@ -466,21 +465,21 @@
     "@argdown/node": "^1.1.0",
     "d3": "^5.9.1",
     "dagre-d3": "^0.6.3",
-    "lodash.defaultsdeep": "^4.6.0",
+    "lodash.defaultsdeep": "^4.6.1",
     "lodash.throttle": "^4.1.1",
-    "vscode-languageclient": "^5.3.0-next.1"
+    "vscode-languageclient": "^6.0.0-next.1"
   },
   "devDependencies": {
     "@types/d3": "^5.7.2",
     "@types/dagre-d3": "^0.4.39",
-    "@types/lodash.defaultsdeep": "^4.6.5",
-    "@types/lodash.throttle": "^4.1.5",
-    "@types/node": "^12.7.8",
-    "raw-loader": "^1.0.0",
-    "ts-loader": "^5.3.3",
-    "typescript": "^3.6.3",
-    "vscode": "^1.1.30",
-    "webpack": "^4.26.6",
-    "webpack-cli": "^3.2.3"
+    "@types/lodash.defaultsdeep": "^4.6.6",
+    "@types/lodash.throttle": "^4.1.6",
+    "@types/node": "^12.11.1",
+    "@types/vscode": "1.39.0",
+    "raw-loader": "^3.1.0",
+    "ts-loader": "^6.2.0",
+    "typescript": "^3.6.4",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.9"
   }
 }
