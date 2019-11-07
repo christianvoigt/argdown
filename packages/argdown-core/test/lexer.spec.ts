@@ -664,13 +664,72 @@ describe("Lexer", function() {
     <a>
 `;
     const result = lexer.tokenize(source);
-    console.log(tokensToString(result.tokens));
+    // console.log(tokensToString(result.tokens));
     startTest(result.tokens);
     //console.log(lexer.tokensToString(result.tokens));
     //expect(result.tokens.length).to.equal(5);
     expectToken(lexer.Newline);
     expectToken(lexer.FrontMatter);
     expectToken(lexer.Newline);
+    expectToken(lexer.ArgumentReference);
+  });
+  it("can ignore logical notation in text", function() {
+    let source = `
+.A.x.E.y: .P.Fx.<->.Gy
+.A.x.E.y: .O.Fx.->..[].Gy
+.A.x.E.y: .~.Fx.->..<>.Gy
+p.v.q.^.r
+`;
+    const result = lexer.tokenize(source);
+    console.log(tokensToString(result.tokens));
+    startTest(result.tokens);
+    //console.log(lexer.tokensToString(result.tokens));
+    //expect(result.tokens.length).to.equal(5);
+    expectToken(lexer.Newline);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.UnusedControlChar);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.UnusedControlChar);
+    expectToken(lexer.UnusedControlChar);
+    expectToken(lexer.UnusedControlChar);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.Newline);
+
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.UnusedControlChar);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.UnusedControlChar);
+    expectToken(lexer.UnusedControlChar);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.UnusedControlChar);
+    expectToken(lexer.UnusedControlChar);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.Newline);
+
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.UnusedControlChar);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.UnusedControlChar);
+    expectToken(lexer.UnusedControlChar);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.UnusedControlChar);
+    expectToken(lexer.UnusedControlChar);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.Newline);
+
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.Newline);
+  });
+  it("can ignore trailing Emptyline", function() {
+    let source = `<A>
+
+
+`;
+    const result = lexer.tokenize(source);
+    // console.log(tokensToString(result.tokens));
+    startTest(result.tokens);
+    //console.log(lexer.tokensToString(result.tokens));
+    //expect(result.tokens.length).to.equal(5);
     expectToken(lexer.ArgumentReference);
   });
 });

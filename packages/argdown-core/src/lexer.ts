@@ -349,9 +349,11 @@ const matchEmptyline = (
   //ignore Emptylines after first one (relevant for Emptylines after ignored comments)
   if (lastToken && tokenMatcher(lastToken, Emptyline)) return null;
   let match = emptylinePattern.exec(remainingText);
-  if (match !== null && match[0].length < remainingText.length) {
+  if (match !== null) {
     //ignore trailing linebreaks
-    emitRemainingDedentTokens(tokens!);
+    if (match[0].length < remainingText.length) {
+      emitRemainingDedentTokens(tokens!);
+    }
     //TODO: emitRemainingRanges (to be more resistant against unclosed bold and italic ranges)
     return match;
   }
@@ -394,7 +396,7 @@ tokenList.push(StatementDefinition);
 
 export const StatementReference = createToken({
   name: TokenNames.STATEMENT_REFERENCE,
-  pattern: /\[.+?\]/,
+  pattern: /\[[^-].*?\]/,
   label: "[Statement Title] (Statement Reference)"
 });
 tokenList.push(StatementReference);
@@ -457,7 +459,7 @@ tokenList.push(ArgumentDefinition);
 
 export const ArgumentReference = createToken({
   name: TokenNames.ARGUMENT_REFERENCE,
-  pattern: /\<.+?\>/,
+  pattern: /\<[^-].*?\>/,
   label: "<Argument Title> (Argument Reference)"
 });
 tokenList.push(ArgumentReference);
