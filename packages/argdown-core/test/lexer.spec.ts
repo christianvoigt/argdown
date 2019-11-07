@@ -729,7 +729,20 @@ p.v.q.^.r
     // console.log(tokensToString(result.tokens));
     startTest(result.tokens);
     //console.log(lexer.tokensToString(result.tokens));
-    //expect(result.tokens.length).to.equal(5);
+    expect(result.tokens.length).to.equal(1);
     expectToken(lexer.ArgumentReference);
   });
+  //   it("can ignore Newline in Newline Comment Emptyline", function() {
+  //     let source = `
+  // /* Comment */
+
+  // A
+  // `;
+  //     const result = lexer.tokenize(source);
+  //     console.log(tokensToString(result.tokens));
+  //     startTest(result.tokens);
+  //     expect(result.tokens.length).to.equal(2);
+  //     expectToken(lexer.Emptyline);
+  //     expectToken(lexer.Freestyle);
+  //   });
 });

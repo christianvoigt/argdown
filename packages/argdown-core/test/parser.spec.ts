@@ -327,6 +327,39 @@ Statement
       "outgoingUndercut"
     );
   });
+  it("can parse bof newline comment emptyline", function() {
+    let source = `
+/* Comment */
+
+A
+`;
+    let lexResult = tokenize(source);
+    parser.input = lexResult.tokens;
+    parser.argdown();
+    // console.log(tokensToString(lexResult.tokens));
+    // console.log(astToString(ast));
+    // console.log(parser.errors);
+    expect(lexResult.errors).to.be.empty;
+    expect(parser.errors).to.be.empty;
+  });
+  it("can parse frontmatter comment emptyline", function() {
+    let source = `
+===
+title: Test
+===
+/* Comment */
+
+A
+`;
+    let lexResult = tokenize(source);
+    parser.input = lexResult.tokens;
+    parser.argdown();
+    // console.log(tokensToString(lexResult.tokens));
+    // console.log(astToString(ast));
+    // console.log(parser.errors);
+    expect(lexResult.errors).to.be.empty;
+    expect(parser.errors).to.be.empty;
+  });
   it("can parse Argdown with metadata", function() {
     let source = `
 # Heading 1 {test:1}

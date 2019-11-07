@@ -19,28 +19,24 @@ class ArgdownParser extends Parser {
     Parser.performSelfAnalysis(this);
   }
   //caches
-  private c0: any;
   private c1: any;
   private c2: any;
   private c3: any;
 
   public argdown = this.RULE<IAstNode>(RuleNames.ARGDOWN, () => {
     this.OPTION1(() => {
-      this.OR1(
-        this.c0 ||
-          (this.c0 = [
-            {
-              ALT: () => this.CONSUME1(lexer.Emptyline)
-            },
-            {
-              ALT: () => this.CONSUME1(lexer.Newline)
-            }
-          ])
-      );
+      this.CONSUME1(lexer.Newline);
+    });
+    this.OPTION2(() => {
+      this.CONSUME1(lexer.Emptyline);
     });
     const children: IAstNode[] = [];
-    this.OPTION2(() => {
+    this.OPTION3(() => {
       children.push(this.CONSUME2(lexer.FrontMatter));
+      // If directly followed by comments we get NEWLINE, EMPTYLINE
+      this.OPTION4(() => {
+        children.push(this.CONSUME2(lexer.Newline));
+      });
       this.CONSUME2(lexer.Emptyline);
     });
     // OR caching. see: http://sap.github.io/chevrotain/docs/FAQ.html#major-performance-benefits
