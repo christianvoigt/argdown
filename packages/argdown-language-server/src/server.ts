@@ -216,7 +216,6 @@ documents.onDidClose(e => {
 documents.onDidChangeContent(change => {
   validateTextDocument(change.document);
 });
-
 // The settings interface describe the server relevant settings part
 // interface Settings {
 // 	lspSample: ExampleSettings;
@@ -281,7 +280,10 @@ const processTextForProviders = async (text: string, path: string) => {
     input: text,
     inputPath: path,
     process: ["parse-input", "build-model"],
-    throwExceptions: true
+    throwExceptions: true,
+    parser: {
+      throwExceptions: true
+    }
   };
   try {
     return await argdown.runAsync(request);
@@ -377,6 +379,9 @@ connection.onDocumentSymbol(async (params: DocumentSymbolParams) => {
       input: doc.getText(),
       process: ["parse-input", "build-model", "add-document-symbols"],
       inputUri: params.textDocument.uri,
+      parser: {
+        throwExceptions: true
+      },
       throwExceptions: true
     };
     try {
@@ -397,6 +402,9 @@ connection.onFoldingRanges(async (params: FoldingRangeParams) => {
       input: doc.getText(),
       process: ["parse-input", "build-model", "add-folding-ranges"],
       inputUri: params.textDocument.uri,
+      parser: {
+        throwExceptions: true
+      },
       throwExceptions: true
     };
     try {
