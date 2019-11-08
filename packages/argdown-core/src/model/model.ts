@@ -147,6 +147,13 @@ export namespace IRuleNode {
   export const create = (name: RuleNames, children: IAstNode[]): IRuleNode => {
     const firstChild = children[0];
     const lastChild = children[children.length - 1];
+    if (!firstChild || !lastChild) {
+      return {
+        type: ArgdownTypes.RULE_NODE,
+        name,
+        children: []
+      };
+    }
     return {
       type: ArgdownTypes.RULE_NODE,
       name,

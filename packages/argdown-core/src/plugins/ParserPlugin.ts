@@ -1,6 +1,6 @@
 import * as argdownLexer from "../lexer";
 import { parser } from "../parser";
-import { IArgdownPlugin } from "../IArgdownPlugin";
+import { IArgdownPlugin, IRequestHandler } from "../IArgdownPlugin";
 import { IArgdownLogger } from "../IArgdownLogger";
 import { ArgdownPluginError } from "../ArgdownPluginError";
 import { IArgdownRequest, IArgdownResponse } from "../index";
@@ -14,6 +14,8 @@ import {
   createTokenInstance
 } from "chevrotain";
 import last from "lodash.last";
+import { isObject, mergeDefaults } from "../utils";
+import defaultsDeep from "lodash.defaultsdeep";
 
 declare module "../index" {
   interface IArgdownResponse {
@@ -46,7 +48,22 @@ declare module "../index" {
      */
     parserErrors?: IRecognitionException[];
   }
+  interface IArgdownRequest {
+    /**
+     * Settings of the parser plugin. The parser plugin executes parser *and*  lexer.
+     */
+    parser?: IParserPluginSettings;
+  }
 }
+interface IParserPluginSettings {
+  /**
+   * Throw exceptions if parser or lexer returns error. Otherwise will simply add the errors to the response. By default set to false.
+   */
+  throwExceptions?: boolean;
+}
+const defaultSettings: IParserPluginSettings = {
+  throwExceptions: false
+};
 
 /**
  * The ParserPlugin is the most basic building block of an ArgdownApplication.
@@ -62,6 +79,20 @@ declare module "../index" {
  */
 export class ParserPlugin implements IArgdownPlugin {
   name: string = "ParserPlugin";
+  defaults: IParserPluginSettings = {};
+  constructor(config?: IParserPluginSettings) {
+    this.defaults = defaultsDeep({}, config, defaultSettings);
+  }
+  getSettings = (request: IArgdownRequest) => {
+    if (!isObject(request.parser)) {
+      request.parser = {};
+    }
+    return request.parser;
+  };
+  prepare: IRequestHandler = request => {
+    mergeDefaults(this.getSettings(request), this.defaults);
+  };
+
   run(
     request: IArgdownRequest,
     response: IArgdownResponse,
@@ -74,7 +105,7 @@ export class ParserPlugin implements IArgdownPlugin {
         "No input field in request."
       );
     }
-
+    const settings = this.getSettings(request);
     let lexResult = argdownLexer.tokenize(request.input);
     response.tokens = lexResult.tokens;
     response.lexerErrors = lexResult.errors;
@@ -83,18 +114,20 @@ export class ParserPlugin implements IArgdownPlugin {
     response.parserErrors = parser.errors;
 
     if (response.lexerErrors && response.lexerErrors.length > 0) {
-      logger.log(
-        "verbose",
-        "[ParserPlugin]: Lexer returned errors.\n" +
+      if (settings.throwExceptions) {
+        // do throw error instead of returning a response
+        throw new ArgdownPluginError(
+          this.name,
+          "lexer-error",
           JSON.stringify(response.lexerErrors)
-      );
-    }
-    if (response.parserErrors && response.parserErrors.length > 0) {
-      logger.log(
-        "verbose",
-        "[ParserPlugin]: Parser returned errors.\n" +
-          JSON.stringify(response.parserErrors)
-      );
+        );
+      } else {
+        logger.log(
+          "verbose",
+          "[ParserPlugin]: Lexer returned errors.\n" +
+            JSON.stringify(response.lexerErrors)
+        );
+      }
     }
     if (response.parserErrors && response.parserErrors.length > 0) {
       // //add location if token is EOF
@@ -119,6 +152,20 @@ export class ParserPlugin implements IArgdownPlugin {
           );
           error.token = newToken;
         }
+      }
+      if (settings.throwExceptions) {
+        // do throw error instead of returning a response
+        throw new ArgdownPluginError(
+          this.name,
+          "parser-error",
+          JSON.stringify(response.parserErrors)
+        );
+      } else {
+        logger.log(
+          "verbose",
+          "[ParserPlugin]: Parser returned errors.\n" +
+            JSON.stringify(response.parserErrors)
+        );
       }
     }
     return response;

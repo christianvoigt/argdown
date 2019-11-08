@@ -24,20 +24,20 @@ class ArgdownParser extends Parser {
   private c3: any;
 
   public argdown = this.RULE<IAstNode>(RuleNames.ARGDOWN, () => {
+    const children: IAstNode[] = [];
     this.OPTION1(() => {
       this.CONSUME1(lexer.Newline);
     });
     this.OPTION2(() => {
       this.CONSUME1(lexer.Emptyline);
     });
-    const children: IAstNode[] = [];
     this.OPTION3(() => {
       children.push(this.CONSUME2(lexer.FrontMatter));
       // If directly followed by comments we get NEWLINE, EMPTYLINE
       this.OPTION4(() => {
-        children.push(this.CONSUME2(lexer.Newline));
+        this.CONSUME2(lexer.Newline);
       });
-      this.CONSUME2(lexer.Emptyline);
+      children.push(this.CONSUME2(lexer.Emptyline));
     });
     // OR caching. see: http://sap.github.io/chevrotain/docs/FAQ.html#major-performance-benefits
     const atLeastOne: IAstNode[] = [];

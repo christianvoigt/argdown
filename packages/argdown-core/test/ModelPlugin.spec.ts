@@ -632,6 +632,25 @@ describe("ModelPlugin", function() {
       5
     );
   });
+  it("throws exception on parser error", function() {
+    const source = `(1)
+    
+    
+    <A>`;
+    const result = app.run({
+      process: ["parse-input"],
+      input: source,
+      logLevel: "error",
+      logExceptions: false,
+      parser: {
+        throwExceptions: true
+      }
+    });
+    expect(result.exceptions!.length).to.equal(1);
+    expect((<ArgdownPluginError>result.exceptions![0]).code).to.contain(
+      "parser-error"
+    );
+  });
   it("throws exception if AST is missing", function() {
     const source = "[Test]: Hello _World_!";
     const result = app.run({
