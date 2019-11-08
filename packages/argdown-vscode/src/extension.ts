@@ -126,7 +126,7 @@ export function activate(context: vscode.ExtensionContext) {
   // Options to control the language client
   let clientOptions: LanguageClientOptions = {
     // Register the server for plain text documents
-    documentSelector: [{ scheme: "file", language: "argdown" }],
+    documentSelector: [{ language: "argdown" }],
     synchronize: {
       // Notify the server about file changes to '.clientrc files contain in the workspace
       fileEvents: vscode.workspace.createFileSystemWatcher("**/.clientrc")
