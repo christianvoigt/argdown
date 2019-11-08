@@ -10,18 +10,30 @@
       "args": ["--extensionDevelopmentPath=${cwd}/packages/argdown-vscode"],
       "stopOnEntry": false,
       "sourceMaps": true,
-      "outFiles": ["${cwd}/packages/argdown-vscode/out/**/*.js"]
-      //"preLaunchTask": "watch:argdown-vscode"
+      "outFiles": ["${cwd}/packages/argdown-vscode/out/**/*.js"],
+      "preLaunchTask": "watch:argdown-vscode"
     },
     {
-      "name": "Attach to argdown-lanugage-server",
+      "name": "Attach to argdown-language-server",
       "type": "node",
       "request": "attach",
-      "localRoot": "${cwd}/packages/argdown-language-server",
       "port": 6009,
       "sourceMaps": true,
+      "sourceMapPathOverrides": {
+        "../../*": "${cwd}/packages/argdown-language-server/*"
+      },
+      "restart": true,
       "outFiles": ["${cwd}/packages/argdown-language-server/dist/**/*.js"],
-      "preLaunchTask": "npm:watch"
+      "preLaunchTask": "watch:argdown-languageserver"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Client + Server",
+      "configurations": [
+        "Launch argdown-vscode",
+        "Attach to argdown-language-server"
+      ]
     }
   ]
 }

@@ -1,17 +1,36 @@
 {
+  "version": "2.0.0",
   "tasks": [
     {
-      "identifier": "watch:argdown-vscode",
+      "label": "watch:argdown-vscode",
       "type": "npm",
       "script": "watch",
       "path": "packages/argdown-vscode/",
-      "problemMatcher": []
+      "isBackground": true,
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "never"
+      },
+      "problemMatcher": ["$tsc-watch"]
     },
     {
-      "identifier": "watch:argdown-languageserver",
+      "label": "watch:argdown-languageserver",
       "type": "npm",
       "script": "watch",
-      "path": "packages/argdown-languageserver/",
+      "path": "packages/argdown-language-server/",
+      "isBackground": true,
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "panel": "dedicated",
+        "reveal": "never"
+      },
       "problemMatcher": []
     }
   ]
