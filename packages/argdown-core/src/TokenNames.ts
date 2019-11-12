@@ -43,6 +43,7 @@ export enum TokenNames {
   TAG = "Tag",
   LINK = "Link",
   ESCAPED_CHAR = "EscapedChar",
+  SPECIAL_CHAR = "SpecialChar",
   SPACES = "Spaces",
   EOF = "EOF"
 }

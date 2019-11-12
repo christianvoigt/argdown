@@ -32,8 +32,15 @@ import {
 } from "../model/model";
 import { RuleNames } from "../RuleNames";
 import { TokenNames } from "../TokenNames";
-import { stringToClassName, isObject, mergeDefaults } from "../utils";
+import {
+  stringToClassName,
+  isObject,
+  mergeDefaults,
+  ensure,
+  DefaultSettings
+} from "../utils";
 import { other } from "../utils";
+import { ISpecialCharacterDictionary, specialChars } from "./specialChars";
 
 export interface ITagData {
   tag: string;
@@ -46,10 +53,12 @@ export enum InterpretationModes {
   LOOSE = "loose",
   STRICT = "strict"
 }
+
 export interface IModelPluginSettings {
   mode?: InterpretationModes;
   removeTagsFromText?: boolean;
   transformArgumentRelations?: boolean;
+  specialChars?: ISpecialCharacterDictionary;
 }
 declare module "../index" {
   interface IArgdownRequest {
@@ -98,10 +107,11 @@ declare module "../index" {
     tags?: { [tagName: string]: ITagData };
   }
 }
-const defaultSettings: IModelPluginSettings = {
+const defaultSettings: DefaultSettings<IModelPluginSettings> = {
   mode: InterpretationModes.LOOSE,
   removeTagsFromText: false,
-  transformArgumentRelations: true
+  transformArgumentRelations: true,
+  specialChars: ensure.object<ISpecialCharacterDictionary>(specialChars)
 };
 /**
  * The ModelPlugin builds the basic data model from the abstract syntax tree (AST) in the [[IArgdownResponse.ast]] response property that is provided by the [[ParserPlugin]].
@@ -1260,14 +1270,36 @@ export class ModelPlugin implements IArgdownPlugin {
         currentRelation = null;
         relationParentsStack.pop();
       },
-      [RuleNames.FREESTYLE_TEXT + "Entry"]: (_request, _response, node) => {
+      [RuleNames.FREESTYLE_TEXT + "Entry"]: (request, _response, node) => {
         const target = currentHeading ? currentHeading : currentStatement;
         node.text = "";
+        const settings = $.getSettings(request);
+
         if (node.children) {
           for (let child of node.children) {
             if (isTokenNode(child) && child.image !== undefined) {
               if (tokenMatcher(child, argdownLexer.EscapedChar)) {
                 node.text += child.image.substring(1, child.image.length);
+              } else if (tokenMatcher(child, argdownLexer.SpecialChar)) {
+                const specialCharTrimmed = child.image.trim();
+                const specialCharInfo = settings.specialChars![
+                  specialCharTrimmed
+                ];
+                if (specialCharInfo) {
+                  const startPos = node.text ? node.text.length : 0;
+                  node.text += specialCharInfo.unicode;
+                  if (child.image[child.image.length - 1] == " ") {
+                    node.text += " ";
+                  }
+                  let specialCharRange = {
+                    type: RangeType.SPECIAL_CHAR,
+                    start: startPos,
+                    stop: startPos + specialCharInfo.unicode.length
+                  };
+                  rangesStack.push(specialCharRange);
+                } else {
+                  node.text += child.image;
+                }
               } else {
                 node.text += child.image;
               }

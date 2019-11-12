@@ -285,7 +285,7 @@ describe("Lexer", function() {
     expectToken(lexer.AsteriskItalicStart);
     expectToken(lexer.Freestyle);
     expectToken(lexer.AsteriskItalicEnd);
-    expectToken(lexer.Freestyle);
+    expectToken(lexer.UnusedControlChar);
     expectToken(lexer.Newline);
 
     expectToken(lexer.AsteriskItalicStart);
@@ -436,6 +436,7 @@ describe("Lexer", function() {
     expectToken(lexer.UnusedControlChar);
     expectToken(lexer.Link);
     expectToken(lexer.Freestyle);
+    expectToken(lexer.UnusedControlChar);
     expectToken(lexer.Tag);
     expectToken(lexer.Tag);
     expectToken(lexer.Tag);
@@ -447,10 +448,11 @@ describe("Lexer", function() {
     );
     const result = lexer.tokenize(source);
     startTest(result.tokens);
-    expect(result.tokens.length).to.equal(3);
+    expect(result.tokens.length).to.equal(4);
     expectToken(lexer.Emptyline);
     expectToken(lexer.StatementDefinition);
     expectToken(lexer.Freestyle);
+    expectToken(lexer.UnusedControlChar);
   });
   it("can lex Windows line endings", function() {
     let source = `Another statement\r\n  + An argument\r\n\r\n(1) A\r\n----\r\n(2) B`;
@@ -493,6 +495,79 @@ describe("Lexer", function() {
     expectToken(lexer.EscapedChar);
     expectToken(lexer.Freestyle);
   });
+  it("can lex special chars", function() {
+    let source = `p.v.q
+
+.O.p
+
+test :smiley: test
+
+p.->.q
+
+p:->:q
+
+(p.^.q).v.r
+
+:E:x :A:y
+
+.E.x.A.y  
+
+.~.Fx.<>.Gy
+`;
+    const result = lexer.tokenize(source);
+    startTest(result.tokens);
+    console.log(tokensToString(result.tokens));
+    //expect(result.tokens.length).to.equal(5);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.SpecialChar);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.Emptyline);
+
+    expectToken(lexer.SpecialChar);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.Emptyline);
+
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.SpecialChar);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.Emptyline);
+
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.SpecialChar);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.Emptyline);
+
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.SpecialChar);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.Emptyline);
+
+    expectToken(lexer.UnusedControlChar);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.SpecialChar);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.UnusedControlChar);
+    expectToken(lexer.SpecialChar);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.Emptyline);
+
+    expectToken(lexer.SpecialChar);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.SpecialChar);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.Emptyline);
+
+    expectToken(lexer.SpecialChar);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.SpecialChar);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.Emptyline);
+
+    expectToken(lexer.SpecialChar);
+    expectToken(lexer.Freestyle);
+    expectToken(lexer.SpecialChar);
+    expectToken(lexer.Freestyle);
+  });
   it("can save correct token location data", function() {
     let source = fs.readFileSync(
       "./test/lexer-token-locations.argdown",
@@ -503,29 +578,29 @@ describe("Lexer", function() {
     const result = lexer.tokenize(source);
     startTest(result.tokens);
     //console.log(lexer.tokenLocationsToString(result.tokens));
-    expectTokenLocation(0, 0, 1, 1, 1, 1);
-    expectTokenLocation(1, 1, 1, 1, 2, 2);
-    expectTokenLocation(2, 2, 2, 2, 1, 1);
-    expectTokenLocation(3, 3, 2, 2, 2, 2);
-    expectTokenLocation(4, 5, 3, 3, 1, 2);
-    expectTokenLocation(6, 6, 3, 3, 3, 3);
-    expectTokenLocation(7, 11, 3, 3, 4, 8); //@[A]
-    expectTokenLocation(12, 12, 3, 3, 9, 9); //ItalicStart
-    expectTokenLocation(13, 13, 3, 3, 10, 10);
-    expectTokenLocation(14, 14, 3, 3, 11, 11); //ItalicEnd
-    expectTokenLocation(15, 16, 3, 4, 12, 1); //Emptyline
-    expectTokenLocation(17, 20, 5, 5, 1, 4); //<B>:
-    expectTokenLocation(22, 22, 5, 5, 6, 6); //skipped whitespace at offset 21
-    expectTokenLocation(23, 23, 5, 5, 7, 7); // Newline
-    expectTokenLocation(24, 27, 6, 6, 1, 4); // Indent (4 spaces)
-    expectTokenLocation(24, 28, 6, 6, 1, 5); // + (including 4 spaces for indentation)
-    expectTokenLocation(30, 30, 6, 6, 7, 7); // g
-    expectTokenLocation(31, 31, 6, 6, 8, 8); // Newline
-    expectTokenLocation(32, 39, 7, 7, 1, 8); // Indent (8 spaces)
-    expectTokenLocation(32, 41, 7, 7, 1, 10); // -> including spaces
-    expectTokenLocation(43, 43, 7, 7, 12, 12); // skipped whitespace at offset 42
-    expectTokenLocation(43, 43, 7, 7, 12, 12); // Dedent is always at last column of current line
-    expectTokenLocation(43, 43, 7, 7, 12, 12); // Dedent is always at last column of current line
+    expectTokenLocation(0, 0, 1, 1, 1, 1); // a
+    expectTokenLocation(1, 1, 1, 1, 2, 2); // linebreak
+    expectTokenLocation(2, 2, 2, 2, 1, 1); // b
+    expectTokenLocation(3, 3, 2, 2, 2, 2); // linebreak
+    expectTokenLocation(4, 5, 3, 3, 1, 2); // cd
+    expectTokenLocation(6, 7, 3, 3, 3, 4); // :
+    expectTokenLocation(8, 12, 3, 3, 5, 9); //@[A]
+    expectTokenLocation(13, 13, 3, 3, 10, 10); //ItalicStart
+    expectTokenLocation(14, 14, 3, 3, 11, 11); // e
+    expectTokenLocation(15, 15, 3, 3, 12, 12); //ItalicEnd
+    expectTokenLocation(16, 17, 3, 4, 13, 1); //Emptyline
+    expectTokenLocation(18, 21, 5, 5, 1, 4); //<B>:
+    expectTokenLocation(23, 23, 5, 5, 6, 6); //skipped whitespace at offset 21
+    expectTokenLocation(24, 24, 5, 5, 7, 7); // Newline
+    expectTokenLocation(25, 28, 6, 6, 1, 4); // Indent (4 spaces)
+    expectTokenLocation(25, 29, 6, 6, 1, 5); // + (including 4 spaces for indentation)
+    expectTokenLocation(31, 31, 6, 6, 7, 7); // g
+    expectTokenLocation(32, 32, 6, 6, 8, 8); // Newline
+    expectTokenLocation(33, 40, 7, 7, 1, 8); // Indent (8 spaces)
+    expectTokenLocation(33, 42, 7, 7, 1, 10); // -> including spaces
+    expectTokenLocation(44, 44, 7, 7, 12, 12); // skipped whitespace at offset 42
+    expectTokenLocation(44, 44, 7, 7, 12, 12); // Dedent is always at last column of current line
+    expectTokenLocation(44, 44, 7, 7, 12, 12); // Dedent is always at last column of current line
   });
   it("can save correct token location data if first line is empty", function() {
     let source = fs.readFileSync(
@@ -626,7 +701,8 @@ describe("Lexer", function() {
     expect(result.tokens[3].image).to.equal("am ");
     expect(result.tokens[5].image).to.equal("a ");
     expect(result.tokens[7].image).to.equal("multiline ");
-    expect(result.tokens[9].image).to.equal("statement.");
+    expect(result.tokens[9].image).to.equal("statement");
+    expect(result.tokens[10].image).to.equal(".");
     // expectToken(lexer.StatementDefinitionByNumber);
     // expectToken(lexer.Freestyle);
     // expectToken(lexer.StatementReferenceByNumber);
@@ -672,53 +748,6 @@ describe("Lexer", function() {
     expectToken(lexer.FrontMatter);
     expectToken(lexer.Newline);
     expectToken(lexer.ArgumentReference);
-  });
-  it("can ignore logical notation in text", function() {
-    let source = `
-.A.x.E.y: .P.Fx.<->.Gy
-.A.x.E.y: .O.Fx.->..[].Gy
-.A.x.E.y: .~.Fx.->..<>.Gy
-p.v.q.^.r
-`;
-    const result = lexer.tokenize(source);
-    console.log(tokensToString(result.tokens));
-    startTest(result.tokens);
-    //console.log(lexer.tokensToString(result.tokens));
-    //expect(result.tokens.length).to.equal(5);
-    expectToken(lexer.Newline);
-    expectToken(lexer.Freestyle);
-    expectToken(lexer.UnusedControlChar);
-    expectToken(lexer.Freestyle);
-    expectToken(lexer.UnusedControlChar);
-    expectToken(lexer.UnusedControlChar);
-    expectToken(lexer.UnusedControlChar);
-    expectToken(lexer.Freestyle);
-    expectToken(lexer.Newline);
-
-    expectToken(lexer.Freestyle);
-    expectToken(lexer.UnusedControlChar);
-    expectToken(lexer.Freestyle);
-    expectToken(lexer.UnusedControlChar);
-    expectToken(lexer.UnusedControlChar);
-    expectToken(lexer.Freestyle);
-    expectToken(lexer.UnusedControlChar);
-    expectToken(lexer.UnusedControlChar);
-    expectToken(lexer.Freestyle);
-    expectToken(lexer.Newline);
-
-    expectToken(lexer.Freestyle);
-    expectToken(lexer.UnusedControlChar);
-    expectToken(lexer.Freestyle);
-    expectToken(lexer.UnusedControlChar);
-    expectToken(lexer.UnusedControlChar);
-    expectToken(lexer.Freestyle);
-    expectToken(lexer.UnusedControlChar);
-    expectToken(lexer.UnusedControlChar);
-    expectToken(lexer.Freestyle);
-    expectToken(lexer.Newline);
-
-    expectToken(lexer.Freestyle);
-    expectToken(lexer.Newline);
   });
   it("can ignore trailing Emptyline", function() {
     let source = `<A>

@@ -503,6 +503,9 @@ class ArgdownParser extends Parser {
         },
         {
           ALT: () => children.push(this.CONSUME(lexer.EscapedChar))
+        },
+        {
+          ALT: () => children.push(this.CONSUME(lexer.SpecialChar))
         }
       ])
     );

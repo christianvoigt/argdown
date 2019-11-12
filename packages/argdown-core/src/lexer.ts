@@ -732,11 +732,17 @@ export const EscapedChar = createToken({
   label: "\\{character} (Escaped Character)"
 });
 tokenList.push(EscapedChar);
+export const SpecialChar = createToken({
+  name: TokenNames.SPECIAL_CHAR,
+  pattern: /(?:\.[^\s]+?\.[ \t]?)|(?:\:[^\s]+?\:[ \t]?)/,
+  label: ".{name}. or :{name}: (Special Character)"
+});
+tokenList.push(SpecialChar);
 
 //The rest of the text that is free of any Argdown syntax
 export const Freestyle = createToken({
   name: TokenNames.FREESTYLE,
-  pattern: /[^\\\@\#\*\_\[\]\,\:\;\<\/\>\-\r\n\(\)\{\}]+/,
+  pattern: /[^\\\@\#\*\_\[\]\,\.\:\;\<\/\>\-\r\n\(\)\{\}]+/,
   line_breaks: true,
   label: "Text Content"
 });
@@ -748,8 +754,8 @@ tokenList.push(Freestyle);
 //Note that some "meaningful" characters (like +) are not listed here, as they are only meaningful after a linebreak and freestyle text already gets "cut up" by each line break.
 export const UnusedControlChar = createToken({
   name: TokenNames.UNUSED_CONTROL_CHAR,
-  pattern: /[\@\#\*\_\[\]\,\:\;\<\/\>\-\(\)\{\}][ \t]?/,
-  label: "Text Content (Special Characters)"
+  pattern: /[\@\#\*\_\[\]\,\.\:\;\<\/\>\-\(\)\{\}][ \t]?/,
+  label: "Text Content (Control Characters)"
 });
 tokenList.push(UnusedControlChar);
 
@@ -762,6 +768,7 @@ const lexerConfig: chevrotain.IMultiModeLexerDefinition = {
       FrontMatter,
       Data,
       EscapedChar, //must come first after $.Comment
+      SpecialChar,
       Emptyline,
       Newline,
       // Relation tokens must appear before Spaces, otherwise all indentation will always be consumed as spaces.
@@ -807,8 +814,10 @@ const lexerConfig: chevrotain.IMultiModeLexerDefinition = {
       UnusedControlChar
     ],
     inference_mode: [
-      Newline,
       Comment,
+      Newline,
+      EscapedChar,
+      SpecialChar,
       InferenceEnd,
       Data,
       ListDelimiter,

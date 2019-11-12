@@ -85,7 +85,8 @@ export enum RangeType {
   LINK = "link",
   TAG = "tag",
   STATEMENT_MENTION = "statement-mention",
-  ARGUMENT_MENTION = "argument-mention"
+  ARGUMENT_MENTION = "argument-mention",
+  SPECIAL_CHAR = "special-char"
 }
 export interface HasTitle {
   title?: string;

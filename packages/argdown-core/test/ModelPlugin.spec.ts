@@ -954,4 +954,35 @@ model:
       "multiple-pcs-assignments"
     );
   });
+  it("can replace special chars", () => {
+    const input = `
+[s1]: p.v.q
+
+[s2]: p:v:q
+
+[s3]: p.->.q
+
+[s4]: p:<->:q
+
+[s5]: .[].p
+
+[s6]: .<>.q
+
+[s7]: .~.p.^.q
+`;
+    const response = app.run({
+      process: ["parse-input", "build-model"],
+      input,
+      model: {
+        mode: InterpretationModes.STRICT
+      }
+    });
+    expect(response.statements!["s1"]!.members![0].text == "p∨q");
+    expect(response.statements!["s2"]!.members![0].text == "p ∨ q");
+    expect(response.statements!["s3"]!.members![0].text == "p→q");
+    expect(response.statements!["s4"]!.members![0].text == "p↔q");
+    expect(response.statements!["s5"]!.members![0].text == "◻q");
+    expect(response.statements!["s6"]!.members![0].text == "◇p");
+    expect(response.statements!["s7"]!.members![0].text == "¬p∧q");
+  });
 });
