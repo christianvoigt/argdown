@@ -106,6 +106,7 @@ export default new Vuex.Store({
   state: {
     argdownInput: primer,
     examples: examples,
+    useArgVu: false,
     config: {
       selection: {
         excludeDisconnected: true,
@@ -139,6 +140,9 @@ export default new Vuex.Store({
     pngScale: 1
   },
   mutations: {
+    setUseArgVu(state, value) {
+      state.useArgVu = value;
+    },
     setArgdownInput(state, value) {
       state.argdownInput = value;
     },
@@ -291,6 +295,9 @@ export default new Vuex.Store({
     },
     tags: (state, getters) => {
       return getters.argdownData.tags;
+    },
+    useArgVu: state => {
+      return state.useArgVu;
     }
   },
   actions: {

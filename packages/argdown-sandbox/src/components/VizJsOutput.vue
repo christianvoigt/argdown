@@ -14,6 +14,9 @@ import { VizJsMap } from "@argdown/map-views";
 var saveVizAsPng = null;
 var saveVizAsSvg = null;
 
+// eslint-disable-next-line no-undef
+var basePath = process.env.BASE_URL || "/";
+
 export default {
   name: "viz-js-output",
   methods: {
@@ -48,7 +51,7 @@ export default {
 
   mounted: function() {
     const svgContainer = this.$refs.container;
-    const urlToFullRenderJs = "/full.render.js";
+    const urlToFullRenderJs = basePath + "full.render.js";
     this.$_vizJsMap = new VizJsMap(svgContainer, {
       workerURL: urlToFullRenderJs
     });

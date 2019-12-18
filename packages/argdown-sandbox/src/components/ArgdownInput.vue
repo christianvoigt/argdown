@@ -1,10 +1,6 @@
 <template>
-  <div class="argdown-input">
-    <codemirror ref="codemirror"
-                :options="editorOption"
-                :value="value"
-                @changes="updateValue">
-    </codemirror>
+  <div class="argdown-input" v-bind:class="{'use-argvu': useArgVu}">
+    <codemirror ref="codemirror" :options="editorOption" :value="value" @changes="updateValue"></codemirror>
   </div>
 </template>
 
@@ -71,7 +67,22 @@ export default {
     },
     debouncedChangeEmission: _.debounce(function(value, component) {
       component.$emit("change", value);
-    }, 100)
+    }, 100),
+    refreshEditor: function() {
+      setTimeout(() => this.$refs.codemirror.codemirror.refresh(), 100);
+    }
+  },
+  computed: {
+    useArgVu: {
+      get() {
+        return this.$store.state.useArgVu;
+      }
+    }
+  },
+  watch: {
+    useArgVu() {
+      this.refreshEditor();
+    }
   },
   components: {
     codemirror
@@ -84,7 +95,18 @@ export default {
 @import "../../node_modules/codemirror/theme/monokai.css";
 @import "../../node_modules/codemirror/addon/lint/lint.css";
 @import "../../node_modules/@argdown/codemirror-mode/codemirror-argdown.css";
-
+@font-face {
+  font-family: "ArgVu";
+  src: url("/sandbox/ArgVuSansMono-Regular-8.2.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-feature-settings: "dlig";
+}
+.argdown-input.use-argvu .CodeMirror {
+  font-family: "ArgVu", mono-space;
+  font-feature-settings: "dlig";
+  font-size: 1em;
+}
 .input-maximized {
   .argdown-input {
     max-width: 60em;

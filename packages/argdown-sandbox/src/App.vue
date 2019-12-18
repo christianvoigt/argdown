@@ -10,20 +10,20 @@
     <div class="main-window">
       <div id="left-slot" v-if="$store.state.viewState != 'output-maximized'">
         <div class="input-header">
-          <InputNavigation/>
+          <InputNavigation />
           <button
             v-if="$store.state.viewState != 'input-maximized'"
             class="button"
             v-on:click="$store.commit('setViewState','input-maximized')"
           >
-            <img class="expand icon" src="./assets/expand.svg" alt="Expand">
+            <img class="expand icon" src="./assets/expand.svg" alt="Expand" />
           </button>
           <button
             v-if="$store.state.viewState == 'input-maximized'"
             class="button"
             v-on:click="$store.commit('setViewState','default')"
           >
-            <img class="expand icon" src="./assets/compress.svg" alt="Compress">
+            <img class="expand icon" src="./assets/compress.svg" alt="Compress" />
           </button>
         </div>
         <argdown-input
@@ -42,14 +42,14 @@
               class="button"
               v-on:click="$store.commit('setViewState','output-maximized')"
             >
-              <img class="expand icon" src="./assets/expand.svg" alt="Expand">
+              <img class="expand icon" src="./assets/expand.svg" alt="Expand" />
             </button>
             <button
               v-if="$store.state.viewState == 'output-maximized'"
               class="button"
               v-on:click="$store.commit('setViewState','default')"
             >
-              <img class="expand icon" src="./assets/compress.svg" alt="Compress">
+              <img class="expand icon" src="./assets/compress.svg" alt="Compress" />
             </button>
             <!-- <button class="button" v-on:click="$store.commit('toggleSettings')">
             <img class="toggle-settings icon" src="./assets/cog.svg" alt="Settings">
@@ -193,6 +193,13 @@ ul.nav-list {
   li {
     display: flex;
     margin: 0;
+    & > div {
+      display: flex;
+      align-items: center;
+      &.input-container {
+        padding: 0.75em;
+      }
+    }
     a {
       display: flex;
       align-items: center;
