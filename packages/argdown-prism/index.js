@@ -85,8 +85,12 @@ Prism.languages.argdown = {
     pattern: /(#[\w-]+|#\([\S ]+?\))/,
     alias: "cdata"
   },
+  "special-char": {
+    pattern: /(?:\.[^\s]+?\.)|(?:\:[^\s]+?\:)/,
+    alias: "cdata"
+  },
   support: {
-    pattern: /(^\s*)(?:\<?\+|\+\>?)(?=[\t ].)/m,
+    pattern: /(^\s*)(?:\<?\+|\+\>?)(?=[\t ])/m,
     lookbehind: true,
     alias: "operator"
   },
@@ -106,7 +110,7 @@ Prism.languages.argdown = {
     alias: "operator"
   },
   argument: {
-    pattern: /(<[^<>]+>\:?|@<[^<>]+>)/,
+    pattern: /(<[^<->][^<>]*>\:?|@<[^<->][^<>]+>)/,
     alias: "class-name",
     inside: {
       punctuation: /[<>@:]/
@@ -121,6 +125,9 @@ Prism.languages.argdown = {
   }
 };
 Prism.languages.argdown["bold"].inside["url"] = Prism.languages.argdown["url"];
-Prism.languages.argdown["italic"].inside["url"] = Prism.languages.argdown["url"];
-Prism.languages.argdown["bold"].inside["italic"] = Prism.languages.argdown["italic"];
-Prism.languages.argdown["italic"].inside["bold"] = Prism.languages.argdown["bold"];
+Prism.languages.argdown["italic"].inside["url"] =
+  Prism.languages.argdown["url"];
+Prism.languages.argdown["bold"].inside["italic"] =
+  Prism.languages.argdown["italic"];
+Prism.languages.argdown["italic"].inside["bold"] =
+  Prism.languages.argdown["bold"];
