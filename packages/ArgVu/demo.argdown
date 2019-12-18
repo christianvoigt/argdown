@@ -1,0 +1,26 @@
+===
+title: Demo of ArgVu ligatures
+subtitle: First, we have nice frontmatter lines...
+===
+
+[Secondly]: we have nice relation symbols...
+    <+ <A1>: better looking argument titles...
+    <- <A2>: and all relations symbols...
+    <_ <A3>: now have...
+    >< <A4>: the same width.
+
+<Thirdly>: If you activate the dlig ligatures,
+    shortcodes look like the logical symbols they represent:
+
+(1) .~.(p.^.q).<->.(.~.p).v.(.~.q)
+(2) .O.(A.->.B).->.(.O.A.->..O.B)
+(3) :~::A:xP(x):<->:.E.x.~.P(x)
+-----
+...and inferences have nicer lines as well
+-----
+(3) [Prettier]
+    + Plus now has the same width as minus:
+    - Yay!
+
+And references also look slightly better: @[Prettier] and @<A1>
+
