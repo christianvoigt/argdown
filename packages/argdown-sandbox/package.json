@@ -1,6 +1,6 @@
 {
   "name": "@argdown/sandbox",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "private": true,
   "description": "An Argdown editor that runs in the browser",
   "author": "Christian Voigt <1pxsolidblack@googlemail.com>",
@@ -11,9 +11,9 @@
     "copy-examples": "rimraf \"./public/examples/*.argdown\" && copyfiles -f \"../../examples/*.argdown\" ./public/examples"
   },
   "dependencies": {
-    "@argdown/codemirror-mode": "^1.0.0",
-    "@argdown/core": "^1.2.0",
-    "@argdown/map-views": "^1.2.0",
+    "@argdown/codemirror-mode": "^1.3.0",
+    "@argdown/core": "^1.3.0",
+    "@argdown/map-views": "^1.3.0",
     "axios": "^0.18.1",
     "file-saver": "^2.0.2",
     "lodash": "^4.17.15",
