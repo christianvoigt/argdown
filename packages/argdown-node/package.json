@@ -12,7 +12,7 @@
     "type-check": "tsc --noEmit",
     "build": "npm run clean && npm run build:src && npm run copy-pdfkit",
     "build:src": "tsc",
-    "docs:build": "typedoc  --options ./typedoc.js",
+    "docs:build": "node ./node_modules/typedoc/bin/typedoc",
     "copy-pdfkit": "copyfiles src/pdfkit.js dist",
     "test": "mocha -r ts-node/register --full-trace --bail --require source-map-support/register ./test/**/*.spec.ts",
     "coverage": "nyc mocha -r ts-node/register --full-trace --bail --require source-map-support/register ./test/**/*.spec.ts",
