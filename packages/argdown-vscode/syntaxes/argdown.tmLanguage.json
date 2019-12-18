@@ -17,7 +17,7 @@
   "patterns": [
     {
       "match": "\\\\.",
-      "name": "html.text.argdown"
+      "name": "constant.character.escape.argdown"
     },
     {
       "begin": "(?<=^|[^\\w\\d\\*])\\*\\*(?!$|\\*|\\s)",
@@ -303,6 +303,10 @@
       }
     },
     {
+      "match": "(?:\\.[^\\s]+?\\.)|(?:\\:[^\\s]+?\\:)",
+      "name": "constant.character.argdown"
+    },
+    {
       "match": "^\\s*(\\*)[ \\t]+",
       "captures": {
         "1": {
@@ -370,7 +374,7 @@
       "match": "^\\s*(\\d+\\.)[ \\t]+",
       "captures": {
         "1": {
-          "name": "markup.list.ordered.argument.pcs.reconstruction.argdown"
+          "name": "markup.list.numbered.argument.pcs.reconstruction.argdown"
         }
       }
     },
@@ -378,7 +382,7 @@
       "match": "^\\s*(\\(\\d+\\))[ \\t]+",
       "captures": {
         "1": {
-          "name": "markup.list.ordered.argument.statement-index.argdown"
+          "name": "markup.list.numbered.argument.statement-index.argdown"
         }
       }
     },

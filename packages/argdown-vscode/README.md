@@ -36,6 +36,19 @@ These themes simply extend the default VS Code themes, so they will also work wi
 
 If you prefer to work a different theme, you can also add custom Argdown colors to your VSCode configuration that will work with any theme. Please read the section at the end of this document for further instructions.
 
+## Using ArgVu font ligatures in VSCode
+
+If you are looking for the perfect font for your Argdown code, check out our free [ArgVu](https://github.com/christianvoigt/argdown/tree/master/packages/ArgVu) font. It comes with Argdown-specific font-ligatures and glyphs. After installing the font, you can activate it in VSCode by adding the following to your `settings.json`:
+
+```json
+    "[argdown]": {
+        "editor.fontLigatures": "'dlig'",
+        "editor.fontFamily": "ArgVu Sans Mono Regular"
+    },
+```
+
+See [ArgVu's Readme](https://github.com/christianvoigt/argdown/tree/master/packages/ArgVu/README.md) file for more detailed instructions.
+
 ## Map Preview
 
 ![Map Preview](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/MapPreviewScreencap.gif "Opening the map preview")
@@ -54,7 +67,7 @@ If you prefer to work a different theme, you can also add custom Argdown colors 
 
 ![Export](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/ExportScreencap.gif "Exporting Argdown document")
 
-### Adding custom Argdown colors to your settings
+## Adding custom Argdown colors to your settings
 
 If you prefer to work with other themes, you can add custom colors for Argdown elements to your settings:
 

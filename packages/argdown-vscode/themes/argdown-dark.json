@@ -37,6 +37,14 @@
       }
     },
     {
+      "name": "PCS Statement Number",
+      "scope": "markup.list.numbered.argument.statement-index.argdown",
+      "settings": {
+        "foreground": "#0582CA",
+        "fontStyle": "bold"
+      }
+    },
+    {
       "name": "Statement Title",
       "scope": [
         "variable.statement-title",
