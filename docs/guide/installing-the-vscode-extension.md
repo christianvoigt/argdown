@@ -1,8 +1,8 @@
 ---
 title: Installing the Argdown VS Code Extension
 meta:
-    - name: description
-      content: How to install the Argdown VS Code extension
+  - name: description
+    content: How to install the Argdown VS Code extension
 ---
 
 # Installing the VS Code extension
@@ -29,6 +29,8 @@ You need to activate a custom VS Code theme in order to get full support of the 
 3.  Enter `Argdown` in the input field and select the Argdown theme.
 
 Now you have added full syntax highlighting support to VS Code. The Argdown custom theme is the default VS Code light theme enhanced by some special colors for things like attack and support relations. So it will work fine with other programming languages as well.
+
+You can also [activate our free ArgVu font](https://github.com/christianvoigt/argdown/tree/master/packages/ArgVu) in VSCode. It comes with Argdown-specific font-ligatures and glyphs.
 
 :::tip Next step
 If you are new to Argdown, the next step is to follow along with our [first example](/guide/a-first-example.html).

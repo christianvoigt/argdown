@@ -8,7 +8,7 @@ This is a small maintenance release that updates the packages dependencies, fixe
 
 ### Line breaks and empty spaces
 
-Until now, line breaks were simply ignored by the browser. As @sbrugman pointed out in [#117](https://github.com/christianvoigt/argdown/issues/117) the standard Markdown behaviour is that single line breaks in a paragraph are interpreted as empty spaces. Argdown will now behave in a similar way if
+Until now, line breaks were simply ignored by the parser. As @sbrugman pointed out in [#117](https://github.com/christianvoigt/argdown/issues/117) the standard Markdown behaviour is that single line breaks in a paragraph are interpreted as empty spaces. Argdown will now behave in a similar way if
 
 - the line break is not already preceded by an empty space
 - the line break does not finish the statement text or argument description.

@@ -53,7 +53,7 @@ module.exports = {
     [
       "sitemap",
       {
-        hostname: "https://pake.web.id"
+        hostname: "https://argdown.org"
       }
     ]
   ],
@@ -71,7 +71,10 @@ module.exports = {
       "/changes/": [
         {
           title: "Changes",
-          children: [["", "2019"], ["2018", "2018"]]
+          children: [
+            ["", "2019"],
+            ["2018", "2018"]
+          ]
         }
       ],
       "/guide/": [
@@ -95,7 +98,8 @@ module.exports = {
             "creating-group-nodes",
             "changing-the-node-style",
             "changing-the-node-size",
-            "colorizing-maps"
+            "colorizing-maps",
+            "using-logical-symbols-and-emojis"
           ]
         },
         {

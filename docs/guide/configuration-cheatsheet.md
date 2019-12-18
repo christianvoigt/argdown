@@ -19,6 +19,12 @@ interface IArgdownConfig {
    * This and the following meta data settings
    * should be used directly in the frontmatter
    * section, not in a config file.
+   *
+   * Example (json):
+   *
+   * {
+   * "title": "My first debate"
+   * }
    **/
   title?: string;
   /**
@@ -28,7 +34,13 @@ interface IArgdownConfig {
   subTitle?: string;
   /**
    * if there are several authors,
-   * use an array: ["author 1", "author 2"]
+   * use an array.
+   *
+   * Example (json):
+   *
+   * {
+   * author: ["author 1", "author 2"]
+   * }
    **/
   author?: string | string[];
   date?: string;
@@ -51,6 +63,22 @@ interface IArgdownConfig {
    * exported.
    **/
   outputSuffix?: string;
+  // settings for the parser plugin (also containing the lexer)
+  parser?: {
+    /**
+     * Should parser and lexer errors cause the plugin to throw an exception?
+     *
+     * If not, the plugin will simply add the errors
+     * to response.parserErrors and response.lexerErrors
+     *
+     * By default false.
+     *
+     * Note that there is also a global throwExceptions setting.
+     * If the global setting is false, the exceptions of the parser plugin will be caught
+     * and not rethrown by the Argdown application.
+     **/
+    throwExceptions?: boolean;
+  }
   // settings for the data plugin
   data?: {
     /**
@@ -65,6 +93,14 @@ interface IArgdownConfig {
      * This makes it possible to configure plugins
      * without using an external argdown.config.js
      * file.
+     *
+     * Example (json):
+     *
+     * {
+     *    "data": {
+     *      "frontMatterSettingsMode": "ignore"
+     *      }
+     * }
      */
     frontMatterSettingsMode?: "default" | "ignore" | "priority";
     /**
@@ -99,6 +135,12 @@ interface IArgdownConfig {
      *   support.
      * - In "strict" mode, - means contrary and +
      *   means entails.
+     *
+     * Example (json):
+     *
+     * {
+     *  "model": { "mode": "strict" }
+     * }
      **/
     mode?: "loose" | "strict"; // loose is default mode
     /**
@@ -111,8 +153,28 @@ interface IArgdownConfig {
      * the pcs's last inference.
      **/
     transformArgumentRelations?: boolean; // default is true
+    /**
+     * A mapping between custom shortcodes and unicode characters.
+     * The model plugin will replace the shortcodes with these characters.
+     *
+     * Shortcodes can be either surrounded by colons or by dots.
+     *
+     * Example (json):
+     *
+     * {
+     * "model": {
+     *    "shortcodes": {
+     *      ":zany:": {unicode: "🤪"},
+     *      ".zany.": {unicode: "🤪"},
+     *      ".~E.": {unicode: "∄"}
+     *    }
+     *  }
+     * }
+     *
+     **/
+    shortcodes?: {[key:string]: {unicode:string}}
   };
-  // settings for the tag plugin
+  // settings for the color plugin
   color?: {
     /**
      * A custom color scheme or the name of a
@@ -122,6 +184,14 @@ interface IArgdownConfig {
      *
      * The color at index 0 will be used as default
      * color.
+     *
+     * Example (json)
+     *
+     * {
+     * "color": {
+     *  "colorScheme": ["#e6afd3", "#9ed2a7", "#aebaeb", "#d2d39d", "#71cdeb", "#e6b197"]
+     * }
+     * }
      *
      */
     colorScheme?: string[] | string; // default is "default"
@@ -137,6 +207,16 @@ interface IArgdownConfig {
      * - contrary
      * - contradictory
      * - entails
+     *
+     * Example (json)
+     *
+     * {
+     * "color": {
+     *  "relationColors": {
+     *    "attack": "#9ed2a7"
+     *  }
+     * }
+     * }
      **/
     relationColors?: { [key: string]: string };
     /**
@@ -154,8 +234,16 @@ interface IArgdownConfig {
      * coloring even if they are not the first tags
      * applied.
      *
-     * Example: {"tag-1": 1, "tag-2": "#CCCCCC",
-     * "tag-3": {color: 0, priority: 2}}
+     * Example (json):
+     *
+     * {
+     * "color": {
+     *  {
+     *    "tag-1": 1,
+     *    "tag-2": "#CCCCCC",
+     *    "tag-3": {color: 0, priority: 2}}
+     *  }
+     * }
      */
     tagColors?: {
       [tagName: string]:
@@ -170,19 +258,25 @@ interface IArgdownConfig {
     /**
      * A map from statement titles to colors
      *
-     * Example: {"S1": 1, "S2": "#CCCCCC"}
+     * Example:
+     *
+     * {"color": {"statementColors":{"S1": 1, "S2": "#CCCCCC"}}}
      **/
     statementColors?: { [title: string]: string | number };
     /**
      * A map from argument titles to colors
      *
-     * Example: {"A1": 1, "A2": "#CCCCCC"}
+     * Example:
+     *
+     * {"color": {"argumentColors":{"A1": 1, "A2": "#CCCCCC"}}}
      **/
     argumentColors?: { [title: string]: string | number };
     /**
      * A map from section titles to colors
      *
-     * Example: {"Heading 1": 1, "Heading 2": "#CCCCCC"}
+     * Example:
+     *
+     * {"color": {"groupColors": {"Heading 1": 1, "Heading 2": "#CCCCCC"}}}
      **/
     groupColors?: { [title: string]: string | number };
   };
@@ -190,6 +284,8 @@ interface IArgdownConfig {
   selection?: {
     /**
      * Can be used to only select arguments and statements with certain tags
+     *
+     *  {"selection": {"selectedTags": ["tag1", "tag2"]}}
      */
     selectedTags?: string[];
     /**
@@ -204,6 +300,8 @@ interface IArgdownConfig {
      * A list of headings that can be used to only
      * selected arguments and statements from
      * certain sections in the texts.
+     *
+     *  {"selection": {"selectedSections": ["section1", "section2"]}}
      */
     selectedSections?: string[];
     /**
@@ -227,16 +325,26 @@ interface IArgdownConfig {
      *
      * Which other statements are selected depends
      * on the other selection methods used.
+     *
+     *  {"selection": {"includeStatements": ["s1", "s2"]}}
      */
     includeStatements?: string[];
     /**
      * Titles of statements that should be excluded
      * from the map.
+     *
+     * Example:
+     *
+     *  {"selection": {"excludeStatements": ["s1", "s2"]}}
      */
     excludeStatements?: string[];
     /**
      * Titles of arguments that should not be in the
      * map.
+     *
+     * Example:
+     *
+     *  {"selection": {"excludeArguments": ["a1", "a2"]}}
      */
     excludeArguments?: string[];
     /**
@@ -251,6 +359,10 @@ interface IArgdownConfig {
     /**
      * The method by which preselected statements
      * are selected
+     *
+     * Example:
+     *
+     * {"selection": {"statementSelectionMode": "with-more-than-one-relation"}}
      *
      **/
     statementSelectionMode?:
@@ -285,7 +397,7 @@ interface IArgdownConfig {
      * to define different groups or close different
      * sets of groups
      *
-     * Example:
+     * Example (YAML frontmatter section):
      *
      * ===
      * group:
@@ -309,7 +421,7 @@ interface IArgdownConfig {
      * Can be used to override heading-based
      * grouping.
      *
-     * Example:
+     * Example (YAML frontmatter section):
      *
      * ===
      * group:
@@ -533,9 +645,15 @@ interface IArgdownConfig {
      * The settings will be inserted in the
      * following form: 'key: "value";'
      *
-     * Example: {
-     *  rankdir: "BT",
-     *  newrank: true
+     * Example (json):
+     *
+     * {
+     *  "dot": {
+     *    "graphVizSettings": {
+     *        rankdir: "BT",
+     *        newrank: true
+     *    }
+     *  }
      * }
      */
     graphVizSettings?: { [name: string]: string };

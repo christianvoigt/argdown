@@ -24,11 +24,8 @@ footer: MIT Licensed | Copyright © 2018-present Christian Voigt | Funded by Deb
   </div>
 </div>
 
-## Argument mapping made easy
-
-This is how a simple Argdown document will look like as an <a href="https://en.wikipedia.org/wiki/Argument_map">argument map</a>:
-
 ```argdown-map
+
 ===
 title: >
   A first example (with arguments from 'The Debaters Handbook')
@@ -189,9 +186,7 @@ disposition for criminal behaviour.
   -> [Causal link]
 ```
 
-You can read about [how this debate was reconstructed in Argdown from start to finish](/guide/a-first-example.md) to get to know the complete workflow.
-
-If you want to simply try it for yourself, the next section will get you started:
+If you are new to argument mapping, read our [tutorial](/guide/a-first-example.md) about how this debate was reconstructed.
 
 ## Learn Argdown in 3 Minutes
 
@@ -270,6 +265,9 @@ Now that you have learned the basics of Argdown you can:
 - [VS Code Extension](/guide/installing-the-vscode-extension.html) Install the Argdown VS Code extension for full Argdown language support in one of the best code editors around. Includes a live preview, syntax highlighting, content assist, code linting and export options.
 - [Commandline Tool](/guide/installing-the-commandline-tool.html) If you prefer to work with the commandline install the Argdown commandline tool. You can define custom processes in your config file and use them in a task runner to export several argument maps for the same document at once.
 
-:::
+If you are looking for the perfect font for your Argdown code, check out our free [ArgVu](https://github.com/christianvoigt/argdown/tree/master/packages/ArgVu) font. It comes with Argdown-specific font-ligatures and glyphs.
+
+::::tip
 
 If you are getting unexpected results in your map, take a look at the [syntax rules](/syntax) of Argdown and do not forget to separate top-level elements by empty lines.
+:::

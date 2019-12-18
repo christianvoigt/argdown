@@ -286,6 +286,28 @@ hide: true
 [Nietzsche's slogan] #atheism #nietzsche
 ```
 
+### Special Character Shortcodes (for Logical Symbols & Emojis)
+
+```argdown-cheatsheet
+===
+explanation: >
+    Statements may contain shortcodes for special unicode characters. The shortcodes are surrounded by colons or full stops. The parser will transform these shortcodes into unicode characters. 
+hide: true
+===
+[De Morgan]: .~.(p.^.q) .<->. (.~.p) .v. (.~.q)
+    + :happy: :up: :love:
+```
+
+This is especially useful if you want to use logical symbols without having to copy & paste the characters into the Argdown document. It is also useful if you want to have some fun with emojis.
+
+[Here](...) is a list with all shortcodes currently supported by default. You can add your own [custom shortcodes](...) in the Argdown configuration.
+
+:::tip Logical Symbols with ArgVu Ligatures
+
+The shortcodes for logical symbols are even more useful if you use our ArgVu font for Argdown source code and activate the ligatures for these shortcodes. They will then be displayed as the unicode characters they represent *without actually changing the Argdown source code*.
+
+:::
+
 ### Statement YAML data
 
 You can add metadata in the [YAML data format](http://yaml.org) to any statement definition or reference. For a quick introduction to YAML see [here](https://www.codeproject.com/Articles/1214409/Learn-YAML-in-five-minutes) or [here](https://learnxinyminutes.com/docs/yaml/).

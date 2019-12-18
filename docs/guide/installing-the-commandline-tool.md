@@ -13,6 +13,8 @@ The Argdown commandline tool is a Node.js program and distributed as a npm packa
 2.  Run `npm install -g @argdown/cli` to install the comandline tool globally.
 3.  You can now run `argdown --help` in the commandline to get further help on using the commandline tool. The tool consists of several commands for exporting Argdown documents into other document formats. For example `argdown map` will export any Argdown files in the current directory as svg files that are saved in the "svg" folder. You can get help for the options of each command by using the `--help` parameter. For example, enter `argdown map --help` to see all options of the `map` command.
 
+Now you can edit Argdown in the editor of your choice. You might want to install our free [ArgVu](https://github.com/christianvoigt/argdown/tree/master/packages/ArgVu) font. It comes with Argdown-specific font-ligatures and glyphs.
+
 :::tip Next step
 If you are new to Argdown, the next step is to follow along with our [first example](/guide/a-first-example.html).
 :::
