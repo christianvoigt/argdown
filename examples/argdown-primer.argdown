@@ -1,4 +1,4 @@
-# Welcome to Argdown!
+# :heart: Welcome to Argdown! :heart:
 
 [Intro]: Argdown is a simple syntax for defining argumentative 
 structures, inspired by Markdown.
@@ -70,7 +70,7 @@ define this premise-conclusion structure with Argdown:
     the same title. The statements will then be treated 
     as logically equivalent.
 --
-Some inference rule (Some additional info: 1,2)
+Some inference rule: p .^. (p .->. q) .->. q {some_additional_data: [1,2]}
 --
 (3) And now the conclusion 
   -> Outgoing relations of the conclusion, 

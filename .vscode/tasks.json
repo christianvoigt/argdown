@@ -15,7 +15,7 @@
         "panel": "dedicated",
         "reveal": "never"
       },
-      "problemMatcher": ["$tsc-watch"]
+      "problemMatcher": []
     },
     {
       "label": "watch:argdown-languageserver",

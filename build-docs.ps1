@@ -1,5 +1,3 @@
-#!/usr/bin/env sh
-
 npm run docs:build
 
 cd ./packages/argdown-core
