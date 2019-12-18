@@ -1,11 +1,15 @@
 export interface ISpecialCharacterDictionary {
   [key: string]: { unicode: string } | undefined;
 }
-export const specialChars: ISpecialCharacterDictionary = {
+export const shortcodes: ISpecialCharacterDictionary = {
   ".A.": { unicode: "∀" },
   ":A:": { unicode: "∀" },
   ".E.": { unicode: "∃" },
   ":E:": { unicode: "∃" },
+  ".O.": { unicode: "𝗢" },
+  ":O:": { unicode: "𝗢" },
+  ".P.": { unicode: "𝗣" },
+  ":P:": { unicode: "𝗣" },
   ".->.": { unicode: "→" },
   ":->:": { unicode: "→" },
   ".<->.": { unicode: "↔" },
@@ -16,6 +20,8 @@ export const specialChars: ISpecialCharacterDictionary = {
   ":^:": { unicode: "∧" },
   ".v.": { unicode: "∨" },
   ":v:": { unicode: "∨" },
+  ".v_.": { unicode: "⊻" },
+  ":v_:": { unicode: "⊻" },
   ".<>.": { unicode: "◇" },
   ":<>:": { unicode: "◇" },
   ".[].": { unicode: "◻" },
@@ -36,6 +42,10 @@ export const specialChars: ISpecialCharacterDictionary = {
   ".joy.": { unicode: "😂" },
   ":heart:": { unicode: "❤" },
   ".heart.": { unicode: "❤" },
+  ".?.": { unicode: "❓" },
+  ":?:": { unicode: "❓" },
+  ".question.": { unicode: "❓" },
+  ":question:": { unicode: "❓" },
   ":love:": { unicode: "😍" },
   ".love.": { unicode: "😍" },
   ":wink:": { unicode: "😉" },
@@ -44,8 +54,8 @@ export const specialChars: ISpecialCharacterDictionary = {
   ".shush.": { unicode: "🤫" },
   ":meh:": { unicode: "😐" },
   ".meh.": { unicode: "😐" },
-  ":eyes:": { unicode: "🙄" },
-  ".eyes.": { unicode: "🙄" },
+  ":eye-roll:": { unicode: "🙄" },
+  ".eye-roll.": { unicode: "🙄" },
   ":sad:": { unicode: "😢" },
   ".sad.": { unicode: "😢" },
   ":disappointed:": { unicode: "😞" },
@@ -61,5 +71,15 @@ export const specialChars: ISpecialCharacterDictionary = {
   ":down:": { unicode: "👎" },
   ".down.": { unicode: "👎" },
   ":think:": { unicode: "🤔" },
-  ".think.": { unicode: "🤔" }
+  ".think.": { unicode: "🤔" },
+  ".star.": { unicode: "⭐" },
+  ":star:": { unicode: "⭐" },
+  ".y.": { unicode: "✔" },
+  ":y:": { unicode: "✔" },
+  ".agree.": { unicode: "✔" },
+  ":agree:": { unicode: "✔" },
+  ".n.": { unicode: "❌" },
+  ":n:": { unicode: "❌" },
+  ".disagree.": { unicode: "❌" },
+  ":disagree:": { unicode: "❌" }
 };

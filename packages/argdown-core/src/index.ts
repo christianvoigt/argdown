@@ -154,7 +154,7 @@ export * from "./plugins/JSONExportPlugin";
 export * from "./plugins/DotExportPlugin";
 export * from "./plugins/GraphMLExportPlugin";
 export * from "./plugins/SaysWhoPlugin";
-export * from "./plugins/specialChars";
+export * from "./plugins/shortcodes";
 export * from "./IArgdownPlugin";
 export * from "./IArgdownLogger";
 export * from "./ArgdownPluginError";

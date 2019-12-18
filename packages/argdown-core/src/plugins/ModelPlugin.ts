@@ -40,7 +40,7 @@ import {
   DefaultSettings
 } from "../utils";
 import { other } from "../utils";
-import { ISpecialCharacterDictionary, specialChars } from "./specialChars";
+import { ISpecialCharacterDictionary, shortcodes } from "./shortcodes";
 
 export interface ITagData {
   tag: string;
@@ -58,7 +58,7 @@ export interface IModelPluginSettings {
   mode?: InterpretationModes;
   removeTagsFromText?: boolean;
   transformArgumentRelations?: boolean;
-  specialChars?: ISpecialCharacterDictionary;
+  shortcodes?: ISpecialCharacterDictionary;
 }
 declare module "../index" {
   interface IArgdownRequest {
@@ -111,7 +111,7 @@ const defaultSettings: DefaultSettings<IModelPluginSettings> = {
   mode: InterpretationModes.LOOSE,
   removeTagsFromText: false,
   transformArgumentRelations: true,
-  specialChars: ensure.object<ISpecialCharacterDictionary>(specialChars)
+  shortcodes: ensure.object<ISpecialCharacterDictionary>(shortcodes)
 };
 /**
  * The ModelPlugin builds the basic data model from the abstract syntax tree (AST) in the [[IArgdownResponse.ast]] response property that is provided by the [[ParserPlugin]].
@@ -1282,7 +1282,7 @@ export class ModelPlugin implements IArgdownPlugin {
                 node.text += child.image.substring(1, child.image.length);
               } else if (tokenMatcher(child, argdownLexer.SpecialChar)) {
                 const specialCharTrimmed = child.image.trim();
-                const specialCharInfo = settings.specialChars![
+                const specialCharInfo = settings.shortcodes![
                   specialCharTrimmed
                 ];
                 if (specialCharInfo) {

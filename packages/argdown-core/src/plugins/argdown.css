@@ -33,6 +33,14 @@
   text-decoration: none;
 }
 
+.argdown > .statement,
+.argdown > .argument-definition,
+.argdown > .argument-reference {
+  display: block;
+  margin-bottom: 2em;
+  margin-top: 2em;
+}
+
 .argdown .relations {
   margin-left: 2em;
   margin-top: 0.5em;
@@ -133,7 +141,9 @@
 .argdown .conclusion.pcs-statement {
   font-weight: bold;
 }
-
+.tag {
+  color: green;
+}
 .argdown .conclusion.pcs-statement .relations {
   font-weight: normal;
 }
