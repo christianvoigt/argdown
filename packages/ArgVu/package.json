@@ -1,0 +1,23 @@
+{
+  "name": "argvu",
+  "version": "8.2.0",
+  "description": "A font for Argdown based on DejaVu",
+  "files": [
+    "ArgVuSansMono-Regular-8.2.otf"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/christianvoigt/argdown.git"
+  },
+  "keywords": [
+    "Argdown",
+    "font",
+    "ligatures"
+  ],
+  "author": "Peter Stahmer, Christian Voigt",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "bugs": {
+    "url": "https://github.com/christianvoigt/argdown/issues"
+  },
+  "homepage": "https://github.com/christianvoigt/argdown#readme"
+}
