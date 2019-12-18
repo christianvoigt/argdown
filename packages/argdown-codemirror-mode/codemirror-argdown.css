@@ -52,6 +52,9 @@
   font-style: bold;
   color: #170;
 }
+.cm-special-char {
+  color: #777;
+}
 .cm-frontmatter {
   color: #ccc;
 }

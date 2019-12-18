@@ -11,6 +11,7 @@ var mode = {
     { regex: /_.*?_+/, token: "italic" }, //naive implementation (no ranges within italic range supported)
     { regex: /\*.*?\*+/, token: "italic" }, //naive implementation (no ranges within italic range supported)
     { regex: /#(?:\([^\)]+\)|[\w-]+)[ \t]?/, token: "tag" },
+    { regex: /(?:\.[^\s]+?\.)|(?:\:[^\s]+?\:)/, token: "special-char" },
     { regex: /[ \t]*\(\d+\)/, sol: true, token: "argument-statement" },
     { regex: /#+[ \t]+.*/, sol: true, token: "heading" },
     { regex: /[ \t]*----+/, sol: true, token: "inference" },
@@ -38,10 +39,22 @@ var mode = {
     { regex: /[^\}]*?\{/, token: "data", push: "dataState" },
     { regex: /.*/, token: "data" }
   ],
-  frontmatter: [{ regex: /.*?===/, token: "frontmatter", next: "start" }, { regex: /.*/, token: "frontmatter" }],
-  htmlComment: [{ regex: /.*?-->/, token: "comment", next: "start" }, { regex: /.*/, token: "comment" }],
-  cMultiLineComment: [{ regex: /.*?\*\//, token: "comment", next: "start" }, { regex: /.*/, token: "comment" }],
-  inference: [{ regex: /.*?--+/, token: "inference", next: "start" }, { regex: /.*/, token: "inference" }],
+  frontmatter: [
+    { regex: /.*?===/, token: "frontmatter", next: "start" },
+    { regex: /.*/, token: "frontmatter" }
+  ],
+  htmlComment: [
+    { regex: /.*?-->/, token: "comment", next: "start" },
+    { regex: /.*/, token: "comment" }
+  ],
+  cMultiLineComment: [
+    { regex: /.*?\*\//, token: "comment", next: "start" },
+    { regex: /.*/, token: "comment" }
+  ],
+  inference: [
+    { regex: /.*?--+/, token: "inference", next: "start" },
+    { regex: /.*/, token: "inference" }
+  ],
   // The meta property contains global information about the mode. It
   // can contain properties like lineComment, which are supported by
   // all modes, and also directives like dontIndentStates, which are
