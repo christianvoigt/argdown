@@ -1,5 +1,31 @@
 # Release Notes 2019
 
+## v1.3.0 (December 2019)
+
+**Changes in:** @argdown/core, @argdown/node, @argdown/vscode, @argdown/sandbox, @argdown/codemirror-mode, @argdown/prism, docs
+
+**New package:** ArgVu
+
+This release fixes _all_ currently open bugs, introduces [ArgVu](https://github.com/christianvoigt/argdown/tree/master/packages/ArgVu), a font for Argdown, and configurable [shortcodes](https://argdown.org/guide/using-logical-symbols-and-emojis) for special characters like logical symbols or emojis.
+
+### ArgVu
+
+[ArgVu](https://github.com/christianvoigt/argdown/tree/master/packages/ArgVu) is a free font that adds Argdown-specific font ligatures and glyphs to [DejaVu Sans Mono](https://dejavu-fonts.github.io/). You can configure VSCode so that it will only use ArgVu ligatures for Argdown files. For a feature list and installation instructions consult the font's [README](https://github.com/christianvoigt/argdown/tree/master/packages/ArgVu).
+
+### Shortcodes for logical symbols and emojis 😍
+
+You can now use shortcodes like `.A.` for ∀ or `:happy:` for 😀 instead of having to copy and paste special unicode characters. Please read more about this feature in our [guide on creating argument maps](https://argdown.org/guide/using-logical-symbols-and-emojis.html).
+
+If you install ArgVu and use its `dlig` ligatures the shortcodes for logical symbols will be automatically displayed as their unicode counterparts (so :A: will look like ∀ and :<->: will look like ↔). It is just like magic!
+
+### Bug fixes
+
+- Multiple empty lines at end of file #132
+- First line empty, second line comment #130
+- Language server throws error messages in VS code #128
+- Windows line feed (\r) in argdown cli prevents it from running on linux #121
+- VS Code: language server does not work with unsaved files #89
+
 ## v1.2.0 (October 2019)
 
 **Changes in:** @argdown/core, @argdown/node, @argdown/vscode, @argdown/sandbox, @argdown/language-server, docs
