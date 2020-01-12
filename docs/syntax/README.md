@@ -947,8 +947,8 @@ model:
     mode: loose
 ===
 [a]
-    +> [a]
-    -> [b]
+    +> [b]
+    -> [c]
     <+ [c]
     <- [d]
 ```
@@ -1087,9 +1087,9 @@ If you first have defined relations for a central claim in your debate and reuse
 
 It is derived that Argument a is **supported** by argument b if either
 
-- a's main conclusion is defined as **entailing** a premise of b or
-- a's main conclusion and a premise of b belong to the same **equivalence class** or
-- a's main conclusion is defined as **supporting** b.
+- b's main conclusion is defined as **entailing** a premise of a or
+- b's main conclusion and a premise of a belong to the same **equivalence class** or
+- b's main conclusion is defined as **supporting** a.
 
 :::
 
@@ -1116,8 +1116,8 @@ hide: true
 
 It is derived that Argument a is **attacked** by argument b if either
 
-- a's main conclusion is defined as **contrary** or **contradictory** to a premise of b or
-- a's main conclusion is defined as attacking b.
+- b's main conclusion is defined as **contrary** or **contradictory** to a premise of a or
+- b's main conclusion is defined as attacking a.
 
 :::
 
@@ -1145,8 +1145,8 @@ hide: true
 :::definition Derivation of an argument's undercut relations from its pcs
 It is derived that Argument a is **undercut** by argument b if either
 
-- a's main conclusion is defined as **undercutting** an inference of b or
-- a's main conclusion is defined as **undercutting** b.
+- b's main conclusion is defined as **undercutting** an inference of a or
+- b's main conclusion is defined as **undercutting** a.
   :::
 
 ```argdown-cheatsheet
