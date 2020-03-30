@@ -18,11 +18,11 @@
   "readmeFilename": "Readme.md",
   "preferGlobal": true,
   "devDependencies": {
-    "@vuepress/plugin-pwa": "^1.0.0-rc.1",
+    "@vuepress/plugin-pwa": "^1.4.0",
     "esm": "^3.2.25",
-    "lerna": "^3.19.0",
+    "lerna": "^3.20.2",
     "viz.js": "^1.8.1",
-    "vuepress": "1.2.0"
+    "vuepress": "^1.4.0"
   },
   "workspace-sources": {
     "*": [
