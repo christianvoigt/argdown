@@ -533,7 +533,9 @@ export type MapNodeType =
 export interface IMapNode extends HasTitle, HasTags, HasColor, HasFontColor {
   type: MapNodeType;
   labelTitle?: string;
+  labelTitleRanges?: IRange[];
   labelText?: string;
+  labelTextRanges?: IRange[];
   id: string;
 }
 /**

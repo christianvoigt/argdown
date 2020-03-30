@@ -642,16 +642,16 @@ export class ModelPlugin implements IArgdownPlugin {
           stop: newText.length - 1
         };
         linkRange.url = token.url;
-        if (!target.ranges) {
-          target.ranges = [];
-        }
-        target.ranges.push(linkRange);
         if (token.image[token.image.length - 1] == " ") {
           target.text += " ";
           token.trailingWhitespace = " ";
         } else {
           token.trailingWhitespace = "";
         }
+        if (!target.ranges) {
+          target.ranges = [];
+        }
+        target.ranges.push(linkRange);
       },
       [TokenNames.TAG]: (request, response, token) => {
         const target = currentHeading || currentStatement;
@@ -1334,16 +1334,16 @@ export class ModelPlugin implements IArgdownPlugin {
           return;
         }
         let italicEnd = last(node.children) as ITokenNode;
+        let range = last(rangesStack);
+        if (range) {
+          range.stop = target.text ? target.text.length - 1 : 0;
+          rangesStack.pop();
+        }
         if (italicEnd.image[italicEnd.image.length - 1] == " ") {
           target.text += " ";
           node.trailingWhitespace = " ";
         } else {
           node.trailingWhitespace = "";
-        }
-        let range = last(rangesStack);
-        if (range) {
-          range.stop = target.text ? target.text.length - 1 : 0;
-          rangesStack.pop();
         }
       },
       [RuleNames.BOLD + "Entry"]: () => {
@@ -1370,16 +1370,16 @@ export class ModelPlugin implements IArgdownPlugin {
         }
         const ruleNode = node as IRuleNode;
         let boldEnd = last(ruleNode.children) as ITokenNode;
+        let range = last(rangesStack);
+        if (range) {
+          range.stop = target.text ? target.text.length - 1 : 0;
+          rangesStack.pop();
+        }
         if (boldEnd && boldEnd.image[boldEnd.image.length - 1] == " ") {
           target.text += " ";
           ruleNode.trailingWhitespace = " ";
         } else {
           ruleNode.trailingWhitespace = "";
-        }
-        let range = last(rangesStack);
-        if (range) {
-          range.stop = target.text ? target.text.length - 1 : 0;
-          rangesStack.pop();
         }
       }
     };

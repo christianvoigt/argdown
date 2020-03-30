@@ -116,4 +116,24 @@ n3;
 };`;
     expect(result.dot!.includes(rankSections)).to.be.true;
   });
+  it("can create ranges in labels", function() {
+    let source = `
+
+      [s1]: test *test* **test**
+       - <s2>: test`;
+
+    let result = app.run({
+      process: [
+        "parse-input",
+        "build-model",
+        "create-map",
+        "colorize",
+        "export-dot"
+      ],
+      input: source,
+      logLevel: "error"
+    });
+    const s1Text = "test&#x20;<i>test</i>&#x20;<b>test</b>";
+    expect(result.dot!.includes(s1Text)).to.be.true;
+  });
 });

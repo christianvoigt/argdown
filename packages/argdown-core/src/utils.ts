@@ -1,4 +1,10 @@
-import { IAstNode, IRelation, RelationMember } from "./model/model";
+import {
+  IAstNode,
+  IRelation,
+  RelationMember,
+  IRange,
+  RangeType
+} from "./model/model";
 import { isTokenNode, isRuleNode } from "./model/model";
 import { IToken } from "chevrotain";
 import pixelWidth from "string-pixel-width";
@@ -348,6 +354,7 @@ export const addLineBreaks = (
     bold?: boolean;
     lineBreak?: string;
     escapeAsHtmlEntities?: boolean;
+    applyRanges?: IRange[];
   }
 ): { text: string; lines: number } => {
   if (!str) {
@@ -357,12 +364,102 @@ export const addLineBreaks = (
     ? splitByLineWidth(str, options)
     : splitByCharactersInLine(str, options.charactersInLine || 0, true);
   const lineBreak = options.lineBreak || "\n";
-  if (options.escapeAsHtmlEntities) {
+  if (options.applyRanges) {
+    let start = 0;
     for (let i = 0; i < arr.length; i++) {
-      arr[i] = escapeAsHtmlEntities(arr[i]);
+      const line = arr[i];
+      const originalLength = line.length;
+      const end = start + originalLength - 1;
+      const nodes: ({ start: number; end: number } | { text: string })[] = [
+        { start, end }
+      ];
+      for (let range of options.applyRanges) {
+        if (range.start >= start && range.start <= end) {
+          const nodeIndex = nodes.findIndex(n =>
+            "text" in n ? false : n.start <= range.start && n.end >= range.start
+          );
+          const oldTextNode = nodes[nodeIndex] as {
+            start: number;
+            end: number;
+          };
+          const rangeNode = {
+            text: generateOpeningTag(range)
+          };
+          const splitOldNode = oldTextNode.start < range.start ? true : false;
+          if (splitOldNode) {
+            const newTextNode = {
+              start: range.start,
+              end: oldTextNode.end
+            };
+            oldTextNode.end = range.start - 1;
+            nodes.splice(nodeIndex + 1, 0, rangeNode, newTextNode);
+          } else {
+            nodes.splice(nodeIndex, 0, rangeNode);
+          }
+        }
+        if (range.stop >= start && range.stop <= end) {
+          const nodeIndex = nodes.findIndex(n =>
+            "text" in n ? false : n.start <= range.stop && n.end >= range.stop
+          );
+          const oldNode = nodes[nodeIndex] as { start: number; end: number };
+          const rangeNode = {
+            text: generateClosingTag(range)
+          };
+          if (oldNode.end === range.stop) {
+            nodes.splice(nodeIndex + 1, 0, rangeNode);
+          } else {
+            const newTextNode = {
+              start: range.stop + 1,
+              end: oldNode.end
+            };
+            oldNode.end = range.stop;
+            nodes.splice(nodeIndex + 1, 0, rangeNode, newTextNode);
+          }
+        }
+      }
+      arr[i] = nodes
+        .map(n =>
+          "text" in n
+            ? n.text
+            : escapeAsHtmlEntities(
+                line.substring(n.start - start, n.end + 1 - start)
+              )
+        )
+        .join("");
+      start += originalLength;
+    }
+  } else {
+    if (options.escapeAsHtmlEntities) {
+      for (let i = 0; i < arr.length; i++) {
+        arr[i] = escapeAsHtmlEntities(arr[i]);
+      }
     }
   }
   return { lines: arr.length, text: arr.join(lineBreak) };
+};
+const generateOpeningTag = (range: IRange) => {
+  switch (range.type) {
+    case RangeType.BOLD:
+      return "<b>";
+    case RangeType.ITALIC:
+      return "<i>";
+    case RangeType.LINK:
+      return `<a href="${range.url}">`;
+    default:
+      return "";
+  }
+};
+const generateClosingTag = (range: IRange) => {
+  switch (range.type) {
+    case RangeType.BOLD:
+      return "</b>";
+    case RangeType.ITALIC:
+      return "</i>";
+    case RangeType.LINK:
+      return `</a>`;
+    default:
+      return "";
+  }
 };
 /**
  * Replaces all non-alphanumeric characters with their unicode html entity

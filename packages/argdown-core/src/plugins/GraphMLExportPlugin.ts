@@ -454,13 +454,17 @@ export class GraphMLExportPlugin implements IArgdownPlugin {
       maxWidth: innerNodeWidth,
       font: nodeSettings!.title!.font,
       fontSize: nodeSettings!.title!.fontSize!,
-      bold: nodeSettings!.title!.bold
+      bold: nodeSettings!.title!.bold,
+      applyRanges: mapNode.labelTitleRanges,
+      lineBreak: "<br/>"
     });
     const labelText = addLineBreaks(mapNode.labelText!, true, {
       maxWidth: innerNodeWidth,
       font: nodeSettings!.text!.font,
       fontSize: nodeSettings!.text!.fontSize!,
-      bold: nodeSettings!.text!.bold
+      bold: nodeSettings!.text!.bold,
+      applyRanges: mapNode.labelTextRanges,
+      lineBreak: "<br/>"
     });
     const titleHeight =
       labelTitle.lines *
@@ -493,9 +497,8 @@ export class GraphMLExportPlugin implements IArgdownPlugin {
       width: borderWidth
     });
     if (showTitle) {
-      shapeNode.e(
-        "y:NodeLabel",
-        {
+      shapeNode
+        .e("y:NodeLabel", {
           alignment: "center",
           autoSizePolicy: "content",
           fontFamily: nodeSettings!.title!.font,
@@ -513,14 +516,12 @@ export class GraphMLExportPlugin implements IArgdownPlugin {
           width: innerNodeWidth.toString(),
           height: titleHeight + nodeSettings!.verticalPadding! * 2,
           x: nodeSettings!.horizontalPadding!.toString()
-        },
-        labelTitle.text
-      );
+        })
+        .txt(`<html>${labelTitle.text}</html>`);
     }
     if (showText) {
-      shapeNode.e(
-        "y:NodeLabel",
-        {
+      shapeNode
+        .e("y:NodeLabel", {
           alignment: "center",
           autoSizePolicy: "content",
           fontFamily: nodeSettings!.text!.font,
@@ -543,9 +544,8 @@ export class GraphMLExportPlugin implements IArgdownPlugin {
             : textHeight + nodeSettings!.verticalPadding!,
           x: nodeSettings!.horizontalPadding!.toString(),
           y: (nodeSettings!.verticalPadding! * 2 + titleHeight).toString()
-        },
-        labelText.text
-      );
+        })
+        .txt(`<html>${labelText.text}</html>`);
     }
     shapeNode.e("y:Shape", { type: "roundrectangle" });
     return nodeEl;

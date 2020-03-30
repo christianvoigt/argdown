@@ -62,4 +62,25 @@ describe("GraphMLExport", function() {
     //console.log(result.graphml);
     expect(result.graphml).to.exist;
   });
+  it("can generate bold and italic html ranges in label text", function() {
+    let source = `
+[s1]: test *test* **test**
+  - <s2>: test
+    `;
+
+    let result = app.run({
+      process: [
+        "parse-input",
+        "build-model",
+        "create-map",
+        "add-colors",
+        "export-graphml"
+      ],
+      input: source,
+      logLevel: "error"
+    });
+    expect(result.graphml).to.include(
+      "&lt;html&gt;test&amp;#x20;&lt;i&gt;test&lt;/i&gt;&amp;#x20;&lt;b&gt;test&lt;/b&gt;&amp;#x20;&lt;/html&gt;"
+    );
+  });
 });

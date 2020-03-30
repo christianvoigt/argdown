@@ -8,7 +8,8 @@ import {
   IArgument,
   IEquivalenceClass,
   IMap,
-  isGroupMapNode
+  isGroupMapNode,
+  IRange
 } from "../model/model";
 import { IArgdownRequest, IArgdownResponse } from "../index";
 import {
@@ -367,6 +368,7 @@ const addLineBreaksAndEscape = (
     fontSize?: number;
     font?: string;
     bold?: boolean;
+    applyRanges?: IRange[];
   }
 ): string => {
   const result = addLineBreaks(
@@ -408,10 +410,12 @@ const getLabel = (node: IMapNode, settings: IDotSettings): string => {
             maxWidth: maxLineWidth,
             fontSize,
             bold,
-            font
+            font,
+            applyRanges: node.labelTitleRanges
           })
         : addLineBreaksAndEscape(title!, false, {
-            charactersInLine
+            charactersInLine,
+            applyRanges: node.labelTitleRanges
           });
       if (bold) {
         titleLabel = `<B>${titleLabel}</B>`;
@@ -428,10 +432,12 @@ const getLabel = (node: IMapNode, settings: IDotSettings): string => {
             maxWidth: maxLineWidth,
             fontSize,
             bold,
-            font
+            font,
+            applyRanges: node.labelTextRanges
           })
         : addLineBreaksAndEscape(text!, false, {
-            charactersInLine
+            charactersInLine,
+            applyRanges: node.labelTextRanges
           });
       if (bold) {
         textLabel = `<B>${textLabel}</B>`;

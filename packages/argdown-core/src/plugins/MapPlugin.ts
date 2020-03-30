@@ -160,7 +160,9 @@ const createStatementNode = (
     id: "n" + Number(initialNodeCount + index)
   };
   if (settings.statementLabelMode !== LabelMode.TITLE) {
-    node.labelText = IEquivalenceClass.getCanonicalMemberText(ec) || undefined;
+    const canonicalMember = IEquivalenceClass.getCanonicalMember(ec);
+    node.labelText = canonicalMember ? canonicalMember.text : undefined;
+    node.labelTextRanges = canonicalMember ? canonicalMember.ranges : undefined;
   }
   if (
     settings.statementLabelMode !== LabelMode.TEXT ||
