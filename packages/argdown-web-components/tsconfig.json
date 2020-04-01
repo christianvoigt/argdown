@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "esnext",
+    "lib": ["es2019", "es2017", "dom"],
+    "typeRoots": ["node_modules/", "node_modules/@types"],
+    "sourceMap": true,
+    "allowJs": true,
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "strictFunctionTypes": true
+  }
+}

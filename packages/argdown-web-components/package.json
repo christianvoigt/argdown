@@ -1,0 +1,31 @@
+{
+  "name": "@argdown/web-components",
+  "version": "1.4.0",
+  "description": "Components that help to embed Argdown in the browser",
+  "browser": "./dist/index.html",
+  "scripts": {
+    "start": "parcel src/index.html --open",
+    "build": "parcel build src/index.html"
+  },
+  "author": "Christian Voigt",
+  "license": "MIT",
+  "dependencies": {
+    "@webcomponents/webcomponentsjs": "^2.4.3",
+    "d3-selection": "^1.4.1",
+    "d3-zoom": "^1.8.3",
+    "haunted": "^4.7.0",
+    "lit-html": "^1.2.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/polyfill": "^7.8.7",
+    "@babel/preset-env": "^7.9.0",
+    "@types/d3": "^5.7.2",
+    "parcel": "^2.0.0-alpha.3.2",
+    "parcel-plugin-static-files-copy": "^2.3.1",
+    "typescript": "^3.8.3"
+  },
+  "browserslist": [
+    "Chrome > 50"
+  ]
+}
