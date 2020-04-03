@@ -34,6 +34,7 @@
     "onCommand:argdown.exportDocumentToDot",
     "onCommand:argdown.exportDocumentToGraphML",
     "onCommand:argdown.exportDocumentToJson",
+    "onCommand:argdown.copyWebComponentToClipboard",
     "onCommand:argdown.exportDocumentToVizjsSvg",
     "onCommand:argdown.exportDocumentToVizjsPdf",
     "onCommand:argdown.run",
@@ -114,6 +115,11 @@
       {
         "command": "argdown.exportDocumentToGraphML",
         "title": "Export map data to GraphML",
+        "category": "Argdown"
+      },
+      {
+        "command": "argdown.copyWebComponentToClipboard",
+        "title": "Export Viz.js map as web component and copy it to the clipboard",
         "category": "Argdown"
       },
       {
@@ -259,6 +265,11 @@
           "group": "export"
         },
         {
+          "command": "argdown.copyWebComponentToClipboard",
+          "when": "resourceLangId == argdown",
+          "group": "export"
+        },
+        {
           "command": "argdown.exportDocumentToVizjsSvg",
           "when": "resourceLangId == argdown",
           "group": "export"
@@ -296,6 +307,11 @@
           "group": "export"
         },
         {
+          "command": "argdown.copyWebComponentToClipboard",
+          "when": "resourceLangId == argdown",
+          "group": "export"
+        },
+        {
           "command": "argdown.exportDocumentToVizjsSvg",
           "when": "resourceLangId == argdown",
           "group": "export"
@@ -327,6 +343,11 @@
         },
         {
           "command": "argdown.exportDocumentToGraphML",
+          "when": "resourceLangId == argdown",
+          "group": "export"
+        },
+        {
+          "command": "argdown.copyWebComponentToClipboard",
           "when": "resourceLangId == argdown",
           "group": "export"
         },

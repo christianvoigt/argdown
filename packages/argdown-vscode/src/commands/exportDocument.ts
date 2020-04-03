@@ -127,6 +127,26 @@ export class ExportDocumentToVizjsSvgCommand implements Command {
     executeExport(resource, { SVG: ["svg"] }, "vizjs-to-svg", "svg");
   }
 }
+export class ExportDocumentToWebComponentCommand implements Command {
+  private static readonly id = "argdown.exportDocumentToWebComponent";
+  public readonly id = ExportDocumentToWebComponentCommand.id;
+
+  public static createCommandUri(path: string, fragment: string): vscode.Uri {
+    return vscode.Uri.parse(
+      `command:${ExportDocumentToWebComponentCommand.id}?${encodeURIComponent(
+        JSON.stringify({ path, fragment })
+      )}`
+    );
+  }
+  public execute(resource: vscode.Uri) {
+    executeExport(
+      resource,
+      { HTML: ["component.html"] },
+      "web-component-to-html",
+      "component.html"
+    );
+  }
+}
 export class ExportDocumentToVizjsPdfCommand implements Command {
   private static readonly id = "argdown.exportDocumentToVizjsPdf";
   public readonly id = ExportDocumentToVizjsPdfCommand.id;

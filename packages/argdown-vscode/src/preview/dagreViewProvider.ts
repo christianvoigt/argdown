@@ -11,7 +11,7 @@ export const dagreViewProvider: IViewProvider = {
         </svg>`;
   },
   generateSubMenu: () => {
-    return `<nav class="submenu">Save as <a data-command="argdown.exportContentToDagreSvg" href="#">svg</a> | <a data-command="argdown.exportContentToDagrePng" href="#">png</a>
+    return `<nav class="submenu">Export as <a data-command="argdown.exportContentToDagreSvg" title="save as svg" href="#">svg</a> | <a data-command="argdown.exportContentToDagrePng" title="save as png" href="#">png</a>
 	</nav>`;
   },
   generateOnDidChangeTextDocumentMessage: async (

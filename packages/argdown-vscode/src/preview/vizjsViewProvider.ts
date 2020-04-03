@@ -11,7 +11,7 @@ export const vizjsViewProvider: IViewProvider = {
   },
   generateSubMenu: () => {
     return `<nav class="submenu">
-	Save as <a data-command="argdown.exportDocumentToVizjsSvg" href="#">svg</a> | <a data-command="argdown.exportContentToVizjsPng" href="#">png</a> | <a data-command="argdown.exportDocumentToVizjsPdf" href="#">pdf</a>
+	Export as <a data-command="argdown.exportDocumentToVizjsSvg" title="save as svg" href="#">svg</a> | <a data-command="argdown.exportContentToVizjsPng" title="save as png" href="#">png</a> | <a data-command="argdown.exportDocumentToVizjsPdf" title="save as pdf" href="#">pdf</a> | <a data-command="argdown.copyWebComponentToClipboard" title="copy to clipboard as web component" href="#">web component</a>
 	</nav>`;
   },
   generateOnDidChangeTextDocumentMessage: async (

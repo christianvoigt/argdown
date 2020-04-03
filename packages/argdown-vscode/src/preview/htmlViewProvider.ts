@@ -10,13 +10,11 @@ export const htmlViewProvider: IViewProvider = {
     config: ArgdownPreviewConfiguration
   ) => {
     let html = await argdownEngine.exportHtml(argdownDocument, config);
-    return `${html}<div class="has-line" data-line="${
-      argdownDocument.lineCount
-    }"></div>`;
+    return `${html}<div class="has-line" data-line="${argdownDocument.lineCount}"></div>`;
   },
   generateSubMenu: () => {
     return `<nav class="submenu">
-	Save as <a data-command="argdown.exportDocumentToJson" href="#">json</a> | <a data-command="argdown.exportDocumentToHtml" href="#">html</a> | <a data-command="argdown.exportDocumentToDot" href="#">dot</a> | <a data-command="argdown.exportDocumentToGraphML" href="#">graphml</a>
+	Export as <a data-command="argdown.exportDocumentToJson" title="save as json" href="#">json</a> | <a data-command="argdown.exportDocumentToHtml" title="save as html" href="#">html</a> | <a data-command="argdown.exportDocumentToDot" title="save as dot" href="#">dot</a> | <a title="save as graphml" data-command="argdown.exportDocumentToGraphML" href="#">graphml</a>
 	</nav>`;
   },
   generateOnDidChangeTextDocumentMessage: async (
@@ -26,9 +24,7 @@ export const htmlViewProvider: IViewProvider = {
   ) => {
     let html = await argdownEngine.exportHtml(argdownDocument, config);
     return {
-      html: `${html}<div class="has-line" data-line="${
-        argdownDocument.lineCount
-      }"></div>`
+      html: `${html}<div class="has-line" data-line="${argdownDocument.lineCount}"></div>`
     };
   },
   contributeToInitialState: async (s, _argdownEngine, argdownDocument) => {

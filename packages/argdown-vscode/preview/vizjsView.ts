@@ -155,6 +155,8 @@ document.addEventListener(
           const command = node.dataset.command;
           if (command === "argdown.exportDocumentToVizjsSvg") {
             messagePoster.postCommand(command, [previewSettings.source]);
+          } else if (command === "argdown.copyWebComponentToClipboard") {
+            messagePoster.postCommand(command, [previewSettings.source]);
           } else if (command === "argdown.exportDocumentToVizjsPdf") {
             messagePoster.postCommand(command, [previewSettings.source]);
           } else if (command === "argdown.exportContentToVizjsPng") {

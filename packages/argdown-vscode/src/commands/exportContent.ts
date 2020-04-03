@@ -3,7 +3,6 @@ import * as fs from "fs";
 import * as path from "path";
 import { Command } from "./Command";
 import { isArgdownFile } from "../preview/util/file";
-import { Logger } from "../preview/Logger";
 
 export interface IExportContentArgs {
   content: string;
@@ -35,7 +34,9 @@ const getTargetFileUri = async (
   const fileDir: string = path.dirname(filePath);
   const extension: string = path.extname(filePath);
   const fileName: string = path.basename(filePath, extension);
-  const defaultUri = vscode.Uri.file(path.resolve(fileDir, fileName + "." + defaultExtension));
+  const defaultUri = vscode.Uri.file(
+    path.resolve(fileDir, fileName + "." + defaultExtension)
+  );
   const option: vscode.SaveDialogOptions = {
     defaultUri,
     filters: filters
@@ -61,7 +62,7 @@ const savePng = async (resource: vscode.Uri, content: string) => {
   var fileUri = await getTargetFileUri(resource, { PNG: ["png"] }, "png");
   if (fileUri) {
     var data = content.replace(/^data:image\/\w+;base64,/, "");
-    var buf = new Buffer(data, "base64");
+    var buf = Buffer.from(data, "base64");
     fs.writeFile(fileUri.fsPath, buf, function(err) {
       if (err) {
         return console.log(err);
@@ -92,7 +93,9 @@ export class ExportContentToVizjsPngCommand implements Command {
 
   public static createCommandUri(path: string, fragment: string): vscode.Uri {
     return vscode.Uri.parse(
-      `command:${ExportContentToVizjsPngCommand.id}?${encodeURIComponent(JSON.stringify({ path, fragment }))}`
+      `command:${ExportContentToVizjsPngCommand.id}?${encodeURIComponent(
+        JSON.stringify({ path, fragment })
+      )}`
     );
   }
   public execute(resource: vscode.Uri, content: string) {
@@ -103,15 +106,16 @@ export class ExportContentToDagreSvgCommand implements Command {
   private static readonly id = "argdown.exportContentToDagreSvg";
   public readonly id = ExportContentToDagreSvgCommand.id;
 
-  constructor(private logger: Logger) {}
+  constructor() {}
 
   public static createCommandUri(path: string, fragment: string): vscode.Uri {
     return vscode.Uri.parse(
-      `command:${ExportContentToDagreSvgCommand.id}?${encodeURIComponent(JSON.stringify({ path, fragment }))}`
+      `command:${ExportContentToDagreSvgCommand.id}?${encodeURIComponent(
+        JSON.stringify({ path, fragment })
+      )}`
     );
   }
   public execute(resource: vscode.Uri, content: string) {
-    this.logger.log("executing ExportContentToDagreSvg");
     saveExportedFile(resource, content, { SVG: ["svg"] }, "svg");
   }
 }
@@ -121,7 +125,9 @@ export class ExportContentToDagrePngCommand implements Command {
 
   public static createCommandUri(path: string, fragment: string): vscode.Uri {
     return vscode.Uri.parse(
-      `command:${ExportContentToDagrePngCommand.id}?${encodeURIComponent(JSON.stringify({ path, fragment }))}`
+      `command:${ExportContentToDagrePngCommand.id}?${encodeURIComponent(
+        JSON.stringify({ path, fragment })
+      )}`
     );
   }
   public execute(resource: vscode.Uri, content: string) {
@@ -134,10 +140,18 @@ export class ExportContentToDagrePdfCommand implements Command {
 
   public static createCommandUri(path: string, fragment: string): vscode.Uri {
     return vscode.Uri.parse(
-      `command:${ExportContentToDagrePdfCommand.id}?${encodeURIComponent(JSON.stringify({ path, fragment }))}`
+      `command:${ExportContentToDagrePdfCommand.id}?${encodeURIComponent(
+        JSON.stringify({ path, fragment })
+      )}`
     );
   }
   public execute(resource: vscode.Uri, content: string) {
-    sendToLanguageServer(resource, content, { PDF: ["pdf"] }, "pdf", "dagre-to-pdf");
+    sendToLanguageServer(
+      resource,
+      content,
+      { PDF: ["pdf"] },
+      "pdf",
+      "dagre-to-pdf"
+    );
   }
 }

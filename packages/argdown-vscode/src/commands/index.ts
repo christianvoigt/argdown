@@ -7,15 +7,14 @@ export { MoveCursorToPositionCommand } from "./moveCursorToPosition";
 export { OnPreviewStyleLoadErrorCommand } from "./onPreviewStyleLoadError";
 export { OpenDocumentLinkCommand } from "./openDocumentLink";
 export { RefreshPreviewCommand } from "./refreshPreview";
-export {
-  ShowPreviewSecuritySelectorCommand
-} from "./showPreviewSecuritySelector";
+export { ShowPreviewSecuritySelectorCommand } from "./showPreviewSecuritySelector";
 export { ShowSourceCommand } from "./showSource";
 export { ToggleLockCommand } from "./toggleLock";
 export { ExportDocumentToHtmlCommand } from "./exportDocument";
 export { ExportDocumentToJsonCommand } from "./exportDocument";
 export { ExportDocumentToDotCommand } from "./exportDocument";
 export { ExportDocumentToGraphMLCommand } from "./exportDocument";
+export { CopyWebComponentToClipboardCommand } from "./copyToClipboard";
 export { ExportDocumentToVizjsSvgCommand } from "./exportDocument";
 export { ExportDocumentToVizjsPdfCommand } from "./exportDocument";
 export { ExportContentToVizjsPngCommand } from "./exportContent";

@@ -85,9 +85,10 @@ export function activate(context: vscode.ExtensionContext) {
   commandManager.register(new commands.ExportDocumentToDotCommand());
   commandManager.register(new commands.ExportDocumentToGraphMLCommand());
   commandManager.register(new commands.ExportDocumentToVizjsSvgCommand());
+  commandManager.register(new commands.CopyWebComponentToClipboardCommand());
   commandManager.register(new commands.ExportDocumentToVizjsPdfCommand());
   commandManager.register(new commands.ExportContentToVizjsPngCommand());
-  commandManager.register(new commands.ExportContentToDagreSvgCommand(logger));
+  commandManager.register(new commands.ExportContentToDagreSvgCommand());
   commandManager.register(new commands.ExportContentToDagrePngCommand());
   commandManager.register(new commands.ExportContentToDagrePdfCommand());
   context.subscriptions.push(
