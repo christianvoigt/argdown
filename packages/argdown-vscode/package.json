@@ -467,19 +467,19 @@
     "dagre-d3": "^0.6.3",
     "lodash.defaultsdeep": "^4.6.1",
     "lodash.throttle": "^4.1.1",
-    "vscode-languageclient": "6.0.0-next.1"
+    "vscode-languageclient": "^6.1.3"
   },
   "devDependencies": {
     "@types/d3": "^5.7.2",
     "@types/dagre-d3": "^0.4.39",
     "@types/lodash.defaultsdeep": "^4.6.6",
     "@types/lodash.throttle": "^4.1.6",
-    "@types/node": "^12.11.1",
-    "@types/vscode": "1.37.0",
-    "raw-loader": "^3.1.0",
-    "ts-loader": "^6.2.0",
-    "typescript": "^3.6.4",
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.9"
+    "@types/node": "^13.11.0",
+    "@types/vscode": "^1.43.0",
+    "raw-loader": "^4.0.0",
+    "ts-loader": "^6.2.2",
+    "typescript": "^3.8.3",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11"
   }
 }
