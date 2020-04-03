@@ -26,6 +26,8 @@ import { LogParserErrorsPlugin } from "./plugins/LogParserErrorsPlugin";
 import { StdOutPlugin } from "./plugins/StdOutPlugin";
 import { IncludePlugin } from "./plugins/IncludePlugin";
 import { LoadFilePlugin } from "./plugins/LoadFilePlugin";
+import { HighlightSourcePlugin } from "./plugins/HighlightSourcePlugin";
+import { WebComponentExportPlugin } from "./plugins/WebComponentExportPlugin";
 
 export const argdown = new AsyncArgdownApplication();
 
@@ -55,8 +57,8 @@ const mapPlugin = new MapPlugin();
 argdown.addPlugin(mapPlugin, "build-map");
 const groupPlugin = new GroupPlugin();
 argdown.addPlugin(groupPlugin, "build-map");
-const colorPlugin = new ColorPlugin();
 argdown.addPlugin(new ClosedGroupPlugin(), "transform-closed-groups");
+const colorPlugin = new ColorPlugin();
 argdown.addPlugin(colorPlugin, "colorize");
 
 const stdoutArgdown = new StdOutPlugin({
@@ -131,6 +133,17 @@ argdown.addPlugin(stdoutSvg, "stdout-svg");
 const saveSvgAsPdf = new SvgToPdfExportPlugin();
 argdown.addPlugin(saveSvgAsPdf, "save-svg-as-pdf");
 
+argdown.addPlugin(new HighlightSourcePlugin(), "highlight-source");
+argdown.addPlugin(new WebComponentExportPlugin(), "export-web-component");
+const stdoutWebComponent = new StdOutPlugin({ dataKey: "webComponent" });
+argdown.addPlugin(stdoutWebComponent, "stdout-web-component");
+const saveWebComponentAsHtml = new SaveAsFilePlugin({
+  outputDir: "./html",
+  dataKey: "webComponent",
+  extension: ".component.html"
+});
+argdown.addPlugin(saveWebComponentAsHtml, "save-web-component-as-html");
+
 argdown.defaultProcesses = {
   "export-svg": [
     "load-file",
@@ -189,5 +202,18 @@ argdown.defaultProcesses = {
     "colorize",
     "export-html",
     "save-as-html"
+  ],
+  "export-web-component": [
+    "load-file",
+    "parse-input",
+    "build-model",
+    "build-map",
+    "transform-closed-groups",
+    "colorize",
+    "export-dot",
+    "export-svg",
+    "highlight-source",
+    "export-web-component",
+    "save-web-component-as-html"
   ]
 };
