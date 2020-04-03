@@ -3,8 +3,8 @@ import * as path from "path";
 import {
   createConnection,
   TextDocuments,
-  TextDocument,
   TextDocumentPositionParams,
+  TextDocumentSyncKind,
   Diagnostic,
   DiagnosticSeverity,
   DocumentHighlight,
@@ -20,13 +20,15 @@ import {
   DocumentSymbolParams,
   FoldingRangeParams
 } from "vscode-languageserver";
+import { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
 import { IArgdownSettings } from "./IArgdownSettings";
 import {
   exportDocument,
   exportContent,
   ExportContentArgs,
-  ExportDocumentArgs
+  ExportDocumentArgs,
+  returnDocument
 } from "./commands/Export";
 import { DocumentSymbolPlugin } from "./providers/DocumentSymbolPlugin";
 import {
@@ -45,6 +47,7 @@ import { ConfigurationClientCapabilities } from "vscode-languageserver-protocol/
 import { IArgdownResponse } from "@argdown/core";
 import { FoldingRangesPlugin } from "./providers/FoldingRangesPlugin";
 
+const RETURN_DOCUMENT_COMMAND = "argdown.server.returnDocument";
 const EXPORT_CONTENT_COMMAND = "argdown.server.exportContent";
 const EXPORT_DOCUMENT_COMMAND = "argdown.server.exportDocument";
 const RUN_COMMAND = "argdown.run";
@@ -68,7 +71,7 @@ let hasWorkspaceFolderCapability = false;
 
 // Create a simple text document manager. The text document manager
 // supports full document sync only
-let documents: TextDocuments = new TextDocuments();
+let documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
 let workspaceFolders: WorkspaceFolder[];
 
 // After the server has started the client sends an initilize request. The server receives
@@ -99,7 +102,7 @@ connection.onInitialize(
     return {
       capabilities: {
         // Tell the client that the server works in FULL text document sync mode
-        textDocumentSync: documents.syncKind,
+        textDocumentSync: TextDocumentSyncKind.Full,
         // Tell the client that the server support code complete
         // completionProvider: {
         // 	resolveProvider: true,
@@ -119,6 +122,7 @@ connection.onInitialize(
           commands: [
             EXPORT_DOCUMENT_COMMAND,
             EXPORT_CONTENT_COMMAND,
+            RETURN_DOCUMENT_COMMAND,
             RUN_COMMAND
           ]
         }
@@ -344,9 +348,11 @@ connection.onDocumentHighlight(async (params: TextDocumentPositionParams) => {
   const { textDocument, position } = params;
   const response = await processDocForProviders(textDocument);
   if (response) {
-    return provideReferences(response, textDocument.uri, position).map(
-      (l: Location) => DocumentHighlight.create(l.range, 1)
-    );
+    return provideReferences(
+      response,
+      textDocument.uri,
+      position
+    ).map((l: Location) => DocumentHighlight.create(l.range, 1));
   }
   return null;
 });
@@ -448,6 +454,13 @@ connection.onExecuteCommand(async params => {
     const args = params.arguments[0] as ExportDocumentArgs;
     const doc = documents.get(args.source.toString());
     await exportDocument(argdown, args, doc);
+  } else if (params.command === RETURN_DOCUMENT_COMMAND) {
+    if (!params.arguments) {
+      return;
+    }
+    const args = params.arguments[0] as ExportDocumentArgs;
+    const doc = documents.get(args.source.toString());
+    return await returnDocument(argdown, args, doc);
   } else if (params.command === RUN_COMMAND) {
     if (!workspaceFolders || workspaceFolders.length == 0) {
       connection.console.log("No workspace folder found.");
