@@ -72,6 +72,18 @@ describe("argdown-cli", function() {
       expect(stdout).to.not.equal(null);
     });
   });
+  it("can create web-component output", () => {
+    let filePath = path.resolve(__dirname, "./test.argdown");
+    let filePathToCli = path.resolve(__dirname, "../dist/src/cli.js");
+    const cmd =
+      "node " + filePathToCli + " web-component " + filePath + " --stdout";
+    return execPromise(cmd, (error, stdout, stderr) => {
+      expect(error).to.equal(null);
+      expect(stderr).to.equal("");
+      expect(stdout).to.not.equal("");
+      expect(stdout).to.not.equal(null);
+    });
+  });
   it("can create json output", () => {
     let filePath = path.resolve(__dirname, "./test.argdown");
     let filePathToCli = path.resolve(__dirname, "../dist/src/cli.js");
@@ -146,6 +158,28 @@ describe("argdown-cli", function() {
           expect(stderr).to.equal("");
           (<any>expect(filePathToHtml).to.be.a).file();
           (<any>expect(filePathToCss).to.be.a).file();
+        });
+      })
+      .then(() => {
+        return rimrafPromise(htmlFolder);
+      });
+  });
+  it("can create web-component file", () => {
+    let htmlFolder = path.resolve(__dirname, "./html/");
+    let filePath = path.resolve(__dirname, "./test.argdown");
+    let filePathToWebComponentHtml = path.resolve(
+      __dirname,
+      "./html/test.component.html"
+    );
+    let filePathToCli = path.resolve(__dirname, "../dist/src/cli.js");
+    const cmd =
+      "node " + filePathToCli + " web-component " + filePath + " " + htmlFolder;
+    return rimrafPromise(htmlFolder)
+      .then(() => {
+        return execPromise(cmd, function(error, _stdout, stderr) {
+          expect(error).to.equal(null);
+          expect(stderr).to.equal("");
+          (<any>expect(filePathToWebComponentHtml).to.be.a).file();
         });
       })
       .then(() => {
