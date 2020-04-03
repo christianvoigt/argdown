@@ -1,3 +1,20 @@
+argdown-map:not(:defined)[initial-view="map"] [slot="source"] {
+  display: none;
+}
+argdown-map:not(:defined)[initial-view="map"] [slot="map"] {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+argdown-map:not(:defined)[initial-view="source"] [slot="map"] {
+  display: none;
+}
+argdown-map:not(:defined) {
+  display: block;
+  width: 100%;
+  border: 1px solid #eee;
+  background-color: #fff;
+}
 .argdown-figure {
   border: 1px solid #dedede;
   border-radius: 6px;

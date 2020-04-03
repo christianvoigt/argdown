@@ -2,10 +2,35 @@
   "name": "@argdown/web-components",
   "version": "1.4.0",
   "description": "Components that help to embed Argdown in the browser",
-  "browser": "./dist/index.html",
+  "browserNoModule": "dist/nomodule/argdown-map.js",
+  "browser": "dist/module/argdown-map.js",
+  "source": "src/argdown-map.ts",
+  "targets": {
+    "browser": {
+      "context": "browser",
+      "includeNodeModules": false,
+      "isLibrary": true,
+      "outputFormat": "esmodule",
+      "engines": {
+        "browsers": [
+          "last 1 Chrome version"
+        ]
+      }
+    },
+    "browserNoModule": {
+      "context": "browser",
+      "includeNodeModules": true,
+      "isLibrary": true,
+      "engines": {
+        "browsers": [
+          "> 0.25%"
+        ]
+      }
+    }
+  },
   "scripts": {
     "start": "parcel src/index.html --open",
-    "build": "parcel build src/index.html"
+    "build": "parcel build src/argdown-map.ts"
   },
   "author": "Christian Voigt",
   "license": "MIT",

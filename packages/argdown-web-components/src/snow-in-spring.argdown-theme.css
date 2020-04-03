@@ -1,73 +1,68 @@
-div.language-argdown {
+code.language-argdown {
   color: #000;
   font-family: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
+  line-height: 1.4;
+  padding: 1.25rem 1.5rem;
 }
-div.language-argdown.argvu {
+.argvu code.language-argdown {
   font-family: "ArgVu Sans Mono Regular", Consolas, Monaco, Andale Mono,
     Ubuntu Mono, monospace;
   font-variant-ligatures: discretionary-ligatures;
   font-feature-settings: "liga", "dlig";
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
-.language-argdown pre,
-.language-argdown code {
-  font-family: inherit;
-}
-.language-argdown.extra-class {
-  background-color: #ffffff;
-}
-.token.comment,
-.token.cdata.frontmatter,
-.token.frontmatter .token.punctuation,
-.token.cdata.hashtag,
-.token.cdata.data {
+code.language-argdown .token.comment,
+code.language-argdown .token.cdata.frontmatter,
+code.language-argdown .token.frontmatter .token.punctuation,
+code.language-argdown .token.cdata.hashtag,
+code.language-argdown .token.cdata.data {
   color: #9b9b85;
 }
-.token.operator.support {
+code.language-argdown .token.operator.support {
   color: #4ea429;
   font-weight: bold;
 }
-.token.operator.attack,
-.token.operator.contradiction {
+code.language-argdown .token.operator.attack,
+code.language-argdown .token.operator.contradiction {
   color: #c24545;
   font-weight: bold;
 }
-.token.operator.undercut {
+code.language-argdown .token.operator.undercut {
   color: #c227a7;
   font-weight: bold;
 }
-.token.class-name.statement,
-.token.class-name.statement .punctuation {
+code.language-argdown .token.class-name.statement,
+code.language-argdown .token.class-name.statement .punctuation {
   color: #3b95bc;
   font-weight: bold;
 }
-.token.class-name.argument,
-.token.class-name.argument .punctuation,
-.token.inference.function,
-.token.inference.function .punctuation,
-.token.punctuation.argument-statement,
-.token.punctuation.argument-statement .punctuation {
+code.language-argdown .token.class-name.argument,
+code.language-argdown .token.class-name.argument .punctuation,
+code.language-argdown .token.inference.function,
+code.language-argdown .token.inference.function .punctuation,
+code.language-argdown .token.punctuation.argument-statement,
+code.language-argdown .token.punctuation.argument-statement .punctuation {
   color: #134c66;
   font-weight: bold;
 }
-.token.punctuation.argument-statement,
-.token.punctuation.argument-statement .punctuation {
+code.language-argdown .token.punctuation.argument-statement,
+code.language-argdown .token.punctuation.argument-statement .punctuation {
   font-weight: normal;
 }
-.token.inference .punctuation {
+code.language-argdown .token.inference .punctuation {
   font-weight: bold;
 }
-.token.inference.function,
-.token.inference.function .token.data.cdata {
+code.language-argdown .token.inference.function,
+code.language-argdown .token.inference.function .token.data.cdata {
   font-weight: normal;
 }
-.token.important.title,
-.token.important.title .punctuation {
+code.language-argdown .token.important.title,
+code.language-argdown .token.important.title .punctuation {
   color: #8b8b7a;
 }
-.token.punctuation {
+code.language-argdown .token.punctuation {
   color: #6d6d5d;
 }
-.token.url {
+code.language-argdown .token.url {
   color: #3b95bc;
 }

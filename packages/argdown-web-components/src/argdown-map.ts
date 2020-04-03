@@ -24,9 +24,8 @@ const ArgdownMap = function(el: HTMLElement) {
 
   useEffect(() => {
     initialHeight.current = el.shadowRoot
-      .querySelector(".content")
+      .querySelector(".component")
       .getBoundingClientRect().height;
-    console.log("initialHeight: " + initialHeight.current);
   }, []);
 
   const onMouseOutMap = () => {
@@ -58,36 +57,32 @@ const ArgdownMap = function(el: HTMLElement) {
     }
 
     const assignedNodes = mapSlot.assignedNodes();
-    if (
-      zoomIsActive &&
-      assignedNodes.length > 0 &&
-      (assignedNodes[0] as SVGSVGElement).tagName.toLowerCase() === "svg"
-    ) {
-      const _svg = select<SVGSVGElement, null>(
-        assignedNodes[0] as SVGSVGElement
-      );
-      const _g = _svg.select<SVGGraphicsElement>("g");
-      const content = select(el.shadowRoot.querySelector(".content"));
+    if (zoomIsActive && assignedNodes.length > 0) {
+      const svg = select<HTMLElement, null>(
+        assignedNodes[0] as HTMLElement
+      ).select<SVGSVGElement>("svg");
+      const g = svg.select<SVGGraphicsElement>("g");
+      const mapView = select(el.shadowRoot.querySelector(".map-view"));
       if (!isExpanded) {
-        content.attr("style", `height:${initialHeight.current}px;`);
+        mapView.attr("style", `height:${initialHeight.current}px;`);
       }
       const initialZoomState = {
-        width: _svg.attr("width"),
-        height: _svg.attr("height"),
-        viewBox: _svg.attr("viewBox"),
-        transform: _g.attr("transform")
+        width: svg.attr("width"),
+        height: svg.attr("height"),
+        viewBox: svg.attr("viewBox"),
+        transform: g.attr("transform")
       };
-      _svg.attr("width", "100%");
-      _svg.attr("height", "100%");
-      _svg.attr("viewBox", null);
-      const zoomBehavior = addZoom(_svg);
+      svg.attr("width", "100%");
+      svg.attr("height", "100%");
+      svg.attr("viewBox", null);
+      const zoomBehavior = addZoom(svg);
       return () => {
-        removeZoom(_svg, zoomBehavior);
-        _svg.attr("width", initialZoomState.width);
-        _svg.attr("height", initialZoomState.height);
-        _svg.attr("viewBox", initialZoomState.viewBox);
-        _g.attr("transform", initialZoomState.transform);
-        content.attr("style", null);
+        removeZoom(svg, zoomBehavior);
+        svg.attr("width", initialZoomState.width);
+        svg.attr("height", initialZoomState.height);
+        svg.attr("viewBox", initialZoomState.viewBox);
+        g.attr("transform", initialZoomState.transform);
+        mapView.attr("style", null);
       };
     }
   }, [zoomIsActive]);
@@ -157,20 +152,20 @@ const ArgdownMap = function(el: HTMLElement) {
           </ul>
         </nav>
       </header>
-      <div
-        @click=${onMapClick}
-        @mouseout=${onMouseOutMap}
-        @mouseover=${onMouseOverMap}
-        class="content${zoomIsActive ? " zooming" : ""}"
-      >
-        ${activeView === "map"
-          ? html`
+      ${activeView === "map"
+        ? html`
+            <div
+              @click=${onMapClick}
+              @mouseout=${onMouseOutMap}
+              @mouseover=${onMouseOverMap}
+              class="map-view${zoomIsActive ? " zooming" : ""}"
+            >
               <slot name="map" class="map-slot"></slot>
-            `
-          : html`
-              <slot name="source"></slot>
-            `}
-      </div>
+            </div>
+          `
+        : html`
+            <div class="source-view"><slot name="source"></slot></div>
+          `}
     </div>
   `;
 };
@@ -191,17 +186,37 @@ const styles = html`
       font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
         Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
     }
-    .content {
+    ::slotted([slot="map"]) {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    ::slotted([slot="source"]) {
+      width: 100%;
+      height: 100%;
+      display: flex;
+    }
+    .map-view {
+      width: 100%;
       padding-top: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    .content.zooming {
+    .source-view {
+      width: 100%;
+      padding-top: 40px;
+      display: flex;
+    }
+    .map-view.zooming {
       padding-top: 0px;
     }
-    :host > .expanded .content {
+    :host > .expanded .map-view,
+    :host > .expanded .source-view {
       height: 100%;
+      overflow-y: auto;
     }
     /* :host .content.zooming ::slotted(svg) {
       width: 100%;
@@ -272,10 +287,6 @@ const styles = html`
       height: 0.8rem;
       width: auto;
       color: #fff;
-    }
-    ::slotted(div.language-argdown) {
-      line-height: 1.4;
-      padding: 1.25rem 1.5rem;
     }
   </style>
 `;
