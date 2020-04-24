@@ -2,7 +2,8 @@ import { zoom, ZoomBehavior, zoomIdentity } from "d3-zoom";
 import { select, event, Selection } from "d3-selection";
 
 export const addZoom = (
-  svg: Selection<SVGSVGElement, null, HTMLElement, any>
+  svg: Selection<SVGSVGElement, null, HTMLElement, any>,
+  headerOffset: number
 ) => {
   const g = svg.select<SVGGraphicsElement>("g");
   const listener = function() {
@@ -11,7 +12,7 @@ export const addZoom = (
   const zoomBehavior = zoom<SVGSVGElement, null>().on("zoom", listener);
   svg.call(zoomBehavior);
   const bbox = g.node().getBBox();
-  showAllAndCenterMap(svg, zoomBehavior, bbox.width, bbox.height);
+  showAllAndCenterMap(svg, zoomBehavior, bbox.width, bbox.height, headerOffset);
   return zoomBehavior;
 };
 export const removeZoom = (
@@ -26,22 +27,24 @@ export const showAllAndCenterMap = (
   svg: Selection<SVGSVGElement, null, HTMLElement, any>,
   zoomBehavior: ZoomBehavior<SVGSVGElement, any>,
   width: number,
-  height: number
+  height: number,
+  headerOffset: number
 ) => {
   let positionInfo = svg.node().getBoundingClientRect();
-  const horizontalPadding = 10;
-  const verticalPadding = 10;
+  const horizontalPadding = 5;
+  const verticalPadding = 5;
   const availableWidth = positionInfo.width - horizontalPadding * 2;
-  const availableHeight = positionInfo.height - verticalPadding * 2 - 40; // takes into account padding-top
+  const availableHeight =
+    positionInfo.height - verticalPadding * 2 - headerOffset; // takes into account padding-top
   const xScale = availableWidth / width;
   const yScale = availableHeight / height;
   const scale = Math.min(xScale, yScale);
   const x = horizontalPadding + (availableWidth - width * scale) / 2;
   const scaledHeight = height * scale;
   const y =
-    40 +
+    headerOffset +
     verticalPadding +
-    availableHeight +
+    availableHeight -
     (availableHeight - scaledHeight) / 2;
   setZoom(svg, zoomBehavior, x, y, scale, 0);
 };

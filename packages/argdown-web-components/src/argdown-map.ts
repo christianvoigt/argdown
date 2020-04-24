@@ -14,21 +14,37 @@ import { MinimizeIcon } from "./MinimizeIcon";
 import { select } from "d3-selection";
 import { addZoom, removeZoom } from "./zoomUtils";
 
-const ArgdownMap = function(el: HTMLElement) {
-  const [activeView, setActiveView] = useState("map");
+const ArgdownMap = function(
+  el: HTMLElement & {
+    initialView: string;
+    withoutZoom: string;
+    withoutMaximize: string;
+    withoutLogo: string;
+    withoutHeader: string;
+  }
+) {
+  const [activeView, setActiveView] = useState(el.initialView || "map");
   const [isExpanded, setIsExpanded] = useState(false);
   const [zoomIsActive, setZoomIsActive] = useState(false);
   const [zoomMessage, setZoomMessage] = useState("");
   const initialHeight = useRef(null);
   const removeZoomTimeout: any = useRef(null);
+  const hasMap = el.querySelector<HTMLElement>(`[slot="map"]`) !== null;
+  const hasSource = el.querySelector<HTMLElement>(`[slot="source"]`) !== null;
 
   useEffect(() => {
+    if (activeView != "map") {
+      return;
+    }
     initialHeight.current = el.shadowRoot
       .querySelector(".component")
       .getBoundingClientRect().height;
-  }, []);
+  }, [activeView]);
 
   const onMouseOutMap = () => {
+    if (el.withoutZoom === "true") {
+      return;
+    }
     setZoomMessage("");
     if (!removeZoomTimeout.current) {
       removeZoomTimeout.current = setTimeout(
@@ -38,19 +54,28 @@ const ArgdownMap = function(el: HTMLElement) {
     }
   };
   const onMouseOverMap = () => {
+    if (el.withoutZoom === "true") {
+      return;
+    }
     if (removeZoomTimeout.current) {
       clearTimeout(removeZoomTimeout.current);
       removeZoomTimeout.current = null;
     }
     if (activeView == "map" && !zoomIsActive && zoomMessage == "") {
-      setZoomMessage("Click once to enable zoom");
+      setZoomMessage("Click to enable zoom");
     }
   };
   const onMapClick = () => {
+    if (el.withoutZoom === "true") {
+      return;
+    }
     setZoomMessage("");
     setZoomIsActive(true);
   };
   useEffect(() => {
+    if (el.withoutZoom === "true") {
+      return;
+    }
     const mapSlot = el.shadowRoot.querySelector<HTMLSlotElement>(".map-slot");
     if (!mapSlot) {
       return;
@@ -66,20 +91,25 @@ const ArgdownMap = function(el: HTMLElement) {
       if (!isExpanded) {
         mapView.attr("style", `height:${initialHeight.current}px;`);
       }
+      el.classList.add("zooming");
       const initialZoomState = {
-        width: svg.attr("width"),
-        height: svg.attr("height"),
+        // width: svg.attr("width"),
+        // height: svg.attr("height"),
         viewBox: svg.attr("viewBox"),
         transform: g.attr("transform")
       };
-      svg.attr("width", "100%");
-      svg.attr("height", "100%");
+      // svg.attr("width", "100%");
+      // svg.attr("height", "100%");
       svg.attr("viewBox", null);
-      const zoomBehavior = addZoom(svg);
+      svg.attr("style", "height:100%; max-height: none;");
+      const headerOffset = el.withoutHeader === "true" ? 0 : 40;
+      const zoomBehavior = addZoom(svg, headerOffset);
       return () => {
         removeZoom(svg, zoomBehavior);
-        svg.attr("width", initialZoomState.width);
-        svg.attr("height", initialZoomState.height);
+        el.classList.remove("zooming");
+        // svg.attr("width", initialZoomState.width);
+        // svg.attr("height", initialZoomState.height);
+        svg.attr("style", "");
         svg.attr("viewBox", initialZoomState.viewBox);
         g.attr("transform", initialZoomState.transform);
         mapView.attr("style", null);
@@ -87,6 +117,9 @@ const ArgdownMap = function(el: HTMLElement) {
     }
   }, [zoomIsActive]);
   useEffect(() => {
+    if (el.withoutZoom === "true") {
+      return;
+    }
     if (activeView !== "map" && zoomIsActive) {
       setZoomIsActive(false);
       if (removeZoomTimeout.current) {
@@ -96,6 +129,9 @@ const ArgdownMap = function(el: HTMLElement) {
     }
   }, [activeView, zoomIsActive]);
   useEffect(() => {
+    if (el.withoutZoom === "true") {
+      return;
+    }
     if (isExpanded) {
       //remove style if zooming was already going on
       if (zoomIsActive) {
@@ -109,49 +145,74 @@ const ArgdownMap = function(el: HTMLElement) {
   }, [isExpanded]);
   return html`
     ${styles}
-    <div class="component ${isExpanded ? "expanded" : ""}">
-      <header>
-        ${ArgdownMark()}
-        <nav>
-          <div class="zoom-message">${zoomMessage}</div>
-          <ul class="flat">
-            <li>
-              ${activeView === "map"
-                ? html`
-                    <button
-                      title="Source"
-                      @click=${() => setActiveView("source")}
-                    >
-                      Source
-                    </button>
-                  `
-                : html`
-                    <button title="Map" @click=${() => setActiveView("map")}>
-                      Map
-                    </button>
-                  `}
-            </li>
-            <li>
-              ${isExpanded
-                ? html`
-                    <button
-                      title="Minimize"
-                      @click=${() => {
-                        setIsExpanded(false);
-                      }}
-                    >
-                      ${MinimizeIcon()}
-                    </button>
-                  `
-                : html`
-                    <button title="Expand" @click=${() => setIsExpanded(true)}>
-                      ${ExpandIcon()}
-                    </button>
-                  `}
-            </li>
-          </ul>
-        </nav>
-      </header>
+    <div
+      class="component ${isExpanded ? "expanded" : ""} ${el.withoutHeader ===
+      "true"
+        ? "without-header"
+        : ""}"
+    >
+      ${el.withoutHeader !== "true"
+        ? html`
+            <header>
+              ${el.withoutLogo !== "true" ? ArgdownMark() : null}
+              <nav>
+                ${zoomMessage && zoomMessage !== ""
+                  ? html`
+                      <div class="zoom-message">${zoomMessage}</div>
+                    `
+                  : null}
+                <ul class="flat">
+                  <li>
+                    ${activeView === "map"
+                      ? hasSource
+                        ? html`
+                            <button
+                              title="Source"
+                              @click=${() => setActiveView("source")}
+                            >
+                              Source
+                            </button>
+                          `
+                        : null
+                      : hasMap
+                      ? html`
+                          <button
+                            title="Map"
+                            @click=${() => setActiveView("map")}
+                          >
+                            Map
+                          </button>
+                        `
+                      : null}
+                  </li>
+                  <li>
+                    ${el.withoutMaximize !== "true"
+                      ? isExpanded
+                        ? html`
+                            <button
+                              title="Minimize"
+                              @click=${() => {
+                                setIsExpanded(false);
+                              }}
+                            >
+                              ${MinimizeIcon()}
+                            </button>
+                          `
+                        : html`
+                            <button
+                              title="Expand"
+                              @click=${() => setIsExpanded(true)}
+                            >
+                              ${ExpandIcon()}
+                            </button>
+                          `
+                      : null}
+                  </li>
+                </ul>
+              </nav>
+            </header>
+          `
+        : null}
       ${activeView === "map"
         ? html`
             <div
@@ -176,13 +237,13 @@ const styles = html`
       background-color: #fff;
       border: 1px solid #eee;
     }
-    :host > div {
+    :host .component {
       display: flex;
       background-color: #fff;
       flex-direction: column;
       position: relative;
       width: 100%;
-      height: auto;
+      height: 100%;
       font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
         Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
     }
@@ -196,19 +257,31 @@ const styles = html`
     ::slotted([slot="source"]) {
       width: 100%;
       height: 100%;
+
       display: flex;
     }
     .map-view {
       width: 100%;
+      height: 100%;
       padding-top: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
+      box-sizing: border-box;
+    }
+    .component.without-header .map-view {
+      padding-top: 0px;
     }
     .source-view {
       width: 100%;
-      padding-top: 40px;
+      height: 100%;
+      margin-top: 40px;
       display: flex;
+      overflow-y: auto;
+      box-sizing: border-box;
+    }
+    .component.without-header .source-view {
+      margin-top: 0px;
     }
     .map-view.zooming {
       padding-top: 0px;
@@ -217,6 +290,10 @@ const styles = html`
     :host > .expanded .source-view {
       height: 100%;
       overflow-y: auto;
+    }
+    :host > .expanded .source-view {
+      max-width: 45rem;
+      margin: 0 auto;
     }
     /* :host .content.zooming ::slotted(svg) {
       width: 100%;
@@ -248,6 +325,7 @@ const styles = html`
     }
     nav .zoom-message {
       color: #ccc;
+      background-color: #fff;
       display: flex;
       align-items: center;
       padding: 0 1rem;
@@ -290,4 +368,13 @@ const styles = html`
     }
   </style>
 `;
-customElements.define("argdown-map", component(ArgdownMap as any) as any);
+ArgdownMap.observedAttributes = [
+  "initial-view",
+  "without-zoom",
+  "without-maximize",
+  "without-logo",
+  "without-header"
+];
+customElements.define("argdown-map", component<
+  HTMLElement & { initialView: string }
+>(ArgdownMap as any) as any); // errors in haunted.js types makes it necessary to use any

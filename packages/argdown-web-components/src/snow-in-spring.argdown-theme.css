@@ -1,8 +1,12 @@
-code.language-argdown {
+argdown-map code.language-argdown {
   color: #000;
   font-family: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
   line-height: 1.4;
+  display: block;
+  background-color: #fff;
+  width: 100%;
   padding: 1.25rem 1.5rem;
+  box-sizing: border-box;
 }
 .argvu code.language-argdown {
   font-family: "ArgVu Sans Mono Regular", Consolas, Monaco, Andale Mono,

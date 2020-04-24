@@ -30,9 +30,16 @@
   },
   "scripts": {
     "start": "parcel src/index.html --open",
-    "build": "parcel build src/argdown-map.ts"
+    "build": "parcel build src/argdown-map.ts --detailed-report 100"
   },
-  "author": "Christian Voigt",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/christianvoigt/argdown/tree/master/packages/argdown-web-components"
+  },
+  "author": {
+    "name": "Christian Voigt",
+    "email": "1pxsolidblack@gmail.com"
+  },
   "license": "MIT",
   "dependencies": {
     "@webcomponents/webcomponentsjs": "^2.4.3",
@@ -46,7 +53,7 @@
     "@babel/polyfill": "^7.8.7",
     "@babel/preset-env": "^7.9.0",
     "@types/d3": "^5.7.2",
-    "parcel": "^2.0.0-alpha.3.2",
+    "parcel": "^1.12.4",
     "parcel-plugin-static-files-copy": "^2.3.1",
     "typescript": "^3.8.3"
   },
