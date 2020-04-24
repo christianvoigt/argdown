@@ -7,6 +7,7 @@ interface IDictionary<T> {
 }
 
 export interface ExportContentArgs {
+  source: string;
   content: string;
   target: string;
   process: string;
@@ -126,9 +127,11 @@ const requestProviders: IDictionary<(r: any) => any> = {
 };
 export const exportContent = async (
   argdownEngine: AsyncArgdownApplication,
-  args: ExportContentArgs
+  args: ExportContentArgs,
+  configPath?: string
 ) => {
-  let request: IArgdownRequest = {};
+  const config = configPath ? await argdownEngine.loadConfig(configPath) : {};
+  let request: IArgdownRequest = { ...config };
   if (args.process === "vizjs-to-pdf" || args.process === "dagre-to-pdf") {
     request.outputPath = URI.parse(args.target).fsPath;
     const getRequest = requestProviders[args.process];
@@ -148,12 +151,14 @@ export const exportContent = async (
 export const exportDocument = async (
   argdownEngine: AsyncArgdownApplication,
   args: ExportDocumentArgs,
-  doc: TextDocument | undefined
+  doc: TextDocument | undefined,
+  configPath?: string
 ) => {
-  let request: any = { logLevel: "none" };
+  const config = configPath ? await argdownEngine.loadConfig(configPath) : {};
+  const getRequest = requestProviders[args.process];
+  let request: any = { ...config, logLevel: "none" };
   request.inputPath = URI.parse(args.source).fsPath;
   request.outputPath = URI.parse(args.target).fsPath;
-  const getRequest = requestProviders[args.process];
   request = getRequest(request);
   if (doc) {
     request.input = doc.getText();
@@ -165,10 +170,12 @@ export const exportDocument = async (
 export const returnDocument = async (
   argdownEngine: AsyncArgdownApplication,
   args: ExportDocumentArgs,
-  doc: TextDocument | undefined
+  doc: TextDocument | undefined,
+  configPath?: string
 ) => {
   if (doc) {
-    let request: any = { logLevel: "none" };
+    const config = configPath ? await argdownEngine.loadConfig(configPath) : {};
+    let request: any = { ...config, logLevel: "none" };
     request.inputPath = URI.parse(args.source).fsPath;
     request.outputPath = URI.parse(args.target).fsPath;
     const getRequest = requestProviders[args.process];

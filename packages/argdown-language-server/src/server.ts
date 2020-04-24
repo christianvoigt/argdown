@@ -348,11 +348,9 @@ connection.onDocumentHighlight(async (params: TextDocumentPositionParams) => {
   const { textDocument, position } = params;
   const response = await processDocForProviders(textDocument);
   if (response) {
-    return provideReferences(
-      response,
-      textDocument.uri,
-      position
-    ).map((l: Location) => DocumentHighlight.create(l.range, 1));
+    return provideReferences(response, textDocument.uri, position).map(
+      (l: Location) => DocumentHighlight.create(l.range, 1)
+    );
   }
   return null;
 });
@@ -440,27 +438,45 @@ connection.onFoldingRanges(async (params: FoldingRangeParams) => {
 //   }
 //   return workspaceSymbols.filter(s => s && s.name.indexOf(query) !== -1);
 // });
+const getConfigPath = async (doc: TextDocument | undefined) => {
+  if (doc) {
+    let settings = await getDocumentSettings(doc.uri);
+    const docPath = URI.parse(doc.uri).fsPath;
+    let workspaceFolder = workspaceFolders.find(f =>
+      docPath.startsWith(URI.parse(f.uri).fsPath)
+    );
+    const configPath = workspaceFolder
+      ? path.resolve(URI.parse(workspaceFolder.uri).fsPath, settings.configFile)
+      : undefined;
+    return configPath;
+  }
+  return undefined;
+};
 connection.onExecuteCommand(async params => {
   if (params.command === EXPORT_CONTENT_COMMAND) {
     if (!params.arguments) {
       return;
     }
     const args = params.arguments[0] as ExportContentArgs;
-    await exportContent(argdown, args);
+    const doc = documents.get(args.source.toString());
+    let configPath: string | undefined = await getConfigPath(doc);
+    await exportContent(argdown, args, configPath);
   } else if (params.command === EXPORT_DOCUMENT_COMMAND) {
     if (!params.arguments) {
       return;
     }
     const args = params.arguments[0] as ExportDocumentArgs;
     const doc = documents.get(args.source.toString());
-    await exportDocument(argdown, args, doc);
+    let configPath: string | undefined = await getConfigPath(doc);
+    await exportDocument(argdown, args, doc, configPath);
   } else if (params.command === RETURN_DOCUMENT_COMMAND) {
     if (!params.arguments) {
       return;
     }
     const args = params.arguments[0] as ExportDocumentArgs;
     const doc = documents.get(args.source.toString());
-    return await returnDocument(argdown, args, doc);
+    let configPath: string | undefined = await getConfigPath(doc);
+    return await returnDocument(argdown, args, doc, configPath);
   } else if (params.command === RUN_COMMAND) {
     if (!workspaceFolders || workspaceFolders.length == 0) {
       connection.console.log("No workspace folder found.");
