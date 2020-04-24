@@ -8,7 +8,7 @@
   ],
   "repository": {
     "argdown-code-block": {
-      "begin": "argdown(\\s+[^`~]*)?$",
+      "begin": "argdown(?:-map)?(\\s+[^`~]*)?$",
       "end": "(^|\\G)(?=\\s*[`~]{3,}\\s*$)",
       "patterns": [
         {

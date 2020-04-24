@@ -24,6 +24,7 @@ import {
 } from "./preview/security";
 import { ArgdownExtensionContributions } from "./preview/ArgdownExtensionContributions";
 import { ConfigurationWorkspaceMiddleware } from "vscode-languageclient/lib/configuration";
+import createArgdownMarkdownItPlugin from "@argdown/markdown-it-plugin";
 //import { ForkOptions } from "vscode-languageclient/lib/client";
 
 let client: LanguageClient;
@@ -92,9 +93,12 @@ export function activate(context: vscode.ExtensionContext) {
   commandManager.register(new commands.ExportContentToDagrePngCommand());
   commandManager.register(new commands.ExportContentToDagrePdfCommand());
   context.subscriptions.push(
-    vscode.workspace.onDidChangeConfiguration(() => {
+    vscode.workspace.onDidChangeConfiguration(e => {
       logger.updateConfiguration();
       previewManager.updateConfiguration();
+      if (e.affectsConfiguration("argdown.markdownWebComponent")) {
+        vscode.commands.executeCommand("markdown.preview.refresh");
+      }
     })
   );
   // --- LANGUGAGE SERVER ---
@@ -154,6 +158,48 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Start the client. This will also launch the server
   client.start();
+
+  return {
+    extendMarkdownIt(md: any) {
+      const webComponentConfig = vscode.workspace.getConfiguration(
+        "argdown.markdownWebComponent",
+        null
+      );
+      const enabled = webComponentConfig.get<boolean>("enabled");
+      if (enabled) {
+        return md.use(
+          createArgdownMarkdownItPlugin(() => {
+            const webComponentConfig = vscode.workspace.getConfiguration(
+              "argdown.markdownWebComponent",
+              null
+            );
+            const withoutHeader = webComponentConfig.get<boolean>(
+              "withoutHeader"
+            );
+            const withoutLogo = webComponentConfig.get<boolean>("withoutLogo");
+            const withoutMaximize = webComponentConfig.get<boolean>(
+              "withoutMaximize"
+            );
+            logger.log("withoutHeader: " + withoutHeader);
+            // const withoutHeader = false;
+            // const withoutLogo = false;
+            // const withoutMaximize = false;
+            return {
+              webComponent: {
+                addWebComponentScript: false,
+                addWebComponentPolyfill: false,
+                addGlobalStyles: false,
+                withoutHeader,
+                withoutLogo,
+                withoutMaximize
+              }
+            };
+          })
+        );
+      }
+      return md;
+    }
+  };
 }
 
 export function deactivate(): Thenable<void> {

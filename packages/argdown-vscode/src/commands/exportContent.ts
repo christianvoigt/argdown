@@ -5,6 +5,7 @@ import { Command } from "./Command";
 import { isArgdownFile } from "../preview/util/file";
 
 export interface IExportContentArgs {
+  source: string;
   content: string;
   target: string;
   process: string;
@@ -80,6 +81,7 @@ const sendToLanguageServer = async (
   var fileUri = await getTargetFileUri(resource, filters, defaultExtension);
   if (fileUri) {
     const args: IExportContentArgs = {
+      source: resource.toString(),
       content,
       target: fileUri.toString(),
       process: process

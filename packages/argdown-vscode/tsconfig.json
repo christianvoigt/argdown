@@ -11,7 +11,8 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "strict": true,
-    "alwaysStrict": true
+    "alwaysStrict": true,
+    "esModuleInterop": true
   },
   "include": ["src/**/*"]
 }
