@@ -1,0 +1,57 @@
+{
+  "name": "@argdown/marked-plugin",
+  "version": "1.3.0",
+  "description": "Turns Argdown code fences into svg argument maps",
+  "main": "dist/argdown-marked-plugin.js",
+  "scripts": {
+    "deploy": "npm run test && npm run build && npm version patch && npm run push",
+    "sandbox": "parcel ./test/sandbox.html",
+    "type-check": "tsc --noEmit",
+    "build": "npm run clean && npm run build:src && npm run build:esm",
+    "build:esm": "tsc -m es6 --target ES2018 --outDir dist-esm",
+    "build:src": "tsc",
+    "docs:build": "node ./node_modules/typedoc/bin/typedoc",
+    "test": "mocha -r ts-node/register --full-trace --bail --require source-map-support/register ./test/**/*.spec.ts",
+    "coverage": "nyc mocha -r ts-node/register --full-trace --bail --require source-map-support/register ./test/**/*.spec.ts",
+    "report": "nyc report",
+    "clean": "rimraf \"dist/*\" && rimraf \"dist-esm/*\"",
+    "prepublishOnly": "npm run-script build",
+    "push": "git push --tags origin HEAD:master"
+  },
+  "keywords": [
+    "marked-plugin",
+    "marked",
+    "markdown",
+    "argdown",
+    "argument maps",
+    "argumentation"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/christianvoigt/argdown/tree/master/packages/argdown-marked-plugin"
+  },
+  "author": {
+    "name": "Christian Voigt",
+    "email": "1pxsolidblack@gmail.com"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/chai": "^4.2.11",
+    "@types/marked": "^0.7.4",
+    "@types/mocha": "^7.0.2",
+    "@argdown/web-components": "^1.3.0",
+    "chai": "^4.2.0",
+    "marked": "^0.8.2",
+    "mocha": "^7.1.1",
+    "nyc": "^15.0.0",
+    "parcel": "^1.12.4",
+    "rimraf": "^3.0.2",
+    "source-map-support": "^0.5.16",
+    "ts-node": "^8.8.1",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "@argdown/core": "^1.3.0",
+    "lodash.defaultsdeep": "^4.6.1"
+  }
+}
