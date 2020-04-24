@@ -60,5 +60,3 @@ export * from "./plugins/LogParserErrorsPlugin";
 export * from "./plugins/SaveAsFilePlugin";
 export * from "./plugins/StdOutPlugin";
 export * from "./plugins/SvgToPdfExportPlugin";
-export * from "./plugins/HighlightSourcePlugin";
-export * from "./plugins/WebComponentExportPlugin";

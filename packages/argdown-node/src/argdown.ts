@@ -16,7 +16,9 @@ import {
   ArgumentSelectionPlugin,
   GroupPlugin,
   RegroupPlugin,
-  ClosedGroupPlugin
+  ClosedGroupPlugin,
+  HighlightSourcePlugin,
+  WebComponentExportPlugin
 } from "@argdown/core";
 import { SaveAsFilePlugin } from "./plugins/SaveAsFilePlugin";
 import { DotToSvgExportPlugin } from "./plugins/DotToSvgExportPlugin";
@@ -26,8 +28,6 @@ import { LogParserErrorsPlugin } from "./plugins/LogParserErrorsPlugin";
 import { StdOutPlugin } from "./plugins/StdOutPlugin";
 import { IncludePlugin } from "./plugins/IncludePlugin";
 import { LoadFilePlugin } from "./plugins/LoadFilePlugin";
-import { HighlightSourcePlugin } from "./plugins/HighlightSourcePlugin";
-import { WebComponentExportPlugin } from "./plugins/WebComponentExportPlugin";
 
 export const argdown = new AsyncArgdownApplication();
 

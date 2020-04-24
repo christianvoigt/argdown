@@ -72,7 +72,11 @@ export class DotToSvgExportPlugin implements IAsyncArgdownPlugin {
     checkResponseFields(this, response, ["dot"]);
 
     let { engine, nop, removeProlog } = this.getSettings(request);
-    response.svg = viz.renderString(response.dot, { engine, nop });
+    response.svg = viz.renderString(response.dot, {
+      engine,
+      nop,
+      format: "image/svg+xml"
+    });
     if (removeProlog) {
       response.svg = this.removeProlog(response.svg!);
     }

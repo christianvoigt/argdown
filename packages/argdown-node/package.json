@@ -15,8 +15,6 @@
     "docs:build": "node ./node_modules/typedoc/bin/typedoc",
     "copy-pdfkit": "copyfiles src/pdfkit.js dist",
     "test": "mocha -r ts-node/register --full-trace --bail --require source-map-support/register ./test/**/*.spec.ts",
-    "test:highlight-source": "mocha -r ts-node/register --full-trace ./test/HighlightSourcePlugin.spec.ts",
-    "test:web-component": "mocha -r ts-node/register --full-trace ./test/WebComponentExportPlugin.spec.ts",
     "coverage": "nyc mocha -r ts-node/register --full-trace --bail --require source-map-support/register ./test/**/*.spec.ts",
     "report": "nyc report",
     "clean": "rimraf \"dist/*\"",

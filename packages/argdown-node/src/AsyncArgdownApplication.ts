@@ -281,7 +281,7 @@ export class AsyncArgdownApplication extends ArgdownApplication {
         );
       }
     } else if (extension === ".js") {
-      // For Js config files we have to used import-fresh which is synchronous
+      // For Js config files we have to use loadJSFile which is synchronous
       try {
         let jsModuleExports = loadJSFile(filePath);
         if (jsModuleExports.config) {
