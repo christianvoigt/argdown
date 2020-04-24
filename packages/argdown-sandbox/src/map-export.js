@@ -51,7 +51,7 @@ function getSvgString(el, width, height, scale, isDagre) {
       width +
       " " +
       height +
-      '" preserverAspectRatio="xMinYMin meet"'
+      '" preserveAspectRatio="xMinYMin meet"'
   );
 
   if (isDagre) {
