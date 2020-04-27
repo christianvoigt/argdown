@@ -1,0 +1,54 @@
+.hljs-section {
+  color: #6d6d5d;
+  font-weight: bold;
+}
+.hljs-meta {
+  color: #9b9b85;
+  font-weight: normal;
+}
+.hljs-comment,
+.hljs-quote {
+  color: #998;
+  font-style: italic;
+}
+.hljs-string,
+.hljs-tag {
+  color: #3b95bc;
+  font-weight: normal;
+}
+.hljs-link {
+  color: #134c66;
+  font-weight: normal;
+}
+.hljs-support {
+  color: #4ea429;
+  font-weight: bold;
+}
+.hljs-attack {
+  color: #c24545;
+  font-weight: bold;
+}
+.hljs-undercut {
+  color: #c227a7;
+  font-weight: bold;
+}
+.hljs-contradiction {
+  color: #c24545;
+  font-weight: bold;
+}
+.hljs-statement-title {
+  font-weight: bold;
+  color: #3b95bc;
+}
+.hljs-argument-title {
+  font-weight: bold;
+  color: #134c66;
+}
+.hljs-inference {
+  font-weight: bold;
+  color: #134c66;
+}
+.hljs-argument-statement-nr {
+  color: #134c66;
+  font-weight: bold;
+}

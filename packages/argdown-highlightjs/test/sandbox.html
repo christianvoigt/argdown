@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<style>
+    main {
+        font-family: Arial, Helvetica, sans-serif;
+        display: flex;
+        width: 100%;
+    }
+
+    textarea {
+        display: block;
+        height: 500px;
+        width: 100%;
+    }
+
+    #input,
+    #output {
+        padding: 2rem;
+        flex: 1;
+        min-height: 500px;
+    }
+
+    #input {
+        background-color: #eee;
+    }
+
+    #submit {
+        margin-top: 1rem;
+    }
+</style>
+<main>
+    <div id="input">
+        <h1>Sandbox: Argdown highlighted by Highlight.js</h1>
+        <textarea>
+</textarea>
+        <button id="submit">Submit</button>
+    </div>
+    <div id="output"></div>
+</main>
+<script src="sandbox.ts" />
