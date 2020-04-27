@@ -53,7 +53,6 @@ export class SyncDotToSvgExportPlugin implements IArgdownPlugin {
 
     const requiredResponseFields: string[] = ["dot"];
     checkResponseFields(this, response, requiredResponseFields);
-
     response.svg = (vizRenderStringSync as any)(response.dot, "image/svg+xml");
     if (settings.removeProlog) {
       response.svg = response.svg!.replace(

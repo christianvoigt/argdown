@@ -168,11 +168,18 @@ export class HtmlExportPlugin implements IArgdownPlugin {
           token.title
         )}</span>] </a>`;
       },
-      [TokenNames.STATEMENT_MENTION]: (_request, response, token) => {
+      [TokenNames.STATEMENT_MENTION]: (
+        _request,
+        response,
+        token,
+        _parentNode,
+        _childIndex,
+        logger
+      ) => {
         const equivalenceClass = response.statements![token.title!];
         let classes = "mention statement-mention";
         if (!equivalenceClass) {
-          console.log("Mentioned statement not found: " + token.title);
+          logger.log("error", "Mentioned statement not found: " + token.title);
         }
         if (equivalenceClass && equivalenceClass.tags) {
           classes +=
@@ -240,12 +247,19 @@ export class HtmlExportPlugin implements IArgdownPlugin {
           argument!.title
         )}</span>&gt;: </a>`;
       },
-      [TokenNames.ARGUMENT_MENTION]: (_request, response, token) => {
+      [TokenNames.ARGUMENT_MENTION]: (
+        _request,
+        response,
+        token,
+        _parentNode,
+        _childIndex,
+        logger
+      ) => {
         let htmlId = getHtmlId("argument", token.title!);
         let classes = "mention argument-mention";
         const argument = response.arguments![token.title!];
         if (!argument) {
-          console.log("Mentioned argument not found: " + token.title);
+          logger.log("error", "Mentioned argument not found: " + token.title);
         }
         if (argument && argument.tags) {
           classes += " " + $.getCssClassesFromTags(response, argument.tags);

@@ -2,8 +2,10 @@
 # yarn lockfile v1
 
 
-"@aduh95/viz.js@file:../../../../Downloads/viz-js/package":
-  version "3.0.0-beta.6"
+"@aduh95/viz.js@^3.0.0-beta.8":
+  version "3.0.0-beta.8"
+  resolved "https://registry.yarnpkg.com/@aduh95/viz.js/-/viz.js-3.0.0-beta.8.tgz#e2b286d4c8aa34391f76909dd4691c555ce2e1d3"
+  integrity sha512-zM3hfA8lUlUySfXkYbw4SrR/SxApZbbOY0SeS3l3wC2HCJkVgNa3c52u+cAqzIjMjCtTIATFdcLV/0zMHxPqtw==
 
 "@babel/code-frame@^7.8.3":
   version "7.8.3"
@@ -266,6 +268,11 @@
     "@types/events" "*"
     "@types/minimatch" "*"
     "@types/node" "*"
+
+"@types/highlight.js@^9.12.3":
+  version "9.12.3"
+  resolved "https://registry.yarnpkg.com/@types/highlight.js/-/highlight.js-9.12.3.tgz#b672cfaac25cbbc634a0fd92c515f66faa18dbca"
+  integrity sha512-pGF/zvYOACZ/gLGWdQH8zSwteQS1epp68yRcVLJMgUck/MjEn/FBYmPub9pXT8C1e4a8YZfHo1CKyV8q1vKUnQ==
 
 "@types/http-cache-semantics@*":
   version "4.0.0"
@@ -1219,6 +1226,11 @@ he@1.2.0:
   resolved "https://registry.yarnpkg.com/he/-/he-1.2.0.tgz#84ae65fa7eafb165fddb61566ae14baf05664f0f"
   integrity sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==
 
+highlight.js@^10.0.1:
+  version "10.0.1"
+  resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-10.0.1.tgz#32ba25ee532291b86d1480b809a7e38bcd7f6dfe"
+  integrity sha512-l1HB5S9nmBuvurFIOPbpeJv4psKh2MyKCTOYRK/E6dwRXkbG96PLH7amP/xpGNyZOK8OWqv45DxLS/ZAIb3n9w==
+
 highlight.js@^9.18.1:
   version "9.18.1"
   resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-9.18.1.tgz#ed21aa001fe6252bb10a3d76d47573c6539fe13c"
@@ -1944,10 +1956,10 @@ pretty-bytes@^5.1.0:
   resolved "https://registry.yarnpkg.com/pretty-bytes/-/pretty-bytes-5.3.0.tgz#f2849e27db79fb4d6cfe24764fc4134f165989f2"
   integrity sha512-hjGrh+P926p4R4WbaB6OckyRtO0F0/lQBiT+0gnxjV+5kjPBrfVBFCsCLbMqVQeydvIoouYTCmmEURiH3R1Bdg==
 
-prismjs@^1.19.0:
-  version "1.20.0"
-  resolved "https://registry.yarnpkg.com/prismjs/-/prismjs-1.20.0.tgz#9b685fc480a3514ee7198eac6a3bf5024319ff03"
-  integrity sha512-AEDjSrVNkynnw6A+B1DsFkd6AVdTnp+/WoUixFRULlCLZVRZlVQMVWio/16jv7G1FscUxQxOQhWwApgbnxr6kQ==
+prismjs@1.19.0:
+  version "1.19.0"
+  resolved "https://registry.yarnpkg.com/prismjs/-/prismjs-1.19.0.tgz#713afbd45c3baca4b321569f2df39e17e729d4dc"
+  integrity sha512-IVFtbW9mCWm9eOIaEkNyo2Vl4NnEifis2GQ7/MLRG5TQe6t+4Sj9J5QWI9i3v+SS43uZBlCAOn+zYTVYQcPXJw==
   optionalDependencies:
     clipboard "^2.0.0"
 

@@ -15,8 +15,8 @@
   "module": "./dist-esm/index.js",
   "types": "./dist/index.d.ts",
   "dependencies": {
-    "@aduh95/viz.js": "C:\\Users\\1pxso\\Downloads\\viz-js\\package\\",
-    "@argdown/prism": "^1.3.0",
+    "@aduh95/viz.js": "^3.0.0-beta.8",
+    "@argdown/highlightjs": "^1.3.0",
     "@types/chai": "^4.2.11",
     "@types/js-yaml": "^3.12.3",
     "@types/lodash.clonedeep": "^4.5.6",
@@ -30,6 +30,7 @@
     "@yarnpkg/pnpify": "^2.0.0-rc.21",
     "chevrotain": "^6.5.0",
     "eventemitter3": "^4.0.0",
+    "highlight.js": "^10.0.1",
     "js-yaml": "^3.13.1",
     "lodash.clonedeep": "^4.5.0",
     "lodash.defaultsdeep": "^4.6.1",
@@ -38,7 +39,7 @@
     "lodash.partialright": "^4.2.1",
     "lodash.union": "^4.6.0",
     "mdurl": "^1.0.1",
-    "prismjs": "^1.19.0",
+    "prismjs": "1.19.0",
     "punycode": "^2.1.1",
     "string-pixel-width": "^1.10.0",
     "xmlbuilder": "^15.1.0"
@@ -83,6 +84,7 @@
   },
   "readmeFilename": "Readme.md",
   "devDependencies": {
+    "@types/highlight.js": "^9.12.3",
     "@types/mocha": "^7.0.2",
     "chai": "^4.2.0",
     "copyfiles": "^2.2.0",

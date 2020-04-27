@@ -1,9 +1,10 @@
-import * as Prism from "prismjs";
-import "@argdown/prism";
+import hljs from "highlight.js";
+import argdown from "@argdown/highlightjs";
 import { DefaultSettings, isObject, mergeDefaults } from "../utils";
 import { IArgdownPlugin, IRequestHandler } from "../IArgdownPlugin";
 import { IArgdownRequest } from "..";
 import defaultsDeep from "lodash.defaultsdeep";
+hljs.registerLanguage("argdown", argdown);
 
 /**
  * Settings used by the WebComponentExportPlugin
@@ -57,12 +58,9 @@ export class HighlightSourcePlugin implements IArgdownPlugin {
     const code = settings.removeFrontMatter
       ? this.removeFrontMatter(request.input!)
       : request.input;
-
-    response.highlightedSource = `<pre><code class="language-argdown">${Prism.highlight(
-      code!,
-      Prism.languages.argdown,
-      "argdown"
-    )}</code></pre>`;
+    response.highlightedSource = `<pre class="language-argdown"><code class="language-argdown">${
+      hljs.highlight("argdown", code || "").value
+    }</code></pre>`;
   };
   removeFrontMatter(str: string) {
     return str.replace(/[\s]*===+[\s\S]*===+[\s]*/, "");

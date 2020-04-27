@@ -45,7 +45,6 @@ argdown.addPlugin(new WebComponentExportPlugin(), "export-web-component");
 
 argdown.defaultProcesses = {
   "export-svg": [
-    "load-file",
     "parse-input",
     "build-model",
     "build-map",
@@ -55,7 +54,6 @@ argdown.defaultProcesses = {
     "export-svg"
   ],
   "export-dot": [
-    "load-file",
     "parse-input",
     "build-model",
     "build-map",
@@ -64,7 +62,6 @@ argdown.defaultProcesses = {
     "export-dot"
   ],
   "export-graphml": [
-    "load-file",
     "parse-input",
     "build-model",
     "build-map",
@@ -72,22 +69,14 @@ argdown.defaultProcesses = {
     "export-graphml"
   ],
   "export-json": [
-    "load-file",
     "parse-input",
     "build-model",
     "build-map",
     "colorize",
     "export-json"
   ],
-  "export-html": [
-    "load-file",
-    "parse-input",
-    "build-model",
-    "colorize",
-    "export-html"
-  ],
+  "export-html": ["parse-input", "build-model", "colorize", "export-html"],
   "export-web-component": [
-    "load-file",
     "parse-input",
     "build-model",
     "build-map",
