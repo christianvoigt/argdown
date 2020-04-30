@@ -34,6 +34,6 @@ Some **Markdown** text after the Argdown code fences. And now another Argdown se
 \`\`\`
 `);
     console.log(result);
-    expect(result).to.contain(`<argdown-map initial-view="map">`);
+    expect(result).to.contain(`<argdown-map `);
   });
 });

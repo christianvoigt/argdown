@@ -75,18 +75,13 @@ export const addArgdownSupportToMarked = (
     let styles = "";
     let polyfill = "";
     if (pluginSettings.addWebComponentScript) {
-      script = `<script src="${pluginSettings.noModuleScriptUrl ||
-        webComponentDefaults.noModuleScriptUrl}" type="module"></script>
-          <script type="text/javascript" nomodule src="${pluginSettings.noModuleScriptUrl ||
-            webComponentDefaults.noModuleScriptUrl}"></script>`;
+      script = `<script src="${pluginSettings.webComponentScriptUrl}"></script>`;
     }
     if (pluginSettings.addGlobalStyles) {
-      styles = `<link rel="stylesheet" type="text/css" href="${pluginSettings.globalStylesUrl ||
-        webComponentDefaults.globalStylesUrl}">`;
+      styles = `<link rel="stylesheet" type="text/css" href="${pluginSettings.globalStylesUrl}">`;
     }
     if (pluginSettings.addWebComponentPolyfill) {
-      polyfill = `<script src="${pluginSettings.webComponentPolyfillUrl ||
-        webComponentDefaults.webComponentPolyfillUrl}" type="module"></script>`;
+      polyfill = `<script src="${pluginSettings.webComponentPolyfillUrl}" type="module"></script>`;
     }
     return `${script}${styles}${polyfill}${markedFn(src, {
       ...options,
