@@ -1,5 +1,5 @@
 import hljs from "highlight.js";
-import argdown from "../index";
+import argdown from "../src/index";
 import "../snow-in-spring.argdown-theme.css";
 hljs.registerLanguage("argdown", argdown);
 
