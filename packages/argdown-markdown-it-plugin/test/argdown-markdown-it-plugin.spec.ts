@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import * as MarkdownIt from "markdown-it";
+import MarkdownIt from "markdown-it";
 import createArgdownPlugin from "../src/argdown-markdown-it-plugin";
 
 describe("Markdown It! Argdown Plugin", function() {
@@ -32,6 +32,6 @@ Some **Markdown** text after the Argdown code fences. And now another Argdown se
 \`\`\`
 `);
     console.log(result);
-    expect(result).to.contain(`<argdown-map initial-view="map">`);
+    expect(result).to.contain(`<argdown-map `);
   });
 });

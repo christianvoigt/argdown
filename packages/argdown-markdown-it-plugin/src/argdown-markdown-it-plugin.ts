@@ -18,7 +18,7 @@ const createArgdownPlugin = (config?: ((env:any)=>IArgdownRequest) | IArgdownReq
   let pluginSettings:IWebComponentExportSettings = {};
 
   const ArgdownPlugin = (md: MarkdownIt) => {
-    const generateWebComponent = (code: string) => {
+    const generateWebComponent = (code: string, initialView?: string, additionalSettings?: IWebComponentExportSettings) => {
       const request: IArgdownRequest = defaultsDeep({
         input: code,
         process: [
@@ -35,39 +35,47 @@ const createArgdownPlugin = (config?: ((env:any)=>IArgdownRequest) | IArgdownReq
         webComponent: {
           addGlobalStyles: false,
           addWebComponentPolyfill: false,
-          addWebComponentScript: false
+          addWebComponentScript: false,
+          initialView: initialView ||"map"
         }
       },currentConfig);
+      if(additionalSettings){
+        request.webComponent = defaultsDeep({}, additionalSettings, request.webComponent);
+      }
       const response = argdown.run(request);
       return response.webComponent;
     };
-    const highlightCode = (code: string) => {
-      const request: IArgdownRequest = defaultsDeep({
-        input: code,
-        process: [
-          "parse-input",
-          "build-model",
-          "highlight-source",
-        ]
-      }, currentConfig);
-      const response = argdown.run(request);
-      return response.highlightedSource;
-    };
     (md as any).argdown = argdown;
 
-    const tempFence = md.renderer.rules.fence.bind(md.renderer.rules);
+    const tempFence = md.renderer.rules.fence!.bind(md.renderer.rules)!;
     md.renderer.rules.fence = (tokens, idx, options, env, slf) => {
       const token = tokens[idx];
+      const chunks = (token.info || ``).match(/^(\S+)(\s+(.+))?/);
+      if (!chunks || !chunks.length) {
+        return tempFence(tokens, idx, options, env, slf);;
+      }
+      const lang = chunks[1];
+
       const code = token.content.trim();
-      if (token.info === "argdown-map") {
-        return generateWebComponent(code) || "";
-      }else if(token.info === "argdown"){
-        return highlightCode(code) ||"";
+      if (lang === "argdown-map") {
+        return generateWebComponent(code, "map") || "";
+      }else if(lang === "argdown"){
+        return generateWebComponent(code, "source") || "";
+      }else if(lang === "argdown-source"){ // needed for Argdown Cheatsheet in docs
+        return generateWebComponent(code, "source", {
+          withoutHeader: true,
+          withoutZoom: true,
+          withoutFigure: true,
+          views: {
+            source: true,
+            map: false
+          }
+        }) || "";
       }
       return tempFence(tokens, idx, options, env, slf);
     };
-      const tempRender = md.renderer.render.bind(md.renderer);
-      md.renderer.render = (tokens: Token[], options:any, env: any) => {
+    const tempRender = md.renderer.render.bind(md.renderer);
+    md.renderer.render = (tokens: Token[], options:any, env: any) => {
         let script = "";
         let styles = "";
         let polyfill = "";
@@ -79,10 +87,7 @@ const createArgdownPlugin = (config?: ((env:any)=>IArgdownRequest) | IArgdownReq
       
         if (pluginSettings.addWebComponentScript) {
           script = `<script src="${
-            currentConfig.webComponent.noModuleScriptUrl || webComponentDefaults.noModuleScriptUrl
-          }" type="module"></script>
-          <script type="text/javascript" nomodule src="${
-            currentConfig.webComponent.noModuleScriptUrl || webComponentDefaults.noModuleScriptUrl
+            currentConfig.webComponent.webComponentScriptUrl || webComponentDefaults.webComponentScriptUrl
           }"></script>`;
         }
         if (currentConfig.webComponent.addGlobalStyles) {
@@ -92,8 +97,8 @@ const createArgdownPlugin = (config?: ((env:any)=>IArgdownRequest) | IArgdownReq
         }
         if (currentConfig.webComponent.addWebComponentPolyfill) {
           polyfill = `<script src="${
-            currentConfig.webComponent.webComponentPolyfill || webComponentDefaults.webComponentPolyfill
-          }" type="module"></script>`;
+            currentConfig.webComponent.webComponentPolyfillUrl || webComponentDefaults.webComponentPolyfillUrl
+          }"></script>`;
         }
         return `${script}${styles}${polyfill}${tempRender(tokens, options, env)}`;
       };
