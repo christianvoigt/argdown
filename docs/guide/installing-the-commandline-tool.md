@@ -21,7 +21,7 @@ If you are new to Argdown, the next step is to follow along with our [first exam
 
 ## Features of the commandline tool
 
-- Exports Argdown documents and argument maps to JSON, HTML, DOT, SVG, PNG or PDF.
+- Exports Argdown documents and argument maps to JSON, web component HTML, HTML, DOT, GRAPHML, SVG, PNG or PDF.
 - Code linting: Prints syntax error with location information
 - You can watch whole folders and automatically execute a command if any Argdown file has changed.
 - Extensive configuration options through `argdown.config.json` or `argdown.config.js` files.

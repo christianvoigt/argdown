@@ -1,5 +1,6 @@
 var extendMarkdown = require("./extendMarkdown");
 var domain = "https://argdown.org";
+domain = "http://localhost:8080";
 
 module.exports = {
   title: "Argdown",
@@ -40,6 +41,20 @@ module.exports = {
         rel: "apple-touch-icon-precomposed",
         href: `${domain}/apple-touch-icon.png`
       }
+    ],
+    [
+      "script",
+      {
+        src: `${domain}/argdown-map.js`
+      }
+    ],
+    [
+      "link",
+      {
+        rel: "stylesheet",
+        type: "text/css",
+        href: `${domain}/argdown-map.css`
+      }
     ]
   ],
   plugins: [
@@ -71,10 +86,7 @@ module.exports = {
       "/changes/": [
         {
           title: "Changes",
-          children: [
-            ["", "2019"],
-            ["2018", "2018"]
-          ]
+          children: [["", "2020"], ["2019", "2019"][("2018", "2018")]]
         }
       ],
       "/guide/": [
@@ -99,7 +111,9 @@ module.exports = {
             "changing-the-node-style",
             "changing-the-node-size",
             "colorizing-maps",
-            "using-logical-symbols-and-emojis"
+            "using-logical-symbols-and-emojis",
+            "using-argdown-in-markdown",
+            "embedding-your-maps-in-a-webpage"
           ]
         },
         {

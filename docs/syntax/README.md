@@ -35,7 +35,8 @@ The one main section that does not describe a block element, is the section abou
 ===
 explanation: >
     A paragraph with text is called a "statement" and forms the most basic block element in Argdown.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 This is a statement.
 
@@ -79,7 +80,8 @@ explanation: >
     specific location within the Argdown document. It is a sequence of token
     instances. That means, for instance, if you copy & paste a statement, you
     define a new statement.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 The following two paragraphs
 contain two different Argdown
@@ -126,7 +128,8 @@ A statement title followed by a statement text is called a "statement definition
 ===
 explanation: >
     Statements are given titles by putting the title in square brackets in front of the statement, followed by a colon. If the title is used the first time for a statement, a new equivalence class is created with this title as identifier. If a previously defined statement already has the same title, the new statement is put as a new member into the same equivalence class. (Of course, Argdown can not and will not check if the members of an equivalence class really are logically and semantically equivalent.) In this example, we create an equivalence class with six members.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 
 [First letter]: A is the first letter
@@ -160,7 +163,8 @@ If you are too lazy to retype a whole statement, you can simply refer to its equ
 ===
 explanation: >
     Statement titles can also be used without defining a new statement. In this case there is no new member assigned to the equivalence class of this title. Instead, one only refers to the members of this class without changing it.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 [Life moves fast]: I said it before
 and I'll say it again.
@@ -178,7 +182,8 @@ you might miss it.
 ===
 explanation: >
     We do not have to assign members to an equivalence class before we can refer to it. We even can refer to an empty equivalence class to which we will never assign a statement (though it probably doesn't make much sense).
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 [Back to the future]
 
@@ -196,7 +201,8 @@ Sometimes you want to talk about a statement in another statement without actual
 ```argdown-cheatsheet
 ===
 explanation: By using an "@" sign before the statement title you can mention an equivalence class within another statement.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 [Nietzsche's Slogan]: God is dead.
 
@@ -214,7 +220,8 @@ Note: By mentioning another element in a statement, you do _not_ define a [relat
 ===
 explanation: >
     Statements may contain bold and italic text. The syntax is the same as in Markdown. You can either use asterisks (*) or underscores (_). If you surround text with one asterisk or underscore, it will be turned into italic text. If you surround it with two asterisks or underscores it will be turned into bold text.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 
 This is a statement with _italic text_.
@@ -231,7 +238,8 @@ __*bold italic text*__.
 ===
 explanation: >
     Statements may contain links. The syntax is the same as in Markdown. The link text is surrounded by square brackets. The url of the link is surrounded by round brackets.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 This is a statement containing
 a link to
@@ -245,7 +253,8 @@ Currently these links will only work in the exported HTML. For arguments and sta
 ```argdown-cheatsheet
 ===
 explanation: How to link to headings, statements and arguments.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 
 # This is a heading
@@ -267,7 +276,8 @@ hide: true
 ===
 explanation: >
     Statements may contain hashtags to categorize them according to your own category scheme. Tags will be used in argument maps to colorize statement maps. There are two kinds of tags: hyphenized tags and bracketed tags that may contain empty spaces and punctuation. You can apply as many tags as you want to a statement.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 This is a statement categorized
 by three tags.
@@ -281,7 +291,8 @@ You can also add hashtags to statements by using statement references.
 ===
 explanation: Adding hashtags to a statement reference.
 
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 [Nietzsche's slogan] #atheism #nietzsche
 ```
@@ -291,8 +302,9 @@ hide: true
 ```argdown-cheatsheet
 ===
 explanation: >
-    Statements may contain shortcodes for special unicode characters. The shortcodes are surrounded by colons or full stops. The parser will transform these shortcodes into unicode characters. 
-hide: true
+    Statements may contain shortcodes for special unicode characters. The shortcodes are surrounded by colons or full stops. The parser will transform these shortcodes into unicode characters.
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 [De Morgan]: .~.(p.^.q) .<->. (.~.p) .v. (.~.q)
     + :happy: :up: :love:
@@ -304,7 +316,7 @@ This is especially useful if you want to use logical symbols without having to c
 
 :::tip Logical Symbols with ArgVu Ligatures
 
-The shortcodes for logical symbols are even more useful if you use our ArgVu font for Argdown source code and activate the ligatures for these shortcodes. They will then be displayed as the unicode characters they represent *without actually changing the Argdown source code*.
+The shortcodes for logical symbols are even more useful if you use our ArgVu font for Argdown source code and activate the ligatures for these shortcodes. They will then be displayed as the unicode characters they represent _without actually changing the Argdown source code_.
 
 :::
 
@@ -326,7 +338,8 @@ If your YAML code creates errors, you should check this first.
 ===
 explanation: >
     You can put any metadata into curly brackets behind a statement definition or reference. In this case, we save different sources for the statement (the ealiest of which is not even from Nietzsche). In what format you save sources (or other metadata) is up to you or the plugins that work with this data. For example you, could also save sources with additional data like page, year and city of publication.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 [Nietzsche's Slogan]: God is dead.
 {sources: [
@@ -341,7 +354,8 @@ Note that, by default, YAML can be used only in "inline format" which looks just
 ```argdown-cheatsheet
 ===
 explanation: YAML block format is activated if the opening bracket is followed by a line break. In this case the YAML parser will ignore the opening and closing brackets and just parse the content between the brackets.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 [Nietzsche's Slogan] {
 sources:
@@ -357,7 +371,8 @@ Do not use [comments](#comments) instead of YAML data elements to save your data
 ```argdown-cheatsheet
 ===
 explanation: If you use comments instead of a YAML data element, the result looks very similar.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 [Nietzsche's Slogan] /*
 sources:
@@ -412,7 +427,8 @@ Argument titles come in _angle brackets_ and assign a description to an _argumen
 ===
 explanation: >
     Two sketched arguments supporting a central claim. Each argument is defined by giving it a title in angle brackets, followed by an informal description. In both cases, the description already hints at how the complex premise-conclusion-structure of the argument will look like, even though they both do not mention the main conclusion "God", but only intermediary conclusions from which another inferential step is needed to get to "God".
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 [God]: There is a god.
     + <Teleological Proof>:
@@ -443,7 +459,8 @@ But this analogy has its limits: Argument descriptions are _not_ supposed to be 
 ```argdown-cheatsheet
 ===
 explanation: different descriptions for the same argument that are not logically and semantically equivalent.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 <Teleological Proof>:
     Since the world is
@@ -472,7 +489,8 @@ Like [statement titles](#statement-references), you can also use argument titles
 ```argdown-cheatsheet
 ===
 explanation: After defining "Teleological Proof" it is referred to again and attacked by "Evolution explains better".
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 
 <Teleological Proof>:
@@ -497,7 +515,8 @@ hide: true
 ```argdown-cheatsheet
 ===
 explanation: An argument does not have to be defined first before one can refer to it. It does not even have to be defined at all. In this example, "Ontological Proof" is never defined with an argument description. It is only referred to -- while "Teleological Proof" is referred to before it is defined.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 [God]: God exists.
     + <Ontological Proof>
@@ -519,7 +538,8 @@ Just like [statements](#statement-mentions), arguments can also be mentioned wit
 ```argdown-cheatsheet
 ===
 explanation: Mentioning an argument in a statement
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 <Teleological Proof>:
     Because the world is
@@ -552,7 +572,8 @@ In the argument map, tags will be used to colorize the argument nodes.
 ```argdown-cheatsheet
 ===
 explanation: An argument description with text formatting and other inline elements
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 <Teleological Proof>:
     Because the world is
@@ -574,7 +595,8 @@ You can add metadata in the [YAML data format](http://yaml.org) to any argument 
 explanation: >
     Two links are added as YAML metadata to the agument "Teleological proof". Note that you do not have to add the YAML data to an argument definition. In this case we simply use an argument reference.
 
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 <Teleological proof> {
     links:
@@ -608,7 +630,8 @@ In a well well-formed pcs, every pcs-statement which is preceded by an inference
 ===
 explanation: >
     A premise-conclusion-structure is assigned to the "Teleological proof" argument. Its pcs-statements consist of one intermediary conclusion (3), one main conclusion (5) and three premises (1, 2, 4). The example makes use of the default inference-marker: a line which contains only a series of hyphens.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 <Teleological proof>
 
@@ -638,7 +661,8 @@ Pcs-statements are simply [statements](#statements) preceded by a pcs index numb
 ===
 explanation: >
     Essentially the same argument as before, articulated and enhanced with statement titles, references, mentions, links, tags and YAML-data.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 
 [Intelligent Design]: The world seems
@@ -678,7 +702,8 @@ This is called a "collapsed inference".
 ```argdown-cheatsheet
 ===
 explanation: Using a collapsed inference in a pcs.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 
 (1) s1
@@ -693,7 +718,8 @@ You can also specify which inference rules were used or add YAML data to the inf
 ===
 explanation: >
     Using an expanded inference in a pcs. Two inference rules are specified and YAML metadata is added, containing the statements used in the inference and the kind of logic the inference rules are part of.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 
 (1) All humans are mortal.
@@ -726,7 +752,8 @@ creating a sequence of consecutive lines below **x**, each starting with the sam
 ```argdown-cheatsheet
 ===
 explanation: A simple list of pros & cons for and against statement s1.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 s1
     + <a>
@@ -740,7 +767,8 @@ By following these rules you can specify any structure of relations on a given s
 ```argdown-cheatsheet
 ===
 explanation: A hierarchic tree of relations, notated in several "flat" lists. Argument a is supporting statement s1. Argument b is attacking argument a. Argument c is supporting argument b. Argument d is supporting argument a. Argument e is attacking statement s1.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 s1
     + <a>
@@ -759,7 +787,8 @@ Argdown also allows you to nest definitions of relations in a hierarchical-lists
 ```argdown-cheatsheet
 ===
 explanation: The same hierarchic tree of relations as before, now defined by nesting relations in multi-level lists.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 s1
     + <a>
@@ -803,7 +832,8 @@ Because we can refer to the same argument or eqivalence class several times in t
 ```argdown-cheatsheet
 ===
 explanation: "A non-hierarchical cycle of relations:  Argument b attacks argument a. Argument c supports argument b. Argument a attacks argument c."
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 <a>
     - <b>
@@ -820,7 +850,8 @@ For outgoing (backward-pointing) relations the direction can be left implicit (i
 ```argdown-cheatsheet
 ===
 explanation: two outgoing supports of a and b for s1 and one incoming support of c from s1.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 
 s1
@@ -839,7 +870,8 @@ _Support_ and _attack_ relations can also be defined between arguments and state
 ===
 explanation: >
     With implicit relation direction: Statement a is supported by argument b, which is in turn supported by argument c.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 [a]
     + <b>
@@ -850,7 +882,8 @@ hide: true
 ===
 explanation: >
     With explicit relation direction: Argument a is supported by argument b and statement c.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 <a>
     <+ <b>
@@ -860,7 +893,8 @@ hide: true
 ```argdown-cheatsheet
 ===
 explanation: Argument a supports argument b and statement c
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 <a>
     +> <b>
@@ -871,7 +905,8 @@ hide: true
 ===
 explanation: >
     With implicit relation direction: Statement a is attacked by argument b, which is in turn attacked by argument c.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 [a]
     - <b>
@@ -882,7 +917,8 @@ hide: true
 ===
 explanation: >
     With explicit relation direction: Argument a is attacked by argument b and statement c.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 <a>
     <- <b>
@@ -892,7 +928,8 @@ hide: true
 ```argdown-cheatsheet
 ===
 explanation: Argument a attacks argument b and statement c.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 <a>
     -> <b>
@@ -903,7 +940,8 @@ hide: true
 ===
 explanation: >
     With implicit relation direction: Argument a is undercut by argument b
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 <a>
     _ <b>
@@ -913,7 +951,8 @@ hide: true
 ===
 explanation: >
     With explicit relation direction: Argument a is undercut by argument b
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 <a>
     <_ <b>
@@ -922,7 +961,8 @@ hide: true
 ```argdown-cheatsheet
 ===
 explanation: Argument a undercuts argument b
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 <a>
     _> <b>
@@ -942,7 +982,8 @@ In **loose interpretation mode** relations between two statements that use the +
 ===
 explanation: >
     Loose interpretation: statement a is supporting statement b and attacking statement c. Statement a is supported by statement c and is attacked by statement d.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 model:
     mode: loose
 ===
@@ -965,7 +1006,8 @@ In **strict interpretation mode** a + relation between two statements is therefo
 ===
 explanation: >
     Strict interpretation: statement a logically entails statement b and is contrary to statement c. Statement d entails statement a. Statement e is contrary to statement a. Statement f and statement a are contradictory to each other.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 model:
     mode: strict
 ===
@@ -993,6 +1035,7 @@ Given that this is our best interpretation and we want to use Argdown to express
 
 ```argdown
 ===
+title: Reconstructing in strict mode
 model:
     mode: strict
 ===
@@ -1028,7 +1071,8 @@ Currently the Argdown parser will not check if the different relations you have 
 ===
 explanation: >
     In strict mode these relations are logically inconsistent: t1 is contrary to t2, but also entails t2. Which means that if t1 is true, t2 has to be true and false.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 
 [t1]: s1.
@@ -1051,7 +1095,8 @@ An argument is "reconstructed" if it has been assigned a [premise-conclusion-str
 ```argdown-cheatsheet
 ===
 explanation: Three ways of expressing that a supports b. The third method also specifies exactly which premise is entailed by argument a's main conclusion.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 <a>
     +> <b>
@@ -1096,7 +1141,8 @@ It is derived that Argument a is **supported** by argument b if either
 ```argdown-cheatsheet
 ===
 explanation: Statement s2 and statement s3 have the same title t1, which means that they belong to the same equivalence class. Accordingly, argument a supports argument b.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 
 <a>
@@ -1124,7 +1170,8 @@ It is derived that Argument a is **attacked** by argument b if either
 ```argdown-cheatsheet
 ===
 explanation: Equivalence class t1 (of which statement s6 is a member) is contrary to statement s1. Because s1 is used as premise in argument a and s6 is used as conclusion in argument b, argument b is attacking argument a.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 <a>
 
@@ -1152,7 +1199,8 @@ It is derived that Argument a is **undercut** by argument b if either
 ```argdown-cheatsheet
 ===
 explanation: Equivalence class t1 (of which statement s6 is a member) is undercutting argument a's inference from s1 and s2 to s3. Because t1 is b's conclusion, b is undercutting argument a.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 <a>
 
@@ -1195,7 +1243,8 @@ It is derived that the main conclusion of argument a
 ```argdown-cheatsheet
 ===
 explanation: Statement s4 is attacked by argument a. Because argument a is reconstructed, that also means that a's conclusion s3 is contrary to statement s4.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 <a>
 
@@ -1211,7 +1260,8 @@ s4
 ```argdown-cheatsheet
 ===
 explanation: Expresses the same as the previous example by defining an outgoing contrary-relation of conclusion s3 (incoming for s4).
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 <a>
 
@@ -1225,7 +1275,8 @@ hide: true
 ```argdown-cheatsheet
 ===
 explanation: Statement s4 is supported by argument a. Because argument a is reconstructed, that also means that a's conclusion s3 entails statement s4.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 <a>
 
@@ -1241,7 +1292,8 @@ s4
 ```argdown-cheatsheet
 ===
 explanation: Statement s1 is attacked by argument b. Because s1 is used as premise in argument a, argument b attacks argument a. Because argument b is also reconstructed, s6 is contrary to s1.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 <a>
 
@@ -1262,7 +1314,8 @@ hide: true
 ```argdown-cheatsheet
 ===
 explanation: Argument a is a complex argument with two inferential steps. Argument b is attacking argument a with an undercut against its first inferential step. Accordingly, Argdown infers that statement s8 undercuts a’s first inferential step.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 <a>
 
@@ -1286,7 +1339,8 @@ hide: true
 ```argdown-cheatsheet
 ===
 explanation: If you prefer it, you can also define undercuts by adding them below the conclusion instead of below the inference. This might look better if you want to define other relations for this conclusion as well.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 <a>
 
@@ -1303,11 +1357,12 @@ hide: true
 
 Currently the Argdown parser will not check if the derived relations are consistent with the explicitly defined relations. It is possible to create "nonsense" relations:
 
-````argdown-cheatsheet
+```argdown-cheatsheet
 ===
 explanation: >
     In strict mode these relations produce a logical inconsistency. t1 is contrary to t2. But because a1 supports t2, it is also derived that its main conclusion t1 entails t2. Taken together this means that if t1 is true, t2 has to be true and false.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 
 [t1]: s1.
@@ -1324,7 +1379,10 @@ hide: true
 (1) [t2]
   <+ <a1>
 ----
-(2) c```
+(2) c
+
+```
+
 :::
 
 ## Frontmatter
@@ -1344,11 +1402,11 @@ date: 29/06/2018
 analyzing complex argumentation and creating argument maps.
 
 // ...
-````
+```
 
 Frontmatter data may contain any settings you can use in a `argdown.config.json` or `argdown.config.js` file. These settings will overwrite any settings in your configuration file. If you want to avoid this you can use the `ignoreFrontmatterSettings` in your config file. If it is set to `true` all settings in the frontmatter will be ignored.
 
-In the following example we change the map settings so that statement labels only show the statement text and argument labels only show the argument title. We also define a title that is used as the title of the generated argument map:
+In the following example we change the map settings so that statement labels only show the statement text and argument labels only show the argument title. We also define a title that is used as the title of the generated argument map. Finally, we configure the web component that is displaying this example on this page to initially show the Argdown source code (instead of showing the map):
 
 ```argdown
 ===
@@ -1364,7 +1422,14 @@ map:
 
 Click on the map button in the top right corner to see the result.
 
-By the way: In this documentation the frontmatter is used extensively to add data and settings to the code snippets. You can not see this, because the frontmatter section is omitted in html snippets by using the flag `hide: true` in the frontmatter.
+By the way: In this documentation the frontmatter is used extensively to add data and settings to the code snippets. In some examples you can not see the frontmatter, even though it is used: To avoid distraction, we have sometimes hidden it in the Argdown web component by using the following setting:
+
+```
+===
+sourceHighlighter:
+  removeFrontMatter: true
+===
+```
 
 ## Headings
 
@@ -1375,7 +1440,8 @@ These sections are then used to derive groups of statement and argument nodes in
 ```argdown-cheatsheet
 ===
 explanation: An Argdown document with four headings. H1 is of level 1, H2 and H3 are of level 2 and H4 is of level 3. H2 and H3 define subsections of H1. H4 defines a subsection of H3 and thus a sub-subsection of H1.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 
 # H1
@@ -1400,7 +1466,8 @@ hide: true
 ```argdown-cheatsheet
 ===
 explanation: You can add tags and a YAML data element to a heading. Both will be assigned to the section defined by this heading.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 
 # H1 #tag {isGroup: true}
@@ -1415,7 +1482,8 @@ You can use ordered or unordered lists of statements. Lists are block elements t
 ```argdown-cheatsheet
 ===
 explanation: An unordered list
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 
 # The central statements of the debate
@@ -1430,7 +1498,8 @@ hide: true
 ```argdown-cheatsheet
 ===
 explanation: An ordered list. Be careful not to confuse this with a premise-conclusion structure. PCS-Statements are preceded by a statement number in round brackets. Items of an ordered list are preceded by a number followed by a period character.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 
 # The central statements of the debate
@@ -1457,7 +1526,8 @@ You can use them to hide text from the parser.
 ```argdown-cheatsheet
 ===
 explanation: C-style comments
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 
 <A1> // A C-style line comment
@@ -1476,7 +1546,8 @@ comment
 ```argdown-cheatsheet
 ===
 explanation: HTML-style comments
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 
 <!--

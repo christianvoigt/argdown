@@ -39,10 +39,11 @@ If you are new to Argdown, the next step is to follow along with our [first exam
 ## Features of the VS Code extension
 
 - Live Preview: watch your argument map grow while you are typing.
+- Integration with Markdown: Argdown code fences will automatically be exported to svg argument maps in the Markdown preview
 - Code Linter: checks your Argdown code for syntax errors while you are typing.
 - Syntax highlighting
 - Content assist (Intellisense): Auto code completion and assistance.
-- Exports Argdown documents and argument maps to JSON, HTML, DOT, SVG, PNG and PDF.
+- Exports Argdown documents and argument maps to JSON, web component HTML, HTML, DOT, GRAPHML, SVG, PNG and PDF.
 - Two hierarchical graph layouts: Dagre or Viz.js
 
 ## Further help on using the extension

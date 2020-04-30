@@ -408,7 +408,8 @@ You can also pick single arguments or statements for the map by using the `isInM
 ```argdown
 ===
 title: Using the isInMap flag to select or deselect single elements.
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 
 <a>

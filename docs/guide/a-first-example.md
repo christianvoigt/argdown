@@ -19,51 +19,114 @@ We analyse the following pros and cons on "Censorship by the State" from the _De
 
 It's straight-forward to copy & paste the pros and cons into an Argdown document. We mark up the central thesis as a [statement](/syntax/#statements) and the pros and cons as [arguments](/syntax/#arguments) putting their titles in angle and square brackets respectively.
 
-```argdown
+```argdown-map
 ===
+webComponent:
+  initialView: source
+sourceHighlighter:
+  removeFrontMatter: true
 model:
     removeTagsFromText: true
 ===
 
 [Thesis]: Censorship by the state
-  + <P1>: Freedom of speech is never an absolute right but an aspiration. It ceases to be a right when it causes harm to others -- we all recognise the value of, for example, legislating against incitement to racial hatred. Therefore it is not the case that censorship is wrong in principle. #pro
-  + <P2>: Certain types of literature or visual image have been conclusively linked to crime. Excessive sex and violence in film and television has been shown (especially in studies in the US) to contribute to a tendency towards similar behaviour in spectators. There is no excuse for this and such images must be sacrificed, no matter what their artistic merit. #pro
-  - <C1>: Censorship is wrong in principle. However violently we may disagree with a person's point of view or mode of expression, they must be free to express themselves in a free and civilized society. Censorship such as legislation against incitement to racial hatred drives racists and others underground and thus entrenches and ghettoises that section of the community rather than drawing its members into open and rational debate. #con
-  - <C2>: In fact, the link between sex and violence on screen and in real life is far from conclusive. To look at it from another angle, those individuals who _already have tendencies_ to violence are likely to watch violent `video nasties', just as those with a predilection for rape are likely to use pornography. The two are therefore connected but the individual's personality is formed first. #con
+  + <P1>: Freedom of speech is never an absolute right but an aspiration.
+  It ceases to be a right when it causes harm to others -- we all
+  recognise the value of, for example, legislating against
+  incitement to racial hatred. Therefore it is not the case that
+  censorship is wrong in principle. #pro
+  + <P2>: Certain types of literature or visual image have been
+  conclusively linked to crime. Excessive sex and violence in film
+  and television has been shown (especially in studies in the US)
+  to contribute to a tendency towards similar behaviour in spectators.
+  There is no excuse for this and such images must be sacrificed,
+  no matter what their artistic merit. #pro
+  - <C1>: Censorship is wrong in principle. However violently we may
+  disagree with a person's point of view or mode of expression, they
+  must be free to express themselves in a free and civilized society.
+  Censorship such as legislation against incitement to racial hatred
+  drives racists and others underground and thus entrenches and
+  ghettoises that section of the community rather than drawing
+  its members into open and rational debate. #con
+  - <C2>: In fact, the link between sex and violence on screen and
+  in real life is far from conclusive. To look at it from another
+  angle, those individuals who _already have tendencies_ to
+  violence are likely to watch violent `video nasties', just as
+  those with a predilection for rape are likely to use pornography.
+  The two are therefore connected but the individual's personality
+  is formed first. #con
 ```
 
 Some of the above argument descriptions actually seem to contain different lines of thought, and it's recommendable to split those descriptions up so that each argument is represented in Argdown by its own element. Moreover, we spell out the main thesis explicitly as "Censorship is not wrong in principle".
 
 ```argdown-map
 ===
+sourceHighlighter:
+  removeFrontMatter: true
 model:
     removeTagsFromText: true
 ===
 
 [Thesis]: Censorship is not wrong in principle.
-  + <P1a>: Freedom of speech is never an absolute right but an aspiration. It ceases to be a right when it causes harm to others. Therefore it is not the case that censorship is wrong in principle. #pro
-  + <P1b>: We all recognise the value of, for example, legislating against incitement to racial hatred. #pro
-  + <P2>: Certain types of literature or visual image have been conclusively linked to crime. Excessive sex and violence in film and television has been shown (especially in studies in the US) to contribute to a tendency towards similar behaviour in spectators. There is no excuse for this and such images must be sacrificed, no matter what their artistic merit. #pro
-  - <C1a>: Censorship is wrong in principle. However violently we may disagree with a person's point of view or mode of expression, they must be free to express themselves in a free and civilized society. #con
-  - <C1b>: Censorship such as legislation against incitement to racial hatred drives racists and others underground and thus entrenches and ghettoises that section of the community rather than drawing its members into open and rational debate. #con
-  - <C2>: In fact, the link between sex and violence on screen and in real life is far from conclusive. To look at it from another angle, those individuals who _already have tendencies_ to violence are likely to watch violent `video nasties', just as those with a predilection for rape are likely to use pornography. The two are therefore connected but the individual's personality is formed first. #con
+  + <P1a>: Freedom of speech is never an absolute right but an aspiration.
+  It ceases to be a right when it causes harm to others. Therefore it is
+  not the case that censorship is wrong in principle. #pro
+  + <P1b>: We all recognise the value of, for example, legislating against
+  incitement to racial hatred. #pro
+  + <P2>: Certain types of literature or visual image have been conclusively
+  linked to crime. Excessive sex and violence in film and television has been
+  shown (especially in studies in the US) to contribute to a tendency towards
+  similar behaviour in spectators. There is no excuse for this and such images
+  must be sacrificed, no matter what their artistic merit. #pro
+  - <C1a>: Censorship is wrong in principle. However violently we may disagree
+  with a person's point of view or mode of expression, they must be free to
+  express themselves in a free and civilized society. #con
+  - <C1b>: Censorship such as legislation against incitement to racial hatred
+  drives racists and others underground and thus entrenches and ghettoises that
+  section of the community rather than drawing its members into open and rational
+  debate. #con
+  - <C2>: In fact, the link between sex and violence on screen and in real life
+  is far from conclusive. To look at it from another angle, those individuals
+  who _already have tendencies_ to violence are likely to watch violent
+  `video nasties', just as those with a predilection for rape are likely to use
+  pornography. The two are therefore connected but the individual's personality
+  is formed first. #con
 ```
 
 Now, it's questionable whether all pros and cons are directly supporting or attacking the central claim. Granted, `<P1a>`, for example, is doing so. But `<C2>` seems to be attacking the argument `<P2>`rather than attacking central thesis directly. Likewise, `<C1b>`is best interpreted as an attack on `<P1b>`. To effect these changes in Argdown, we simply have to shift and indent the corresponding list items.
 
 ```argdown-map
 ===
+sourceHighlighter:
+  removeFrontMatter: true
 model:
     removeTagsFromText: true
 ===
 
 [Thesis]: Censorship is not wrong in principle.
-  + <P1a>: Freedom of speech is never an absolute right but an aspiration. It ceases to be a right when it causes harm to others. Therefore it is not the case that censorship is wrong in principle. #pro
-  + <P1b>: We all recognise the value of, for example, legislating against incitement to racial hatred. #pro
-    - <C1b>: Censorship such as legislation against incitement to racial hatred drives racists and others underground and thus entrenches and ghettoises that section of the community rather than drawing its members into open and rational debate. #con
-  + <P2>: Certain types of literature or visual image have been conclusively linked to crime. Excessive sex and violence in film and television has been shown (especially in studies in the US) to contribute to a tendency towards similar behaviour in spectators. There is no excuse for this and such images must be sacrificed, no matter what their artistic merit. #pro
-    - <C2>: In fact, the link between sex and violence on screen and in real life is far from conclusive. To look at it from another angle, those individuals who _already have tendencies_ to violence are likely to watch violent `video nasties', just as those with a predilection for rape are likely to use pornography. The two are therefore connected but the individual's personality is formed first. #con
-  - <C1a>: Censorship is wrong in principle. However violently we may disagree with a person's point of view or mode of expression, they must be free to express themselves in a free and civilized society. #con
+  + <P1a>: Freedom of speech is never an absolute right but an aspiration.
+  It ceases to be a right when it causes harm to others. Therefore it is
+  not the case that censorship is wrong in principle. #pro
+  + <P1b>: We all recognise the value of, for example, legislating against
+  incitement to racial hatred. #pro
+    - <C1b>: Censorship such as legislation against incitement to racial
+    hatred drives racists and others underground and thus entrenches and
+    ghettoises that section of the community rather than drawing its members
+    into open and rational debate. #con
+  + <P2>: Certain types of literature or visual image have been conclusively
+  linked to crime. Excessive sex and violence in film and television has been
+  shown (especially in studies in the US) to contribute to a tendency towards
+  similar behaviour in spectators. There is no excuse for this and such images
+  must be sacrificed, no matter what their artistic merit. #pro
+    - <C2>: In fact, the link between sex and violence on screen and in real
+    life is far from conclusive. To look at it from another angle, those individuals
+    who _already have tendencies_ to violence are likely to watch violent
+    `video nasties', just as those with a predilection for rape are likely
+    to use pornography. The two are therefore connected but the individual's
+    personality is formed first. #con
+  - <C1a>: Censorship is wrong in principle. However violently we may disagree
+  with a person's point of view or mode of expression, they must be free to
+  express themselves in a free and civilized society. #con
 
 ```
 
@@ -73,18 +136,31 @@ Moreover, we assign informative titles to the arguments and claims, streamline t
 
 ```argdown-map
 ===
+sourceHighlighter:
+  removeFrontMatter: true
 model:
     removeTagsFromText: true
 ===
 
 [Censorship]: Censorship is not wrong in principle.
-  + <Argument from racial hatred>: Legislation against incitement to racial hatred is permissible. Thus, censorship is not wrong in principle. #pro {source: "P1b"}
-    - <Importance of inclusive public debate>: Censorship such as legislation against incitement to racial hatred drives racists and others underground and thus entrenches and ghettoises that section of the community rather than drawing its members into open and rational debate. #con {source: "C1b"}
-  + <Excessive sex and violence>: Excessive sex and violence in film and television has been shown to contribute to a tendency towards similar behaviour in spectators. In these cases, censorship is obligatory and hence not wrong in principle. #pro {source: "P2"}
-    - <Causal link questionable>: In fact, the link between sex and violence on screen and in real life is far from conclusive. The two are correlated, but the individual's personality is causally responsible for video consumption, not vice versa. #con {source: "C2"}
-  - <Argument from Freedom of Speech>: Censorship is wrong in principle. In a free and civilized society, everyone must be free to express herself. #con {source: "C1a"}
+  + <Argument from racial hatred>: Legislation against incitement to racial hatred is permissible.
+  Thus, censorship is not wrong in principle. #pro {source: "P1b"}
+    - <Importance of inclusive public debate>: Censorship such as legislation against
+    incitement to racial hatred drives racists and others underground and thus entrenches
+    and ghettoises that section of the community rather than drawing its members into
+    open and rational debate. #con {source: "C1b"}
+  + <Excessive sex and violence>: Excessive sex and violence in film and television has
+  been shown to contribute to a tendency towards similar behaviour in spectators. In these
+  cases, censorship is obligatory and hence not wrong in principle. #pro {source: "P2"}
+    - <Causal link questionable>: In fact, the link between sex and violence on screen and
+    in real life is far from conclusive. The two are correlated, but the individual's
+    personality is causally responsible for video consumption, not vice versa. #con {source: "C2"}
+  - <Argument from Freedom of Speech>: Censorship is wrong in principle. In a free and
+  civilized society, everyone must be free to express herself. #con {source: "C1a"}
     + [Absolute Freedom of Speech]: Freedom of speech is an absolute right.
-        - <No-Harm trumps Freedom-of-Speech>: Freedom of speech ceases to be a right when it causes harm to others. Therefore freedom of speech is never an absolute right but an aspiration. #pro {source: "P1a"}
+        - <No-Harm trumps Freedom-of-Speech>: Freedom of speech ceases to be a right when
+        it causes harm to others. Therefore freedom of speech is never an absolute right
+        but an aspiration. #pro {source: "P1a"}
 
 ```
 
@@ -96,8 +172,18 @@ As a rule of thumb, it's advisable to start to reconstruct the most central argu
 
 If we stick with the previous sketch and use the argument map to inform our detailed analysis, the main conclusion and a premise of the argument from freedom of speech are already given:
 
-```argdown
-<Argument from Freedom of Speech>: Censorship is wrong in principle. In a free and civilized society, everyone must be free to express herself. #con {source: "C1a"}
+```argdown-map
+===
+webComponent:
+  initialView: source
+sourceHighlighter:
+  removeFrontMatter: true
+model:
+    removeTagsFromText: true
+===
+
+<Argument from Freedom of Speech>: Censorship is wrong in principle.
+In a free and civilized society, everyone must be free to express herself. #con {source: "C1a"}
 
 (1) [Absolute Freedom of Speech]: Freedom of speech is an absolute right.
 (2) More premises ...
@@ -111,7 +197,15 @@ In the last line we declare that the main conclusion and the central thesis are 
 Here's a way to fill the gap between (1) and (3):
 
 ```argdown
-<Argument from Freedom of Speech>: Censorship is wrong in principle. In a free and civilized society, everyone must be free to express herself. #con {source: "C1a"}
+===
+sourceHighlighter:
+  removeFrontMatter: true
+model:
+    removeTagsFromText: true
+===
+
+<Argument from Freedom of Speech>: Censorship is wrong in principle.
+In a free and civilized society, everyone must be free to express herself. #con {source: "C1a"}
 
 (1) [Absolute Freedom of Speech]: Freedom of speech is an absolute right.
 (2) Censorship violates freedom of speech.
@@ -129,22 +223,33 @@ Let us now add this premise-conclusion-structure to our Argdown document.
 
 ```argdown
 ===
+sourceHighlighter:
+  removeFrontMatter: true
 model:
     removeTagsFromText: true
 ===
 
 [Censorship]: Censorship is not wrong in principle.
-  + <Argument from racial hatred>: Legislation against incitement to racial hatred is permissible. Thus, censorship is not wrong in principle. #pro {source: "P1b"}
-    - <Importance of inclusive public debate>: Censorship such as legislation against incitement to racial hatred drives racists and others underground and thus entrenches and ghettoises that section of the community rather than drawing its members into open and rational debate. #con {source: "C1b"}
-  + <Excessive sex and violence>: Excessive sex and violence in film and television has been shown to contribute to a tendency towards similar behaviour in spectators. In these cases, censorship is obligatory and hence not wrong in principle. #pro {source: "P2"}
-    - <Causal link questionable>: In fact, the link between sex and violence on screen and in real life is far from conclusive. The two are correlated, but the individual's personality is causally responsible for video consumption, not vice versa. #con {source: "C2"}
+  + <Argument from racial hatred>: Legislation against incitement to racial hatred is permissible.
+  Thus, censorship is not wrong in principle. #pro {source: "P1b"}
+    - <Importance of inclusive public debate>: Censorship such as legislation against incitement
+    to racial hatred drives racists and others underground and thus entrenches and ghettoises
+    that section of the community rather than drawing its members into open and rational debate. #con {source: "C1b"}
+  + <Excessive sex and violence>: Excessive sex and violence in film and television has been
+  shown to contribute to a tendency towards similar behaviour in spectators.
+  In these cases, censorship is obligatory and hence not wrong in principle. #pro {source: "P2"}
+    - <Causal link questionable>: In fact, the link between sex and violence on screen and in real
+    life is far from conclusive. The two are correlated, but the individual's personality is causally
+    responsible for video consumption, not vice versa. #con {source: "C2"}
 
 
 [Absolute Freedom of Speech]: Freedom of speech is an absolute right.
-  - <No-Harm trumps Freedom-of-Speech>: Freedom of speech ceases to be a right when it causes harm to others. Therefore freedom of speech is never an absolute right but an aspiration. #pro {source: "P1a"}
+  - <No-Harm trumps Freedom-of-Speech>: Freedom of speech ceases to be a right when it causes harm
+  to others. Therefore freedom of speech is never an absolute right but an aspiration. #pro {source: "P1a"}
 
 
-<Argument from Freedom of Speech>: Censorship is wrong in principle. In a free and civilized society, everyone must be free to express herself. #con {source: "C1a"}
+<Argument from Freedom of Speech>: Censorship is wrong in principle. In a free and civilized society,
+everyone must be free to express herself. #con {source: "C1a"}
 
 (1) [Absolute Freedom of Speech]
 (2) Censorship violates freedom of speech.
@@ -165,6 +270,8 @@ If all arguments are fully reconstructed, the Argdown document may simply consis
 
 ```argdown
 ===
+sourceHighlighter:
+  removeFrontMatter: true
 model:
     removeTagsFromText: true
 ===
@@ -181,7 +288,8 @@ Two central claims
 Arguments of the debate
 */
 
-<Argument from Freedom of Speech>: Censorship is wrong in principle. In a free and civilized society, everyone must be free to express herself. #con {source: "C1a"}
+<Argument from Freedom of Speech>: Censorship is wrong in principle.
+In a free and civilized society, everyone must be free to express herself. #con {source: "C1a"}
 
 (1) [Absolute Freedom of Speech]
 (2) Censorship violates freedom of speech.
@@ -193,65 +301,89 @@ Arguments of the debate
     -> [Censorship]
 
 
-<No-Harm trumps Freedom-of-Speech>: Freedom of speech ceases to be a right when it causes harm to others. Therefore freedom of speech is never an absolute right but an aspiration. #pro {source: "P1a"}
+<No-Harm trumps Freedom-of-Speech>: Freedom of speech ceases to be a right when it
+causes harm to others. Therefore freedom of speech is never an absolute right but
+an aspiration. #pro {source: "P1a"}
 
 (1) Sometimes, free speech causes serious harms to others.
 (2) Whatever causes serious harms to others is not permissible.
-(3) If freedom of speech is sometimes not permissible, then freedom of speech is not an absolute right.
+(3) If freedom of speech is sometimes not permissible, then freedom of speech
+is not an absolute right.
 ----
 (4) Freedom of speech is not an absolute right.
     -> [Absolute Freedom of Speech]
 
 
-<Argument from racial hatred>: Legislation against incitement to racial hatred is permissible. Thus, censorship is not wrong in principle. #pro {source: "P1b"}
+<Argument from racial hatred>: Legislation against incitement to racial hatred is
+permissible. Thus, censorship is not wrong in principle. #pro {source: "P1b"}
 
 (1) [IRC-legislation]: Legislation against incitement to racial hatred is permissible. {isInMap: false}
 (2) Legislation against incitement to racial hatred is a form of censorship.
 ----
 (3) [Censorship]
 
-<Importance of inclusive public debate>: Legislation against incitement to racial hatred drives racists and others underground rather than drawing them into open and rational debate. #con {source: "C1b"}
+<Importance of inclusive public debate>: Legislation against incitement to racial
+hatred drives racists and others underground rather than drawing them into open
+and rational debate. #con {source: "C1b"}
 
-(1) We will only have an open, maximally-inclusive and rational societal debate, if racists are not driven underground.
-(2) If legislation against incitement to racial hatred is enacted, racists and others are driven underground.
+(1) We will only have an open, maximally-inclusive and rational societal debate,
+if racists are not driven underground.
+(2) If legislation against incitement to racial hatred is enacted, racists and
+others are driven underground.
 -----
-(3) We will only have an open, maximally-inclusive and rational societal debate, if legislation against incitement to racial hatred is not enacted.
+(3) We will only have an open, maximally-inclusive and rational societal debate,
+if legislation against incitement to racial hatred is not enacted.
 (4) We ought to have an open, maximally-inclusive and rational societal debate.
 -----
 (5) Legislation against incitement to racial hatred ought not be enacted.
   -> [IRC-legislation]
 
 
-<Excessive sex and violence>: Excessive sex and violence in film and television contribute to a tendency towards similar behaviour in spectators. In these cases, censorship is obligatory. #pro {source: "P2"}
+<Excessive sex and violence>: Excessive sex and violence in film and television
+contribute to a tendency towards similar behaviour in spectators. In these cases,
+censorship is obligatory. #pro {source: "P2"}
 
-(1) [Causal link]: Excessive sex and violence in film and television contributes to a tendency towards similar behaviour in spectators.  {isInMap: false}
-(2) Whatever contributes to an tendency towards criminal behaviour may be legally banned, except more weighty reasons speak against doing so.
-(3) There are no substantial reasons against legally banning excessive sex and violence in film and television.
+(1) [Causal link]: Excessive sex and violence in film and television contributes
+to a tendency towards similar behaviour in spectators.  {isInMap: false}
+(2) Whatever contributes to an tendency towards criminal behaviour may be legally
+banned, except more weighty reasons speak against doing so.
+(3) There are no substantial reasons against legally banning excessive sex and
+violence in film and television.
 -----
 (4) Excessive sex and violence in film and television may be legally banned.
-(5) If excessive sex and violence in film and television may be legally banned, censorship is not wrong in principle.
+(5) If excessive sex and violence in film and television may be legally banned,
+censorship is not wrong in principle.
 -----
 (6) [Censorship]
 
-<Argument from expertise>: Scientific studies have established a causal link between violence in film and a similar behaviour in spectators. #pro
+<Argument from expertise>: Scientific studies have established a causal link
+between violence in film and a similar behaviour in spectators. #pro
 
-(1) Scientific studies have established that excessive sex and violence in film and television contributes to a tendency towards similar behaviour in spectators (@[Causal link]).
-(2) If scientific studies have established that X and if there is no evidence against X being the case, then X.
+(1) Scientific studies have established that excessive sex and violence in
+film and television contributes to a tendency towards similar behaviour in spectators (@[Causal link]).
+(2) If scientific studies have established that X and if there is no evidence
+against X being the case, then X.
 ----
 (3) [Causal link]
 
 
-<Causal link questionable>: The link between sex and violence on screen and in real life is far from conclusive. The individual's personality make her watch violent videos, not vice versa. #con {source: "C2"}
+<Causal link questionable>: The link between sex and violence on screen and in
+real life is far from conclusive. The individual's personality make her watch
+violent videos, not vice versa. #con {source: "C2"}
 
-(1) The consumption of violent video is correlated with violent and criminal behaviour.
-(2) The best explanation for this correlation is that those individuals who _already have tendencies_ to violence are likely to watch violent `video nasties', just as those with a predilection for rape are likely to use pornography.
+(1) The consumption of violent video is correlated with violent and criminal
+behaviour.
+(2) The best explanation for this correlation is that those individuals who
+_already have tendencies_ to violence are likely to watch violent `video nasties',
+just as those with a predilection for rape are likely to use pornography.
 --
 {uses: [1,2], rule: ["inference to the best explanation"]}
 --
 (3) A disposition for criminal behaviour causes the consumption of violent video.
 (4) Causal relations are asymmetric.
 -----
-(5) The consumption of violent video does not bring about a disposition for criminal behaviour.
+(5) The consumption of violent video does not bring about a disposition for
+criminal behaviour.
   -> [Causal link]
 ```
 

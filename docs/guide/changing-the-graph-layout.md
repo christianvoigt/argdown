@@ -122,10 +122,6 @@ Viz.js can be configured to use any of the GraphViz [layout engines](https://git
 - osage
 - twopi
 
-:::warning Not Working in the Documentation
-At the moment this will not work in the documentation as the documentation still has to use an outdated Viz.js version for technical reasons. If you want to try it out, copy the code below into the browser sandbox or into VSCode.
-:::
-
 ```argdown
 ===
 vizJs:

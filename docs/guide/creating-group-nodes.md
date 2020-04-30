@@ -23,7 +23,8 @@ how it was done.
 ```argdown-map
 ===
 title: "From headings to groups"
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 
 # H1
@@ -135,7 +136,8 @@ The flag will also be ignored if the `isGroup` flag of the current section is se
 ===
 group:
     groupDepth: 2
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 
 # H1

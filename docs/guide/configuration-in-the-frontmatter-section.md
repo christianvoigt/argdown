@@ -1,8 +1,8 @@
 ---
 title: Configuration in the Frontmatter section
 meta:
-    - name: description
-      content: How to use the frontmatter section of your Argdown document to change the behaviour of the Argdown tools.
+  - name: description
+    content: How to use the frontmatter section of your Argdown document to change the behaviour of the Argdown tools.
 ---
 
 # Configuration in the Frontmatter section

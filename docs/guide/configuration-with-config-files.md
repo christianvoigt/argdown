@@ -1,8 +1,8 @@
 ---
 title: Configuration with config files
 meta:
-    - name: description
-      content: How to use config files to change the behaviour of the Argdown tools.
+  - name: description
+    content: How to use config files to change the behaviour of the Argdown tools.
 ---
 
 # Configuration with config files

@@ -1,8 +1,8 @@
 ---
 title: Loading custom plugins
 meta:
-    - name: description
-      content: How to load custom plugins in a config file
+  - name: description
+    content: How to load custom plugins in a config file
 ---
 
 # Loading custom plugins in a config file
@@ -39,7 +39,8 @@ Let us create a little test debate:
 ```argdown
 ===
 title: The test debate without running the SaysWhoPlugin
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 
 # Section 1
@@ -55,7 +56,6 @@ hide: true
 <c>: Pretty, pretty, pretty, pretty good. {proponent: Larry David}
 
 ```
-
 
 We can now run our plugin with the commandline tool, assuming that the config file and our Argdown document are in the current working directory:
 
@@ -65,11 +65,11 @@ argdown run says-who-map
 
 This should create an svg file with a map where proponent names have been added:
 
-```argdown-map
+```argdown-sayswho
 ===
 title: The test debate after running the SaysWhoPlugin
-runSaysWhoPlugin: true
-hide: true
+sourceHighlighter:
+    removeFrontMatter: true
 ===
 
 # Section 1
@@ -85,4 +85,3 @@ hide: true
 <c>: Pretty, pretty, pretty, pretty good. {proponent: Larry David}
 
 ```
-

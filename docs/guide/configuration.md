@@ -1,8 +1,8 @@
 ---
 title: Configuration
 meta:
-    - name: description
-      content: In this guide you will learn how to configure the Argdown software tools.
+  - name: description
+    content: In this guide you will learn how to configure the Argdown software tools.
 ---
 
 # Configuration

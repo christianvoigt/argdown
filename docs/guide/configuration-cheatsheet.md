@@ -820,6 +820,52 @@ interface IArgdownConfig {
     };
   }
   /**
+   * Settings for the WebComponentExportPlugin
+   */
+  webComponent: {
+    // if figure is used: width & height css properties of figure element
+    // else if without figure: css width & height of argdown-map element
+    // for responsive settings, set min/max width/height of figures or argdown-map elements globally in your own css file.
+    width?: string;
+    height?: string;
+    // hide webComponent header
+    withoutHeader?: boolean;
+    // only hide logo
+    withoutLogo?: boolean;
+    // only hide maximize button
+    withoutMaximize?: boolean;
+    // disable zoom
+    withoutZoom?: boolean;
+    // add web-component without surrounding figure element
+    withoutFigure?: boolean;
+    // initial view to show
+    initialView?: "map" | "source";
+    // views to add to the component
+    views?: {
+      map: boolean;
+      source: boolean;
+    }
+    // figure caption
+    // if not set, the title, subtitle and abstract will be used
+    figureCaption?: string;
+    // add argdown-map.js, web component polyfill and argdown-map.json files to html
+    addWebComponentScript?: boolean;
+    addWebComponentPolyfill?: boolean;
+    addGlobalStyles?: boolean;
+    // urls to be used when adding these files
+    webComponentUrl?: string;
+    webComponentPolyfillUrl?: string;
+    globalStylesUrl?:string;
+  };
+  /**
+   * Settings for the HighlightSourcePlugin
+   */
+  sourceHiglighter: {
+    // will remove the frontmatter from the highlighted source (e.g. in the web component's source view)
+    // to reduce clutter
+    removeFrontmatter?: boolean;
+  }
+  /**
    * If an array is used: the processors that should
    * be executed in order by the [[ArgdownApplication]]
    * during the current run.

@@ -9,6 +9,7 @@ actionLink: /guide/
 footer: MIT Licensed | Copyright © 2018-present Christian Voigt | Funded by Debatelab, KIT Karlsuhe
 ---
 
+<p class="latest-news">April 2020: v1.4.0 has been released (<a href="/changes">changelog</a>)</p>
 <div class="features">
   <div class="feature">
     <h2>Simple</h2>
@@ -196,7 +197,14 @@ Argdown's formula consists of three ingredients:
 
 Statement titles come in square brackets, argument titles in angle brackets.
 
-```argdown
+```argdown-map
+===
+webComponent:
+  initialView: source
+sourceHighlighter:
+  removeFrontMatter: true
+===
+
 [Argdown is the best]: Argdown is the best
 tool for analyzing complex argumentation
 and creating argument maps.
@@ -222,7 +230,14 @@ This will work for _all_ Argdown examples in this documentation.
 
 Let's logically reconstruct an additional argument in detail:
 
-```argdown
+```argdown-map
+===
+webComponent:
+  initialView: source
+sourceHighlighter:
+  removeFrontMatter: true
+===
+
 <Word Analogy>
 
 (1) [Word @#*%!]: It is much easier to write
@@ -246,7 +261,14 @@ Click on the **Map** button in the upper right corner to see the resulting argum
 
 ### _3_ Markdown-like text-formatting
 
-```argdown
+```argdown-map
+===
+webComponent:
+  initialView: source
+sourceHighlighter:
+  removeFrontMatter: true
+===
+
 # Headings are used to group statement and arguments in the map
 
 You can use __many__  (though not all) *features* of [Markdown](http://commonmark.org/) to format Argdown text.
@@ -265,9 +287,11 @@ Now that you have learned the basics of Argdown you can:
 - [VS Code Extension](/guide/installing-the-vscode-extension.html) Install the Argdown VS Code extension for full Argdown language support in one of the best code editors around. Includes a live preview, syntax highlighting, content assist, code linting and export options.
 - [Commandline Tool](/guide/installing-the-commandline-tool.html) If you prefer to work with the commandline install the Argdown commandline tool. You can define custom processes in your config file and use them in a task runner to export several argument maps for the same document at once.
 
-If you are looking for the perfect font for your Argdown code, check out our free [ArgVu](https://github.com/christianvoigt/argdown/tree/master/packages/ArgVu) font. It comes with Argdown-specific font-ligatures and glyphs.
+Also, check out our free [ArgVu](https://github.com/christianvoigt/argdown/tree/master/packages/ArgVu) font. It comes with Argdown-specific font-ligatures and glyphs.
 
 ::::tip
 
 If you are getting unexpected results in your map, take a look at the [syntax rules](/syntax) of Argdown and do not forget to separate top-level elements by empty lines.
+
+For any questions not answered by this documentation, don't hesitate to [open a new issue](https://github.com/christianvoigt/argdown/issues) on github.
 :::

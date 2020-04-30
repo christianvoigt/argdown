@@ -1,8 +1,8 @@
 ---
 title: Extending Argdown
 meta:
-    - name: description
-      content: This tutorial will teach you how to write your own Argdown plugin, how to load it using a config file, and how to integrate Argdown in your own application.
+  - name: description
+    content: This tutorial will teach you how to write your own Argdown plugin, how to load it using a config file, and how to integrate Argdown in your own application.
 ---
 
 # Extending Argdown
