@@ -1,6 +1,6 @@
 {
   "name": "@argdown/node",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Async Argdown application for node.js",
   "main": "./dist/index.js",
   "module": "./dist-esm/index.js",
