@@ -1,6 +1,6 @@
 {
   "name": "@argdown/node",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Async Argdown application for node.js",
   "main": "./dist/index.js",
   "module": "./dist-esm/index.js",
@@ -33,8 +33,7 @@
   "author": "Christian Voigt",
   "license": "MIT",
   "dependencies": {
-    "@argdown/core": "^1.3.0",
-    "@argdown/prism": "^1.3.0",
+    "@argdown/core": "^1.4.0",
     "@types/chokidar": "^2.1.3",
     "@types/glob": "^7.1.1",
     "@types/lodash": "^4.14.149",
@@ -52,7 +51,6 @@
   "devDependencies": {
     "@types/chai": "^4.2.11",
     "@types/mocha": "^7.0.2",
-    "@types/prismjs": "^1.16.0",
     "chai": "^4.2.0",
     "copyfiles": "^2.2.0",
     "intercept-stdout": "^0.1.2",

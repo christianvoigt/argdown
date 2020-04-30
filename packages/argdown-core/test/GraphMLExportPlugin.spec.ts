@@ -80,7 +80,7 @@ describe("GraphMLExport", function() {
       logLevel: "error"
     });
     expect(result.graphml).to.include(
-      "&lt;html&gt;test&amp;#x20;&lt;i&gt;test&lt;/i&gt;&amp;#x20;&lt;b&gt;test&lt;/b&gt;&amp;#x20;&lt;/html&gt;"
+      "&lt;html&gt;test&amp;#x20;&lt;i&gt;test&lt;/i&gt; &amp;#x20;&lt;b&gt;test&lt;/b&gt; &amp;#x20;&lt;/html&gt;"
     );
   });
 });
