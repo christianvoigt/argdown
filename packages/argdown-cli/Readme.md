@@ -8,6 +8,7 @@ To learn more about the Argdown argumentation syntax, visit the [Argdown documen
 
 ## Features
 
+- export argument map as web component html with `argdown web-component`
 - export text document to html with `argdown html`
 - export argument map to pdf, svg or dot with `argdown map`
 - export data to json with `argdown json`
@@ -38,6 +39,7 @@ npx @argdown/cli map
 
 Available commands:
 
+- `argdown web-component [input glob] [output folder]`: exports the input files as web-component html files into the output folder. You can copy & paste the web components into any html page to add zoomable argument maps to it.
 - `argdown html [input glob] [output folder]`: exports the input files as html files into the output folder.
 - `argdown map [input glob] [output folder]`: exports argument maps layouted with Graphviz. By default the maps are saved as pdf files. Use `--format svg` to save svg files and `--format dot` to save dot files.
 - `argdown json [input glob] [output folder]`: exports the input files as .json files into the output folder.
