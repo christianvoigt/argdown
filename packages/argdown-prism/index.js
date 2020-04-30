@@ -2,7 +2,7 @@ var data = {
   pattern: /\{[\S\s]*?\}[ \t]*(\r?\n|$)(?![ \t]*})/,
   alias: "cdata"
 };
-Prism.languages.argdown = {
+Prism.languages["argdown"] = {
   "escaped-char": /\\./,
   frontmatter: {
     pattern: /^[ \t]*===+(\r?\n)[\S\s]*(\r?\n)[ \t]*===+/,
@@ -124,10 +124,11 @@ Prism.languages.argdown = {
     }
   }
 };
-Prism.languages.argdown["bold"].inside["url"] = Prism.languages.argdown["url"];
-Prism.languages.argdown["italic"].inside["url"] =
-  Prism.languages.argdown["url"];
-Prism.languages.argdown["bold"].inside["italic"] =
-  Prism.languages.argdown["italic"];
-Prism.languages.argdown["italic"].inside["bold"] =
-  Prism.languages.argdown["bold"];
+Prism.languages["argdown"]["bold"].inside["url"] =
+  Prism.languages["argdown"]["url"];
+Prism.languages["argdown"]["italic"].inside["url"] =
+  Prism.languages["argdown"]["url"];
+Prism.languages["argdown"]["bold"].inside["italic"] =
+  Prism.languages["argdown"]["italic"];
+Prism.languages["argdown"]["italic"].inside["bold"] =
+  Prism.languages["argdown"]["bold"];
