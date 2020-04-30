@@ -7,9 +7,9 @@ import { initMenu } from "./menu";
 import { getPngAsString } from "./export";
 import { openScaleDialog } from "./scaleDialog";
 import { VizJsMap } from "@argdown/map-views";
-import { OnZoomChangedHandler } from "@argdown/map-views/dist/src/ZoomManager";
+import { OnZoomChangedHandler } from "@argdown/map-views/dist/ZoomManager";
 import { ArgdownPreviewStore } from "./state";
-import { OnSelectionChangedHandler } from "@argdown/map-views/dist/src/CanSelectNode";
+import { OnSelectionChangedHandler } from "@argdown/map-views/dist/CanSelectNode";
 
 declare var acquireVsCodeApi: any;
 const vscode = acquireVsCodeApi();

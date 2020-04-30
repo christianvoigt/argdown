@@ -5,6 +5,7 @@
 [Argdown](https://argdown.org) is a simple syntax for analyzing complex argumentation, inspired by Markdown. This extension provides full language support for Argdown in VS Code:
 
 - [Live Preview](#map-preview) of your argument map
+- [Integration with Markdown](#integration-with-markdown): Argdown code fences in Markdown will be transformed to the Argdown web component in the Markdown preview.
 - 2 map layout algorithms ([DagreD3](https://github.com/dagrejs/dagre-d3) & [Viz.js](https://github.com/mdaines/viz.js/))
 - [Code completion](#code-completion)
 - [Symbol search, outline and breadcrumb support](#document-outline-breadcrumbs-and-symbol-search)
@@ -13,7 +14,7 @@
 - Jump to/peek at references and definitions
 - [Syntax highlighting](#activating-the-argdown-theme)
 - Linting (Code Diagnostics)
-- [Export to Html, Dot, JSON, SVG, PNG and PDF](#exporting)
+- [Export as web component and to Html, Dot, JSON, SVG, PNG and PDF](#exporting)
 
 If you want to learn more about Argdown argumentation syntax, read the [guide and documentation](https://argdown.org).
 
@@ -52,6 +53,42 @@ See [ArgVu's Readme](https://github.com/christianvoigt/argdown/tree/master/packa
 ## Map Preview
 
 ![Map Preview](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/MapPreviewScreencap.gif "Opening the map preview")
+
+## Integration with Markdown
+
+You can use Argdown codefences in Markdown:
+
+````markdown
+# Markdown file
+
+This will initially show the "source" view
+of the web component in the Markdown preview:
+
+```argdown
+===
+title: Argdown
+===
+
+[s]
+  - <a>
+```
+
+This will initially show the "map" view
+of the web component in the Markdown preview:
+
+```argdown-map
+===
+title: Argdown
+===
+
+[s]
+  - <a>
+```
+````
+
+The Argdown code will be correctly syntax highlighted. If you open the Markdown preview the code fences will be exported as web components that allow you to switch between the syntax-highlighted Argdown source code and a zoomable map view (using Viz.js), just like in the [Argdown documentation](https://argdown.org).
+
+Please note that the advanced language features of VSCode (code dianostics, code completion, ...) will not work in the Markdown code fences. If you want to use them, first write your Argdown code in an `.argdown` file and when your are ready copy & paste it into your `.markdown` file.
 
 ## Code Completion
 

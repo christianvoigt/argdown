@@ -49,7 +49,7 @@
     "onWebviewPanel:argdown.preview",
     "workspaceContains:**/*.{argdown,ad,argdn,adown}"
   ],
-  "main": "./out/extension",
+  "main": "./dist/extension",
   "contributes": {
     "languages": [
       {
@@ -505,9 +505,12 @@
   "scripts": {
     "vscode:prepublish": "npm run build",
     "build": "npm run build-extension && npm run build-preview && npm run copy-changelog",
-    "watch": "tsc -w -p ./",
-    "build-extension": "tsc -p ./",
-    "build-preview": "webpack --mode development",
+    "watch": "webpack --config extension.webpack.config.js --mode development --watch",
+    "build-extension": "webpack --config extension.webpack.config.js --mode production",
+    "build-preview": "webpack --config preview.webpack.config.js --mode production",
+    "dev-build": "npm run dev-build-extension && npm run dev-build-preview && npm run copy-changelog",
+    "dev-build-extension": "tsc -p ./",
+    "dev-build-preview": "webpack --config preview.webpack.config.js --mode development",
     "copy-changelog": "node ./copy-changelog.js"
   },
   "dependencies": {
@@ -530,10 +533,11 @@
     "@types/lodash.throttle": "^4.1.6",
     "@types/node": "^13.11.0",
     "@types/vscode": "^1.43.0",
-    "raw-loader": "^4.0.0",
-    "ts-loader": "^6.2.2",
+    "@types/webpack": "^4.41.12",
+    "raw-loader": "^4.0.1",
+    "ts-loader": "^7.0.0",
     "typescript": "^3.8.3",
-    "webpack": "^4.42.1",
+    "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
   }
 }

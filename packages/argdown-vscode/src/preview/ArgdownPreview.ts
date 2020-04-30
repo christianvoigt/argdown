@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import * as path from "path";
-import throttle = require("lodash.throttle");
+import throttle from "lodash.throttle";
 
 import { Logger } from "./Logger";
 import { ArgdownContentProvider } from "./ArgdownContentProvider";
