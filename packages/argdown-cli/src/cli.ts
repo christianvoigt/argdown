@@ -8,6 +8,7 @@ require("pkginfo")(module, "version");
 
 yargs
   .showHelpOnFail(true)
+  .scriptName("argdown")
   .options({
     watch: {
       alias: "w",
