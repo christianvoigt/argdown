@@ -367,14 +367,14 @@ export const addLineBreaks = (
   if (!str) {
     return { text: "", lines: 0 };
   }
-  const arr = measurePixelWidth
+  const lineArray = measurePixelWidth
     ? splitByLineWidth(str, options)
     : splitByCharactersInLine(str, options.charactersInLine || 0, true);
   const lineBreak = options.lineBreak || "\n";
   if (options.applyRanges) {
     let start = 0;
-    for (let i = 0; i < arr.length; i++) {
-      const line = arr[i];
+    for (let i = 0; i < lineArray.length; i++) {
+      const line = lineArray[i];
       const originalLength = line.length;
       const end = start + originalLength - 1;
       const nodes: ({ start: number; end: number } | { text: string })[] = [
@@ -424,7 +424,7 @@ export const addLineBreaks = (
           }
         }
       }
-      arr[i] = nodes
+      lineArray[i] = nodes
         .map(n =>
           "text" in n
             ? n.text
@@ -437,12 +437,12 @@ export const addLineBreaks = (
     }
   } else {
     if (options.escapeAsHtmlEntities) {
-      for (let i = 0; i < arr.length; i++) {
-        arr[i] = escapeAsHtmlEntities(arr[i]);
+      for (let i = 0; i < lineArray.length; i++) {
+        lineArray[i] = escapeAsHtmlEntities(lineArray[i]);
       }
     }
   }
-  return { lines: arr.length, text: arr.join(lineBreak) };
+  return { lines: lineArray.length, text: lineArray.join(lineBreak) };
 };
 const generateOpeningTag = (range: IRange) => {
   switch (range.type) {
@@ -450,8 +450,9 @@ const generateOpeningTag = (range: IRange) => {
       return "<b>";
     case RangeType.ITALIC:
       return "<i>";
-    case RangeType.LINK:
-      return `<a href="${range.url}">`;
+    // Not supported by Graphviz
+    // case RangeType.LINK:
+    //   return `<a href="${range.url}">`;
     default:
       return "";
   }
@@ -459,11 +460,12 @@ const generateOpeningTag = (range: IRange) => {
 const generateClosingTag = (range: IRange) => {
   switch (range.type) {
     case RangeType.BOLD:
-      return "</b>";
+      return "</b> "; // extra space seems to be required by graphviz :(
     case RangeType.ITALIC:
-      return "</i>";
-    case RangeType.LINK:
-      return `</a>`;
+      return "</i> "; //extra space seems to be needed by graphviz :(
+    // Not supported by Graphviz
+    // case RangeType.LINK:
+    //   return `</a>`;
     default:
       return "";
   }
