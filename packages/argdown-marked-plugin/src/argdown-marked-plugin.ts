@@ -20,7 +20,7 @@ export const addArgdownSupportToMarked = (
   const webComponentDefaults = webComponentPlugin.defaults;
   let pluginSettings: IWebComponentExportSettings = {};
 
-  const generateWebComponent = (code: string) => {
+  const generateWebComponent = (code: string, initialView?: string) => {
     const request: IArgdownRequest = defaultsDeep(
       {
         input: code,
@@ -38,24 +38,14 @@ export const addArgdownSupportToMarked = (
         webComponent: {
           addGlobalStyles: false,
           addWebComponentPolyfill: false,
-          addWebComponentScript: false
+          addWebComponentScript: false,
+          initialView: initialView || "map"
         }
       },
       currentConfig
     );
     const response = argdown.run(request);
     return response.webComponent;
-  };
-  const highlightCode = (code: string) => {
-    const request: IArgdownRequest = defaultsDeep(
-      {
-        input: code,
-        process: ["parse-input", "build-model", "highlight-source"]
-      },
-      currentConfig
-    );
-    const response = argdown.run(request);
-    return response.highlightedSource;
   };
   const tempCode = renderer.code.bind(renderer);
   renderer.code = (
@@ -64,9 +54,9 @@ export const addArgdownSupportToMarked = (
     isEscaped: boolean
   ) => {
     if (language === "argdown-map") {
-      return generateWebComponent(code.trim()) || "";
+      return generateWebComponent(code.trim(), "map") || "";
     } else if (language === "argdown") {
-      return highlightCode(code.trim()) || "";
+      return generateWebComponent(code.trim(), "source") || "";
     }
     return tempCode(code, language, isEscaped);
   };
@@ -95,8 +85,8 @@ export const addArgdownSupportToMarked = (
         webComponentDefaults.globalStylesUrl}">`;
     }
     if (pluginSettings.addWebComponentPolyfill) {
-      polyfill = `<script src="${pluginSettings.webComponentPolyfill ||
-        webComponentDefaults.webComponentPolyfill}" type="module"></script>`;
+      polyfill = `<script src="${pluginSettings.webComponentPolyfillUrl ||
+        webComponentDefaults.webComponentPolyfillUrl}" type="module"></script>`;
     }
     return `${script}${styles}${polyfill}${markedFn(src, {
       ...options,
