@@ -1,5 +1,12 @@
 # Release Notes 2020
 
+## v1.4.1 (April 2020)
+
+### Bug fixes
+
+- fixes missing help in @argdown/cli
+- fixes missing file load in @argdown/markdown-it-plugin
+
 ## v1.4.0 (April 2020)
 
 **Changes in:** @argdown/core, @argdown/node, @argdown/vscode, @argdown/sandbox, @argdown/codemirror-mode, docs

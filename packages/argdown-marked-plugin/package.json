@@ -1,6 +1,6 @@
 {
   "name": "@argdown/marked-plugin",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Turns Argdown code fences into svg argument maps",
   "main": "dist/argdown-marked-plugin.js",
   "scripts": {

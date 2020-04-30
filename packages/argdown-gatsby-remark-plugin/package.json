@@ -6,21 +6,7 @@
   "files": [
     "index.js"
   ],
-  "scripts": {
-    "deploy": "npm run test && npm run build && npm version patch && npm run push",
-    "sandbox": "parcel ./test/sandbox.html",
-    "type-check": "tsc --noEmit",
-    "build": "npm run clean && npm run build:src && npm run build:esm",
-    "build:esm": "tsc -m es6 --target ES2018 --outDir dist-esm",
-    "build:src": "tsc",
-    "docs:build": "node ./node_modules/typedoc/bin/typedoc",
-    "test": "mocha -r ts-node/register --full-trace --bail --require source-map-support/register ./test/**/*.spec.ts",
-    "coverage": "nyc mocha -r ts-node/register --full-trace --bail --require source-map-support/register ./test/**/*.spec.ts",
-    "report": "nyc report",
-    "clean": "rimraf \"dist/*\" && rimraf \"dist-esm/*\"",
-    "prepublishOnly": "npm run-script build",
-    "push": "git push --tags origin HEAD:master"
-  },
+  "scripts": {},
   "keywords": [
     "gatsby-remark-plugin",
     "gatsby-plugin",

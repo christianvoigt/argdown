@@ -79,7 +79,7 @@
     "coverage": "nyc mocha -r ts-node/register --full-trace --bail ./test/**/*.spec.ts",
     "report": "nyc report",
     "clean": "rimraf \"dist/*\" && rimraf \"dist-esm/*\"",
-    "prepublishOnly": "yarn run-script build",
+    "prepublishOnly": "yarn run build",
     "push": "git push --tags origin HEAD:master"
   },
   "readmeFilename": "Readme.md",
