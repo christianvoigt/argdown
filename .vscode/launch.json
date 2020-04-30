@@ -10,7 +10,7 @@
       "args": ["--extensionDevelopmentPath=${cwd}/packages/argdown-vscode"],
       "stopOnEntry": false,
       "sourceMaps": true,
-      "outFiles": ["${cwd}/packages/argdown-vscode/out/**/*.js"],
+      "outFiles": ["${cwd}/packages/argdown-vscode/dist/**/*.js"],
       "preLaunchTask": "watch:argdown-vscode"
     },
     {

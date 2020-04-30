@@ -12,7 +12,7 @@ This release is improving the Argdown workflow significantly: It is now possible
 - copy & paste your argument map as [Argdown web component](#the-argdown-web-component) into any web page
 - [integrate Argdown](#remark-markdown-it-and-marked-plugins) into [static site generators](https://www.staticgen.com/) and similar applications _by simply changing their Markdown parser configuration_
 
-### VSCode extension: Using Argdown in Markdown
+### Using Argdown in Markdown
 
 You can now use Argdown directly in Markdown documents by using code fences. Your Argdown code fences will be correctly highlighted.
 
@@ -36,7 +36,7 @@ title: my argdown map
 Now we are back in Markdown.
 ````
 
-For more details read the guide on [using Argdown in Markdown](/guide/using-argdown-in-markdown).
+For more details read the guide on [using Argdown in Markdown](/guide/using-argdown-in-markdown.html).
 
 ### The Argdown Web Component
 
@@ -46,7 +46,7 @@ Both the commandline tool and the VSCode extension provide a new "web component"
 
 In `@argdown/cli` use the new `argdown web-component [inputGlob] [outputFolder]` command to export your argdown file as web component html.
 
-For more details on how to setup and configure the web component, read the guide on [how to embed your argument maps in a web page](/guide/using-argdown-in-markdown).
+For more details on how to setup and configure the web component, read the guide on [how to embed your argument maps in a web page](/guide/embedding-your-maps-in-a-webpage.html).
 
 ### Remark, Markdown-It and Marked plugins
 
@@ -61,7 +61,7 @@ All of these exports will replace Argdown code fences with the Argdown web compo
 
 The Markdown parser plugins can be used to integrate Argdown support into any of the many applications that use these parsers, for example static site generators like [Gatsby](https://www.gatsbyjs.org/), [Eleventy](https://www.11ty.dev/) or [Vuepress](https://vuepress.vuejs.org/).
 
-Read more about how to set this up in the guide on [how to integrate Argdown-Markdown into existing applications](/guide/how-to-integrate-argdown-markdown-into-existing-applications).
+Read more about how to set this up in the guide on [how to integrate Argdown-Markdown into existing applications](/guide/using-argdown-in-markdown.html#how-to-integrate-argdown-markdown-into-existing-applications).
 
 ### Highlight.js plugin
 
@@ -74,7 +74,7 @@ For the same purpose you might also be interested in our old [prismjs](https://p
 ### Bug fixes
 
 - argdown-vscode: Argdown configuration files in your workspace folder are now used if you export your Argdown file into other formats (you can use the VSCode settings to set the filename of your config file)
-- #138: No italic in Viz.js map: Italic, bold and link ranges are now supported in Viz.js and GraphML (not yet in Dagre)
+- #138: No italic in Viz.js map: Italic and bold ranges are now kind of supported in Viz.js and GraphML (not yet in Dagre): Graphviz rendering seems to be buggy in this respect, it will not display an empty space after an italic or bold range. As a workaround, an extra empty space is now added automatically, but this is a hack that might lead to problems in yEd or in the future if this bug is finally fixed. Link ranges are not supported at all in Graphviz (only tables and cells can have a href attribute).
 - #144: broken links custom shortcodes
 
 ### Thanks

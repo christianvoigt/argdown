@@ -981,7 +981,7 @@ In **loose interpretation mode** relations between two statements that use the +
 ```argdown-cheatsheet
 ===
 explanation: >
-    Loose interpretation: statement a is supporting statement b and attacking statement c. Statement a is supported by statement c and is attacked by statement d.
+    Loose interpretation: statement a is supporting statement b and attacking statement c. Statement a is supported by statement d and is attacked by statement e.
 sourceHighlighter:
     removeFrontMatter: true
 model:
@@ -990,8 +990,8 @@ model:
 [a]
     +> [b]
     -> [c]
-    <+ [c]
-    <- [d]
+    <+ [d]
+    <- [e]
 ```
 
 Because the loose interpretation is useful for starting out it is activated by default in Argdown.
