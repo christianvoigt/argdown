@@ -34,6 +34,13 @@ export const escapeHtml = (str?: string): string | undefined => {
   }
   return str;
 };
+const CSS_WIDTH_OR_HEIGHT_RE = /^(?:\d+(?:,\d+)?[a-z%]+|auto)$/;
+export const escapeCSSWidthOrHeight = (str?: string): string | undefined => {
+  if (CSS_WIDTH_OR_HEIGHT_RE.test(str || "")) {
+    return str;
+  }
+  return undefined;
+};
 
 const COLOR = /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i;
 export const validateColorString = (str: string): boolean => {

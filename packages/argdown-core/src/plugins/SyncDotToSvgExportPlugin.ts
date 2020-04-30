@@ -5,27 +5,39 @@ import defaultsDeep from "lodash.defaultsdeep";
 import { IArgdownRequest } from "..";
 import { checkResponseFields } from "../ArgdownPluginError";
 
-export interface ISyncDotToSvgExportSettings {
+export enum GraphvizEngine {
+  CIRCO = "circo",
+  DOT = "dot",
+  FDP = "fdp",
+  NEATO = "neato",
+  OSAGE = "osage",
+  TWOPI = "twopi"
+}
+
+export interface IVizJsSettings {
   removeProlog?: boolean;
+  engine?: GraphvizEngine;
+  nop?: number;
 }
 declare module "../index" {
   interface IArgdownRequest {
     /**
-     * Settings for the [[SyncDotToSvgExportPlugin]]
+     * Settings for any plugin using Viz.js, for example the [[DotToSvgExportPlugin]]
      */
-    svg?: ISyncDotToSvgExportSettings;
+    vizJs?: IVizJsSettings;
   }
-  interface IArgdownResponse {
+  export interface IArgdownResponse {
     /**
-     * SVG data
+     * Exported svg
      *
-     * Provided by the [[SyncDotToSvgExportPlugin]]
+     * Provided by the [[DotToSvgExportPlugin]]
      */
     svg?: string;
   }
 }
-const defaultSettings: DefaultSettings<ISyncDotToSvgExportSettings> = {
-  removeProlog: true
+const defaultSettings: DefaultSettings<IVizJsSettings> = {
+  removeProlog: true,
+  engine: GraphvizEngine.DOT
 };
 /**
  * For most use cases, use the asynchronous version of this plugin in @argdown/node.
@@ -33,28 +45,31 @@ const defaultSettings: DefaultSettings<ISyncDotToSvgExportSettings> = {
  */
 export class SyncDotToSvgExportPlugin implements IArgdownPlugin {
   name = "SyncDotToSvgExportPlugin";
-  defaults: ISyncDotToSvgExportSettings;
-  constructor(config?: ISyncDotToSvgExportSettings) {
+  defaults: IVizJsSettings;
+  constructor(config?: IVizJsSettings) {
     this.defaults = defaultsDeep({}, config, defaultSettings);
   }
   getSettings(request: IArgdownRequest) {
-    if (isObject(request.svg)) {
-      return request.svg;
+    if (isObject(request.vizJs)) {
+      return request.vizJs;
     } else {
-      request.svg = {};
-      return request.svg;
+      request.vizJs = {};
+      return request.vizJs;
     }
   }
   prepare: IRequestHandler = request => {
     mergeDefaults(this.getSettings(request), this.defaults);
   };
   run: IRequestHandler = (request, response) => {
-    const settings = this.getSettings(request);
-
     const requiredResponseFields: string[] = ["dot"];
     checkResponseFields(this, response, requiredResponseFields);
-    response.svg = (vizRenderStringSync as any)(response.dot, "image/svg+xml");
-    if (settings.removeProlog) {
+    let { engine, nop, removeProlog } = this.getSettings(request);
+    response.svg = (vizRenderStringSync as any)(response.dot, {
+      engine,
+      nop,
+      format: "svg"
+    });
+    if (removeProlog) {
       response.svg = response.svg!.replace(
         /<\?[ ]*xml[\S ]+?\?>[\s]*<\![ ]*DOCTYPE[\S\s]+?\.dtd\"[ ]*>/,
         ""

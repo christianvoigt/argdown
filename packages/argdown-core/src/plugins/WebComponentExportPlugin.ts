@@ -1,5 +1,12 @@
 import { IRequestHandler, IArgdownPlugin } from "../IArgdownPlugin";
-import { mergeDefaults, DefaultSettings, ensure, isObject } from "../utils";
+import {
+  mergeDefaults,
+  DefaultSettings,
+  ensure,
+  isObject,
+  escapeHtml,
+  escapeCSSWidthOrHeight
+} from "../utils";
 import { checkResponseFields } from "../ArgdownPluginError";
 import { IArgdownRequest } from "..";
 import defaultsDeep from "lodash.defaultsdeep";
@@ -11,16 +18,16 @@ export interface IWebComponentExportSettings {
   width?: string;
   height?: string;
   initialView?: "map" | "source";
-  withoutZoom?:boolean;
-  withoutMaximize?:boolean;
-  withoutLogo?:boolean;
-  withoutHeader?:boolean;
+  withoutZoom?: boolean;
+  withoutMaximize?: boolean;
+  withoutLogo?: boolean;
+  withoutHeader?: boolean;
+  withoutFigure?: boolean;
   views?: {
     map?: boolean;
     source?: boolean;
   };
   useArgVu?: boolean;
-  createFigure?: boolean;
   figureCaption?: string;
   addWebComponentScript?: boolean;
   addGlobalStyles?: boolean;
@@ -28,7 +35,7 @@ export interface IWebComponentExportSettings {
   webComponentScriptUrl?: string;
   noModuleScriptUrl?: string;
   globalStylesUrl?: string;
-  webComponentPolyfill?: string;
+  webComponentPolyfillUrl?: string;
 }
 declare module "../index" {
   interface IArgdownRequest {
@@ -52,11 +59,17 @@ const defaultSettings: DefaultSettings<IWebComponentExportSettings> = {
     map: true,
     source: true
   }),
-  createFigure: true,
+  withoutFigure: false,
   useArgVu: false,
   addGlobalStyles: true,
   addWebComponentScript: true,
-  addWebComponentPolyfill: true
+  addWebComponentPolyfill: true,
+  globalStylesUrl:
+    "https://cdn.jsdelivr.net/npm/@argdown/web-components/dist/argdown-map.css",
+  webComponentScriptUrl:
+    "https://cdn.jsdelivr.net/npm/@argdown/web-components/dist/argdown-map.js",
+  webComponentPolyfillUrl:
+    "https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs/webcomponents-bundle.js"
 };
 /**
  * Generates the web component html that makes it possible to embed Argdown maps into html files.
@@ -102,46 +115,50 @@ export class WebComponentExportPlugin implements IArgdownPlugin {
         }</div>`
       : "";
     let style = "";
-    if(settings.width !==undefined){
-      style += `width: ${settings.width};`;
-    } 
-    if(settings.height !== undefined){
-      style += `height: ${settings.height};`;      
+    if (settings.width !== undefined) {
+      style += `width: ${escapeCSSWidthOrHeight(settings.width)};`;
     }
-    if(style !== ""){
+    if (settings.height !== undefined) {
+      style += `height: ${escapeCSSWidthOrHeight(settings.height)};`;
+    }
+    if (style !== "") {
       style = `style="${style}"`;
     }
     let withoutZoom = "";
-    if(settings.withoutZoom){
+    if (settings.withoutZoom) {
       withoutZoom = `without-zoom="true"`;
     }
     let withoutMaximize = "";
-    if(settings.withoutMaximize){
+    if (settings.withoutMaximize) {
       withoutMaximize = `without-maximize="true"`;
     }
     let withoutLogo = "";
-    if(settings.withoutLogo){
+    if (settings.withoutLogo) {
       withoutLogo = `without-logo="true"`;
     }
     let withoutHeader = "";
-    if(settings.withoutHeader){
+    if (settings.withoutHeader) {
       withoutHeader = `without-header="true"`;
     }
-    response.webComponent = `<argdown-map ${style} ${withoutZoom} ${withoutMaximize} ${withoutLogo} ${withoutHeader} initial-view="${settings.initialView}">${source}${map}</argdown-map>`;
-    if (settings?.createFigure) {
+    response.webComponent = `<argdown-map ${
+      settings.withoutFigure ? style : ""
+    } ${withoutZoom} ${withoutMaximize} ${withoutLogo} ${withoutHeader} initial-view="${
+      settings.initialView
+    }">${source}${map}</argdown-map>`;
+    if (!settings?.withoutFigure) {
       let figureCaption =
         settings.figureCaption || this.createFigureCaption(request);
       if (figureCaption && figureCaption !== "") {
-        figureCaption = `<figcaption>${figureCaption}</figcaption>`;
+        figureCaption = `<figcaption>${escapeHtml(figureCaption)}</figcaption>`;
       }
-      response.webComponent = `<figure role="group" class="argdown-figure">${response.webComponent}${figureCaption}</figure>`;
+      response.webComponent = `<figure ${style} role="group" class="argdown-figure">${response.webComponent}${figureCaption}</figure>`;
     }
     if (settings.addWebComponentScript) {
       response.webComponent = `<script src="${settings.noModuleScriptUrl}" type="module"></script>
             <script type="text/javascript" nomodule src="${settings.noModuleScriptUrl}"></script>${response.webComponent}`;
     }
     if (settings.addWebComponentPolyfill) {
-      response.webComponent = `<script src="${settings.webComponentPolyfill}" type="module"></script>${response.webComponent}`;
+      response.webComponent = `<script src="${settings.webComponentPolyfillUrl}" type="module"></script>${response.webComponent}`;
     }
     if (settings.addGlobalStyles) {
       response.webComponent = `<link rel="stylesheet" type="text/css" href="${settings.globalStylesUrl}">${response.webComponent}`;
