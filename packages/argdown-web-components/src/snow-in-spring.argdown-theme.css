@@ -15,58 +15,57 @@ argdown-map code.language-argdown {
   font-feature-settings: "liga", "dlig";
   font-size: 0.8rem;
 }
-code.language-argdown .token.comment,
-code.language-argdown .token.cdata.frontmatter,
-code.language-argdown .token.frontmatter .token.punctuation,
-code.language-argdown .token.cdata.hashtag,
-code.language-argdown .token.cdata.data {
-  color: #9b9b85;
+code.language-argdown .hljs-section {
+  color: #6d6d5d;
+  font-weight: bold;
 }
-code.language-argdown .token.operator.support {
+code.language-argdown .hljs-meta {
+  color: #9b9b85;
+  font-weight: normal;
+}
+code.language-argdown .hljs-comment,
+code.language-argdown .hljs-quote {
+  color: #998;
+  font-style: italic;
+}
+code.language-argdown .hljs-string,
+code.language-argdown .hljs-tag {
+  color: #3b95bc;
+  font-weight: normal;
+}
+code.language-argdown .hljs-link {
+  color: #134c66;
+  font-weight: normal;
+}
+code.language-argdown .hljs-support {
   color: #4ea429;
   font-weight: bold;
 }
-code.language-argdown .token.operator.attack,
-code.language-argdown .token.operator.contradiction {
+code.language-argdown .hljs-attack {
   color: #c24545;
   font-weight: bold;
 }
-code.language-argdown .token.operator.undercut {
+code.language-argdown .hljs-undercut {
   color: #c227a7;
   font-weight: bold;
 }
-code.language-argdown .token.class-name.statement,
-code.language-argdown .token.class-name.statement .punctuation {
-  color: #3b95bc;
+code.language-argdown .hljs-contradiction {
+  color: #c24545;
   font-weight: bold;
 }
-code.language-argdown .token.class-name.argument,
-code.language-argdown .token.class-name.argument .punctuation,
-code.language-argdown .token.inference.function,
-code.language-argdown .token.inference.function .punctuation,
-code.language-argdown .token.punctuation.argument-statement,
-code.language-argdown .token.punctuation.argument-statement .punctuation {
+code.language-argdown .hljs-statement-title {
+  font-weight: bold;
+  color: #3b95bc;
+}
+code.language-argdown .hljs-argument-title {
+  font-weight: bold;
+  color: #134c66;
+}
+code.language-argdown .hljs-inference {
+  font-weight: bold;
+  color: #134c66;
+}
+code.language-argdown .hljs-argument-statement-nr {
   color: #134c66;
   font-weight: bold;
-}
-code.language-argdown .token.punctuation.argument-statement,
-code.language-argdown .token.punctuation.argument-statement .punctuation {
-  font-weight: normal;
-}
-code.language-argdown .token.inference .punctuation {
-  font-weight: bold;
-}
-code.language-argdown .token.inference.function,
-code.language-argdown .token.inference.function .token.data.cdata {
-  font-weight: normal;
-}
-code.language-argdown .token.important.title,
-code.language-argdown .token.important.title .punctuation {
-  color: #8b8b7a;
-}
-code.language-argdown .token.punctuation {
-  color: #6d6d5d;
-}
-code.language-argdown .token.url {
-  color: #3b95bc;
 }

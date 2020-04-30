@@ -1,13 +1,16 @@
-argdown-map:not(:defined)[initial-view="map"] [slot="source"] {
+argdown-map:not(:defined) [slot="source"] {
   display: none;
 }
-argdown-map:not(:defined)[initial-view="map"] [slot="map"] {
+argdown-map:not(:defined) [slot="map"] {
   display: flex;
   justify-content: center;
   margin-top: 40px;
 }
 argdown-map:not(:defined)[initial-view="source"] [slot="map"] {
   display: none;
+}
+argdown-map:not(:defined)[initial-view="source"] [slot="source"] {
+  display: block;
 }
 argdown-map:not(:defined) {
   display: block;
@@ -35,6 +38,7 @@ argdown-map pre {
   border: 1px solid #dedede;
   overflow: hidden;
   border-radius: 6px;
+  margin: 2rem 0;
 }
 .argdown-figure figcaption {
   border-top: 1px solid #dedede;
@@ -44,4 +48,5 @@ argdown-map pre {
 }
 .argdown-figure argdown-map {
   border: 0;
+  height: 100%;
 }
