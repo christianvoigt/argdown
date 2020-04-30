@@ -84,7 +84,7 @@ export default {
 
 <style lang="scss" scoped>
 .dagre-d3-output {
-  @import "../../node_modules/@argdown/map-views/dist/src/argdown-dagre.css";
+  @import "../../node_modules/@argdown/map-views/dist/argdown-dagre.css";
   .content {
     flex: 1;
     overflow: auto;

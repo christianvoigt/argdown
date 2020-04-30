@@ -2,7 +2,10 @@
   <div id="app" v-bind:class="viewStateClass">
     <div
       id="top-slot"
-      v-if="$store.state.viewState != 'input-maximized' && $store.state.viewState != 'output-maximized' "
+      v-if="
+        $store.state.viewState != 'input-maximized' &&
+          $store.state.viewState != 'output-maximized'
+      "
     >
       <app-header></app-header>
       <app-navigation></app-navigation>
@@ -14,21 +17,29 @@
           <button
             v-if="$store.state.viewState != 'input-maximized'"
             class="button"
-            v-on:click="$store.commit('setViewState','input-maximized')"
+            v-on:click="$store.commit('setViewState', 'input-maximized')"
           >
             <img class="expand icon" src="./assets/expand.svg" alt="Expand" />
           </button>
           <button
             v-if="$store.state.viewState == 'input-maximized'"
             class="button"
-            v-on:click="$store.commit('setViewState','default')"
+            v-on:click="$store.commit('setViewState', 'default')"
           >
-            <img class="expand icon" src="./assets/compress.svg" alt="Compress" />
+            <img
+              class="expand icon"
+              src="./assets/compress.svg"
+              alt="Compress"
+            />
           </button>
         </div>
         <argdown-input
           v-bind:value="$store.state.argdownInput"
-          v-on:change="value => { $store.commit('setArgdownInput',value)}"
+          v-on:change="
+            value => {
+              $store.commit('setArgdownInput', value);
+            }
+          "
         ></argdown-input>
       </div>
       <div id="right-slot" v-if="$store.state.viewState != 'input-maximized'">
@@ -40,16 +51,20 @@
             <button
               v-if="$store.state.viewState != 'output-maximized'"
               class="button"
-              v-on:click="$store.commit('setViewState','output-maximized')"
+              v-on:click="$store.commit('setViewState', 'output-maximized')"
             >
               <img class="expand icon" src="./assets/expand.svg" alt="Expand" />
             </button>
             <button
               v-if="$store.state.viewState == 'output-maximized'"
               class="button"
-              v-on:click="$store.commit('setViewState','default')"
+              v-on:click="$store.commit('setViewState', 'default')"
             >
-              <img class="expand icon" src="./assets/compress.svg" alt="Compress" />
+              <img
+                class="expand icon"
+                src="./assets/compress.svg"
+                alt="Compress"
+              />
             </button>
             <!-- <button class="button" v-on:click="$store.commit('toggleSettings')">
             <img class="toggle-settings icon" src="./assets/cog.svg" alt="Settings">
@@ -72,7 +87,7 @@ import AppNavigation from "@/components/AppNavigation";
 // import Settings from "@/components/Settings";
 import InputNavigation from "@/components/InputNavigation";
 
-import "../node_modules/@argdown/core/dist/src/plugins/argdown.css";
+import "../node_modules/@argdown/core/dist/plugins/argdown.css";
 
 export default {
   name: "app",
