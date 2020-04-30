@@ -1,5 +1,4 @@
-// We have to use a local file and let babel ignore it, until pdfkit is ported to ES6
-var PDFDocument = require("../pdfkit.js");
+import * as PDFDocument from "pdfkit";
 var fs = require("fs");
 let path = require("path");
 let mkdirp = require("mkdirp");
@@ -102,7 +101,7 @@ export class SvgToPdfExportPlugin implements IAsyncArgdownPlugin {
     const filePath = absoluteOutputDir + "/" + fileName + ".pdf";
     await mkdirp(absoluteOutputDir);
     const doc = new PDFDocument({
-      size: [settings.width, settings.height],
+      size: [settings.width || 0, settings.height || 0],
       ...settings.pdf
     });
     SVGtoPDF(doc, response.svg, settings.padding, settings.padding, {

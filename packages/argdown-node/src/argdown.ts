@@ -17,8 +17,8 @@ import {
   GroupPlugin,
   RegroupPlugin,
   ClosedGroupPlugin,
-  HighlightSourcePlugin,
-  WebComponentExportPlugin
+  WebComponentExportPlugin,
+  HighlightSourcePlugin
 } from "@argdown/core";
 import { SaveAsFilePlugin } from "./plugins/SaveAsFilePlugin";
 import { DotToSvgExportPlugin } from "./plugins/DotToSvgExportPlugin";

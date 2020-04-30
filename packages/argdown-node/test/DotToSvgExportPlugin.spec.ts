@@ -23,7 +23,7 @@ describe("DotToSvgExportPlugin", () => {
       logLevel: "error"
     };
     const response = await argdown.runAsync(request);
-    // console.log(response.dot);
+    console.log(response.dot);
     expect(response.svg).to.exist;
   });
 });

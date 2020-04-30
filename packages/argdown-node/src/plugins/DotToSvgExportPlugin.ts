@@ -4,43 +4,15 @@ import * as _ from "lodash";
 import {
   IRequestHandler,
   checkResponseFields,
-  IArgdownRequest
+  IArgdownRequest,
+  IVizJsSettings,
+  GraphvizEngine
 } from "@argdown/core";
 import {
   IAsyncArgdownPlugin,
   IAsyncRequestHandler
 } from "../IAsyncArgdownPlugin";
 
-export enum GraphvizEngine {
-  CIRCO = "circo",
-  DOT = "dot",
-  FDP = "fdp",
-  NEATO = "neato",
-  OSAGE = "osage",
-  TWOPI = "twopi"
-}
-
-export interface IVizJsSettings {
-  removeProlog?: boolean;
-  engine?: GraphvizEngine;
-  nop?: number;
-}
-declare module "@argdown/core" {
-  interface IArgdownRequest {
-    /**
-     * Settings for any plugin using Viz.js, for example the [[DotToSvgExportPlugin]]
-     */
-    vizJs?: IVizJsSettings;
-  }
-  export interface IArgdownResponse {
-    /**
-     * Exported svg
-     *
-     * Provided by the [[DotToSvgExportPlugin]]
-     */
-    svg?: string;
-  }
-}
 const viz = new Viz({ Module, render });
 export class DotToSvgExportPlugin implements IAsyncArgdownPlugin {
   name = "DotToSvgExportPlugin";
@@ -75,7 +47,7 @@ export class DotToSvgExportPlugin implements IAsyncArgdownPlugin {
     response.svg = viz.renderString(response.dot, {
       engine,
       nop,
-      format: "image/svg+xml"
+      format: "svg"
     });
     if (removeProlog) {
       response.svg = this.removeProlog(response.svg!);
