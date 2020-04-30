@@ -3,10 +3,11 @@
 /*jshint esversion: 6 */
 /*jslint node: true */
 
-import * as yargs from "yargs";
+import yargs = require("yargs");
 require("pkginfo")(module, "version");
 
 yargs
+  .showHelpOnFail(true)
   .options({
     watch: {
       alias: "w",
@@ -29,6 +30,7 @@ yargs
       describe: "Export data to stdout"
     }
   })
-  .commandDir("commands")
+  .commandDir("./commands")
+  .demandCommand()
   .help()
   .version(module.exports.version).argv;

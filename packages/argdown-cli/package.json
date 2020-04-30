@@ -10,12 +10,12 @@
   "engines": {
     "node": ">= 8.0.0"
   },
-  "version": "1.4.0",
+  "version": "1.4.1",
   "license": "MIT",
-  "main": "dist/src/cli.js",
+  "main": "dist/cli.js",
   "dependencies": {
     "@argdown/core": "^1.4.0",
-    "@argdown/markdown-it-plugin": "^1.4.0",
+    "@argdown/markdown-it-plugin": "^1.4.1",
     "@argdown/node": "^1.4.0",
     "@types/markdown-it": "^10.0.1",
     "@types/yargs": "^15.0.4",
@@ -72,8 +72,8 @@
   },
   "nyc": {
     "include": [
-      "dist/src/**/*.js",
-      "dist/src/**/*.jsx"
+      "dist/**/*.js",
+      "dist/**/*.jsx"
     ],
     "extension": [
       ".js",
