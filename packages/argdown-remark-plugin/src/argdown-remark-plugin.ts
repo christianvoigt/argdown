@@ -74,7 +74,7 @@ export const remarkArgdownPlugin = (
         includeHtml += `<link rel="stylesheet" type="text/css" href="${pluginSettings.globalStylesUrl}">`;
       }
       if (pluginSettings.addWebComponentScript) {
-        includeHtml += `<script src="${pluginSettings.noModuleScriptUrl}"></script>`;
+        includeHtml += `<script src="${pluginSettings.webComponentScriptUrl}"></script>`;
       }
       if (pluginSettings.addWebComponentPolyfill) {
         includeHtml += `<script src="${pluginSettings.webComponentPolyfillUrl}" type="module"></script>`;
