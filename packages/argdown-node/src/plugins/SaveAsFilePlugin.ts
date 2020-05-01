@@ -1,7 +1,10 @@
 let fs = require("fs");
 let path = require("path");
 let mkdirp = require("mkdirp");
-import * as _ from "lodash";
+import defaultsDeep from "lodash.defaultsdeep";
+import isString from "lodash.isstring";
+import isEmpty from "lodash.isempty";
+import isFunction from "lodash.isfunction";
 import {
   IArgdownRequest,
   IArgdownResponse,
@@ -36,7 +39,7 @@ export class SaveAsFilePlugin implements IAsyncArgdownPlugin {
   name = "SaveAsFilePlugin";
   defaults: ISaveAsSettings;
   constructor(config: ISaveAsSettings) {
-    this.defaults = _.defaultsDeep({}, config, {
+    this.defaults = defaultsDeep({}, config, {
       dataKey: "test",
       extension: ".txt",
       outputDir: "./output"
@@ -47,7 +50,7 @@ export class SaveAsFilePlugin implements IAsyncArgdownPlugin {
   // Instead we have to add it each time the getSettings method is called to avoid keeping request specific state
   getSettings(request: IArgdownRequest): ISaveAsSettings {
     let settings = request.saveAs || {};
-    settings = _.defaultsDeep({}, settings, this.defaults);
+    settings = defaultsDeep({}, settings, this.defaults);
     return settings;
   }
   runAsync: IAsyncRequestHandler = async (request, response, logger) => {
@@ -69,14 +72,14 @@ export class SaveAsFilePlugin implements IAsyncArgdownPlugin {
         "No content to save."
       );
     }
-    if (!_.isString(fileContent)) {
+    if (!isString(fileContent)) {
       throw new ArgdownPluginError(
         this.name,
         "invalid-content",
         "Content is not a string."
       );
     }
-    if (_.isEmpty(fileContent)) {
+    if (isEmpty(fileContent)) {
       throw new ArgdownPluginError(
         this.name,
         "missing-content",
@@ -96,9 +99,9 @@ export class SaveAsFilePlugin implements IAsyncArgdownPlugin {
     }
     if (request.outputPath) {
       fileName = this.getFileName(request.outputPath);
-    } else if (_.isFunction(settings.fileName)) {
+    } else if (isFunction(settings.fileName)) {
       fileName = settings.fileName.call(this, settings, request, response);
-    } else if (_.isString(settings.fileName)) {
+    } else if (isString(settings.fileName)) {
       fileName = settings.fileName;
     } else if (request.inputPath) {
       fileName = this.getFileName(request.inputPath);

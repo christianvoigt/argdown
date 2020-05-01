@@ -1,7 +1,8 @@
 let fs = require("fs");
 let path = require("path");
 let mkdirp = require("mkdirp");
-import * as _ from "lodash";
+import defaultsDeep from "lodash.defaultsdeep";
+
 import { IArgdownRequest, IRequestHandler } from "@argdown/core";
 import {
   IAsyncArgdownPlugin,
@@ -23,7 +24,7 @@ export class CopyDefaultCssPlugin implements IAsyncArgdownPlugin {
   name = "CopyDefaultCssPlugin";
   defaults?: ICopyDefaultCssSettings;
   constructor(config?: ICopyDefaultCssSettings) {
-    this.defaults = _.defaultsDeep({}, config, {
+    this.defaults = defaultsDeep({}, config, {
       outputDir: "./html"
     });
   }
@@ -35,7 +36,7 @@ export class CopyDefaultCssPlugin implements IAsyncArgdownPlugin {
   };
   prepare: IRequestHandler = request => {
     const settings = this.getSettings(request);
-    _.defaultsDeep(settings, this.defaults);
+    defaultsDeep(settings, this.defaults);
     if (request.html && request.html.outputDir) {
       settings.outputDir = request.html.outputDir;
     } else if (request.saveAs && request.saveAs.outputDir) {

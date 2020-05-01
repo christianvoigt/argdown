@@ -15,11 +15,11 @@ import {
   ArgdownPluginError
 } from "@argdown/core";
 import { isAsyncPlugin } from "./IAsyncArgdownPlugin";
-import * as path from "path";
-import * as chokidar from "chokidar";
-import * as glob from "glob";
+import path from "path";
+import chokidar from "chokidar";
+import glob from "glob";
 import { promisify } from "util";
-import * as importFresh from "import-fresh";
+import importFresh from "import-fresh";
 import { readFile } from "fs";
 
 const readFileAsync = promisify(readFile);

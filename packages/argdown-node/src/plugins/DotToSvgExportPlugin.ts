@@ -1,6 +1,5 @@
-import * as Viz from "viz.js";
+import Viz from "viz.js";
 import { Module, render } from "viz.js/full.render";
-import * as _ from "lodash";
 import {
   IRequestHandler,
   checkResponseFields,
@@ -12,20 +11,21 @@ import {
   IAsyncArgdownPlugin,
   IAsyncRequestHandler
 } from "../IAsyncArgdownPlugin";
+import defaultsDeep from "lodash.defaultsdeep";
 
 const viz = new Viz({ Module, render });
 export class DotToSvgExportPlugin implements IAsyncArgdownPlugin {
   name = "DotToSvgExportPlugin";
   defaults: IVizJsSettings;
   constructor(config?: IVizJsSettings) {
-    this.defaults = _.defaultsDeep({}, config, {
+    this.defaults = defaultsDeep({}, config, {
       removeProlog: true,
       engine: GraphvizEngine.DOT
     });
   }
   prepare: IRequestHandler = (request: IArgdownRequest) => {
     const settings = this.getSettings(request);
-    _.defaultsDeep(settings, this.defaults);
+    defaultsDeep(settings, this.defaults);
   };
   getSettings = (request: IArgdownRequest): IVizJsSettings => {
     request.vizJs = request.vizJs || {};
