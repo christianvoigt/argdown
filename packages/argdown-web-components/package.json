@@ -1,25 +1,13 @@
 {
   "name": "@argdown/web-components",
-  "version": "1.4.1",
+  "version": "1.4.3",
   "description": "Components that help to embed Argdown in the browser",
   "module": "dist-esm/argdown-map.js",
-  "browser": "dist/argdown-map.js",
+  "default": "dist/argdown-map.js",
   "source": "src/argdown-map.ts",
   "targets": {
-    "browser": {
-      "context": "browser",
+    "default": {
       "includeNodeModules": true,
-      "isLibrary": true,
-      "outputFormat": "esmodule",
-      "engines": {
-        "browsers": [
-          "last 1 Chrome version"
-        ]
-      }
-    },
-    "module": {
-      "context": "browser",
-      "includeNodeModules": false,
       "isLibrary": true,
       "engines": {
         "browsers": [
@@ -31,7 +19,8 @@
   "scripts": {
     "start": "parcel src/index.html --open",
     "build": "yarn run clean && parcel build src/argdown-map.ts",
-    "clean": "rimraf \"dist/*\" && rimraf \"dist-esm/*\""
+    "clean": "rimraf \"dist/*\" && rimraf \"dist-esm/*\"",
+    "prepublishOnly": "yarn run build"
   },
   "repository": {
     "type": "git",
