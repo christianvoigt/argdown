@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@argdown/core": "^1.4.0",
-    "@argdown/node": "^1.4.0",
+    "@argdown/node": "^1.4.1",
     "@types/node": "^13.11.0",
     "vscode-languageserver": "^6.1.1",
     "vscode-languageserver-textdocument": "^1.0.1",
