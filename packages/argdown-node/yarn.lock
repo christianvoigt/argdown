@@ -7,13 +7,13 @@
   resolved "https://registry.yarnpkg.com/@aduh95/viz.js/-/viz.js-3.0.0-beta.8.tgz#e2b286d4c8aa34391f76909dd4691c555ce2e1d3"
   integrity sha512-zM3hfA8lUlUySfXkYbw4SrR/SxApZbbOY0SeS3l3wC2HCJkVgNa3c52u+cAqzIjMjCtTIATFdcLV/0zMHxPqtw==
 
-"@argdown/core@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@argdown/core/-/core-1.4.0.tgz#65d4be28fa646ea7f4198908e57cf064146f6856"
-  integrity sha512-6SAa392Ux6Sy9QI7SaCloKSaax1WGncVYFnl0cd3hQNIHjHmEjtLKWtobePcF5IxhhTyO4t3Q66U0RKgFgceBA==
+"@argdown/core@^1.4.5":
+  version "1.4.5"
+  resolved "https://registry.yarnpkg.com/@argdown/core/-/core-1.4.5.tgz#939fbbd1ef1f2ca1f2957b4e204849b9e3f98d1b"
+  integrity sha512-rdjfWbMWX1ReSR9rHuR6XjSPigFKFXgiS2aDeF3kLlf0cA9B0QwmMF2Il//AecK/3bgs0F+NgaWsPQsWwXuR1Q==
   dependencies:
     "@aduh95/viz.js" "^3.0.0-beta.8"
-    "@argdown/highlightjs" "^1.4.0"
+    "@argdown/highlightjs" "^1.4.5"
     "@types/chai" "^4.2.11"
     "@types/js-yaml" "^3.12.3"
     "@types/lodash.clonedeep" "^4.5.6"
@@ -41,10 +41,10 @@
     string-pixel-width "^1.10.0"
     xmlbuilder "^15.1.0"
 
-"@argdown/highlightjs@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@argdown/highlightjs/-/highlightjs-1.4.0.tgz#caf2384d949db867f3f177f38bb3d93f5f5a05b9"
-  integrity sha512-tNKSJaUo658S4EZiun28dKuQkeR8Xg8VElImim5nLMsD/NokG3YkzS1rYJgZAgFnAhZABcQbWYk3UwAyY1jAnw==
+"@argdown/highlightjs@^1.4.5":
+  version "1.4.5"
+  resolved "https://registry.yarnpkg.com/@argdown/highlightjs/-/highlightjs-1.4.5.tgz#e8fc39e95a5534b25caaa983335448788ea2ce32"
+  integrity sha512-jmEk9cwR8p3fzMVAYR5EEPQG5UAF55YLHsnVTisWoE5wz9gFXYEh9DTf0Y61bxYMaEygZuwiJxxJ014nEUB+rA==
 
 "@babel/code-frame@^7.8.3":
   version "7.8.3"
