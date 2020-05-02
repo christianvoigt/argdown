@@ -33,7 +33,6 @@ export interface IWebComponentExportSettings {
   addGlobalStyles?: boolean;
   addWebComponentPolyfill?: boolean;
   webComponentScriptUrl?: string;
-  noModuleScriptUrl?: string;
   globalStylesUrl?: string;
   webComponentPolyfillUrl?: string;
 }
@@ -154,8 +153,7 @@ export class WebComponentExportPlugin implements IArgdownPlugin {
       response.webComponent = `<figure ${style} role="group" class="argdown-figure">${response.webComponent}${figureCaption}</figure>`;
     }
     if (settings.addWebComponentScript) {
-      response.webComponent = `<script src="${settings.noModuleScriptUrl}" type="module"></script>
-            <script type="text/javascript" nomodule src="${settings.noModuleScriptUrl}"></script>${response.webComponent}`;
+      response.webComponent = `<script type="text/javascript" src="${settings.webComponentScriptUrl}"></script>${response.webComponent}`;
     }
     if (settings.addWebComponentPolyfill) {
       response.webComponent = `<script src="${settings.webComponentPolyfillUrl}" type="module"></script>${response.webComponent}`;
