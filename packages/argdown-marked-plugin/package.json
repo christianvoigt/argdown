@@ -1,6 +1,6 @@
 {
   "name": "@argdown/marked-plugin",
-  "version": "1.4.1",
+  "version": "1.4.5",
   "description": "Turns Argdown code fences into svg argument maps",
   "main": "dist/argdown-marked-plugin.js",
   "scripts": {
@@ -36,10 +36,10 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@argdown/web-components": "^1.4.5",
     "@types/chai": "^4.2.11",
     "@types/marked": "^0.7.4",
     "@types/mocha": "^7.0.2",
-    "@argdown/web-components": "^1.4.0",
     "chai": "^4.2.0",
     "marked": "^0.8.2",
     "mocha": "^7.1.1",
@@ -51,7 +51,7 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "@argdown/core": "^1.4.0",
+    "@argdown/core": "^1.4.5",
     "lodash.defaultsdeep": "^4.6.1"
   }
 }
