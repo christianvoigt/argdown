@@ -2,6 +2,8 @@
 
 ![Argdown logo](./argdown-arrow.png?raw=true "Argdown logo")
 
+**v1.4.7 released! Check out [the new features](https://argdown.org/changes/)**
+
 [Argdown](https://christianvoigt.github.io/argdown) is a simple syntax for analyzing complex argumentation.
 
 - Listing pros & cons in Argdown is as simple as writing a twitter message. You don't have to learn anything new, except a few simple rules that will feel very natural.

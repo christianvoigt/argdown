@@ -1,6 +1,6 @@
 var extendMarkdown = require("./extendMarkdown");
 var domain = "https://argdown.org";
-domain = "http://localhost:8080";
+// domain = "http://localhost:8080";
 
 module.exports = {
   title: "Argdown",
@@ -86,7 +86,7 @@ module.exports = {
       "/changes/": [
         {
           title: "Changes",
-          children: [["", "2020"], ["2019", "2019"][("2018", "2018")]]
+          children: [["", "2020"], "2019", "2018"]
         }
       ],
       "/guide/": [
