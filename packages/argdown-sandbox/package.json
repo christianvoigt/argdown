@@ -1,6 +1,6 @@
 {
   "name": "@argdown/sandbox",
-  "version": "1.4.0",
+  "version": "1.4.7",
   "private": true,
   "description": "An Argdown editor that runs in the browser",
   "author": "Christian Voigt <1pxsolidblack@googlemail.com>",
@@ -11,12 +11,11 @@
     "copy-examples": "rimraf \"./public/examples/*.argdown\" && copyfiles -f \"../../examples/*.argdown\" ./public/examples"
   },
   "dependencies": {
-    "@argdown/codemirror-mode": "^1.4.0",
-    "@argdown/core": "^1.4.0",
-    "@argdown/map-views": "^1.4.0",
+    "@argdown/codemirror-mode": "^1.4.7",
+    "@argdown/core": "^1.4.7",
+    "@argdown/map-views": "^1.4.7",
     "axios": "^0.18.1",
     "file-saver": "^2.0.2",
-    "lodash": "^4.17.15",
     "vue": "^2.6.10",
     "vue-async-computed": "^3.7.0",
     "vue-codemirror": "^4.0.6",
@@ -41,12 +40,20 @@
     "raw-loader": "^3.1.0",
     "rimraf": "^3.0.0",
     "sass-loader": "^8.0.0",
-    "vue-template-compiler": "^2.6.10"
+    "vue-template-compiler": "^2.6.10",
+    "webpack-bundle-analyzer": "^3.7.0"
   },
   "browserslist": [
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
+  ],
+  "sideEffects": [
+    "./src/main.js",
+    "./src/store.js",
+    "*.css",
+    "*.scss",
+    "*.vue"
   ],
   "keywords": [
     "argumentation",
