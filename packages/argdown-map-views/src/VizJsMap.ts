@@ -1,6 +1,8 @@
 import Viz from "viz.js";
+import { select } from "d3-selection";
+
 // import { Module, render } from "viz.js/full.render";
-import * as d3 from "d3";
+// import * as d3 from "d3";
 import { ZoomManager, OnZoomChangedHandler } from "./ZoomManager";
 import { CanSelectNode, OnSelectionChangedHandler } from "./CanSelectNode";
 import { mergeDefaults, isObject } from "@argdown/core";
@@ -62,7 +64,7 @@ export class VizJsMap implements CanSelectNode {
         );
       }
       this.svgContainer.innerHTML = svgString;
-      const svg = d3.select(this.svgContainer).select<SVGSVGElement>("svg");
+      const svg = select(this.svgContainer).select<SVGSVGElement>("svg");
       svg.attr("class", "map-svg");
       svg.attr("width", "100%");
       svg.attr("height", "100%");
@@ -105,8 +107,7 @@ export class VizJsMap implements CanSelectNode {
     return nodes.find(n => self.getArgdownId(n) === id);
   }
   getArgdownId(node: SVGGraphicsElement): string {
-    const title = d3
-      .select(node)
+    const title = select(node)
       .select<SVGTitleElement>("title")
       .node();
     if (title) {
