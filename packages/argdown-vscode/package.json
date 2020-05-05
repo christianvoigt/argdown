@@ -5,7 +5,7 @@
   "icon": "media/argdown-mark-blue-256x256.png",
   "author": "Christian Voigt",
   "license": "MIT",
-  "version": "1.4.0",
+  "version": "1.4.7",
   "publisher": "christianvoigt",
   "homepage": "https://argdown.org",
   "repository": {
@@ -16,7 +16,7 @@
     "url": "https://github.com/christianvoigt/argdown/issues"
   },
   "engines": {
-    "vscode": "^1.37.0"
+    "vscode": "^1.43.0"
   },
   "categories": [
     "Programming Languages",
@@ -504,22 +504,24 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run build",
-    "build": "npm run build-extension && npm run build-preview && npm run copy-changelog",
-    "watch": "webpack --config extension.webpack.config.js --mode development --watch",
-    "build-extension": "webpack --config extension.webpack.config.js --mode production",
-    "build-preview": "webpack --config preview.webpack.config.js --mode production",
+    "build": "npm run build-extension-webpack && npm run build-preview && npm run copy-changelog",
+    "watch": "tsc -w -p ./",
+    "build-extension-tsc": "npm run clean && tsc -p ./",
+    "build-extension-webpack": "npm run clean && webpack --config extension.webpack.config.js --mode development",
+    "build-preview": "webpack --config preview.webpack.config.js --mode development",
     "dev-build": "npm run dev-build-extension && npm run dev-build-preview && npm run copy-changelog",
     "dev-build-extension": "tsc -p ./",
+    "clean": "rimraf \"dist/*\"",
     "dev-build-preview": "webpack --config preview.webpack.config.js --mode development",
     "copy-changelog": "node ./copy-changelog.js"
   },
   "dependencies": {
-    "@argdown/core": "^1.4.0",
-    "@argdown/language-server": "^1.4.0",
-    "@argdown/map-views": "^1.4.0",
-    "@argdown/web-components": "^1.4.0",
-    "@argdown/markdown-it-plugin": "^1.4.0",
-    "@argdown/node": "^1.4.0",
+    "@argdown/core": "^1.4.7",
+    "@argdown/language-server": "^1.4.7",
+    "@argdown/map-views": "^1.4.7",
+    "@argdown/markdown-it-plugin": "^1.4.7",
+    "@argdown/node": "^1.4.7",
+    "@argdown/web-components": "^1.4.7",
     "d3": "^5.9.1",
     "dagre-d3": "^0.6.3",
     "lodash.defaultsdeep": "^4.6.1",
@@ -534,7 +536,13 @@
     "@types/node": "^13.11.0",
     "@types/vscode": "^1.43.0",
     "@types/webpack": "^4.41.12",
+    "css-loader": "^3.5.3",
     "raw-loader": "^4.0.1",
+    "rimraf": "^3.0.2",
+    "string-replace-webpack-plugin": "^0.1.3",
+    "style-loader": "^1.2.1",
+    "terser-webpack-plugin": "^3.0.0",
+    "transform-loader": "^0.2.4",
     "ts-loader": "^7.0.0",
     "typescript": "^3.8.3",
     "webpack": "^4.43.0",

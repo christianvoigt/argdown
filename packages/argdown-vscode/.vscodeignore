@@ -2,6 +2,12 @@
 typings/**
 out/test/**
 dist/test/**
+node_modules/**
+# Include files from the following packages!
+!node_modules/@argdown/language-server/package.json
+!node_modules/@argdown/language-server/dist/**
+!node_modules/@argdown/web-components/dist/argdown-map.js
+!node_modules/@argdown/web-components/dist/argdown-map.css
 test/**
 src/**
 **/*.map
