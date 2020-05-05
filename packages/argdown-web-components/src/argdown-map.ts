@@ -29,8 +29,17 @@ const ArgdownMap = function(
   const [zoomMessage, setZoomMessage] = useState("");
   const initialHeight = useRef(null);
   const removeZoomTimeout: any = useRef(null);
-  const hasMap = el.querySelector<HTMLElement>(`[slot="map"]`) !== null;
-  const hasSource = el.querySelector<HTMLElement>(`[slot="source"]`) !== null;
+  const [hasMap, setHasMap] = useState(
+    el.querySelector<HTMLElement>(`[slot="map"]`) !== null
+  );
+  const [hasSource, setHasSource] = useState(
+    el.querySelector<HTMLElement>(`[slot="source"]`) !== null
+  );
+
+  const onSlotChange = () => {
+    setHasMap(el.querySelector<HTMLElement>(`[slot="map"]`) !== null);
+    setHasSource(el.querySelector<HTMLElement>(`[slot="source"]`) !== null);
+  };
 
   useEffect(() => {
     if (activeView != "map") {
@@ -221,11 +230,17 @@ const ArgdownMap = function(
               @mouseover=${onMouseOverMap}
               class="map-view${zoomIsActive ? " zooming" : ""}"
             >
-              <slot name="map" class="map-slot"></slot>
+              <slot
+                name="map"
+                class="map-slot"
+                @slotchange="${onSlotChange}"
+              ></slot>
             </div>
           `
         : html`
-            <div class="source-view"><slot name="source"></slot></div>
+            <div class="source-view">
+              <slot name="source" @slotchange="${onSlotChange}"></slot>
+            </div>
           `}
     </div>
   `;
