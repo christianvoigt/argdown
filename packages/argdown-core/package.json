@@ -9,14 +9,17 @@
     "Markdown",
     "Chevrotain"
   ],
-  "version": "1.4.5",
+  "version": "1.4.6",
   "license": "MIT",
   "main": "./dist/index.js",
   "module": "./dist-esm/index.js",
   "types": "./dist/index.d.ts",
+  "files": [
+    "./dist/"
+  ],
   "dependencies": {
     "@aduh95/viz.js": "^3.0.0-beta.8",
-    "@argdown/highlightjs": "^1.4.5",
+    "@argdown/highlightjs": "^1.4.6",
     "@types/chai": "^4.2.11",
     "@types/js-yaml": "^3.12.3",
     "@types/lodash.clonedeep": "^4.5.6",
@@ -26,7 +29,6 @@
     "@types/lodash.partialright": "^4.2.6",
     "@types/lodash.union": "^4.6.6",
     "@types/node": "^13.11.0",
-    "@types/prismjs": "^1.16.0",
     "@yarnpkg/pnpify": "^2.0.0-rc.21",
     "chevrotain": "^6.5.0",
     "eventemitter3": "^4.0.0",
@@ -39,7 +41,6 @@
     "lodash.partialright": "^4.2.1",
     "lodash.union": "^4.6.0",
     "mdurl": "^1.0.1",
-    "prismjs": "1.19.0",
     "punycode": "^2.1.1",
     "string-pixel-width": "^1.10.0",
     "xmlbuilder": "^15.1.0"

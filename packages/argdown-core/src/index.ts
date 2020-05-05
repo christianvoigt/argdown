@@ -155,7 +155,9 @@ export * from "./plugins/DotExportPlugin";
 export * from "./plugins/GraphMLExportPlugin";
 export * from "./plugins/HighlightSourcePlugin";
 export * from "./plugins/WebComponentExportPlugin";
-export * from "./plugins/SyncDotToSvgExportPlugin";
+// SyncDotToSvgExportPlugin has to be exported explicitely as it is not needed everywhere and renderSync is too large
+// export * from "./plugins/SyncDotToSvgExportPlugin";
+export * from "./plugins/VizJsSettings";
 export * from "./plugins/SaysWhoPlugin";
 export * from "./plugins/shortcodes";
 export * from "./IArgdownPlugin";

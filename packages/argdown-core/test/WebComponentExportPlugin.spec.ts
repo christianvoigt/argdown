@@ -1,4 +1,5 @@
 import { expect } from "chai";
+import { it, describe } from "mocha";
 import {
   IArgdownRequest,
   ArgdownApplication,
@@ -11,10 +12,10 @@ import {
   GroupPlugin,
   ColorPlugin,
   DotExportPlugin,
-  SyncDotToSvgExportPlugin,
   HighlightSourcePlugin,
   WebComponentExportPlugin
 } from "../src";
+import { SyncDotToSvgExportPlugin } from "../src/plugins/SyncDotToSvgExportPlugin";
 describe("WebComponentExportPlugin", function() {
   const app = new ArgdownApplication();
   app.addPlugin(new ParserPlugin(), "parse-input");

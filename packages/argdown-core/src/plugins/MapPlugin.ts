@@ -192,7 +192,9 @@ const createArgumentNode = (
     id: "n" + Number(initialNodeCount + index)
   };
   if (settings.argumentLabelMode != LabelMode.TITLE) {
-    node.labelText = IArgument.getCanonicalMemberText(a) || undefined;
+    const canonicalMember = IArgument.getCanonicalMember(a);
+    node.labelText = canonicalMember ? canonicalMember.text : undefined;
+    node.labelTextRanges = canonicalMember ? canonicalMember.ranges : undefined;
   }
   if (
     settings.argumentLabelMode !== LabelMode.TEXT ||
