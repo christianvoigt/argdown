@@ -1,13 +1,11 @@
 "use strict";
-import {
-  cloneDeep,
-  isArray,
-  isString,
-  isEmpty,
-  isFunction,
-  defaultsDeep,
-  isObject
-} from "lodash";
+import defaultsDeep from "lodash.defaultsdeep";
+import isFunction from "lodash.isfunction";
+import isString from "lodash.isstring";
+import isEmpty from "lodash.isempty";
+import isObject from "lodash.isobject";
+import isArray from "lodash.isarray";
+import cloneDeep from "lodash.clonedeep";
 import {
   ArgdownApplication,
   IArgdownRequest,
