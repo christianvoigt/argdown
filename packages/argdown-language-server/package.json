@@ -1,7 +1,7 @@
 {
   "name": "@argdown/language-server",
   "description": "Language Server for the Argdown argumentation syntax.",
-  "version": "1.4.5",
+  "version": "1.4.7",
   "author": "Christian Voigt",
   "license": "MIT",
   "main": "dist/server.js",
@@ -26,8 +26,8 @@
     "test": "mocha -r ts-node/register --full-trace --require source-map-support/register ./test/**/*.spec.ts"
   },
   "devDependencies": {
-    "@argdown/core": "^1.4.5",
-    "@argdown/node": "^1.4.5",
+    "@argdown/core": "^1.4.7",
+    "@argdown/node": "^1.4.7",
     "@types/chai": "^4.2.11",
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.11.0",
