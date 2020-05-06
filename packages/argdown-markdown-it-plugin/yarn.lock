@@ -44,10 +44,10 @@
   resolved "https://registry.yarnpkg.com/@argdown/highlightjs/-/highlightjs-1.4.6.tgz#cc632567a20890d61b8d4aab631b1b345ec1db7a"
   integrity sha512-CIGdQUcXgXXpiGWHC2DWYaiuQn/br1tk1HVhVjQPiJAeExsQq6CKEYawmrO44fkvdLAR0/7kTri9oH7xoXNZ9g==
 
-"@argdown/web-components@^1.4.7":
-  version "1.4.7"
-  resolved "https://registry.yarnpkg.com/@argdown/web-components/-/web-components-1.4.7.tgz#d5790a652fbe12bc2b11b1b142c77dc51c9e7570"
-  integrity sha512-p8xP1xBhcjcJa65rxPIPuYY9JQRhPdbp6/6g0ELlRmUluJ2yy+439L+DoX1iCMpZWL9etqOTyMPxxcoIu/q8Jg==
+"@argdown/web-components@^1.4.8":
+  version "1.4.8"
+  resolved "https://registry.yarnpkg.com/@argdown/web-components/-/web-components-1.4.8.tgz#2cbb265eb5206ef30824615a923b22ca3d4651fb"
+  integrity sha512-6AN76ab1ZoL3hOjRJjxI6p19OQcmB92lxUOdtl1K0xjlMMRbnNrjE0VWfK167CRFUJDMNvUR2WXTYtj03TPfDg==
   dependencies:
     d3-selection "^1.4.1"
     d3-zoom "^1.8.3"
