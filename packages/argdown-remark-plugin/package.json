@@ -1,6 +1,6 @@
 {
   "name": "@argdown/remark-plugin",
-  "version": "1.4.7",
+  "version": "1.4.8",
   "description": "Turns Argdown code fences into svg argument maps",
   "main": "dist/argdown-remark-plugin.js",
   "scripts": {
@@ -35,7 +35,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@argdown/web-components": "^1.4.7",
+    "@argdown/web-components": "^1.4.8",
     "@types/chai": "^4.2.11",
     "@types/mdast": "^3.0.2",
     "@types/mocha": "^7.0.2",
