@@ -39,9 +39,12 @@ const ArgdownMap = function(
   const onSlotChange = () => {
     setHasMap(el.querySelector<HTMLElement>(`[slot="map"]`) !== null);
     setHasSource(el.querySelector<HTMLElement>(`[slot="source"]`) !== null);
+    initialHeight.current = el.shadowRoot
+      .querySelector(".component")
+      .getBoundingClientRect().height;
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (activeView != "map") {
       return;
     }
