@@ -77,6 +77,10 @@ Thanks to [Antoine du Hamel](https://github.com/aduh95) for creating and maintai
 
 ### Detailed Fixes & Changes
 
+#### v1.4.8
+
+- @argdown/web-components: fixed map disappears on zoom in Firefox #155
+
 #### v1.4.7
 
 - @argdown/core: fixed files property in package.json

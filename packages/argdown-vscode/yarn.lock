@@ -65,10 +65,10 @@
     string-pixel-width "^1.10.0"
     viz.js "^2.1.2"
 
-"@argdown/markdown-it-plugin@^1.4.7":
-  version "1.4.7"
-  resolved "https://registry.yarnpkg.com/@argdown/markdown-it-plugin/-/markdown-it-plugin-1.4.7.tgz#1db69672f6d494eaae691e9798cc3556329a9641"
-  integrity sha512-QdRdxZU97M5OpnPrGu2/XkqGk6k3GuSsED7XyGkcbuiedbGIxxCXgHn1fKiNG196MuOnCwNw+K3tOqQwlmBa1A==
+"@argdown/markdown-it-plugin@^1.4.8":
+  version "1.4.8"
+  resolved "https://registry.yarnpkg.com/@argdown/markdown-it-plugin/-/markdown-it-plugin-1.4.8.tgz#4d0af6251baddb6daffa58e960452cead1883201"
+  integrity sha512-EhhnJfM1tvPwLVwOb5NSG70llEY8d0o1RI1DS+4OLrmwBAmi0iQQYv5BASrY34wDf/f2lIqi3E1tQW18luY9vg==
   dependencies:
     "@argdown/core" "^1.4.7"
     "@types/lodash.defaultsdeep" "^4.6.6"
@@ -108,10 +108,10 @@
     svg-to-pdfkit "^0.1.8"
     viz.js "^2.1.2"
 
-"@argdown/web-components@^1.4.7":
-  version "1.4.7"
-  resolved "https://registry.yarnpkg.com/@argdown/web-components/-/web-components-1.4.7.tgz#d5790a652fbe12bc2b11b1b142c77dc51c9e7570"
-  integrity sha512-p8xP1xBhcjcJa65rxPIPuYY9JQRhPdbp6/6g0ELlRmUluJ2yy+439L+DoX1iCMpZWL9etqOTyMPxxcoIu/q8Jg==
+"@argdown/web-components@^1.4.8":
+  version "1.4.8"
+  resolved "https://registry.yarnpkg.com/@argdown/web-components/-/web-components-1.4.8.tgz#2cbb265eb5206ef30824615a923b22ca3d4651fb"
+  integrity sha512-6AN76ab1ZoL3hOjRJjxI6p19OQcmB92lxUOdtl1K0xjlMMRbnNrjE0VWfK167CRFUJDMNvUR2WXTYtj03TPfDg==
   dependencies:
     d3-selection "^1.4.1"
     d3-zoom "^1.8.3"
