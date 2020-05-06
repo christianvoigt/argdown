@@ -44,10 +44,10 @@
   resolved "https://registry.yarnpkg.com/@argdown/highlightjs/-/highlightjs-1.4.7.tgz#910bd6e0e02c26662d098cd64cf6efda68d0ae73"
   integrity sha512-x2Ug00p4PZ0+fOHQEITBkqr9onqHv1TYm72jr0DT7oHBfxkpzN+SMu9+ef+mmTWTDu+mX679OVBZdtJr2LRCOw==
 
-"@argdown/markdown-it-plugin@^1.4.7":
-  version "1.4.7"
-  resolved "https://registry.yarnpkg.com/@argdown/markdown-it-plugin/-/markdown-it-plugin-1.4.7.tgz#1db69672f6d494eaae691e9798cc3556329a9641"
-  integrity sha512-QdRdxZU97M5OpnPrGu2/XkqGk6k3GuSsED7XyGkcbuiedbGIxxCXgHn1fKiNG196MuOnCwNw+K3tOqQwlmBa1A==
+"@argdown/markdown-it-plugin@^1.4.8":
+  version "1.4.8"
+  resolved "https://registry.yarnpkg.com/@argdown/markdown-it-plugin/-/markdown-it-plugin-1.4.8.tgz#4d0af6251baddb6daffa58e960452cead1883201"
+  integrity sha512-EhhnJfM1tvPwLVwOb5NSG70llEY8d0o1RI1DS+4OLrmwBAmi0iQQYv5BASrY34wDf/f2lIqi3E1tQW18luY9vg==
   dependencies:
     "@argdown/core" "^1.4.7"
     "@types/lodash.defaultsdeep" "^4.6.6"
