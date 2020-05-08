@@ -5,7 +5,7 @@
   "icon": "media/argdown-mark-blue-256x256.png",
   "author": "Christian Voigt",
   "license": "MIT",
-  "version": "1.4.8",
+  "version": "1.4.9",
   "publisher": "christianvoigt",
   "homepage": "https://argdown.org",
   "repository": {
@@ -516,11 +516,11 @@
     "copy-changelog": "node ./copy-changelog.js"
   },
   "dependencies": {
-    "@argdown/core": "^1.4.7",
-    "@argdown/language-server": "^1.4.7",
-    "@argdown/map-views": "^1.4.7",
-    "@argdown/markdown-it-plugin": "^1.4.8",
-    "@argdown/node": "^1.4.7",
+    "@argdown/core": "^1.4.9",
+    "@argdown/language-server": "^1.4.9",
+    "@argdown/map-views": "^1.4.9",
+    "@argdown/markdown-it-plugin": "^1.4.9",
+    "@argdown/node": "^1.4.9",
     "@argdown/web-components": "^1.4.8",
     "d3": "^5.9.1",
     "dagre-d3": "^0.6.3",

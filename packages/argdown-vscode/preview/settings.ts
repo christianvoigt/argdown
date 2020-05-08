@@ -1,4 +1,4 @@
-const defaultsDeep = require("lodash/defaultsDeep");
+const defaultsDeep = require("lodash.defaultsdeep");
 export interface IPreviewSettings {
   source: string;
   disableSecurityWarnings: boolean;

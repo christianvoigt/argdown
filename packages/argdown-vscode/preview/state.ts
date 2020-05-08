@@ -1,5 +1,5 @@
 import { IArgdownPreviewState } from "./IArgdownPreviewState";
-const defaultsDeep = require("lodash/defaultsDeep");
+const defaultsDeep = require("lodash.defaultsdeep");
 declare global {
   interface Window {
     initialState?: IArgdownPreviewState;
