@@ -8,7 +8,7 @@ export enum FrontMatterSettingsModes {
   PRIORITY = "priority"
 }
 import defaultsDeep from "lodash.defaultsdeep";
-import merge from "lodash/merge";
+import merge from "lodash.merge";
 import { mergeDefaults, isObject } from "../utils";
 
 /**

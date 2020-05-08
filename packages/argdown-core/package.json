@@ -9,7 +9,7 @@
     "Markdown",
     "Chevrotain"
   ],
-  "version": "1.4.7",
+  "version": "1.4.9",
   "license": "MIT",
   "main": "./dist/index.js",
   "module": "./dist-esm/index.js",
