@@ -2,7 +2,7 @@
 
 ![Argdown logo](./argdown-arrow.png?raw=true "Argdown logo")
 
-**v1.4.8 released! Check out [the new features](https://argdown.org/changes/)**
+**v1.4.9 released! Check out [the new features](https://argdown.org/changes/)**
 
 [Argdown](https://christianvoigt.github.io/argdown) is a simple syntax for analyzing complex argumentation.
 

@@ -77,6 +77,10 @@ Thanks to [Antoine du Hamel](https://github.com/aduh95) for creating and maintai
 
 ### Detailed Fixes & Changes
 
+#### v1.4.9
+
+- @argdown/core: fixed lodash.merge import #156
+
 #### v1.4.8
 
 - @argdown/web-components: fixed map disappears on zoom in Firefox #155

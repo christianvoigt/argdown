@@ -1,5 +1,12 @@
 import { expect } from "chai";
-import { ArgdownApplication, ParserPlugin, ModelPlugin, DataPlugin, FrontMatterSettingsModes } from "../src/index";
+import {
+  ArgdownApplication,
+  ParserPlugin,
+  ModelPlugin,
+  DataPlugin,
+  FrontMatterSettingsModes
+} from "../src/index";
+import { it, describe } from "mocha";
 
 let app = new ArgdownApplication();
 
@@ -39,7 +46,12 @@ testBool: true
 
 <B> {auf: wiedersehen}
         `;
-    const request = { process: ["parse-input", "build-model"], input: source, logLevel: "error", testBool: false };
+    const request = {
+      process: ["parse-input", "build-model"],
+      input: source,
+      logLevel: "error",
+      testBool: false
+    };
     const result = app.run(request);
     // console.log(JSON.stringify(request));
     expect(request["testBool"]).to.be.true;
