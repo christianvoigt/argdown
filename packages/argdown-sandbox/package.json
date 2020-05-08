@@ -1,6 +1,6 @@
 {
   "name": "@argdown/sandbox",
-  "version": "1.4.7",
+  "version": "1.4.9",
   "private": true,
   "description": "An Argdown editor that runs in the browser",
   "author": "Christian Voigt <1pxsolidblack@googlemail.com>",
@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "@argdown/codemirror-mode": "^1.4.7",
-    "@argdown/core": "^1.4.7",
-    "@argdown/map-views": "^1.4.7",
+    "@argdown/core": "^1.4.9",
+    "@argdown/map-views": "^1.4.9",
     "axios": "^0.18.1",
     "file-saver": "^2.0.2",
     "vue": "^2.6.10",
