@@ -1,7 +1,14 @@
 //import { before, after, describe, it } from 'mocha';
 import { expect } from "chai";
+import { describe, it } from "mocha";
 import * as fs from "fs";
-import { tokenize, parser, ArgdownTreeWalker } from "../src/index";
+import {
+  tokenize,
+  parser,
+  ArgdownTreeWalker,
+  IRuleNode,
+  ITokenNode
+} from "../src/index";
 import { Logger } from "../src/index";
 import {
   INVALID_PCS_POSITION_ERROR,
@@ -240,7 +247,7 @@ Statement
 `;
     let lexResult = tokenize(source);
     parser.input = lexResult.tokens;
-    let ast = parser.argdown();
+    let ast = parser.argdown() as any;
     expect(lexResult.errors).to.be.empty;
     // console.log(tokensToString(lexResult.tokens));
     // console.log(astToString(ast));
@@ -315,17 +322,22 @@ Statement
     // console.log(parser.errors);
     expect(lexResult.errors).to.be.empty;
     expect(parser.errors).to.be.empty;
-    const pcsTail = ast.children[0].children[1];
-    expect(pcsTail.children[1]).to.exist; // inference
-    expect(pcsTail.children[1].name).to.equal("inference");
-    expect(pcsTail.children[1].children[3]).to.exist; // relations (2 is newline)
-    expect(pcsTail.children[1].children[3].name).to.equal("relations"); // relations
-    expect(pcsTail.children[1].children[3].children[0].tokenType.name).to.equal(
-      "Indent"
-    );
-    expect(pcsTail.children[1].children[3].children[1].name).to.equal(
-      "outgoingUndercut"
-    );
+    const pcsTail = ((ast as IRuleNode).children![0] as IRuleNode)
+      .children![1] as IRuleNode;
+    expect(pcsTail.children![1]).to.exist; // inference
+    expect((pcsTail.children![1] as IRuleNode).name).to.equal("inference");
+    expect((pcsTail.children![1] as IRuleNode).children![3]).to.exist; // relations (2 is newline)
+    expect(
+      ((pcsTail.children![1] as IRuleNode).children![3] as IRuleNode).name
+    ).to.equal("relations"); // relations
+    expect(
+      (((pcsTail.children![1] as IRuleNode).children![3] as IRuleNode)
+        .children![0] as ITokenNode).tokenType.name
+    ).to.equal("Indent");
+    expect(
+      (((pcsTail.children![1] as IRuleNode).children![3] as IRuleNode)
+        .children![1] as IRuleNode).name
+    ).to.equal("outgoingUndercut");
   });
   it("can parse bof newline comment emptyline", function() {
     let source = `
