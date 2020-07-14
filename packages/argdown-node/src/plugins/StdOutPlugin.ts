@@ -1,5 +1,10 @@
-import * as _ from "lodash";
-import { IArgdownPlugin, IArgdownRequest, IRequestHandler } from "@argdown/core";
+import {
+  IArgdownPlugin,
+  IArgdownRequest,
+  IRequestHandler
+} from "@argdown/core";
+import defaultsDeep from "lodash.defaultsdeep";
+
 export interface IStdoutSettings {
   dataKey?: string;
   isRequestData?: boolean;
@@ -13,10 +18,10 @@ export class StdOutPlugin implements IArgdownPlugin {
   name = "StdOutPlugin";
   defaults: IStdoutSettings;
   constructor(config?: IStdoutSettings) {
-    this.defaults = _.defaultsDeep({}, config, {});
+    this.defaults = defaultsDeep({}, config, {});
   }
   prepare: IRequestHandler = request => {
-    _.defaultsDeep(this.getSettings(request), this.defaults);
+    defaultsDeep(this.getSettings(request), this.defaults);
   };
   // there can be several instances of this plugin in the same ArgdownApplication
   // Because of this, we can not add the instance default settings to the request object as in other plugins
@@ -28,14 +33,12 @@ export class StdOutPlugin implements IArgdownPlugin {
   run: IRequestHandler = (request, response) => {
     const settings = this.getSettings(request);
     if (settings.dataKey) {
-      let content = !settings.isRequestData ? (<any>response)[settings.dataKey] : (<any>request)[settings.dataKey];
+      let content = !settings.isRequestData
+        ? (<any>response)[settings.dataKey]
+        : (<any>request)[settings.dataKey];
       if (content !== undefined) {
         process.stdout.write(content);
       }
     }
   };
 }
-
-module.exports = {
-  StdOutPlugin: StdOutPlugin
-};

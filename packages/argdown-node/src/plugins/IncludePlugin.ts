@@ -3,7 +3,8 @@ import { promisify } from "util";
 
 const readFileAsync = promisify(fs.readFile);
 let path = require("path");
-import * as _ from "lodash";
+import defaultsDeep from "lodash.defaultsdeep";
+import includes from "lodash.includes";
 import {
   IAsyncArgdownPlugin,
   IAsyncRequestHandler
@@ -29,7 +30,7 @@ export class IncludePlugin implements IAsyncArgdownPlugin {
   name = "IncludePlugin";
   defaults: IIncludeSettings;
   constructor(config?: IIncludeSettings) {
-    this.defaults = _.defaultsDeep({}, config, {
+    this.defaults = defaultsDeep({}, config, {
       regEx: /@include\(([^\)]+)\)/g
     });
   }
@@ -38,7 +39,7 @@ export class IncludePlugin implements IAsyncArgdownPlugin {
     return request.include;
   };
   prepare: IRequestHandler = request => {
-    _.defaultsDeep(this.getSettings(request), this.defaults);
+    defaultsDeep(this.getSettings(request), this.defaults);
   };
   runAsync: IAsyncRequestHandler = async request => {
     if (!request.input) {
@@ -76,7 +77,7 @@ export class IncludePlugin implements IAsyncArgdownPlugin {
     while ((match = regEx.exec(str))) {
       const absoluteFilePath = path.resolve(directoryPath, match[1]);
       let strToInclude = "";
-      if (_.includes(filesAlreadyIncluded, absoluteFilePath)) {
+      if (includes(filesAlreadyIncluded, absoluteFilePath)) {
         strToInclude =
           "<!-- Include failed: File '" +
           absoluteFilePath +

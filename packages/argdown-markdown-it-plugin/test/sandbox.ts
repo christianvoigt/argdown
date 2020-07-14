@@ -1,4 +1,4 @@
-import "@argdown/web-components/dist/module/argdown-map.css";
+import "@argdown/web-components/dist/argdown-map.css";
 import "@argdown/web-components";
 import MarkdownIt from "markdown-it";
 import createArgdownPlugin from "../src/argdown-markdown-it-plugin";

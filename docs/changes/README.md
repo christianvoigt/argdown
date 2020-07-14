@@ -1,16 +1,16 @@
 # Release Notes 2020
 
-## v1.4.0 (April 2020)
-
-**Changes in:** @argdown/core, @argdown/node, @argdown/vscode, @argdown/sandbox, @argdown/codemirror-mode, docs
-
-**New packages:** @argdown/web-components, @argdown/remark-plugin, @argdown/gatsby-remark-plugin, @argdown/markdown-it-plugin, @argdown/marked-plugin, @argdown/highlightjs
+## v1.4.x (April 2020)
 
 This release is improving the Argdown workflow significantly: It is now possible to
 
 - use [Argdown _within_ Markdown](#using-argdown-in-markdown) documents and export the whole document with Argdown web components to HTML
 - copy & paste your argument map as [Argdown web component](#the-argdown-web-component) into any web page
 - [integrate Argdown](#remark-markdown-it-and-marked-plugins) into [static site generators](https://www.staticgen.com/) and similar applications _by simply changing their Markdown parser configuration_
+
+For a list of bug fixes in this release cycle, see the notes for the specific versions below the new feature sections.
+
+The VSCode extension 1.4.x requires VSCode version >= 1.43.0. Please update VSCode!
 
 ### Using Argdown in Markdown
 
@@ -71,15 +71,83 @@ The plugin can also be used on its own, if you don't want to use the web compone
 
 For the same purpose you might also be interested in our old [prismjs](https://prismjs.com/) plugin in the Argdown repository.
 
-### Bug fixes
+### Thanks
+
+Thanks to [Antoine du Hamel](https://github.com/aduh95) for creating and maintaining a new fork of [Viz.js](https://github.com/aduh95/viz.js) after the original repository was abandoned. Argdown is now using this new version in the web component export and will switch completely to it as soon as VSCode is based at least on node v13.
+
+### Detailed Fixes & Changes
+
+#### v1.4.9
+
+- @argdown/core: fixed lodash.merge import #156
+
+#### v1.4.8
+
+- @argdown/web-components: fixed map disappears on zoom in Firefox #155
+
+#### v1.4.7
+
+- @argdown/core: fixed files property in package.json
+
+#### v1.4.6
+
+everything finally released
+
+- @argdown/sandbox: changes to webpack config, enabled treeshaking, reduced file size from 8mb to 2mb, finally ready for release on argdown.org
+- @argdown/core: fixed bold/italic ranges in argument labels
+- @argdown/core: reduced footprint by using highlightjs core and removing SyncDotToSvgExportPlugin from index (has to be imported explicitely now)
+- @argdown/node: reduced footprint by removing lodash dependency from AsyncArgdownApplication
+- @argdown/web-components: fixed check if slots are filled (did not work on argdown.org)
+
+#### v1.4.5
+
+argdown-vscode released
+
+docs & sandbox not yet released because of build problems
+
+- @argdown/language-server & argdown-vscode: new build process, after many fixes (see below), webpack bundling is finally working, VSCode extension can now be released on store
+- @argdown/core: fixed WebComponentExportPlugin's web-component script loading
+
+#### v1.4.4
+
+argdown-vscode, docs & sandbox not yet released because of build problems
+
+- @argdown/web-components: downgrading to parcel 1, to fix jsdelivr file urls (parcel 2 is to unstable and unpredictable right now)
+- @argdown/node: further clean up for bundling with webpack
+
+#### v1.4.3
+
+argdown-vscode, docs & sandbox not yet released because of build problems
+
+- @argdown/node: changes to tsconfig, fixes problems with packing in @argdown/vscode
+- @argdown/node: better import of lodash functions
+- @argdown/web-components: trying to fix parcel 2 build process, using jsdelivr does not work right now
+
+#### v1.4.2
+
+argdown-vscode, docs & sandbox not yet released because of build problems
+
+- @argdown/cli: fixes name in cli help from cli.js to argdown (yargs changed)
+
+#### v1.4.1
+
+argdown-vscode, docs & sandbox not yet released because of build problems
+
+- @argdown/cli: fixes missing help in @argdown/cli
+- @argdown/markdown-it-plugin: fixes missing file load in @argdown/markdown-it-plugin
+- @argdown/web-components): fix build paths
+
+#### v1.4.0
+
+**Changes in:** @argdown/core, @argdown/node, argdown-vscode, @argdown/language-server, @argdown/sandbox, @argdown/codemirror-mode, docs
+
+**New packages:** @argdown/web-components, @argdown/remark-plugin, @argdown/gatsby-remark-plugin, @argdown/markdown-it-plugin, @argdown/marked-plugin, @argdown/highlightjs
+
+argdown-vscode, docs & sandbox not yet released because of build problems
 
 - argdown-vscode: Argdown configuration files in your workspace folder are now used if you export your Argdown file into other formats (you can use the VSCode settings to set the filename of your config file)
 - #138: No italic in Viz.js map: Italic and bold ranges are now kind of supported in Viz.js and GraphML (not yet in Dagre): Graphviz rendering seems to be buggy in this respect, it will not display an empty space after an italic or bold range. As a workaround, an extra empty space is now added automatically, but this is a hack that might lead to problems in yEd or in the future if this bug is finally fixed. Link ranges are not supported at all in Graphviz (only tables and cells can have a href attribute).
 - #144: broken links custom shortcodes
-
-### Thanks
-
-Thanks to [Antoine du Hamel](https://github.com/aduh95) for creating and maintaining a new fork of [Viz.js](https://github.com/aduh95/viz.js) after the original repository was abandoned. Argdown is now using this new version in the web component export and will switch completely to it as soon as VSCode is based at least on node v13.
 
 ## Older releases
 

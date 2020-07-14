@@ -4,8 +4,8 @@
 
 [Argdown](https://argdown.org) is a simple syntax for analyzing complex argumentation, inspired by Markdown. This extension provides full language support for Argdown in VS Code:
 
-- [Live Preview](#map-preview) of your argument map
-- [Integration with Markdown](#integration-with-markdown): Argdown code fences in Markdown will be transformed to the Argdown web component in the Markdown preview.
+- [New feature! Integration with Markdown](#integration-with-markdown): Use Argdown code blocks and see them transformed to argument maps in the live preview for _Markdown files_.
+- [Live Preview](#map-preview) for _Argdown files_: See your argument map change during writing Argdown files.
 - 2 map layout algorithms ([DagreD3](https://github.com/dagrejs/dagre-d3) & [Viz.js](https://github.com/mdaines/viz.js/))
 - [Code completion](#code-completion)
 - [Symbol search, outline and breadcrumb support](#document-outline-breadcrumbs-and-symbol-search)

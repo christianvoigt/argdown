@@ -1,36 +1,17 @@
 {
   "name": "@argdown/web-components",
-  "version": "1.4.0",
+  "version": "1.4.8",
   "description": "Components that help to embed Argdown in the browser",
-  "browserNoModule": "dist/nomodule/argdown-map.js",
-  "browser": "dist/module/argdown-map.js",
+  "main": "dist/argdown-map.js",
+  "files": [
+    "dist/"
+  ],
   "source": "src/argdown-map.ts",
-  "targets": {
-    "browser": {
-      "context": "browser",
-      "includeNodeModules": true,
-      "isLibrary": true,
-      "outputFormat": "esmodule",
-      "engines": {
-        "browsers": [
-          "last 1 Chrome version"
-        ]
-      }
-    },
-    "browserNoModule": {
-      "context": "browser",
-      "includeNodeModules": true,
-      "isLibrary": true,
-      "engines": {
-        "browsers": [
-          "> 0.25%"
-        ]
-      }
-    }
-  },
   "scripts": {
     "start": "parcel src/index.html --open",
-    "build": "parcel build src/argdown-map.ts"
+    "build": "yarn run clean && parcel build src/argdown-map.ts",
+    "clean": "rimraf \"dist/*\"",
+    "prepublishOnly": "yarn run build"
   },
   "repository": {
     "type": "git",
@@ -48,10 +29,11 @@
     "lit-html": "^1.2.1"
   },
   "devDependencies": {
-    "@webcomponents/webcomponentsjs": "^2.4.3",
     "@types/d3": "^5.7.2",
-    "parcel": "^2.0.0-alpha.3.2",
+    "@webcomponents/webcomponentsjs": "^2.4.3",
+    "parcel": "^1.12.4",
     "parcel-plugin-static-files-copy": "^2.3.1",
+    "rimraf": "^3.0.2",
     "typescript": "^3.8.3"
   },
   "browserslist": [

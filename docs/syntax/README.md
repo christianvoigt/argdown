@@ -312,7 +312,7 @@ sourceHighlighter:
 
 This is especially useful if you want to use logical symbols without having to copy & paste the characters into the Argdown document. It is also useful if you want to have some fun with emojis.
 
-[Here](...) is a list with all shortcodes currently supported by default. You can add your own [custom shortcodes](...) in the Argdown configuration.
+[Here](https://argdown.org/guide/using-logical-symbols-and-emojis.html#using-logical-symbols-and-emojis) is a list with all shortcodes currently supported by default. You can add your own [custom shortcodes](https://argdown.org/guide/using-logical-symbols-and-emojis.html#adding-custom-shortcodes) in the Argdown configuration.
 
 :::tip Logical Symbols with ArgVu Ligatures
 

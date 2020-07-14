@@ -1,6 +1,6 @@
 {
   "name": "@argdown/prism",
-  "version": "1.3.0",
+  "version": "1.4.7",
   "description": "Prism language highlighting and theme for Argdown",
   "main": "index.js",
   "repository": {

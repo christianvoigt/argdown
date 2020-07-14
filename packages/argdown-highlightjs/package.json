@@ -1,6 +1,6 @@
 {
   "name": "@argdown/highlightjs",
-  "version": "1.3.0",
+  "version": "1.4.7",
   "description": "Argdown language definition for highlightjs",
   "main": "dist/index.js",
   "module": "dist-esm/index.js",

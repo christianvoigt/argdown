@@ -1,7 +1,8 @@
 import { expect } from "chai";
+import { describe, it } from "mocha";
 import { AsyncArgdownApplication } from "../src/index";
 import { IArgdownRequest, IArgdownResponse } from "@argdown/core";
-import * as path from "path";
+import path from "path";
 
 const app = new AsyncArgdownApplication();
 
@@ -29,21 +30,29 @@ describe("AsyncArgdownApplication", function() {
     };
     app.addPlugin(plugin1, "test");
     app.addPlugin(plugin2, "test");
-    return app.runAsync({ process: ["test"], input: "Hallo Welt!" }).then(response => {
-      expect((<any>response).asyncRunCompleted).to.be.true;
-      expect((<any>response).syncRunCompleted).to.be.true;
-    });
+    return app
+      .runAsync({ process: ["test"], input: "Hallo Welt!" })
+      .then(response => {
+        expect((<any>response).asyncRunCompleted).to.be.true;
+        expect((<any>response).syncRunCompleted).to.be.true;
+      });
   });
   it("can load json config", async () => {
-    const config = await app.loadConfig(path.resolve(__dirname + "/argdown.config.json"));
+    const config = await app.loadConfig(
+      path.resolve(__dirname + "/argdown.config.json")
+    );
     expect(config.input).to.equal("Hallo World!");
   });
   it("can load js config with config as default export", async () => {
-    const config = await app.loadConfig(path.resolve(__dirname + "/argdown.config.js"));
+    const config = await app.loadConfig(
+      path.resolve(__dirname + "/argdown.config.js")
+    );
     expect(config.input).to.equal("Hallo World!");
   });
   it("can load js config with config as property of default export", async () => {
-    const config = await app.loadConfig(path.resolve(__dirname + "/argdown2.config.js"));
+    const config = await app.loadConfig(
+      path.resolve(__dirname + "/argdown2.config.js")
+    );
     expect(config.input).to.equal("Hallo World!");
   });
 });

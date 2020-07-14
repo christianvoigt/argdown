@@ -1,4 +1,4 @@
-import hljs from "highlight.js";
+import hljs from "highlight.js/lib/core";
 import argdown from "@argdown/highlightjs";
 import { DefaultSettings, isObject, mergeDefaults } from "../utils";
 import { IArgdownPlugin, IRequestHandler } from "../IArgdownPlugin";

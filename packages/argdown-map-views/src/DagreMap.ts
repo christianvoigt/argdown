@@ -1,6 +1,6 @@
 import * as dagreD3 from "dagre-d3";
 import pixelWidth from "string-pixel-width";
-import * as d3 from "d3";
+import { select } from "d3-selection";
 import {
   ArgdownTypes,
   IMapNode,
@@ -126,7 +126,7 @@ export class DagreMap implements CanSelectNode {
       props.map.nodes.length === 0
     ) {
       // console.log('svg or map undefined')
-      const svg = d3.select(this.svgElement);
+      const svg = select(this.svgElement);
       svg.selectAll("*").remove();
       return;
     }
@@ -196,11 +196,11 @@ export class DagreMap implements CanSelectNode {
     };
 
     // Set up an SVG group so that we can translate the final graph.
-    const svg = d3.select(this.svgElement);
+    const svg = select(this.svgElement);
     svg.selectAll("*").remove();
 
     svg.append("g");
-    const svgGraph = svg.select<SVGGraphicsElement>("g");
+    const svgGraph = select<SVGGraphicsElement, null>("g");
     svgGraph.attr("class", "dagre");
 
     // Run the renderer. This is what draws the final graph.
@@ -244,9 +244,7 @@ export class DagreMap implements CanSelectNode {
   }
   selectNode(id: string): void {
     this._deselectNode();
-    this.selectedElement = d3
-      .select<SVGGraphicsElement, null>(`#${id}`)
-      .node()!;
+    this.selectedElement = select<SVGGraphicsElement, null>(`#${id}`).node()!;
     if (this.selectedElement) {
       this.selectedElement.classList.add("selected");
       this.zoomManager.moveToElement(this.selectedElement);

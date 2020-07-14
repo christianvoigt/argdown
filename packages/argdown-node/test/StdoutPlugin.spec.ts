@@ -1,7 +1,8 @@
 import { expect } from "chai";
+import { describe, it } from "mocha";
 import { argdown } from "../src/index";
 import { IArgdownRequest } from "@argdown/core";
-import * as intercept from "intercept-stdout";
+import intercept from "intercept-stdout";
 describe("StdoutPlugin", () => {
   it("can write dot to stdout", async () => {
     const input = `
@@ -13,7 +14,13 @@ describe("StdoutPlugin", () => {
         `;
     const request: IArgdownRequest = {
       input,
-      process: ["parse-input", "build-model", "build-map", "export-dot", "stdout-dot"],
+      process: [
+        "parse-input",
+        "build-model",
+        "build-map",
+        "export-dot",
+        "stdout-dot"
+      ],
       logLevel: "error"
     };
     let capturedText = "";
@@ -86,7 +93,14 @@ describe("StdoutPlugin", () => {
         `;
     const request: IArgdownRequest = {
       input,
-      process: ["parse-input", "build-model", "build-map", "export-dot", "export-svg", "stdout-svg"],
+      process: [
+        "parse-input",
+        "build-model",
+        "build-map",
+        "export-dot",
+        "export-svg",
+        "stdout-svg"
+      ],
       logLevel: "verbose"
     };
     let capturedText = "";

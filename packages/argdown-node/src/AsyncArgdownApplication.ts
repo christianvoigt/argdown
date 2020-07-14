@@ -1,13 +1,11 @@
 "use strict";
-import {
-  cloneDeep,
-  isArray,
-  isString,
-  isEmpty,
-  isFunction,
-  defaultsDeep,
-  isObject
-} from "lodash";
+import defaultsDeep from "lodash.defaultsdeep";
+import isFunction from "lodash.isfunction";
+import isString from "lodash.isstring";
+import isEmpty from "lodash.isempty";
+import isObject from "lodash.isobject";
+import isArray from "lodash.isarray";
+import cloneDeep from "lodash.clonedeep";
 import {
   ArgdownApplication,
   IArgdownRequest,
@@ -15,11 +13,11 @@ import {
   ArgdownPluginError
 } from "@argdown/core";
 import { isAsyncPlugin } from "./IAsyncArgdownPlugin";
-import * as path from "path";
-import * as chokidar from "chokidar";
-import * as glob from "glob";
+import path from "path";
+import chokidar from "chokidar";
+import glob from "glob";
 import { promisify } from "util";
-import * as importFresh from "import-fresh";
+import importFresh from "import-fresh";
 import { readFile } from "fs";
 
 const readFileAsync = promisify(readFile);

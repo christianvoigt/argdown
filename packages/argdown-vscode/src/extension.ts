@@ -2,6 +2,7 @@
 
 // import * as vscode from "vscode";
 import * as vscode from "vscode";
+import * as path from "path";
 import {
   LanguageClient,
   LanguageClientOptions,
@@ -108,7 +109,9 @@ export function activate(context: vscode.ExtensionContext) {
 
   // If the extension is launched in debug mode then the debug server options are used
   // Otherwise the run options are used
-  const modulePath = require.resolve("@argdown/language-server");
+  const modulePath = context.asAbsolutePath(
+    path.join("node_modules", "@argdown", "language-server")
+  );
   let serverOptions: ServerOptions = {
     run: {
       module: modulePath,
@@ -180,7 +183,6 @@ export function activate(context: vscode.ExtensionContext) {
             const withoutMaximize = webComponentConfig.get<boolean>(
               "withoutMaximize"
             );
-            logger.log("withoutHeader: " + withoutHeader);
             // const withoutHeader = false;
             // const withoutLogo = false;
             // const withoutMaximize = false;

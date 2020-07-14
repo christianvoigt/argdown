@@ -7,12 +7,12 @@ import {
   useLayoutEffect
 } from "haunted";
 import { ArgdownMark } from "./ArgdownMark";
-import "./snow-in-spring.argdown-theme.css";
-import "./global-styles.css";
 import { ExpandIcon } from "./ExpandIcon";
 import { MinimizeIcon } from "./MinimizeIcon";
 import { select } from "d3-selection";
 import { addZoom, removeZoom } from "./zoomUtils";
+import "./snow-in-spring.argdown-theme.css";
+import "./global-styles.css";
 
 const ArgdownMap = function(
   el: HTMLElement & {
@@ -29,10 +29,22 @@ const ArgdownMap = function(
   const [zoomMessage, setZoomMessage] = useState("");
   const initialHeight = useRef(null);
   const removeZoomTimeout: any = useRef(null);
-  const hasMap = el.querySelector<HTMLElement>(`[slot="map"]`) !== null;
-  const hasSource = el.querySelector<HTMLElement>(`[slot="source"]`) !== null;
+  const [hasMap, setHasMap] = useState(
+    el.querySelector<HTMLElement>(`[slot="map"]`) !== null
+  );
+  const [hasSource, setHasSource] = useState(
+    el.querySelector<HTMLElement>(`[slot="source"]`) !== null
+  );
 
-  useEffect(() => {
+  const onSlotChange = () => {
+    setHasMap(el.querySelector<HTMLElement>(`[slot="map"]`) !== null);
+    setHasSource(el.querySelector<HTMLElement>(`[slot="source"]`) !== null);
+    initialHeight.current = el.shadowRoot
+      .querySelector(".component")
+      .getBoundingClientRect().height;
+  };
+
+  useLayoutEffect(() => {
     if (activeView != "map") {
       return;
     }
@@ -221,11 +233,17 @@ const ArgdownMap = function(
               @mouseover=${onMouseOverMap}
               class="map-view${zoomIsActive ? " zooming" : ""}"
             >
-              <slot name="map" class="map-slot"></slot>
+              <slot
+                name="map"
+                class="map-slot"
+                @slotchange="${onSlotChange}"
+              ></slot>
             </div>
           `
         : html`
-            <div class="source-view"><slot name="source"></slot></div>
+            <div class="source-view">
+              <slot name="source" @slotchange="${onSlotChange}"></slot>
+            </div>
           `}
     </div>
   `;
@@ -375,6 +393,7 @@ ArgdownMap.observedAttributes = [
   "without-logo",
   "without-header"
 ];
-customElements.define("argdown-map", component<
-  HTMLElement & { initialView: string }
->(ArgdownMap as any) as any); // errors in haunted.js types makes it necessary to use any
+customElements.define(
+  "argdown-map",
+  component<HTMLElement & { initialView: string }>(ArgdownMap as any) as any
+); // errors in haunted.js types makes it necessary to use any

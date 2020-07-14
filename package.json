@@ -15,7 +15,9 @@
     "docs:deploy": "./deploy-docs.sh",
     "prepare": "lerna run prepare",
     "copy-web-component": "node ./copy-web-component.js",
-    "install-package": "lerna add @types/pdfkit --scope=@argdown/node"
+    "install-package": "lerna add @types/pdfkit --scope=@argdown/node",
+    "lerna:upgrade": "lerna exec yarn upgrade",
+    "lerna:install": "lerna exec -- yarn install"
   },
   "readmeFilename": "Readme.md",
   "preferGlobal": true,
@@ -31,7 +33,7 @@
     ]
   },
   "dependencies": {
-    "markdown-it-container": "^2.0.0",
+    "markdown-it-container": "3.0.0",
     "vuepress-plugin-sitemap": "2.3.1"
   }
 }

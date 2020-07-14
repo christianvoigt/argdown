@@ -1,6 +1,7 @@
 import { IMapState, defaultMapState } from "./IMapState";
-import * as d3 from "d3";
-import { defaultsDeep } from "lodash";
+import { zoom, ZoomBehavior, zoomIdentity } from "d3-zoom";
+import { event, Selection } from "d3-selection";
+import defaultsDeep from "lodash.defaultsdeep";
 
 export type OnZoomChangedHandler = (data: {
   size: { width: number; height: number };
@@ -8,9 +9,9 @@ export type OnZoomChangedHandler = (data: {
   position: { x: number; y: number };
 }) => void;
 export class ZoomManager {
-  zoom?: d3.ZoomBehavior<SVGSVGElement, {}>;
-  svg?: d3.Selection<SVGSVGElement, {}, null | HTMLElement, any>;
-  svgGraph?: d3.Selection<SVGGraphicsElement, {}, null | HTMLElement, any>;
+  zoom?: ZoomBehavior<SVGSVGElement, {}>;
+  svg?: Selection<SVGSVGElement, {}, null | HTMLElement, any>;
+  svgGraph?: Selection<SVGGraphicsElement, {}, null | HTMLElement, any>;
   state: IMapState;
   moveToDuration: number;
   onZoomChanged?: OnZoomChangedHandler;
@@ -26,8 +27,8 @@ export class ZoomManager {
     this.graphIsBottomAligned = graphIsBottomAligned;
   }
   init(
-    svg: d3.Selection<SVGSVGElement, any, null | HTMLElement, any>,
-    svgGraph: d3.Selection<SVGGraphicsElement, any, null | HTMLElement, any>,
+    svg: Selection<SVGSVGElement, any, null | HTMLElement, any>,
+    svgGraph: Selection<SVGGraphicsElement, any, null | HTMLElement, any>,
     width: number,
     height: number
   ) {
@@ -37,12 +38,12 @@ export class ZoomManager {
     this.svg = svg;
     this.svgGraph = svgGraph;
     const self = this;
-    this.zoom = d3.zoom<SVGSVGElement, {}>().on("zoom", function() {
+    this.zoom = zoom<SVGSVGElement, {}>().on("zoom", function() {
       // eslint-disable-next-line
-      self.svgGraph!.attr("transform", d3.event.transform);
-      self.state.scale = d3.event.transform.k;
-      self.state.position.x = d3.event.transform.x;
-      self.state.position.y = d3.event.transform.y;
+      self.svgGraph!.attr("transform", event.transform);
+      self.state.scale = event.transform.k;
+      self.state.position.x = event.transform.x;
+      self.state.position.y = event.transform.y;
       if (self.onZoomChanged) {
         self.onZoomChanged({
           scale: self.state.scale,
@@ -103,7 +104,7 @@ export class ZoomManager {
       .call(
         self.zoom!.transform,
         // eslint-disable-next-line
-        d3.zoomIdentity.translate(x, y).scale(scale)
+        zoomIdentity.translate(x, y).scale(scale)
       );
   };
 }

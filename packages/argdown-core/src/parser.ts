@@ -1,22 +1,21 @@
 "use strict";
 
-import { Parser } from "chevrotain";
+import { EmbeddedActionsParser } from "chevrotain";
 import * as lexer from "./lexer";
 import { errorMessageProvider } from "./ArgdownErrorMessageProvider";
 import { IAstNode, IRuleNode } from "./model/model";
 import { RuleNames } from "./RuleNames";
 
-class ArgdownParser extends Parser {
+class ArgdownParser extends EmbeddedActionsParser {
   constructor() {
     super(lexer.tokenList, {
       errorMessageProvider: errorMessageProvider,
-      recoveryEnabled: true,
-      outputCst: false
+      recoveryEnabled: true
     });
     // very important to call this after all the rules have been defined.
     // otherwise the parser may not work correctly as it will lack information
     // derived during the self analysis phase.
-    Parser.performSelfAnalysis(this);
+    this.performSelfAnalysis();
   }
   //caches
   private c1: any;

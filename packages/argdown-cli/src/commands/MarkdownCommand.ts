@@ -9,7 +9,7 @@ import createArgdownPlugin from "@argdown/markdown-it-plugin";
  * Markdown-it is configured to use the @argdown/markdown-it-plugin.
  */
 const mdi = new MarkdownIt();
-const markdownItPlugin = createArgdownPlugin(env => {
+const markdownItPlugin = createArgdownPlugin((env: any) => {
   return env.argdownConfig;
 });
 mdi.use(markdownItPlugin);

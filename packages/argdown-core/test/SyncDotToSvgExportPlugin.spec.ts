@@ -11,9 +11,10 @@ import {
   MapPlugin,
   GroupPlugin,
   ColorPlugin,
-  DotExportPlugin,
-  SyncDotToSvgExportPlugin
+  DotExportPlugin
 } from "../src";
+import { SyncDotToSvgExportPlugin } from "../src/plugins/SyncDotToSvgExportPlugin";
+
 describe("SyncDotToSvgExportPlugin", function() {
   const app = new ArgdownApplication();
   app.addPlugin(new ParserPlugin(), "parse-input");

@@ -133,7 +133,7 @@ n3;
       input: source,
       logLevel: "error"
     });
-    const s1Text = "test&#x20;<i>test</i>&#x20;<b>test</b>";
+    const s1Text = "test&#x20;<i>test</i> &#x20;<b>test</b> ";
     expect(result.dot!.includes(s1Text)).to.be.true;
   });
 });

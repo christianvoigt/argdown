@@ -1,9 +1,11 @@
-import * as PDFDocument from "pdfkit";
+import PDFDocument from "pdfkit";
 var fs = require("fs");
 let path = require("path");
 let mkdirp = require("mkdirp");
-import * as SVGtoPDF from "svg-to-pdfkit";
-import * as _ from "lodash";
+import SVGtoPDF from "svg-to-pdfkit";
+import defaultsDeep from "lodash.defaultsdeep";
+import isFunction from "lodash.isfunction";
+import isString from "lodash.isstring";
 import {
   IAsyncArgdownPlugin,
   IAsyncRequestHandler
@@ -66,7 +68,7 @@ export class SvgToPdfExportPlugin implements IAsyncArgdownPlugin {
   name = "SvgToPdfExportPlugin";
   defaults: ISvgToPdfSettings;
   constructor(config?: ISvgToPdfSettings) {
-    this.defaults = _.defaultsDeep({}, config, defaultSettings);
+    this.defaults = defaultsDeep({}, config, defaultSettings);
   }
   getSettings(request: IArgdownRequest): ISvgToPdfSettings {
     request.svgToPdf = request.svgToPdf || {};
@@ -87,9 +89,9 @@ export class SvgToPdfExportPlugin implements IAsyncArgdownPlugin {
     }
     if (request.outputPath) {
       fileName = this.getFileName(request.outputPath);
-    } else if (_.isFunction(settings.fileName)) {
+    } else if (isFunction(settings.fileName)) {
       fileName = settings.fileName.call(this, settings, request, response);
-    } else if (_.isString(settings.fileName)) {
+    } else if (isString(settings.fileName)) {
       fileName = settings.fileName;
     } else if (request.inputPath) {
       fileName = this.getFileName(request.inputPath);

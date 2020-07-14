@@ -15,7 +15,6 @@ const createArgdownPlugin = (config?: ((env:any)=>IArgdownRequest) | IArgdownReq
   ) as WebComponentExportPlugin;
   let currentConfig:IArgdownRequest = !config || typeof config === "function"? {} : config; 
   const webComponentDefaults = webComponentPlugin.defaults;
-  let pluginSettings:IWebComponentExportSettings = {};
 
   const ArgdownPlugin = (md: MarkdownIt) => {
     const generateWebComponent = (code: string, initialView?: string, additionalSettings?: IWebComponentExportSettings) => {
@@ -83,21 +82,20 @@ const createArgdownPlugin = (config?: ((env:any)=>IArgdownRequest) | IArgdownReq
           currentConfig = config(env);
         }
         currentConfig.webComponent = currentConfig.webComponent ||{};
-        pluginSettings = defaultsDeep({}, currentConfig.webComponent, webComponentDefaults);
-      
+        const pluginSettings = defaultsDeep({}, currentConfig.webComponent||{}, webComponentDefaults);
         if (pluginSettings.addWebComponentScript) {
           script = `<script src="${
-            currentConfig.webComponent.webComponentScriptUrl || webComponentDefaults.webComponentScriptUrl
+            pluginSettings.webComponentScriptUrl
           }"></script>`;
         }
-        if (currentConfig.webComponent.addGlobalStyles) {
+        if (pluginSettings.addGlobalStyles) {
           styles = `<link rel="stylesheet" type="text/css" href="${
-            currentConfig.webComponent.globalStylesUrl || webComponentDefaults.globalStylesUrl
+            pluginSettings.globalStylesUrl
           }">`;
         }
-        if (currentConfig.webComponent.addWebComponentPolyfill) {
+        if (pluginSettings.addWebComponentPolyfill) {
           polyfill = `<script src="${
-            currentConfig.webComponent.webComponentPolyfillUrl || webComponentDefaults.webComponentPolyfillUrl
+            pluginSettings.webComponentPolyfillUrl
           }"></script>`;
         }
         return `${script}${styles}${polyfill}${tempRender(tokens, options, env)}`;

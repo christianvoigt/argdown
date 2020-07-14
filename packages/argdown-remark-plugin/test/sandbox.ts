@@ -1,6 +1,5 @@
-import "@argdown/web-components/dist/module/argdown-map.css";
+import "@argdown/web-components/dist/argdown-map.css";
 import "@argdown/web-components";
-import MarkdownIt from "markdown-it";
 import remark from "remark";
 import { remarkArgdownPlugin } from "../src/argdown-remark-plugin";
 // @ts-ignore
