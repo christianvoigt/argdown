@@ -1,0 +1,40 @@
+{
+  "name": "@argdown/image-export",
+  "version": "1.5.0",
+  "description": "PNG, JPG and WEBP export for Argdown",
+  "main": "dist/index.js",
+  "module": "dist-esm/index.js",
+  "scripts": {
+    "build": "npm run clean && npm run build:src && npm run build:esm",
+    "build:esm": "tsc -m es6 --target ES2018 --outDir dist-esm",
+    "build:src": "tsc",
+    "test": "mocha -r ts-node/register --full-trace --bail --require source-map-support/register ./test/**/*.spec.ts",
+    "clean": "rimraf \"dist/*\" && rimraf \"dist-esm/*\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/christianvoigt/argdown/tree/master/packages/argdown-png-export"
+  },
+  "keywords": [
+    "Argdown",
+    "png"
+  ],
+  "author": "Christian Voigt",
+  "license": "MIT",
+  "devDependencies": {
+    "@argdown/node": "^1.4.9",
+    "@types/chai": "^4.2.11",
+    "@types/mocha": "8.0.0",
+    "chai": "^4.2.0",
+    "mocha": "8.0.1",
+    "parcel": "^1.12.4",
+    "rimraf": "^3.0.2",
+    "ts-node": "^8.9.1",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "@argdown/core": "^1.4.9",
+    "lodash.defaultsdeep": "^4.6.1",
+    "svg-to-img": "^2.0.9"
+  }
+}
