@@ -12,6 +12,7 @@ const getPriority = (level: string): number => {
       return 3;
     case "off":
     case "none":
+    case "silent":
       return 4;
     default:
       return -1;
