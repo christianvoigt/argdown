@@ -458,4 +458,14 @@ describe("argdown-cli", function() {
         return rimrafPromise(jsonFolder);
       });
   });
+  it("can throw parser error", () => {
+    let invalidArgdownPath = path.resolve(__dirname, "./invalid-argdown.txt");
+    let filePathToCli = path.resolve(__dirname, "../dist//cli.js");
+    const cmd = "node " + filePathToCli + ' "' + invalidArgdownPath + '"';
+    execPromise(cmd, (error, _stdout, stderr) => {
+      console.log(stderr);
+      expect(error).to.not.equal(null);
+      expect(stderr).to.not.equal("");
+    }).catch(() => {});
+  });
 });

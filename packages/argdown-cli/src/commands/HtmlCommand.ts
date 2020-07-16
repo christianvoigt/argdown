@@ -1,16 +1,11 @@
 import { argdown } from "@argdown/node";
 import { Arguments } from "yargs";
 import { IGeneralCliOptions } from "../IGeneralCliOptions";
+import { runArgdown } from "./runArgdown";
 
 export const command = "html [inputGlob] [outputDir]";
 export const desc = "export Argdown input as HTML files";
 export const builder = {
-  logParserErrors: {
-    alias: "e",
-    describe: "Log parser errors to console",
-    type: "boolean",
-    default: true
-  },
   headless: {
     alias: "hl",
     describe: "Export without Html, Head and Body elements",
@@ -78,9 +73,17 @@ export const handler = async function(
   }
 
   config.logLevel = args.verbose ? "verbose" : config.logLevel;
+  config.logLevel = args.silent ? "silent" : config.logLevel;
   config.watch = args.watch || config.watch;
   config.process = ["load-file", "parse-input"];
   config.logParserErrors = args.logParserErrors || config.logParserErrors;
+  config.throwExceptions = args.throwExceptions || config.throwExceptions;
+  if (args.throwExceptions) {
+    if (!config.parser) {
+      config.parser = {};
+    }
+    config.parser.throwExceptions = args.throwExceptions;
+  }
   if (config.logParserErrors) {
     config.process.push("log-parser-errors");
   }
@@ -101,5 +104,12 @@ export const handler = async function(
     config.process.push("stdout-html");
   }
 
-  await argdown.load(config).catch((e: Error) => console.log(e.message));
+  await runArgdown(
+    argdown,
+    config,
+    true,
+    "HTML export canceled",
+    "exported",
+    "to html"
+  );
 };

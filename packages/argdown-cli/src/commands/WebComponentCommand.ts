@@ -1,12 +1,12 @@
 import { argdown } from "@argdown/node";
 import { Arguments } from "yargs";
 import { IGeneralCliOptions } from "../IGeneralCliOptions";
+import { runArgdown } from "./runArgdown";
 
 export const command = "web-component [inputGlob] [outputDir]";
 export const desc = "export Argdown input as argdown-map web component";
 export const builder = {
   logParserErrors: {
-    alias: "e",
     describe: "Log parser errors to console",
     type: "boolean",
     default: true
@@ -74,6 +74,7 @@ export const handler = async function(
   }
 
   config.logLevel = args.verbose ? "verbose" : config.logLevel;
+  config.logLevel = args.silent ? "silent" : config.logLevel;
   config.watch = args.watch || config.watch;
   config.process = ["load-file", "parse-input"];
   config.logParserErrors = args.logParserErrors || config.logParserErrors;
@@ -96,6 +97,12 @@ export const handler = async function(
   if (args.stdout) {
     config.process.push("stdout-web-component");
   }
-
-  await argdown.load(config).catch((e: Error) => console.log(e.message));
+  await runArgdown(
+    argdown,
+    config,
+    true,
+    "Web component export canceled",
+    "exported",
+    "as web-components"
+  );
 };

@@ -3,6 +3,7 @@ import { Arguments } from "yargs";
 import { IGeneralCliOptions } from "../IGeneralCliOptions";
 import MarkdownIt from "markdown-it";
 import createArgdownPlugin from "@argdown/markdown-it-plugin";
+import { runArgdown } from "./runArgdown";
 /**
  * This command uses the AsynArgdownApplication to load and export markdown files and save the exported html as html files.
  * It add a custom plugin that simply takes the markdown input and renders it with markdown-it
@@ -45,6 +46,7 @@ export const handler = async function(
   }
 
   config.logLevel = args.verbose ? "verbose" : config.logLevel;
+  config.logLevel = args.silent ? "silent" : config.logLevel;
   config.watch = args.watch || config.watch;
   config.process = ["load-file", "render-markdown"];
   config.logParserErrors = args.logParserErrors || config.logParserErrors;
@@ -59,5 +61,12 @@ export const handler = async function(
   if (args.stdout) {
     config.process.push("stdout-html");
   }
-  await argdown.load(config).catch((e: Error) => console.log(e.message));
+  await runArgdown(
+    argdown,
+    config,
+    true,
+    "Markdown export canceled",
+    "exported",
+    `to html`
+  );
 };

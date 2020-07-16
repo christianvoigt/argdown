@@ -3,6 +3,7 @@ import { Arguments } from "yargs";
 import { StatementSelectionMode, LabelMode } from "@argdown/core";
 import { IGeneralCliOptions } from "../IGeneralCliOptions";
 import { tryToInstallImageExport } from "../tryToInstallImageExport";
+import { runArgdown } from "./runArgdown";
 
 export const command = "map [inputGlob] [outputDir]";
 export const desc = "export Argdown input as DOT files";
@@ -161,6 +162,7 @@ export const handler = async (
     }
   }
   config.logLevel = args.verbose ? "verbose" : config.logLevel;
+  config.logLevel = args.silent ? "silent" : config.logLevel;
   config.watch = args.watch || config.watch;
   config.process = ["load-file", "parse-input"];
   config.logParserErrors = args.logParserErrors || config.logParserErrors;
@@ -218,5 +220,12 @@ export const handler = async (
       config.process.push("stdout-webp");
     }
   }
-  await argdown.load(config).catch(e => console.log(e));
+  await runArgdown(
+    argdown,
+    config,
+    true,
+    "Map export canceled",
+    "exported",
+    `map to ${format}`
+  );
 };

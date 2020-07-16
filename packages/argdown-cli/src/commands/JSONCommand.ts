@@ -1,6 +1,7 @@
 import { argdown } from "@argdown/node";
 import { Arguments } from "yargs";
 import { IGeneralCliOptions } from "../IGeneralCliOptions";
+import { runArgdown } from "./runArgdown";
 
 export const command = "json [inputGlob] [outputDir]";
 export const desc = "export Argdown input as JSON files";
@@ -56,6 +57,7 @@ export const handler = async (
   }
 
   config.logLevel = args.verbose ? "verbose" : config.logLevel;
+  config.logLevel = args.silent ? "silent" : config.logLevel;
   config.watch = args.watch || config.watch;
   config.process = ["load-file", "parse-input"];
   config.logParserErrors = args.logParserErrors || config.logParserErrors;
@@ -73,5 +75,12 @@ export const handler = async (
     config.process.push("stdout-json");
   }
 
-  await argdown.load(config).catch(e => console.log(e));
+  await runArgdown(
+    argdown,
+    config,
+    true,
+    "JSON export canceled",
+    "export",
+    "to JSON"
+  );
 };

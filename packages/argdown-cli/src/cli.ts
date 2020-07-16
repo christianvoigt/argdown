@@ -26,9 +26,23 @@ yargs
       type: "boolean",
       describe: "verbose mode"
     },
+    silent: {
+      type: "boolean",
+      describe: "silent mode"
+    },
     stdout: {
       type: "boolean",
       describe: "Export data to stdout"
+    },
+    throwExceptions: {
+      type: "boolean",
+      describe: "Throw errors"
+    },
+    logParserErrors: {
+      alias: "e",
+      describe: "Log parser errors to console",
+      type: "boolean",
+      default: true
     }
   })
   .commandDir("./commands")
