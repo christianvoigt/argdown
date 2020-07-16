@@ -1,4 +1,11 @@
+---
+argdown:
+  mode: "inline"
+---
+
 # Test
+
+The map:
 
 ```argdown-map
 [s]

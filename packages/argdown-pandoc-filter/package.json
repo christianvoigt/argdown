@@ -1,18 +1,19 @@
 {
   "name": "@argdown/pandoc-filter",
-  "version": "1.3.0",
-  "description": "Turns Argdown code fences into svg argument maps",
+  "engines": {
+    "node": ">= 13.7.0"
+  },
+  "version": "1.5.0",
+  "description": "Turns Argdown code fences into svg, png, jpg, webp or web-component argument maps",
   "bin": {
-    "pandoc-code-file-filter": "bin/filter.js"
+    "argdown-filter": "dist/index.js"
   },
   "main": "dist/index.js",
   "scripts": {
     "deploy": "npm run test && npm run build && npm version patch && npm run push",
     "type-check": "tsc --noEmit",
-    "build": "npm run clean && npm run build:src && npm run build:esm",
-    "build:esm": "tsc -m es6 --target ES2018 --outDir dist-esm",
-    "build:src": "tsc",
-    "test": "mocha -r ts-node/register --full-trace --bail --require source-map-support/register ./test/**/*.spec.ts",
+    "build": "tsc",
+    "test": "SET TS_NODE_COMPILER_OPTIONS={\"module\":\"commonjs\"}&& mocha -r ts-node/register --full-trace --bail --require source-map-support/register ./test/**/*.spec.ts",
     "coverage": "nyc mocha -r ts-node/register --full-trace --bail --require source-map-support/register ./test/**/*.spec.ts",
     "report": "nyc report",
     "clean": "rimraf \"dist/*\" && rimraf \"dist-esm/*\"",
@@ -38,11 +39,13 @@
   "license": "MIT",
   "devDependencies": {
     "@types/chai": "^4.2.11",
-    "@types/marked": "^0.7.4",
-    "@types/mocha": "^7.0.2",
-    "@argdown/web-components": "^1.3.0",
+    "@types/chai-fs": "^2.0.2",
+    "@types/rimraf": "^3.0.0",
+    "@types/mocha": "8.0.0",
+    "@types/lodash.defaultsdeep": "^4.6.6",
     "chai": "^4.2.0",
-    "mocha": "^7.1.1",
+    "chai-fs": "^2.0.0",
+    "mocha": "8.0.1",
     "mocha-chai-snapshot": "^1.0.0",
     "nyc": "^15.0.0",
     "parcel": "^1.12.4",
@@ -52,8 +55,14 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "@argdown/core": "^1.3.0",
+    "@argdown/core": "^1.4.9",
+    "@argdown/node": "^1.4.9",
+    "@argdown/image-export": "^1.5.0",
     "lodash.defaultsdeep": "^4.6.1",
-    "pandoc-filter-promisified": "^0.1.0"
+    "pandoc-filter": "^2.0.0",
+    "import-global": "^0.1.0"
+  },
+  "optionalDependencies": {
+    "@argdown/image-export": "^1.5.0"
   }
 }
