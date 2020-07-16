@@ -34,6 +34,9 @@ declare module "@argdown/core" {
   interface IArgdownRequest {
     saveAs?: ISaveAsSettings;
   }
+  interface IArgdownResponse {
+    outputPath?: string;
+  }
 }
 export class SaveAsFilePlugin implements IAsyncArgdownPlugin {
   name = "SaveAsFilePlugin";
@@ -62,7 +65,7 @@ export class SaveAsFilePlugin implements IAsyncArgdownPlugin {
         "No data key."
       );
     }
-    let fileContent: string | undefined = !settings.isRequestData
+    let fileContent: string | Buffer | undefined = !settings.isRequestData
       ? (<any>response)[settings.dataKey!]
       : (<any>request)[settings.dataKey!];
     if (fileContent === undefined) {
@@ -72,11 +75,11 @@ export class SaveAsFilePlugin implements IAsyncArgdownPlugin {
         "No content to save."
       );
     }
-    if (!isString(fileContent)) {
+    if (!isString(fileContent) && !Buffer.isBuffer(fileContent)) {
       throw new ArgdownPluginError(
         this.name,
         "invalid-content",
-        "Content is not a string."
+        "Content is neither a string nor a buffer."
       );
     }
     if (isEmpty(fileContent)) {
@@ -113,7 +116,7 @@ export class SaveAsFilePlugin implements IAsyncArgdownPlugin {
       outputDir = dataSettings.outputDir;
     }
     if (outputDir && settings.extension) {
-      await this.saveAsFile(
+      response.outputPath = await this.saveAsFile(
         fileContent,
         outputDir,
         fileName,
@@ -127,29 +130,27 @@ export class SaveAsFilePlugin implements IAsyncArgdownPlugin {
     return path.basename(file, extension);
   }
   async saveAsFile(
-    data: string,
+    data: string | Buffer,
     outputDir: string,
     fileName: string,
     extension: string,
     logger: IArgdownLogger
   ) {
     let absoluteOutputDir = path.resolve(process.cwd(), outputDir);
+    const outputPath = path.resolve(absoluteOutputDir, fileName + extension);
     await mkdirp(absoluteOutputDir);
     await new Promise((resolve, reject) => {
-      fs.writeFile(
-        absoluteOutputDir + "/" + fileName + extension,
-        data,
-        function(err: Error) {
-          if (err) {
-            reject(err);
-          }
-          logger.log(
-            "verbose",
-            "Saved " + absoluteOutputDir + "/" + fileName + extension
-          );
-          resolve();
+      fs.writeFile(outputPath, data, function(err: Error) {
+        if (err) {
+          reject(err);
         }
-      );
+        logger.log(
+          "verbose",
+          "Saved " + absoluteOutputDir + "/" + fileName + extension
+        );
+        resolve();
+      });
     });
+    return outputPath;
   }
 }

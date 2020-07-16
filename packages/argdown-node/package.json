@@ -4,7 +4,7 @@
   "description": "Async Argdown application for node.js",
   "main": "./dist/index.js",
   "module": "./dist-esm/index.js",
-  "types": "./dist/index.d.ts",
+  "types": "./dist-esm/index.d.ts",
   "engines": {
     "node": ">= 8.0.0"
   },
@@ -13,7 +13,7 @@
     "type-check": "tsc --noEmit",
     "build": "yarn run clean && yarn run build:commonjs && yarn run build:esm",
     "build:commonjs": "tsc",
-    "build:esm": "tsc -m es6 --target ES2018 --outDir dist-esm",
+    "build:esm": "tsc -m ES2020 --target ES2020 --outDir dist-esm",
     "build:src": "tsc",
     "docs:build": "node ./node_modules/typedoc/bin/typedoc",
     "test": "mocha -r ts-node/register --full-trace --bail --require source-map-support/register ./test/**/*.spec.ts",

@@ -264,7 +264,7 @@ export class AsyncArgdownApplication extends ArgdownApplication {
   };
   loadConfig = async (filePath?: string): Promise<IArgdownRequest> => {
     let config: IArgdownRequest = {};
-    filePath = filePath || "./argdown.config.json"; // json is default because it can be loaded asynchronously
+    filePath = filePath || "argdown.config.json"; // json is default because it can be loaded asynchronously
     filePath = path.resolve(process.cwd(), filePath);
     const extension = path.extname(filePath);
     // We use non-blocking IO for JSON config files
