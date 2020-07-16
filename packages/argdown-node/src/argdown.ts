@@ -145,6 +145,7 @@ const saveWebComponentAsHtml = new SaveAsFilePlugin({
 argdown.addPlugin(saveWebComponentAsHtml, "save-web-component-as-html");
 
 argdown.defaultProcesses = {
+  parse: ["load-file", "parse-input"],
   "export-svg": [
     "load-file",
     "parse-input",

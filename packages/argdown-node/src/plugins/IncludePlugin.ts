@@ -84,7 +84,15 @@ export class IncludePlugin implements IAsyncArgdownPlugin {
           "' already included. To avoid infinite loops, each file can only be included once. -->";
       } else {
         filesAlreadyIncluded.push(absoluteFilePath);
-        strToInclude = await readFileAsync(absoluteFilePath, "utf8");
+        try {
+          strToInclude = await readFileAsync(absoluteFilePath, "utf8");
+        } catch (e) {
+          throw new ArgdownPluginError(
+            this.name,
+            "file-not-found",
+            `'${absoluteFilePath}' not found.`
+          );
+        }
         if (strToInclude == null) {
           strToInclude =
             "<!-- Include failed: File '" +

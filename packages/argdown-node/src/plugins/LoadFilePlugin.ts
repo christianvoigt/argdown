@@ -20,7 +20,16 @@ export class LoadFilePlugin implements IAsyncArgdownPlugin {
         "No inputPath field in request object."
       );
     }
-    const input = await readFileAsync(file, "utf8");
+    let input: string;
+    try {
+      input = await readFileAsync(file, "utf8");
+    } catch (e) {
+      throw new ArgdownPluginError(
+        this.name,
+        "file-not-found",
+        `'${file}' not found.`
+      );
+    }
     logger.log(
       "verbose",
       "[LoadFilePlugin]: Reading file completed, starting processing: " + file

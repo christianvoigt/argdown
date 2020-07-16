@@ -115,6 +115,7 @@ export class AsyncArgdownApplication extends ArgdownApplication {
             throw e;
           } else {
             e.processor = processorId;
+            cancelProcessor = true;
             exceptions.push(e);
             this.logger.log(
               "warning",
@@ -123,6 +124,9 @@ export class AsyncArgdownApplication extends ArgdownApplication {
             break;
           }
         }
+      }
+      if (cancelProcessor) {
+        break;
       }
 
       for (let plugin of processor.plugins) {
@@ -141,11 +145,15 @@ export class AsyncArgdownApplication extends ArgdownApplication {
             throw e;
           } else {
             e.processor = processorId;
+            cancelProcessor = true;
             this.logger.log("warning", `Processor ${processorId} canceled.`);
             exceptions.push(e);
             break;
           }
         }
+      }
+      if (cancelProcessor) {
+        break;
       }
     }
     if (req.logExceptions === undefined || req.logExceptions) {
@@ -247,6 +255,13 @@ export class AsyncArgdownApplication extends ArgdownApplication {
         );
       });
       const promises = [];
+      if (files.length == 0) {
+        throw new ArgdownPluginError(
+          "AsyncArgdownApplication.load",
+          "no-files-found",
+          `No Argdown files found at: '${absoluteInputGlob}'`
+        );
+      }
       for (let file of files) {
         const requestForFile = cloneDeep(request);
         requestForFile.inputPath = file;
