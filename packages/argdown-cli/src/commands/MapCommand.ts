@@ -2,6 +2,7 @@ import { argdown } from "@argdown/node";
 import { Arguments } from "yargs";
 import { StatementSelectionMode, LabelMode } from "@argdown/core";
 import { IGeneralCliOptions } from "../IGeneralCliOptions";
+import { tryToInstallImageExport } from "../tryToInstallImageExport";
 
 export const command = "map [inputGlob] [outputDir]";
 export const desc = "export Argdown input as DOT files";
@@ -72,7 +73,8 @@ export const builder = {
   format: {
     alias: "f",
     type: "string",
-    describe: "the file format (dot, graphml, svg, pdf)",
+    describe:
+      "the file format (dot, graphml, svg, pdf, png, jpg, webp). For png, jpg or webp export you have first to install the Argdown image export plugin by running 'npm install -g @argdown/image-export'.",
     default: "pdf"
   }
 };
@@ -101,9 +103,18 @@ export const handler = async (
   config.selection = config.selection || {};
   config.color = config.color || {};
   const format = args.format || "pdf";
+
   if (format === "pdf") {
     config.svgToPdf = config.svgToPdf || {};
   } else {
+    if (format === "png" || format === "jpg" || format === "webp") {
+      const installed = await tryToInstallImageExport(argdown);
+      if (!installed) {
+        throw new Error(
+          `You are trying to export to ${format} but have not installed the Argdown image export plugin. Please run 'npm install -g @argdown/image-export' first. This will automatically add the plugin to @argdown/cli.`
+        );
+      }
+    }
     config.saveAs = config.saveAs || {};
   }
 
@@ -174,8 +185,17 @@ export const handler = async (
       config.process.push("save-svg-as-svg");
     } else if (format === "graphml") {
       config.process.push("save-as-graphml");
-    } else {
+    } else if (format === "pdf") {
       config.process.push("save-svg-as-pdf");
+    } else if (format === "png") {
+      config.process.push("export-png");
+      config.process.push("save-as-png");
+    } else if (format === "jpg") {
+      config.process.push("export-jpg");
+      config.process.push("save-as-jpg");
+    } else if (format === "webp") {
+      config.process.push("export-webp");
+      config.process.push("save-as-webp");
     }
   }
 
@@ -184,9 +204,18 @@ export const handler = async (
       config.process.push("stdout-dot");
     } else if (format === "graphml") {
       config.process.push("stdout-graphml");
-    } else {
-      // pdf and png to stdout is currently not supported
+    } else if (format === "svg") {
+      // pdf to stdout is currently not supported
       config.process.push("stdout-svg");
+    } else if (format === "png") {
+      config.process.push("export-png");
+      config.process.push("stdout-png");
+    } else if (format === "jpg") {
+      config.process.push("export-jpg");
+      config.process.push("stdout-jpg");
+    } else if (format === "webp") {
+      config.process.push("export-webp");
+      config.process.push("stdout-webp");
     }
   }
   await argdown.load(config).catch(e => console.log(e));

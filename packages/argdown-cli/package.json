@@ -8,7 +8,7 @@
     "Markdown"
   ],
   "engines": {
-    "node": ">= 8.0.0"
+    "node": ">= 13.7.0"
   },
   "version": "1.4.9",
   "license": "MIT",
@@ -59,6 +59,7 @@
     "copyfiles": "^2.2.0",
     "glob": "^7.1.6",
     "intercept-stdout": "^0.1.2",
+    "import-global": "^0.1.0",
     "mkdirp": "^1.0.3",
     "mocha": "8.0.1",
     "nyc": "^15.0.0",
@@ -68,6 +69,9 @@
     "typedoc": "^0.17.6",
     "typescript": "^3.8.3",
     "typescript-workspace-plugin": "^2.0.1"
+  },
+  "optionalDependencies": {
+    "@argdown/image-export": "^1.5.0"
   },
   "nyc": {
     "include": [

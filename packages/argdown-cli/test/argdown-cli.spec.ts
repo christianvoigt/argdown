@@ -1,6 +1,7 @@
 const chai = require("chai");
 chai.use(require("chai-fs"));
 import { expect } from "chai";
+import { describe, it } from "mocha";
 import * as path from "path";
 import rimraf from "rimraf";
 const fs = require("fs");
@@ -99,6 +100,42 @@ describe("argdown-cli", function() {
     let filePath = path.resolve(__dirname, "./test.argdown");
     let filePathToCli = path.resolve(__dirname, "../dist//cli.js");
     const cmd = "node " + filePathToCli + " markdown " + filePath + " --stdout";
+    return execPromise(cmd, (error, stdout, stderr) => {
+      expect(error).to.equal(null);
+      expect(stderr).to.equal("");
+      expect(stdout).to.not.equal("");
+      expect(stdout).to.not.equal(null);
+    });
+  });
+  it("can create png output", () => {
+    let filePath = path.resolve(__dirname, "./test.argdown");
+    let filePathToCli = path.resolve(__dirname, "../dist//cli.js");
+    const cmd =
+      "node " + filePathToCli + " map -f png " + filePath + " --stdout";
+    return execPromise(cmd, (error, stdout, stderr) => {
+      expect(error).to.equal(null);
+      expect(stderr).to.equal("");
+      expect(stdout).to.not.equal("");
+      expect(stdout).to.not.equal(null);
+    });
+  });
+  it("can create jpg output", () => {
+    let filePath = path.resolve(__dirname, "./test.argdown");
+    let filePathToCli = path.resolve(__dirname, "../dist//cli.js");
+    const cmd =
+      "node " + filePathToCli + " map -f jpg " + filePath + " --stdout";
+    return execPromise(cmd, (error, stdout, stderr) => {
+      expect(error).to.equal(null);
+      expect(stderr).to.equal("");
+      expect(stdout).to.not.equal("");
+      expect(stdout).to.not.equal(null);
+    });
+  });
+  it("can create webp output", () => {
+    let filePath = path.resolve(__dirname, "./test.argdown");
+    let filePathToCli = path.resolve(__dirname, "../dist//cli.js");
+    const cmd =
+      "node " + filePathToCli + " map -f webp " + filePath + " --stdout";
     return execPromise(cmd, (error, stdout, stderr) => {
       expect(error).to.equal(null);
       expect(stderr).to.equal("");
@@ -295,6 +332,63 @@ describe("argdown-cli", function() {
       })
       .then(() => {
         return rimrafPromise(jsonFolder);
+      });
+  });
+  it("can create png file from map", () => {
+    let imagesFolder = path.resolve(__dirname, "./images/");
+    let filePath = path.resolve(__dirname, "./test.argdown");
+    let filePathToPng = path.resolve(__dirname, "./images/test.png");
+    let filePathToCli = path.resolve(__dirname, "../dist//cli.js");
+    const cmd =
+      "node " + filePathToCli + " map -f png " + filePath + " " + imagesFolder;
+    return rimrafPromise(imagesFolder)
+      .then(() => {
+        return execPromise(cmd, (error, _stdout, stderr) => {
+          expect(error).to.equal(null);
+          expect(stderr).to.equal("");
+          (<any>expect(filePathToPng).to.be.a).file();
+        });
+      })
+      .then(() => {
+        return rimrafPromise(imagesFolder);
+      });
+  });
+  it("can create jpg file from map", () => {
+    let imagesFolder = path.resolve(__dirname, "./images/");
+    let filePath = path.resolve(__dirname, "./test.argdown");
+    let filePathToJpg = path.resolve(__dirname, "./images/test.jpg");
+    let filePathToCli = path.resolve(__dirname, "../dist//cli.js");
+    const cmd =
+      "node " + filePathToCli + " map -f jpg " + filePath + " " + imagesFolder;
+    return rimrafPromise(imagesFolder)
+      .then(() => {
+        return execPromise(cmd, (error, _stdout, stderr) => {
+          expect(error).to.equal(null);
+          expect(stderr).to.equal("");
+          (<any>expect(filePathToJpg).to.be.a).file();
+        });
+      })
+      .then(() => {
+        return rimrafPromise(imagesFolder);
+      });
+  });
+  it("can create webp file from map", () => {
+    let imagesFolder = path.resolve(__dirname, "./images/");
+    let filePath = path.resolve(__dirname, "./test.argdown");
+    let filePathToWebp = path.resolve(__dirname, "./images/test.webp");
+    let filePathToCli = path.resolve(__dirname, "../dist//cli.js");
+    const cmd =
+      "node " + filePathToCli + " map -f webp " + filePath + " " + imagesFolder;
+    return rimrafPromise(imagesFolder)
+      .then(() => {
+        return execPromise(cmd, (error, _stdout, stderr) => {
+          expect(error).to.equal(null);
+          expect(stderr).to.equal("");
+          (<any>expect(filePathToWebp).to.be.a).file();
+        });
+      })
+      .then(() => {
+        return rimrafPromise(imagesFolder);
       });
   });
   it("can create html file from markdown", () => {
