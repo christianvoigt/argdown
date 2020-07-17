@@ -348,9 +348,11 @@ connection.onDocumentHighlight(async (params: TextDocumentPositionParams) => {
   const { textDocument, position } = params;
   const response = await processDocForProviders(textDocument);
   if (response) {
-    return provideReferences(response, textDocument.uri, position).map(
-      (l: Location) => DocumentHighlight.create(l.range, 1)
-    );
+    return provideReferences(
+      response,
+      textDocument.uri,
+      position
+    ).map((l: Location) => DocumentHighlight.create(l.range, 1));
   }
   return null;
 });
@@ -440,14 +442,23 @@ connection.onFoldingRanges(async (params: FoldingRangeParams) => {
 // });
 const getConfigPath = async (doc: TextDocument | undefined) => {
   if (doc) {
+    let configPath: string | undefined = undefined;
     let settings = await getDocumentSettings(doc.uri);
     const docPath = URI.parse(doc.uri).fsPath;
-    let workspaceFolder = workspaceFolders.find(f =>
-      docPath.startsWith(URI.parse(f.uri).fsPath)
-    );
-    const configPath = workspaceFolder
-      ? path.resolve(URI.parse(workspaceFolder.uri).fsPath, settings.configFile)
-      : undefined;
+    if (workspaceFolders && workspaceFolders.length > 0) {
+      let workspaceFolder = workspaceFolders.find(f =>
+        docPath.startsWith(URI.parse(f.uri).fsPath)
+      );
+      configPath = workspaceFolder
+        ? path.resolve(
+            URI.parse(workspaceFolder.uri).fsPath,
+            settings.configFile
+          )
+        : undefined;
+    }
+    if (!configPath) {
+      configPath = path.dirname(docPath);
+    }
     return configPath;
   }
   return undefined;
