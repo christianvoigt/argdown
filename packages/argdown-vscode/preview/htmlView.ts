@@ -143,11 +143,10 @@ document.addEventListener(
         }
         if (
           node.href.startsWith("file://") ||
-          node.href.startsWith("vscode-resource:")
+          node.href.startsWith(settings.cspSource)
         ) {
-          const [path, fragment] = node.href
-            .replace(/^(file:\/\/|vscode-resource:)/i, "")
-            .split("#");
+          const regex = new RegExp(`^(file:\/\/|${settings.cspSource})`, "i");
+          const [path, fragment] = node.href.replace(regex, "").split("#");
           messagePoster.postCommand("_markdown.openDocumentLink", [
             { path, fragment }
           ]);

@@ -7,6 +7,7 @@ export interface IPreviewSettings {
   scrollEditorWithPreview: boolean;
   syncPreviewSelectionWithEditor?: boolean;
   transitionDuration: number;
+  cspSource: string;
 }
 
 let cachedSettings: IPreviewSettings | undefined = undefined;

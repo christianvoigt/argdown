@@ -481,7 +481,8 @@ export class ArgdownPreview {
       const content = await this._contentProvider.provideHtmlContent(
         document,
         this._previewConfigurations,
-        initialState
+        initialState,
+        this.editor.webview.cspSource
       );
       if (this._resource === resource) {
         this.editor.title = ArgdownPreview.getPreviewTitle(

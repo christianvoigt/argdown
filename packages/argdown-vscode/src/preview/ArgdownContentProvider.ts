@@ -71,7 +71,8 @@ export class ArgdownContentProvider {
   public async provideHtmlContent(
     argdownDocument: vscode.TextDocument,
     previewConfigurations: ArgdownPreviewConfigurationManager,
-    initialState: IArgdownPreviewState
+    initialState: IArgdownPreviewState,
+    cspSource: string
   ): Promise<string> {
     const sourceUri = argdownDocument.uri;
     const config = previewConfigurations.getConfiguration(sourceUri);
@@ -84,12 +85,13 @@ export class ArgdownContentProvider {
       scrollEditorWithPreview: config.scrollEditorWithPreview,
       syncPreviewSelectionWithEditor: config.syncPreviewSelectionWithEditor,
       doubleClickToSwitchToEditor: config.doubleClickToSwitchToEditor,
-      disableSecurityWarnings: this.cspArbiter.shouldDisableSecurityWarnings()
+      disableSecurityWarnings: this.cspArbiter.shouldDisableSecurityWarnings(),
+      cspSource
     };
 
     // Content Security Policy
     const nonce = new Date().getTime() + "" + new Date().getMilliseconds();
-    const csp = this.getCspForResource(sourceUri, nonce);
+    const csp = this.getCspForResource(sourceUri, nonce, cspSource);
     let viewHtml = "";
     viewHtml = await viewProvider.generateView(
       this.engine,
@@ -273,20 +275,24 @@ export class ArgdownContentProvider {
       .join("\n");
   }
 
-  private getCspForResource(resource: vscode.Uri, nonce: string): string {
+  private getCspForResource(
+    resource: vscode.Uri,
+    nonce: string,
+    cspSource: string
+  ): string {
     switch (this.cspArbiter.getSecurityLevelForResource(resource)) {
       case ArgdownPreviewSecurityLevel.AllowInsecureContent:
-        return `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src vscode-resource: http: https: data:; media-src vscode-resource: http: https: data:; script-src 'nonce-${nonce}'; style-src vscode-resource: 'unsafe-inline' http: https: data:; font-src vscode-resource: http: https: data:;">`;
+        return `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${cspSource} http: https: data:; media-src ${cspSource} http: https: data:; script-src 'nonce-${nonce}'; style-src ${cspSource} 'unsafe-inline' http: https: data:; font-src ${cspSource} http: https: data:;">`;
 
       case ArgdownPreviewSecurityLevel.AllowInsecureLocalContent:
-        return `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src vscode-resource: https: data: http://localhost:* http://127.0.0.1:*; media-src vscode-resource: https: data: http://localhost:* http://127.0.0.1:*; script-src 'nonce-${nonce}'; style-src vscode-resource: 'unsafe-inline' https: data: http://localhost:* http://127.0.0.1:*; font-src vscode-resource: https: data: http://localhost:* http://127.0.0.1:*;">`;
+        return `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${cspSource} https: data: http://localhost:* http://127.0.0.1:*; media-src ${cspSource} https: data: http://localhost:* http://127.0.0.1:*; script-src 'nonce-${nonce}'; style-src ${cspSource} 'unsafe-inline' https: data: http://localhost:* http://127.0.0.1:*; font-src ${cspSource} https: data: http://localhost:* http://127.0.0.1:*;">`;
 
       case ArgdownPreviewSecurityLevel.AllowScriptsAndAllContent:
         return "";
 
       case ArgdownPreviewSecurityLevel.Strict:
       default:
-        return `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src vscode-resource: https: data:; media-src vscode-resource: https: data:; script-src 'nonce-${nonce}'; style-src vscode-resource: 'unsafe-inline' https: data:; font-src vscode-resource: https: data:;">`;
+        return `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${cspSource} https: data:; media-src ${cspSource} https: data:; script-src 'nonce-${nonce}'; style-src ${cspSource} 'unsafe-inline' https: data:; font-src ${cspSource} https: data:;">`;
     }
   }
 }
