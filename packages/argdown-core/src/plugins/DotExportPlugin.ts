@@ -86,6 +86,10 @@ export interface IDotSettings {
       charactersInLine?: number;
     };
   };
+  edge?: {
+    arrowSize: number;
+    penWidth: number;
+  };
   graphVizSettings?: { [name: string]: string };
   sameRank?: IRank[];
 }
@@ -165,6 +169,10 @@ const defaultSettings: DefaultSettings<IDotSettings> = {
       charactersInLine: 40
     })
   }),
+  edge: ensure.object({
+    penWidth: 1,
+    arrowSize: 1
+  }),
   graphVizSettings: ensure.object({
     rankdir: "BT", //BT | TB | LR | RL
     concentrate: "false",
@@ -219,7 +227,7 @@ export class DotExportPlugin implements IArgdownPlugin {
     settings.sameRank!.push(...Object.values(rankMap));
 
     response.groupCount = 0;
-    let dot = 'digraph "' + settings.graphname + '" {\n\n';
+    let dot = `digraph "${settings.graphname}" {\n\n`;
     if (settings.graphVizSettings) {
       const keys = Object.keys(settings.graphVizSettings);
       for (let key of keys) {
@@ -227,6 +235,7 @@ export class DotExportPlugin implements IArgdownPlugin {
         dot += key + ' = "' + value + '";\n';
       }
     }
+    dot += `edge[arrowsize="${settings.edge?.arrowSize}", penwidth="${settings.edge?.penWidth}"]`;
     dot += `graph [bgcolor = "${settings.mapBgColor}" ]`;
 
     for (let node of response.map!.nodes) {
