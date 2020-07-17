@@ -17,8 +17,8 @@ export const ArgdownMark = () => {
         background-color: rgba(256, 256, 256, 0.8);
         padding-right: 0.8rem;
         border-radius: 3px;
-        color: #ccc;
-        fill: #ccc;
+        color: var(--argdown-logo-color);
+        fill: var(--argdown-logo-color);
         text-decoration: none;
       }
       .argdown-mark .icon {

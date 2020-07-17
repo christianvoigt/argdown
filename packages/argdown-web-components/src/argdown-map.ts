@@ -252,12 +252,12 @@ const styles = html`
   <style>
     :host {
       display: block;
-      background-color: #fff;
-      border: 1px solid #eee;
+      background-color: var(--argdown-bg-color, #fff);
+      border: 1px solid var(--argdown-border-color, #eee);
     }
     :host .component {
       display: flex;
-      background-color: #fff;
+      background-color: var(--argdown-bg-color, #fff);
       flex-direction: column;
       position: relative;
       width: 100%;
@@ -342,8 +342,8 @@ const styles = html`
       pointer-events: auto;
     }
     nav .zoom-message {
-      color: #ccc;
-      background-color: #fff;
+      color: var(--argdown-logo-color, #ccc);
+      background-color: var(--argdown-bg-color, #fff);
       display: flex;
       align-items: center;
       padding: 0 1rem;
@@ -365,24 +365,25 @@ const styles = html`
         Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
       display: inline-block;
       font-size: 0.8rem;
-      color: #fff;
-      background-color: #3e8eaf;
+      color: var(--argdown-button-font-color, #fff);
+      background-color: var(--argdown-button-bg-color, #3e8eaf);
       padding: 0.4rem 0.8rem;
       border-radius: 4px;
       border: 0;
       transition: background-color 0.1s ease;
       box-sizing: border-box;
-      border-bottom: 1px solid #38809d;
+      border-bottom: 1px solid
+        var(--argdown-button-border-bottom-color, #38809d);
       font-weight: 500;
       margin: 0 3px;
     }
     button:hover {
-      background-color: #387e9c;
+      background-color: var(--argdown-button-bg-hover-color, #387e9c);
     }
     button svg {
       height: 0.8rem;
       width: auto;
-      color: #fff;
+      color: var(--argdown-button-font-color, #fff);
     }
   </style>
 `;

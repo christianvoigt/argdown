@@ -1,3 +1,12 @@
+html {
+  --argdown-bg-color: #fff;
+  --argdown-border-color: #eee;
+  --argdown-logo-color: #ccc;
+  --argdown-button-bg-color: #3e8eaf;
+  --argdown-button-bg-hover-color: #387e9c;
+  --argdown-button-border-bottom-color: #38809d;
+  --argdown-button-font-color: #fff;
+}
 argdown-map:not(:defined) [slot="source"] {
   display: none;
 }
