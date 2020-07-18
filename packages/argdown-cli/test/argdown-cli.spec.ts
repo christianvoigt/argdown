@@ -417,7 +417,7 @@ describe("argdown-cli", function() {
       "utf8"
     );
     let filePathToCli = path.resolve(__dirname, "../dist//cli.js");
-    const cmd = "node " + filePathToCli + " compile " + globPath + " --stdout";
+    const cmd = `node ${filePathToCli} --silent compile ${globPath} --stdout`;
     return execPromise(cmd, (error, stdout, stderr) => {
       expect(error).to.equal(null);
       expect(stderr).to.equal("");
@@ -458,14 +458,15 @@ describe("argdown-cli", function() {
         return rimrafPromise(jsonFolder);
       });
   });
-  it("can throw parser error", () => {
+  it("can throw parser error", async () => {
     let invalidArgdownPath = path.resolve(__dirname, "./invalid-argdown.txt");
     let filePathToCli = path.resolve(__dirname, "../dist//cli.js");
-    const cmd = "node " + filePathToCli + ' "' + invalidArgdownPath + '"';
-    execPromise(cmd, (error, _stdout, stderr) => {
+    const cmd = `node ${filePathToCli} --logParserErrors=false "${invalidArgdownPath}"`;
+    await execPromise(cmd, (error, _stdout, stderr) => {
       console.log(stderr);
       expect(error).to.not.equal(null);
-      expect(stderr).to.not.equal("");
+      expect((<any>error).code).to.equal(1);
+      // expect(stderr).to.not.equal("");
     }).catch(() => {});
   });
 });
