@@ -27,13 +27,13 @@ export interface IImageExportPluginSettings {
 declare module "@argdown/core" {
   interface IArgdownRequest {
     /**
-     * Settings for the [[PngExportPlugin]]
+     * Settings for the [[ImageExportPlugin]]
      **/
     image?: IImageExportPluginSettings;
   }
   interface IArgdownResponse {
     /**
-     * Settings for the [[PngExportPlugin]]
+     * Data of the [[ImageExportPlugin]]
      **/
     png?: String | Buffer;
     jpg?: String | Buffer;
