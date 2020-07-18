@@ -4,7 +4,8 @@
 
 [Argdown](https://argdown.org) is a simple syntax for analyzing complex argumentation, inspired by Markdown. This extension provides full language support for Argdown in VS Code:
 
-- [New feature! Integration with Markdown](#integration-with-markdown): Use Argdown code blocks and see them transformed to argument maps in the live preview for _Markdown files_.
+- [New feature! Full support for argdown.config.json files](#configuration-files): The new code-completion, hover info and validation makes it much easier to find your way through the file format and the many configuration options.
+- [Integration with Markdown](#integration-with-markdown): Use Argdown code blocks and see them transformed to argument maps in the live preview for _Markdown files_.
 - [Live Preview](#map-preview) for _Argdown files_: See your argument map change during writing Argdown files.
 - 2 map layout algorithms ([DagreD3](https://github.com/dagrejs/dagre-d3) & [Viz.js](https://github.com/mdaines/viz.js/))
 - [Code completion](#code-completion)
@@ -103,6 +104,44 @@ Please note that the advanced language features of VSCode (code dianostics, code
 ## Exporting
 
 ![Export](https://raw.githubusercontent.com/christianvoigt/argdown/HEAD/packages/argdown-vscode/media/ExportScreencap.gif "Exporting Argdown document")
+
+## Configuration files
+
+The Argdown extension will help you write `argdown.config.json` files. Simply save a new file with that name and add curly braces `{}`. Set the cursor between the braces and press `CTRL+Space` to use code completion.
+
+VSCode will present you a list of the top-level sections of an Argdown config file. Choose one from the list to add it to your file, for example:
+
+```json
+{
+  "color": {}
+}
+```
+
+Now you can move the cursor between the new curly braces, insert a line break and press `CTRL+Space` again. VScode will present you a list of the configuration options for the `color` section. Choose one, for example:
+
+```json
+{
+  "color": {
+    "colorScheme"
+  }
+}
+```
+
+Add a colon and you will be presented with the names of all built-in color schemes. Pick one and press enter.
+
+```json
+{
+  "color": {
+    "colorScheme": :"iwanthue-blue-ocean"
+  }
+}
+```
+
+You can also move your mouse over `"colorScheme"` in your config file and you will get a hover information with a description of this configuration option.
+
+VSCode will also validate your config files and provide you with code diagnostics.
+
+By using code completion, hover infos and validation you can explore the different configuration options available to you. Alternatively, take a look at [this configuration cheat sheet](https://argdown.org/guide/configuration-cheatsheet.html).
 
 ## Adding custom Argdown colors to your settings
 
