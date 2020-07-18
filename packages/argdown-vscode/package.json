@@ -103,6 +103,12 @@
     "markdown.previewScripts": [
       "./node_modules/@argdown/web-components/dist/argdown-map.js"
     ],
+    "jsonValidation": [
+      {
+        "fileMatch": "argdown.config.json",
+        "url": "./syntaxes/argdown-config.schema.json"
+      }
+    ],
     "commands": [
       {
         "command": "argdown.exportDocumentToHtml",

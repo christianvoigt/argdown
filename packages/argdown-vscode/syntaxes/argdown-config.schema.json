@@ -1,0 +1,1504 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/christianvoigt/argdown/tree/master/packages/argdown-vscode/syntaxes/argdown-config.schema.json",
+  "title": "Argdown Config",
+  "type": "object",
+  "definitions": {
+    "font": {
+      "title": "font",
+      "description": "Only a limited number of fonts are supported, see VizJs and string-pixel-width documentation.",
+      "examples": [
+        "Arial",
+        "Verdana",
+        "Helvetica",
+        "Open Sans",
+        "Trebuchet MS",
+        "Times New Roman",
+        "Courier New",
+        "Comic Sans MS"
+      ],
+      "type": "string"
+    },
+    "measureLineWidth": {
+      "title": "measureLineWidth",
+      "description": "Measure pixel width of each word and insert a line break before or when line width reaches lineWidth.\n\nSlower, but may be more exact.\n\nBy default a line break is inserted before or when the number of characters reaches charactersInLine looking for the nearest empty space.",
+      "type": "boolean",
+      "default": false
+    },
+    "regroupGroup": {
+      "title": "Group",
+      "type": "object",
+      "properties": {
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "arguments": {
+          "title": "Arguments",
+          "type": "array",
+          "items": {
+            "title": "Argument",
+            "type": "string"
+          }
+        },
+        "statements": {
+          "title": "Statements",
+          "type": "array",
+          "items": {
+            "title": "Statement",
+            "type": "string"
+          }
+        },
+        "isClosed": {
+          "title": "isClosed",
+          "type": "boolean"
+        },
+        "children": {
+          "title": "Children",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/regroupGroup"
+          }
+        }
+      }
+    }
+  },
+  "properties": {
+    "title": {
+      "description": "Document title. You should define this in the frontmatter section of your Argdown document.",
+      "title": "Title",
+      "type": "string"
+    },
+    "subTitle": {
+      "description": "Document subTitle. You should define this in the frontmatter section of your Argdown document.",
+      "title": "Subtitle",
+      "type": "string"
+    },
+    "author": {
+      "title": "Author",
+      "description": "Document author or authors. You should define this in the frontmatter section of your Argdown document.",
+      "anyOf": [
+        { "type": "string" },
+        { "type": "array", "items": { "type": "string" } }
+      ]
+    },
+    "date": {
+      "description": "Document date. You should define this in the frontmatter section of your Argdown document.",
+      "title": "Date",
+      "type": "string"
+    },
+    "abstract": {
+      "title": "Abstract",
+      "description": "Document abstract. You should define this in the frontmatter section of your Argdown document.",
+      "type": "string"
+    },
+    "inputPath": {
+      "title": "inputPath",
+      "description": "The files that should be loaded. You can use a file glob.",
+      "examples": ["*.argdown", "./**/*.argdown"],
+      "type": "string"
+    },
+    "outputPath": {
+      "description": "Use this if you want to directly set a folder and a file name for an exported file. Do not use this if you want the naming to be done dynamically.",
+      "title": "outputPath",
+      "type": "string"
+    },
+    "outputSuffix": {
+      "description": "Will be appended to the file name of any files exported.",
+      "title": "outputSuffix",
+      "type": "string"
+    },
+    "parser": {
+      "title": "Parser",
+      "description": "Settings for the parser plugin. The parser plugin contains the Argdown lexer and parser and creates an abstract syntax tree (AST) of the parsed document.",
+      "type": "object",
+      "properties": {
+        "throwExceptions": {
+          "description": "Should parser errors be thrown as exceptions?",
+          "title": "Throwexceptions",
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "data": {
+      "title": "Data",
+      "description": "Settings for the data processing plugin that parses the YAML from frontmatter and metadata sections.",
+      "type": "object",
+      "properties": {
+        "frontMatterSettingsMode": {
+          "title": "frontMatterSettingsMode",
+          "description": "How should frontmatter settings be merged with settings from config files? By default, config files take precedence. Set to 'priority' if frontmatter settings should have precedence.",
+          "type": "string",
+          "enum": ["default", "ignore", "priority"],
+          "default": "default"
+        },
+        "switchToBlockFormatIfMultiline": {
+          "title": "switchToBlockFormatIfMultiline",
+          "description": "If false, json-like format has to be used for metadata sections. If true, outer brackets of metadata sections are ignored by the YAML parser and if there are any linebreaks, the data has to be in block-format (not json-like format).",
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "model": {
+      "title": "Model",
+      "description": "Settings for the model plugin. The model plugin creates the basic data model of the Argdown plugin chain (especially dictionaries of statements and arguments for fast lookups).",
+      "type": "object",
+      "properties": {
+        "removeTagsFromText": {
+          "title": "removeTagsFromText",
+          "description": "If true, tags are removed from argument and statement text.",
+          "type": "boolean",
+          "default": false
+        },
+        "mode": {
+          "title": "Mode",
+          "description": "How should the defined relations be interpreted? See the Argdown docs for more information.",
+          "type": "string",
+          "enum": ["strict", "loose"],
+          "default": "loose"
+        },
+        "transformArgumentRelations": {
+          "title": "transformArgumentRelations",
+          "description": "If true, outgoing relations of reconstructed arguments are transformed into outgoing relations of the pcs's main conclusion.\n\nIncoming undercuts of reconstructed arguments are transformed into incoming undercuts of the pcs's last inference.",
+          "type": "boolean",
+          "default": true
+        },
+        "shortcodes": {
+          "title": "Shortcodes",
+          "description": "A mapping between custom shortcodes and unicode characters. The model plugin will replace the shortcodes with these characters.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "unicode": {
+                "$id": "#root/model/shortcodes/unicode",
+                "title": "Unicode",
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "color": {
+      "title": "Color",
+      "description": "Settings of the color plugin. The color plugin is responsible for assigning colors to statements, arguments, groups and edges",
+      "type": "object",
+      "properties": {
+        "colorScheme": {
+          "title": "colorScheme",
+          "description": "A custom color scheme or the name of a built-in one",
+          "anyOf": [
+            {
+              "type": "array",
+              "title": "Custom color scheme",
+              "description": "A list of colors in hex format (e.g. #ff0000) that will be used to colorize nodes in the map",
+              "items": {
+                "title": "Color",
+                "type": "string"
+              }
+            },
+            {
+              "type": "string",
+              "title": "Name of built-in color-scheme",
+              "enum": [
+                "colorbrewer-category10",
+                "colorbrewer-accent",
+                "colorbrewer-dark2",
+                "colorbrewer-paired",
+                "colorbrewer-set",
+                "colorbrewer-set2",
+                "colorbrewer-set3",
+                "iwanthue-colorblind-friendly",
+                "iwanthue-fancy",
+                "iwanthue-fluo",
+                "iwanthue-red-roses",
+                "iwanthue-ochre-sand",
+                "iwanthue-yellow-lime",
+                "iwanthue-green-mint",
+                "iwanthue-ice-cube",
+                "iwanthue-blue-ocean",
+                "iwanthue-indigo-night",
+                "iwanthue-purple-wine"
+              ]
+            }
+          ]
+        },
+        "relationColors": {
+          "title": "relationColors",
+          "description": "Colors of map edges representing relations",
+          "type": "object",
+          "properties": {
+            "attack": {
+              "title": "Attack",
+              "type": "string"
+            },
+            "support": {
+              "title": "Support",
+              "type": "string"
+            },
+            "undercut": {
+              "title": "Undercut",
+              "type": "string"
+            },
+            "contradiction": {
+              "title": "Contradiction",
+              "type": "string"
+            },
+            "contradictory": {
+              "title": "Contradictory",
+              "type": "string"
+            },
+            "entails": {
+              "title": "Entails",
+              "type": "string"
+            }
+          }
+        },
+        "groupColorScheme": {
+          "title": "groupColorScheme",
+          "description": "A custom color schemes for groups, sorted by hierarchy level",
+          "type": "array",
+          "items": {
+            "title": "Color",
+            "description": "A hex color value (e.g. #ff0000)",
+            "type": "string"
+          }
+        },
+        "colorByTags": {
+          "title": "colorByTags",
+          "type": "boolean",
+          "default": true
+        },
+        "colorGroupsByTags": {
+          "title": "colorGroupsByTags",
+          "type": "boolean",
+          "default": false
+        },
+        "tagColors": {
+          "title": "tagColors",
+          "description": "Define which colors are applied to which tags. Otherwise colors from the colorScheme are applied in 'come first serve first' order.",
+          "type": "object",
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "title": "Color String",
+                "description": "A color value in hex format (e.g. #ff0000)",
+                "type": "string"
+              },
+              {
+                "title": "Color Index",
+                "description": "An index referring to the color's position in the colorScheme (zero-based)",
+                "type": "integer"
+              },
+              {
+                "type": "object",
+                "title": "Color Config",
+                "description": "Allows to give tags higher priority, regardless of order of occurrence",
+                "properties": {
+                  "color": {
+                    "anyOf": [
+                      {
+                        "title": "Color",
+                        "type": "integer"
+                      },
+
+                      {
+                        "title": "Color",
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "priority": {
+                    "title": "Priority",
+                    "description": "The highest value wins",
+                    "type": "integer"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "ignoreColorData": {
+          "title": "ignoreColorData",
+          "description": "Ignore color fields of YAML metadata sections.",
+          "type": "boolean",
+          "default": false
+        },
+        "statementColors": {
+          "title": "Statementcolors",
+          "description": "Allows to map statement titles directly to colors",
+          "type": "object",
+          "additionalProperties": {
+            "anyOf": [{ "type": "string" }, { "type": "integer" }]
+          }
+        },
+        "argumentColors": {
+          "title": "Argumentcolors",
+          "description": "Allows to map argument titles directly to colors",
+          "type": "object",
+          "additionalProperties": {
+            "anyOf": [{ "type": "string" }, { "type": "integer" }]
+          }
+        },
+        "groupColors": {
+          "title": "Groupcolors",
+          "description": "Allows to map group titles directly to colors",
+          "type": "object",
+          "additionalProperties": {
+            "anyOf": [{ "type": "string" }, { "type": "integer" }]
+          }
+        }
+      }
+    },
+    "selection": {
+      "title": "Selection",
+      "description": "Settings of the selection plugins. The selection plugins decide which arguments, statements and sections of the document will be visualized in the argument map.",
+      "type": "object",
+      "properties": {
+        "selectedTags": {
+          "title": "selectedTags",
+          "description": "Select arguments and statements by tag",
+          "type": "array",
+          "items": {
+            "$id": "#root/selection/selectedTags/tag",
+            "title": "Tag",
+            "type": "string"
+          }
+        },
+        "selectElementsWithoutTag": {
+          "title": "selectElementsWithoutTag",
+          "description": "Exclude arguments and statements by tag",
+          "type": "boolean"
+        },
+        "selectedSections": {
+          "title": "Selectedsections",
+          "description": "Select arguments and statements by section",
+          "type": "array",
+          "items": {
+            "$id": "#root/selection/selectedSections/section",
+            "title": "Section",
+            "type": "string"
+          }
+        },
+        "selectElementsWithoutSection": {
+          "title": "selectElementsWithoutSection",
+          "description": "Exclude arguments and statements by section",
+          "type": "boolean",
+          "default": true
+        },
+        "includeStatements": {
+          "title": "includeStatements",
+          "description": "Select statements by title",
+          "type": "array",
+          "items": {
+            "$id": "#root/selection/includeStatements/statement",
+            "title": "Statement",
+            "type": "string"
+          }
+        },
+        "excludeStatements": {
+          "title": "excludeStatements",
+          "description": "Exclude statements by title",
+          "type": "array",
+          "items": {
+            "title": "Statement",
+            "type": "string"
+          }
+        },
+        "excludeArguments": {
+          "title": "excludeArguments",
+          "description": "Exclude arguments by title",
+          "type": "array",
+          "items": {
+            "$id": "#root/selection/excludeArguments/argument",
+            "title": "Argument",
+            "type": "string"
+          }
+        },
+        "ignoreIsInMap": {
+          "description": "Ignore isInMap data flags",
+          "title": "ignoreIsInMap",
+          "type": "boolean"
+        },
+        "excludeDisconnected": {
+          "title": "excludeDisconnected",
+          "description": "Should disconnected nodes be excluded from the map?",
+          "type": "boolean"
+        },
+        "statementSelectionMode": {
+          "$id": "#root/selection/statementSelectionMode",
+          "title": "statementSelectionMode",
+          "description": "Allows to visualize only statements with specific properties (set to 'all' to deactivate). By default, only statements with titles are shown in the map.",
+          "type": "string",
+          "default": "with-title",
+          "enum": [
+            "all",
+            "with-title",
+            "with-relations",
+            "with-more-than-one-relation",
+            "not-used-in-argument"
+          ]
+        }
+      }
+    },
+    "map": {
+      "title": "Map",
+      "description": "Settings of the map plugin. The map plugin creates the nodes and edges of the map (given the selection from the selection plugin).",
+      "type": "object",
+      "properties": {
+        "statementLabelMode": {
+          "title": "statementLabelMode",
+          "description": "Adds statement title, text or both (hide-untitled) to statement node",
+          "type": "string",
+          "enum": ["hide-untitled", "title", "text"],
+          "default": "hide-untitled"
+        },
+        "argumentLabelMode": {
+          "title": "argumentLabelMode",
+          "description": "Adds argument title, description or both (hide-untitled) to argument node",
+          "type": "string",
+          "enum": ["hide-untitled", "title", "text"],
+          "default": "hide-untitled"
+        },
+        "addTags": {
+          "title": "addTags",
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "group": {
+      "title": "Group",
+      "description": "Settings of the group plugin. The group plugin creates group nodes that can contain other nodes. By default groups are automatically created from sections (headings) in the document.",
+      "type": "object",
+      "properties": {
+        "groupDepth": {
+          "title": "groupDepth",
+          "description": "How many levels of groups should be derived from headings? \n\nGroup creation starts at the headings with the highest section level and ends at minGroupLevel = maxLevel + 1 - groupDepth (section levels start at level 1)",
+          "type": "integer"
+        },
+        "sections": {
+          "title": "Sections",
+          "description": "Settings for specific sections. Can be used instead of data flags in the document",
+          "type": "object",
+          "additionalProperties": {
+            "title": "Section",
+            "type": "object",
+            "properties": {
+              "isGroup": {
+                "title": "isGroup",
+                "type": "boolean",
+                "description": "Should this section be visualized as a group node?"
+              },
+              "isClosed": {
+                "title": "Isclosed",
+                "description": "Should this section be visualized as a closed group node? Closed groups hide their child nodes.",
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "regroup": {
+          "title": "regroup",
+          "description": "Can be used to completely override heading-based grouping.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/regroupGroup"
+          }
+        },
+        "ignoreIsGroup": {
+          "title": "ignoreIsGroup",
+          "description": "Should isGroup data flags in YAML data be ignored",
+          "type": "boolean",
+          "default": false
+        },
+        "ignoreIsClosed": {
+          "title": "ignoreIsClosed",
+          "description": "Should isGroup data flags in YAML data be ignored",
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "html": {
+      "$id": "#root/html",
+      "title": "Html",
+      "description": "Settings of the HTML plugin that exports Argdown documents to HTML.",
+      "type": "object",
+      "properties": {
+        "outputDir": {
+          "title": "Outputdir",
+          "description": "Where to save HTML files.",
+          "type": "string",
+          "default": "./html"
+        },
+        "headless": {
+          "title": "headless",
+          "description": "Only export content of HTML body",
+          "type": "boolean",
+          "default": false
+        },
+        "createHeaderFromMetadata": {
+          "title": "createHeaderFromMetadata",
+          "description": "Use title, subtitle, author and abstract to generate a header section",
+          "type": "boolean",
+          "default": true
+        },
+        "cssFile": {
+          "title": "cssFile",
+          "description": "Url to css file that should be loaded in the exported HTML file",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "description": "Title of the HTML document. If not set, the title setting will be used.",
+          "type": "string"
+        },
+        "lang": {
+          "title": "Lang",
+          "type": "string"
+        },
+        "charset": {
+          "title": "Charset",
+          "type": "string"
+        },
+        "allowFileProtocol": {
+          "title": "allowFileProtocol",
+          "description": "Not recommended: Can links contain file protocol urls? If not, the plugin will remove them.",
+          "type": "boolean",
+          "default": false
+        },
+        "head": {
+          "title": "Head",
+          "description": "Allows to add HTML code to the head section of the exported file",
+          "type": "string"
+        },
+        "css": {
+          "title": "Css",
+          "description": "Allows to add css code to the head section of the exported file",
+          "type": "string"
+        }
+      }
+    },
+    "json": {
+      "title": "Json",
+      "description": "Settings of the JSON export plugin",
+      "type": "object",
+      "properties": {
+        "outputDir": {
+          "$id": "#root/json/outputDir",
+          "title": "Output Directory",
+          "description": "Where to save JSON files.",
+          "type": "string",
+          "default": "./json"
+        },
+        "spaces": {
+          "$id": "#root/json/spaces",
+          "description": "How many spaces should be used for indentation",
+          "title": "Spaces",
+          "type": "integer"
+        },
+        "removeEmbeddedRelations": {
+          "$id": "#root/json/removeEmbeddedRelations",
+          "title": "removeEmbeddedRelations",
+          "decription": "Should statement and argument objects contain lists of their relations? Can be safely removed to reduce file size as the data is redundant.",
+          "type": "boolean"
+        },
+        "exportMap": {
+          "$id": "#root/json/exportMap",
+          "title": "exportMap",
+          "decription": "Should the argument map data be exported?",
+          "type": "boolean",
+          "default": true
+        },
+        "exportSections": {
+          "$id": "#root/json/exportSections",
+          "title": "Exportsections",
+          "decription": "Should the section data be exported?",
+          "type": "boolean",
+          "default": true
+        },
+        "exportTags": {
+          "$id": "#root/json/exportTags",
+          "decription": "Should the tag data be exported?",
+          "title": "exportTags",
+          "type": "boolean",
+          "default": true
+        },
+        "exportData": {
+          "$id": "#root/json/exportData",
+          "decription": "Should the frontmatter and metadata data be exported?",
+          "title": "exportData",
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "dot": {
+      "title": "Dot",
+      "description": "Settings of the dot export plugin (.dot is the file format of GraphViz and VizJs).",
+      "type": "object",
+      "properties": {
+        "outputDir": {
+          "title": "outputDir",
+          "description": "Where to save DOT files",
+          "type": "string",
+          "default": "./dot"
+        },
+        "graphname": {
+          "description": "The name of the graph in the dot file",
+          "title": "graphname",
+          "type": "string"
+        },
+        "measureLineWidth": {
+          "$ref": "#/definitions/measureLineWidth"
+        },
+        "mapBgColor": {
+          "title": "mapBgColor",
+          "type": "string"
+        },
+        "edge": {
+          "title": "Edge",
+          "description": "Style of graph edges",
+          "type": "object",
+          "properties": {
+            "penwidth": {
+              "title": "penwidth",
+              "description": "Thickness of all edges in the graph",
+              "type": "number",
+              "default": 1
+            },
+            "arrowsize": {
+              "title": "arrowsize",
+              "description": "Relative size of all arrow heads in the graph",
+              "type": "number",
+              "default": 1
+            }
+          }
+        },
+        "group": {
+          "$id": "#root/dot/group",
+          "title": "Group",
+          "description": "Style of open group nodes (clusters) in the graph",
+          "type": "object",
+          "properties": {
+            "lineWidth": {
+              "title": "lineWidth",
+              "type": "number"
+            },
+            "charactersInLine": {
+              "title": "charactersInLine",
+              "type": "integer"
+            },
+            "margin": {
+              "title": "margin",
+              "type": "string"
+            },
+            "font": {
+              "$ref": "#/definitions/font"
+            },
+            "fontSize": {
+              "title": "fontSize",
+              "type": "number"
+            },
+            "bold": {
+              "title": "bold",
+              "type": "boolean"
+            }
+          }
+        },
+        "closedGroup": {
+          "title": "Closedgroup",
+          "description": "Style of closed group nodes (clusters) in the graph",
+          "type": "object",
+          "properties": {
+            "lineWidth": {
+              "title": "lineWidth",
+              "type": "number"
+            },
+            "charactersInLine": {
+              "title": "charactersInLine",
+              "type": "integer"
+            },
+            "margin": {
+              "title": "margin",
+              "type": "string"
+            },
+            "font": {
+              "$ref": "#/definitions/font"
+            },
+            "fontSize": {
+              "title": "fontSize",
+              "type": "number"
+            },
+            "bold": {
+              "title": "bold",
+              "type": "boolean"
+            }
+          }
+        },
+        "argument": {
+          "title": "Argument",
+          "description": "Style of argument nodes",
+          "type": "object",
+          "properties": {
+            "lineWidth": {
+              "title": "lineWidth",
+              "type": "number"
+            },
+            "minWidth": {
+              "title": "minWidth",
+              "type": "number"
+            },
+            "margin": {
+              "title": "margin",
+              "type": "string"
+            },
+            "title": {
+              "title": "title",
+              "description": "Style of argument titles",
+              "type": "object",
+              "properties": {
+                "font": {
+                  "$ref": "#/definitions/font"
+                },
+                "fontSize": {
+                  "title": "fontSize",
+                  "type": "number"
+                },
+                "bold": {
+                  "title": "bold",
+                  "type": "boolean"
+                },
+                "charactersInLine": {
+                  "title": "charactersInLine",
+                  "type": "integer"
+                }
+              }
+            },
+            "text": {
+              "title": "Text",
+              "description": "Style of argument descriptions",
+              "type": "object",
+              "properties": {
+                "font": {
+                  "$ref": "#/definitions/font"
+                },
+                "fontSize": {
+                  "title": "fontSize",
+                  "type": "number"
+                },
+                "bold": {
+                  "title": "bold",
+                  "type": "boolean"
+                },
+                "charactersInLine": {
+                  "title": "charactersInLine",
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        "statement": {
+          "title": "Statement",
+          "description": "Style of statement nodes",
+          "type": "object",
+          "properties": {
+            "lineWidth": {
+              "title": "lineWidth",
+              "type": "number"
+            },
+            "minWidth": {
+              "title": "minWidth",
+              "type": "number"
+            },
+            "margin": {
+              "title": "margin",
+              "type": "string"
+            },
+            "title": {
+              "title": "title",
+              "description": "Style of statement titles",
+              "type": "object",
+              "properties": {
+                "font": {
+                  "$ref": "#/definitions/font"
+                },
+                "fontSize": {
+                  "title": "fontSize",
+                  "type": "number"
+                },
+                "bold": {
+                  "title": "bold",
+                  "type": "boolean"
+                },
+                "charactersInLine": {
+                  "title": "charactersInLine",
+                  "type": "integer"
+                }
+              }
+            },
+            "text": {
+              "title": "Text",
+              "description": "Style of statement text",
+              "type": "object",
+              "properties": {
+                "font": {
+                  "$ref": "#/definitions/font"
+                },
+                "fontSize": {
+                  "title": "fontSize",
+                  "type": "number"
+                },
+                "bold": {
+                  "title": "bold",
+                  "type": "boolean"
+                },
+                "charactersInLine": {
+                  "title": "charactersInLine",
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        "graphVizSettings": {
+          "$id": "#root/dot/graphVizSettings",
+          "title": "Graphviz Settings",
+          "description": "All global settings of dot files can be added here (consult the GraphViz documentation for more information).\n\nThe settings will be inserted in the following form: 'key: \"value\";'",
+          "type": "object",
+          "properties": {
+            "rankdir": {
+              "$id": "#root/dot/graphVizSettings/rankdir",
+              "title": "Rank Direction",
+              "type": "string",
+              "default": "BT",
+              "enum": ["LR", "RL", "BT", "TB"]
+            },
+            "newrank": {
+              "$id": "#root/dot/graphVizSettings/newrank",
+              "title": "Newrank",
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "dagre": {
+      "title": "Dagre",
+      "description": "Settings of the Dagre export plugin",
+      "type": "object",
+      "properties": {
+        "rankDir": {
+          "title": "Rank direction",
+          "type": "string",
+          "default": "BT",
+          "enum": ["BT", "TB", "LR", "RL"]
+        },
+        "rankSep": {
+          "title": "Rank Separation",
+          "type": "number"
+        },
+        "nodeSep": {
+          "title": "Node Separation",
+          "type": "number"
+        },
+        "measureLineWidth": {
+          "$ref": "#/definitions/measureLineWidth"
+        },
+        "group": {
+          "title": "Group",
+          "description": "Style of group nodes (clusters)",
+          "type": "object",
+          "properties": {
+            "lineWidth": {
+              "title": "lineWidth",
+              "type": "number"
+            },
+            "charactersInLine": {
+              "title": "charactersInLine",
+              "type": "integer"
+            },
+            "font": {
+              "$ref": "#/definitions/font"
+            },
+            "fontSize": {
+              "title": "fontSize",
+              "type": "number"
+            },
+            "bold": {
+              "title": "bold",
+              "type": "boolean"
+            }
+          }
+        },
+        "argument": {
+          "title": "Argument",
+          "description": "Style of argument nodes",
+          "type": "object",
+          "properties": {
+            "lineWidth": {
+              "title": "lineWidth",
+              "type": "number"
+            },
+            "title": {
+              "title": "title",
+              "description": "Style of argument titles",
+              "type": "object",
+              "properties": {
+                "charactersInLine": {
+                  "title": "charactersInLine",
+                  "type": "integer"
+                },
+                "font": {
+                  "$ref": "#/definitions/font"
+                },
+                "fontSize": {
+                  "title": "fontSize",
+                  "type": "number"
+                },
+                "bold": {
+                  "title": "bold",
+                  "type": "boolean"
+                }
+              }
+            },
+            "text": {
+              "title": "Text",
+              "description": "Style of argument descriptions",
+              "type": "object",
+              "properties": {
+                "charactersInLine": {
+                  "title": "charactersInLine",
+                  "type": "integer"
+                },
+                "font": {
+                  "$ref": "#/definitions/font"
+                },
+                "fontSize": {
+                  "title": "fontSize",
+                  "type": "number"
+                },
+                "bold": {
+                  "title": "bold",
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "statement": {
+          "title": "Statement",
+          "description": "Style of statement nodes",
+          "type": "object",
+          "properties": {
+            "lineWidth": {
+              "title": "Linewidth",
+              "type": "number",
+              "default": 0
+            },
+            "title": {
+              "title": "title",
+              "description": "Style of statement titles",
+              "type": "object",
+              "properties": {
+                "charactersInLine": {
+                  "title": "charactersInLine",
+                  "type": "integer"
+                },
+                "font": {
+                  "$ref": "#/definitions/font"
+                },
+                "fontSize": {
+                  "title": "fontSize",
+                  "type": "number"
+                },
+                "bold": {
+                  "title": "bold",
+                  "type": "boolean"
+                }
+              }
+            },
+            "text": {
+              "title": "Text",
+              "description": "Style of statement text",
+              "type": "object",
+              "properties": {
+                "charactersInLine": {
+                  "title": "charactersInLine",
+                  "type": "integer"
+                },
+                "font": {
+                  "$ref": "#/definitions/font"
+                },
+                "fontSize": {
+                  "title": "fontSize",
+                  "type": "number"
+                },
+                "bold": {
+                  "title": "bold",
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "graphml": {
+      "title": "graphml",
+      "description": "Settings of the GraphML plugin. Exporting your Argdown document to GraphML is useful if you want to use the yEd graph editor.",
+      "type": "object",
+      "properties": {
+        "outputDir": {
+          "type": "string",
+          "title": "Output Directory",
+          "default": "./graphml",
+          "description": "Where to save graphml files"
+        },
+        "group": {
+          "title": "Group",
+          "description": "Style of group nodes (clusters)",
+          "type": "object",
+          "properties": {
+            "horizontalPadding": {
+              "title": "horizontalPadding",
+              "type": "number"
+            },
+            "verticalPadding": {
+              "title": "verticalPadding",
+              "type": "number"
+            },
+            "width": {
+              "title": "Width",
+              "type": "number"
+            },
+            "font": {
+              "$ref": "#/definitions/font"
+            },
+            "fontSize": {
+              "title": "fontSize",
+              "type": "number"
+            },
+            "bold": {
+              "title": "Bold",
+              "type": "boolean"
+            }
+          }
+        },
+        "argument": {
+          "title": "Argument",
+          "description": "Style of argument nodes",
+          "type": "object",
+          "properties": {
+            "horizontalPadding": {
+              "title": "horizontalPadding",
+              "type": "number"
+            },
+            "verticalPadding": {
+              "title": "verticalPadding",
+              "type": "number"
+            },
+            "width": {
+              "title": "Width",
+              "type": "number"
+            },
+            "title": {
+              "title": "Title",
+              "description": "Style of argument titles",
+              "type": "object",
+              "properties": {
+                "font": {
+                  "$ref": "#/definitions/font"
+                },
+                "fontSize": {
+                  "title": "Fontsize",
+                  "type": "number"
+                },
+                "bold": {
+                  "title": "Bold",
+                  "type": "boolean"
+                }
+              }
+            },
+            "text": {
+              "title": "Text",
+              "description": "Style of argument descriptions",
+              "type": "object",
+              "properties": {
+                "font": {
+                  "$ref": "#/definitions/font"
+                },
+                "fontSize": {
+                  "title": "fontSize",
+                  "type": "number"
+                },
+                "bold": {
+                  "title": "Bold",
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "statement": {
+          "title": "Statement",
+          "description": "Style of statement nodes",
+          "type": "object",
+          "properties": {
+            "horizontalPadding": {
+              "title": "horizontalPadding",
+              "type": "number"
+            },
+            "verticalPadding": {
+              "title": "verticalPadding",
+              "type": "number"
+            },
+            "width": {
+              "title": "Width",
+              "type": "number"
+            },
+            "title": {
+              "title": "Title",
+              "description": "Style of statement titles",
+              "type": "object",
+              "properties": {
+                "font": {
+                  "$ref": "#/definitions/font"
+                },
+                "fontSize": {
+                  "title": "Fontsize",
+                  "type": "number"
+                },
+                "bold": {
+                  "title": "Bold",
+                  "type": "boolean"
+                }
+              }
+            },
+            "text": {
+              "title": "Text",
+              "description": "Style of statement text",
+              "type": "object",
+              "properties": {
+                "font": {
+                  "$ref": "#/definitions/font"
+                },
+                "fontSize": {
+                  "title": "fontSize",
+                  "type": "number"
+                },
+                "bold": {
+                  "title": "Bold",
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "svg": {
+      "title": "Svg",
+      "description": "Settings for the SVG export plugin",
+      "type": "object",
+      "properties": {
+        "outputDir": {
+          "title": "outputDir",
+          "description": "Where to save SVG files.",
+          "type": "string",
+          "default": "./svg"
+        }
+      }
+    },
+    "vizJs": {
+      "title": "Vizjs",
+      "description": "Settings of the VizJs export plugin (that exports dot graphs to svg images).",
+      "type": "object",
+      "properties": {
+        "removeProlog": {
+          "title": "Removeprolog",
+          "description": "Remove the svg prolog from the output",
+          "type": "boolean"
+        },
+        "engine": {
+          "title": "Engine",
+          "description": "The graphviz layout engine to use",
+          "type": "string",
+          "default": "dot",
+          "enum": ["circo", "dot", "fdp", "neato", "osage", "twopi"]
+        },
+        "nop": {
+          "title": "Nop",
+          "description": "Setting used by the twopi engine",
+          "type": "number"
+        }
+      }
+    },
+    "pdf": {
+      "title": "Pdf",
+      "description": "Settings used by the PDF export plugin",
+      "type": "object",
+      "properties": {
+        "outputDir": {
+          "title": "outputDir",
+          "description": "Where to save pdf files",
+          "type": "string",
+          "default": "./pdf"
+        }
+      }
+    },
+    "svgToPdf": {
+      "title": "svgToPdf",
+      "description": "Settings of the svgToPdf library used for pdf export.",
+      "type": "object",
+      "properties": {
+        "width": {
+          "title": "Width",
+          "type": "number"
+        },
+        "height": {
+          "title": "Height",
+          "type": "number"
+        },
+        "padding": {
+          "title": "Padding",
+          "type": "number"
+        },
+        "pdf": {
+          "title": "Pdf",
+          "type": "object",
+          "properties": {
+            "compress": {
+              "title": "Compress",
+              "type": "boolean"
+            }
+          }
+        },
+        "svg": {
+          "title": "Svg",
+          "type": "object",
+          "properties": {
+            "useCSS": {
+              "title": "useCSS",
+              "type": "boolean"
+            },
+            "assumePt": {
+              "title": "assumePt",
+              "type": "boolean"
+            },
+            "preserveAspectRatio": {
+              "title": "preserveAspectRatio",
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "webComponent": {
+      "$id": "#root/webComponent",
+      "title": "Webcomponent",
+      "description": "Settings of the web-component export plugin",
+      "type": "object",
+      "properties": {
+        "width": {
+          "title": "Width",
+          "type": "string"
+        },
+        "height": {
+          "title": "Height",
+          "type": "string"
+        },
+        "withoutHeader": {
+          "title": "withoutHeader",
+          "type": "boolean",
+          "default": false
+        },
+        "withoutLogo": {
+          "title": "withoutLogo",
+          "type": "boolean",
+          "default": false
+        },
+        "withoutMaximize": {
+          "title": "withoutMaximize",
+          "type": "boolean",
+          "default": true
+        },
+        "withoutZoom": {
+          "title": "withoutZoom",
+          "type": "boolean",
+          "default": false
+        },
+        "withoutFigure": {
+          "title": "withoutFigure",
+          "type": "boolean",
+          "default": false
+        },
+        "initialView": {
+          "title": "initialView",
+          "type": "string",
+          "default": "map",
+          "enum": ["source", "map"]
+        },
+        "views": {
+          "title": "Views",
+          "type": "object",
+          "properties": {
+            "map": {
+              "title": "Map",
+              "type": "boolean",
+              "default": true
+            },
+            "source": {
+              "title": "Source",
+              "type": "boolean",
+              "default": true
+            }
+          }
+        },
+        "figureCaption": {
+          "title": "Figurecaption",
+          "type": "string"
+        },
+        "addWebComponentScript": {
+          "title": "addWebComponentScript",
+          "type": "boolean",
+          "default": true
+        },
+        "addWebComponentPolyfill": {
+          "title": "addWebComponentPolyfill",
+          "type": "boolean",
+          "default": true
+        },
+        "addGlobalStyles": {
+          "title": "addGlobalStyles",
+          "type": "boolean",
+          "default": true
+        },
+        "webComponentUrl": {
+          "title": "webComponentUrl",
+          "type": "string"
+        },
+        "webComponentPolyfillUrl": {
+          "title": "webComponentPolyfillUrl",
+          "type": "string"
+        },
+        "globalStylesUrl": {
+          "title": "globalStylesUrl",
+          "type": "string"
+        }
+      }
+    },
+    "sourceHiglighter": {
+      "title": "Sourcehiglighter",
+      "description": "Settings of the code highlighting plugin that is used by the web-component export",
+      "type": "object",
+      "properties": {
+        "removeFrontmatter": {
+          "title": "removeFrontmatter",
+          "description": "Hide the YAML frontmatter section in the source view of the web-component",
+          "type": "boolean"
+        }
+      }
+    },
+    "process": {
+      "title": "Process",
+      "description": "If an array is used: the processors that should be executed in order by the ArgdownApplication.\n\nIf a string is used: a name of a built-in or custom process.",
+      "anyOf": [
+        {
+          "type": "string",
+          "title": "Name of a built-in or custom process",
+          "examples": [
+            "parse",
+            "export-json",
+            "export-svg",
+            "export-dot",
+            "export-graphml",
+            "export-html",
+            "export-web-component"
+          ]
+        },
+        { "type": "array", "items": { "type": "string" } }
+      ]
+    },
+    "image": {
+      "title": "Image",
+      "description": "Settings of the image export plugin (responsible for jpg, png and webp export)",
+      "type": "object",
+      "properties": {
+        "quality": { "type": "number" },
+        "width": { "type": "number" },
+        "height": { "type": "number" },
+        "background": { "type": "string" },
+        "encoding": {
+          "type": "string",
+          "enum": ["base64", "utf8", "binary", "hex"]
+        }
+      }
+    },
+    "jpg": {
+      "title": "JPG export settings",
+      "type": "object",
+      "properties": {
+        "outputDir": {
+          "type": "string",
+          "title": "Output Directory",
+          "description": "Where to save jpg files",
+          "default": "./images"
+        }
+      }
+    },
+    "png": {
+      "title": "PNG export settings",
+      "type": "object",
+      "properties": {
+        "outputDir": {
+          "type": "string",
+          "title": "Output Directory",
+          "description": "Where to save png files",
+          "default": "./images"
+        }
+      }
+    },
+    "webp": {
+      "title": "WEBP export settings",
+      "type": "object",
+      "properties": {
+        "outputDir": {
+          "type": "string",
+          "title": "Output Directory",
+          "description": "Where to save webp files",
+          "default": "./images"
+        }
+      }
+    },
+    "logLevel": {
+      "title": "Loglevel",
+      "description": "Setting for @argdown/cli. Use 'silent' if you do not want to get any feedback. Use 'verbose' if you want lots of internal information.",
+      "type": "string",
+      "default": "error",
+      "enum": ["none", "silent", "error", "warning", "log", "verbose"]
+    },
+    "throwExceptions": {
+      "$id": "#root/throwExceptions",
+      "title": "throwExceptions",
+      "description": "Should the Argdown application fail silently or throw exceptions?",
+      "type": "boolean",
+      "default": false
+    },
+    "logExceptions": {
+      "$id": "#root/logExceptions",
+      "title": "logExceptions",
+      "description": "Should the Argdown application log exceptions without throwing them?",
+      "type": "boolean",
+      "default": true
+    }
+  }
+}
