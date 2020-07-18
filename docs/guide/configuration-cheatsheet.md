@@ -7,6 +7,12 @@ meta:
 
 # Configuration Cheat Sheet
 
+:::tip
+The VSCode extension will help you write `argdown.config.json` files with code completion, validation and hover context information. See the [extension's README for a small tutorial](https://github.com/christianvoigt/argdown/tree/master/packages/argdown-vscode/README.md#configuration-files) on how to use these features.
+
+If you are overwhelmed by this cheat sheet or the syntax of the configuration file, simply start playing around with code completion in VSCode to explore the config options step by step. The hover "tooltips" will often contain all the information you need.
+:::
+
 The following typescript file contains all currently supported settings together with extensive comments on their meaning. For further information on most of these configuration options, please read the guide on [creating argument maps](/creating-argument-maps).
 
 If you have questions about the syntax of the Cheat Sheet or how to use a configuration option in JSON, Yaml or Javascript syntax, please read the explanations [below the Cheat Sheet](#about-the-syntax-of-the-cheat-sheet).
@@ -550,6 +556,10 @@ interface IArgdownConfig {
      * Background color of the whole map
      **/
     mapBgColor?:string; // default is "transparent"
+    edge?: {
+      penwidth?: number; // thickness of edges, default 1
+      arrowsize?: number; // size of arrow, default 1
+    }
     group?:{
       lineWidth?: number; // used if measureLineWidth is true
       charactersInLine?: number; // used if measureLineWidth is false
@@ -864,6 +874,25 @@ interface IArgdownConfig {
     // will remove the frontmatter from the highlighted source (e.g. in the web component's source view)
     // to reduce clutter
     removeFrontmatter?: boolean;
+  };
+  /**
+   * Settings for the ImageExportPlugin (@argdown/image-export)
+   */
+  image?: {
+      quality?: number;
+      width?: number
+      height?: number;
+      background?: string;
+      encoding?: "base64"| "utf8"| "binary"| "hex";
+  };
+  png?: {
+    outputDir?:string; // default: ./images
+  }
+  jpg?: {
+    outputDir?:string; // default: ./images
+  }
+  webp?: {
+    outputDir?:string; // default: ./images
   }
   /**
    * If an array is used: the processors that should
@@ -903,7 +932,7 @@ interface IArgdownConfig {
    * Set to "verbose" to get lots of information
    * about processors and plugins
    **/
-  logLevel?: "none" | "error" | "warning" | "verbose"; // default is "error"
+  logLevel?: "none" | "silent" | "error" | "warning" | "verbose"; // default is "error", "none" and "silent" are synonyms
   /**
    * Should the application throw exceptions from
    * plugins?

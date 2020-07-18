@@ -21,7 +21,7 @@ footer: MIT Licensed | Copyright © 2018-present Christian Voigt | Funded by Deb
   </div>
   <div class="feature">
     <h2>Powerful</h2>
-    <p>Your document is transformed into an <a href="https://en.wikipedia.org/wiki/Argument_map">argument map</a> while you are typing. You can export your analysis as HTML, SVG, PDF, PNG or JSON. If that is not enough, you can easily extend Argdown with your own plugin.</p>
+    <p>Argdown can even be used within Markdown. Your code is transformed into an <a href="https://en.wikipedia.org/wiki/Argument_map">argument map</a> while you are typing. When your are ready you can publish your analysis as pdf, embed it as a web-component in a webpage or simply export your map as an image.</p>
   </div>
 </div>
 

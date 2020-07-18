@@ -27,11 +27,12 @@ This section will describe
 
 ## How to generate the Argdown web-component HTML
 
-There are three ways how you can create a HTML page containing the web component:
+There are four ways how you can create a HTML page containing the web component:
 
 - The easiest way is to use the **web component export** of the VSCode extension or the commandline tool (using the `argdown web-component [inputGlob] [outputFolder]` command). Using the export in the VSCode extension for your Argdown file the generated html will be copied to the clipboard so that you can simply paste the web-component into any html page.
 - You can also use the **Markdown export** of the commandline tool, if you want to write your whole webpage in Markdown using [fenced Argdown code blocks](/guide/using-argdown-in-markdown.html) and export it with the `argdown markdown [inputGlob] [outputFolder]` command to html.
-- Finally, you can use the same approach with a **static site generator** (like [Gatsby](https://www.gatsbyjs.org/), [Eleventy](https://www.11ty.dev/), [Vuepress](https://vuepress.vuejs.org/)). As long as it uses `remark`, `markdown-it` or `marked` as its Markdown parser you can [add Argdown support](/guide/using-argdown-in-markdown.html#advanced-usage-how-to-integrate-argdown-markdown-into-existing-applications) to the generator.
+- If you need more configuration options, use **Pandoc** with the [Argdown filter](/guide/publishing-argdown-markdown-with-pandoc.html) and export your file to html.
+- Finally, you can use the same approach with a **static site generator** (like [Gatsby](https://www.gatsbyjs.org/), [Eleventy](https://www.11ty.dev/), [Vuepress](https://vuepress.vuejs.org/)). As long as it uses `remark`, `markdown-it` or `marked` as its Markdown parser you can [add Argdown support](/guide/integrating-argdown-markdown-into-applications) to the generator.
 
 ## How to load the required files
 
@@ -89,7 +90,21 @@ The web-component export plugin can be configured in the Frontmatter section or 
 
 ### Styling the component
 
-The Argdown web component can be styled with custom css. By default the web component is wrapped in a `figure` html element that determines the size of the component. The default styles display it with a grey border and rounded corners. The figure element has the class `argdown-figure`. Here is how you remove the border:
+The Argdown web component can be styled with custom css. If you want to change the colors of the web component's user interface, you can use the following css variables:
+
+```css
+html {
+  --argdown-bg-color: #fff;
+  --argdown-border-color: #eee;
+  --argdown-logo-color: #ccc;
+  --argdown-button-bg-color: #3e8eaf;
+  --argdown-button-bg-hover-color: #387e9c;
+  --argdown-button-border-bottom-color: #38809d;
+  --argdown-button-font-color: #fff;
+}
+```
+
+By default the web component is wrapped in a `figure` html element that determines the size of the component. The default styles display it with a grey border and rounded corners. The figure element has the class `argdown-figure`. Here is how you remove the border:
 
 ```css
 figure.argdown-figure {

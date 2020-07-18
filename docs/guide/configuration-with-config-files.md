@@ -29,6 +29,10 @@ Here is an example of a `argdown.config.json` JSON file:
 
 If you are not familiar with the JSON format, take a look at the official [documentation](https://www.json.org/) or this [short introduction](https://learnxinyminutes.com/docs/json/).
 
+:::tip
+The VSCode extension will help you write `argdown.config.json` files with code completion, validation and hover context information. See the extension's README for [a small tutorial](https://github.com/christianvoigt/argdown/tree/master/packages/argdown-vscode/README.md#configuration-files) on how to use these features.
+:::
+
 Here is an example of the same configuration in a `argdown.config.js` Javascript file:
 
 ```javascript

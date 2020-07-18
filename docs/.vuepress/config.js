@@ -111,9 +111,17 @@ module.exports = {
             "changing-the-node-style",
             "changing-the-node-size",
             "colorizing-maps",
-            "using-logical-symbols-and-emojis",
+            "using-logical-symbols-and-emojis"
+          ]
+        },
+        {
+          title: "Publishing argument maps",
+          children: [
+            ["publishing-argument-maps", "Introduction"],
+            "embedding-your-maps-in-a-webpage",
             "using-argdown-in-markdown",
-            "embedding-your-maps-in-a-webpage"
+            "publishing-argdown-markdown-with-pandoc",
+            "integrating-argdown-markdown-into-applications"
           ]
         },
         {

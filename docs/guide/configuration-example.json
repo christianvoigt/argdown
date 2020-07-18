@@ -1,0 +1,324 @@
+{
+  "title": "",
+  "subTitle": "",
+  "author": "",
+  "date": "",
+  "abstract": "",
+  "inputPath": "",
+  "outputPath": "",
+  "outputSuffix": "",
+  "parser": {
+    "throwExceptions": false
+  },
+  "data": {
+    "frontMatterSettingsMode": "default",
+    "switchToBlockFormatIfMultiline": true
+  },
+  "model": {
+    "removeTagsFromText": false,
+    "mode": "loose",
+    "transformArgumentRelations": true,
+    "shortcodes": {
+      ":zany:": { "unicode": "🤪" },
+      ".zany.": { "unicode": "🤪" },
+      ".~E.": { "unicode": "∄" }
+    }
+  },
+  "color": {
+    "colorScheme": [
+      "#e6afd3",
+      "#9ed2a7",
+      "#aebaeb",
+      "#d2d39d",
+      "#71cdeb",
+      "#e6b197"
+    ],
+    "relationColors": {
+      "attack": "#9ed2a7"
+    },
+    "groupColorScheme": ["", ""],
+    "colorByTags": true,
+    "colorGroupsByTags": false,
+    "tagColors": {
+      "tag-1": 1,
+      "tag-2": "#CCCCCC",
+      "tag-3": { "color": 0, "priority": 2 }
+    },
+    "ignoreColorData": false,
+    "statementColors": { "S1": 1, "S2": "#CCCCCC" },
+    "argumentColors": { "A1": 1, "A2": "#CCCCCC" },
+    "groupColors": { "Heading 1": 1, "Heading 2": "#CCCCCC" }
+  },
+  "selection": {
+    "selectedTags": ["", "", ""],
+    "selectElementsWithoutTag": false,
+    "selectedSections": ["", "", ""],
+    "selectElementsWithoutSection": false,
+    "includeStatements": ["", "", ""],
+    "excludeStatements": ["", "", ""],
+    "excludeArguments": ["", "", ""],
+    "ignoreIsInMap": false,
+    "excludeDisconnected": false,
+    "statementSelectionMode": "with-title"
+  },
+  "map": {
+    "statementLabelMode": "hide-untitled",
+    "argumentLabelMode": "hide-untitled",
+    "addTags": false
+  },
+  "group": {
+    "groupDepth": 2,
+    "sections": {
+      "Main arguments": {
+        "isGroup": true,
+        "isClosed": false
+      },
+      "Some peripheral arguments": {
+        "isGroup": true,
+        "isClosed": true
+      },
+      "Introduction": {
+        "isGroup": false
+      }
+    },
+    "regroup": [
+      {
+        "title": "Group A",
+        "arguments": ["A1", "A2"],
+        "statements": ["S1"],
+        "children": [
+          {
+            "title": "Group B",
+            "arguments": ["A3", "A4"],
+            "isClosed": true
+          }
+        ]
+      },
+      {
+        "title": "Group C",
+        "arguments": ["A5", "A6"]
+      }
+    ],
+    "ignoreIsGroup": false,
+    "ignoreIsClosed": false
+  },
+  "html": {
+    "outputDir": "",
+    "headless": false,
+    "createHeaderFromMetadata": true,
+    "cssFile": "",
+    "title": "string",
+    "lang": "",
+    "charset": "",
+    "allowFileProtocol": false,
+    "head": "",
+    "css": ""
+  },
+  "json": {
+    "outputDir": "",
+    "spaces": 2,
+    "removeEmbeddedRelations": false,
+    "exportMap": true,
+    "exportSections": true,
+    "exportTags": true,
+    "exportData": true
+  },
+  "dot": {
+    "outputDir": "",
+    "graphname": "",
+    "measureLineWidth": false,
+    "mapBgColor": "",
+    "edge": {
+      "penwidth": 1,
+      "arrowsize": 1
+    },
+    "group": {
+      "lineWidth": 200,
+      "charactersInLine": 20,
+      "margin": 8,
+      "font": "Arial",
+      "fontSize": 10,
+      "bold": false
+    },
+    "closedGroup": {
+      "lineWidth": 50,
+      "charactersInLine": 20,
+      "margin": 8,
+      "font": "Arial",
+      "fontSize": 10,
+      "bold": false
+    },
+    "argument": {
+      "lineWidth": 20,
+      "minWidth": 10,
+      "margin": "0.11,0.055",
+      "title": {
+        "font": "Arial",
+        "fontSize": 10,
+        "bold": true,
+        "charactersInLine": 20
+      },
+      "text": {
+        "font": "Arial",
+        "fontSize": 10,
+        "bold": true,
+        "charactersInLine": 20
+      }
+    },
+    "statement": {
+      "lineWidth": 20,
+      "minWidth": 10,
+      "margin": "0.11,0.055",
+      "title": {
+        "font": "Arial",
+        "fontSize": 10,
+        "bold": true,
+        "charactersInLine": 20
+      },
+      "text": {
+        "font": "Arial",
+        "fontSize": 10,
+        "bold": true,
+        "charactersInLine": 20
+      }
+    },
+    "graphVizSettings": {
+      "rankdir": "BT",
+      "newrank": true
+    }
+  },
+  "dagre": {
+    "rankDir": "BT",
+    "rankSep": 50,
+    "nodeSep": 70,
+    "measureLineWidth": false,
+    "group": {
+      "lineWidth": 200,
+      "charactersInLine": 50,
+      "font": "Arial",
+      "fontSize": 10,
+      "bold": false
+    },
+    "argument": {
+      "lineWidth": 200,
+      "title": {
+        "charactersInLine": 50,
+        "font": "Arial",
+        "fontSize": 10,
+        "bold": false
+      },
+      "text": {
+        "charactersInLine": 50,
+        "font": "Arial",
+        "fontSize": 10,
+        "bold": false
+      }
+    },
+    "statement": {
+      "lineWidth": 200,
+      "title": {
+        "charactersInLine": 50,
+        "font": "Arial",
+        "fontSize": 10,
+        "bold": false
+      },
+      "text": {
+        "charactersInLine": 50,
+        "font": "Arial",
+        "fontSize": 10,
+        "bold": false
+      }
+    }
+  },
+  "graphml": {
+    "group": {
+      "horizontalPadding": 8,
+      "verticalPadding": 10,
+      "width": 100,
+      "font": "Arial",
+      "fontSize": 10,
+      "bold": false
+    },
+    "argument": {
+      "horizontalPadding": 8,
+      "verticalPadding": 10,
+      "width": 100,
+      "title": {
+        "font": "Arial",
+        "fontSize": 10,
+        "bold": false
+      },
+      "text": {
+        "font": "Arial",
+        "fontSize": 10,
+        "bold": false
+      }
+    },
+    "statement": {
+      "horizontalPadding": 8,
+      "verticalPadding": 10,
+      "width": 100,
+      "title": {
+        "font": "Arial",
+        "fontSize": 10,
+        "bold": false
+      },
+      "text": {
+        "font": "Arial",
+        "fontSize": 10,
+        "bold": false
+      }
+    }
+  },
+  "svg": {
+    "outputDir": "./svg"
+  },
+  "vizJs": {
+    "removeProlog": true,
+    "engine": "dot",
+    "nop": 0
+  },
+  "pdf": {
+    "outputDir": "./pdf"
+  },
+  "svgToPdf": {
+    "width": 200,
+    "height": 200,
+    "padding": 10,
+    "pdf": { "compress": false },
+    "svg": {
+      "useCSS": true,
+      "assumePt": true,
+      "preserveAspectRatio": ""
+    }
+  },
+  "webComponent": {
+    "width": "",
+    "height": "",
+    "withoutHeader": false,
+    "withoutLogo": false,
+    "withoutMaximize": false,
+    "withoutZoom": false,
+    "withoutFigure": false,
+    "initialView": "map",
+    "views": {
+      "map": true,
+      "source": true
+    },
+    "figureCaption": "",
+    "addWebComponentScript": true,
+    "addWebComponentPolyfill": true,
+    "addGlobalStyles": true,
+    "webComponentUrl": "",
+    "webComponentPolyfillUrl": "",
+    "globalStylesUrl": ""
+  },
+  "sourceHiglighter": {
+    "removeFrontmatter": false
+  },
+  "process": ["", "", ""],
+  "processes": { "": {} },
+  "logLevel": "error",
+  "throwExceptions": false,
+  "logExceptions": true
+}
