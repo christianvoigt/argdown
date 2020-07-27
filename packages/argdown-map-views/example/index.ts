@@ -57,11 +57,13 @@ const createDagreMap = (container: HTMLElement) => {
       `,
     process: exportMap
   });
-  dagreMap.render({ settings: {}, map: response.map!, tags: response.tags! });
+  dagreMap.render({ settings: {}, map: response.map! });
 };
 const createVizJsMap = (container: HTMLElement) => {
   container.innerHTML = "";
-  const vizJsMap = new VizJsMap(container, "/full.render.js");
+  const vizJsMap = new VizJsMap(container, {
+    workerURL: "http://localhost:2764/render.browser.js"
+  });
   const response = app.run({
     input: `
   # G1

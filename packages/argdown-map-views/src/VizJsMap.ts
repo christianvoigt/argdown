@@ -1,4 +1,5 @@
-import Viz from "viz.js";
+import Viz from "@aduh95/viz.js";
+import { VizConstructorOptions } from "@aduh95/viz.js";
 import { select } from "d3-selection";
 
 // import { Module, render } from "viz.js/full.render";
@@ -28,12 +29,12 @@ export interface VizJsMapProps {
   selectedNode?: string | null;
 }
 export const vizJsDefaultSettings = {
-  removeProlog: true,
-  engine: GraphvizEngine.DOT
+  // removeProlog: true,
+  // engine: GraphvizEngine.DOT,
+  // format: "svg"
 };
-type VizJsConfig = { workerURL: string } | { render: any; Module: any };
 export class VizJsMap implements CanSelectNode {
-  vizJsConfig: VizJsConfig;
+  vizJsConfig: VizConstructorOptions;
   viz: any;
   zoomManager: ZoomManager;
   svgContainer: HTMLElement;
@@ -42,7 +43,7 @@ export class VizJsMap implements CanSelectNode {
   onSelectionChanged?: OnSelectionChangedHandler;
   constructor(
     svgContainer: HTMLElement,
-    config: VizJsConfig,
+    config: VizConstructorOptions,
     onZoomChanged?: OnZoomChangedHandler,
     onSelectionChanged?: OnSelectionChangedHandler
   ) {
@@ -52,51 +53,65 @@ export class VizJsMap implements CanSelectNode {
     this.viz = new Viz(this.vizJsConfig);
     this.onSelectionChanged = onSelectionChanged;
   }
+  async dot2svg(dot: string, options: IVizJsSettings) {
+    if (this.viz === undefined) {
+      this.viz = new Viz(this.vizJsConfig);
+    }
+    console.log("before renderString");
+    const result = this.viz.renderString(dot, options);
+    result
+      .then(() => {
+        console.log("Promise resolved!");
+      })
+      .catch(() => {
+        console.log("Promise failed!");
+      });
+    console.log("after renderString");
+    console.log(`result: ${result}`);
+    return result;
+  }
   async render(props: VizJsMapProps) {
     const settings = isObject(props.settings) ? props.settings : {};
     mergeDefaults(settings, vizJsDefaultSettings);
-    try {
-      let svgString = await this.viz.renderString(props.dot, settings);
-      if (settings.removeProlog) {
-        svgString = svgString.replace(
-          /<\?[ ]*xml[\S ]+?\?>[\s]*<\![ ]*DOCTYPE[\S\s]+?\.dtd\"[ ]*>/,
-          ""
-        );
-      }
-      this.svgContainer.innerHTML = svgString;
-      const svg = select(this.svgContainer).select<SVGSVGElement>("svg");
-      svg.attr("class", "map-svg");
-      svg.attr("width", "100%");
-      svg.attr("height", "100%");
-      svg.attr("viewBox", null);
-
-      const svgGraph = svg.select<SVGGraphicsElement>("g");
-      const groupNode: SVGGraphicsElement = svgGraph!.node() as SVGGraphicsElement;
-      const bBox = groupNode.getBBox();
-      const width = bBox.width;
-      const height = bBox.height;
-
-      this.zoomManager.init(svg, svgGraph, width, height);
-      if (!props.scale || !props.position) {
-        this.zoomManager.showAllAndCenterMap();
-      } else {
-        this.zoomManager.setZoom(
-          props.position.x || 0,
-          props.position.y || 0,
-          props.scale,
-          0
-        );
-      }
-      svgGraph!.attr(
-        "height",
-        this.zoomManager.state.size.height * this.zoomManager.state.scale + 40
+    console.log(settings);
+    let svgString = await this.dot2svg(props.dot, settings);
+    console.log(svgString);
+    if (settings.removeProlog) {
+      svgString = svgString.replace(
+        /<\?[ ]*xml[\S ]+?\?>[\s]*<\![ ]*DOCTYPE[\S\s]+?\.dtd\"[ ]*>/,
+        ""
       );
-      if (props.selectedNode) {
-        this.selectNode(props.selectedNode);
-      }
-    } catch (e) {
-      // create new instance as recommended in the Viz.js documentation
-      this.viz = new Viz(this.vizJsConfig);
+    }
+    this.svgContainer.innerHTML = svgString;
+    const svg = select(this.svgContainer).select<SVGSVGElement>("svg");
+    svg.attr("class", "map-svg");
+    svg.attr("width", "100%");
+    svg.attr("height", "100%");
+    svg.attr("viewBox", null);
+
+    const svgGraph = svg.select<SVGGraphicsElement>("g");
+    const groupNode: SVGGraphicsElement = svgGraph!.node() as SVGGraphicsElement;
+    const bBox = groupNode.getBBox();
+    const width = bBox.width;
+    const height = bBox.height;
+
+    this.zoomManager.init(svg, svgGraph, width, height);
+    if (!props.scale || !props.position) {
+      this.zoomManager.showAllAndCenterMap();
+    } else {
+      this.zoomManager.setZoom(
+        props.position.x || 0,
+        props.position.y || 0,
+        props.scale,
+        0
+      );
+    }
+    svgGraph!.attr(
+      "height",
+      this.zoomManager.state.size.height * this.zoomManager.state.scale + 40
+    );
+    if (props.selectedNode) {
+      this.selectNode(props.selectedNode);
     }
   }
   getNodeWithArgdownId(id: string): SVGGraphicsElement | undefined {

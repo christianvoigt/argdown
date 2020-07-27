@@ -25,6 +25,7 @@
     "@types/d3": "^5.7.2",
     "@types/dagre-d3": "^0.4.39",
     "@types/lodash.defaultsdeep": "^4.6.6",
+    "babel-polyfill": "^6.26.0",
     "d3-selection": "^1.4.1",
     "d3-zoom": "^1.8.3",
     "dagre-d3": "0.6.3",
@@ -40,6 +41,8 @@
     "copyfiles": "^2.1.1",
     "mocha": "8.0.1",
     "nyc": "15.1.0",
+    "parcel-bundler": "^1.12.4",
+    "parcel-plugin-static-files-copy": "^2.4.3",
     "rimraf": "^3.0.0",
     "source-map-support": "^0.5.13",
     "ts-node": "^8.4.1",
@@ -58,7 +61,8 @@
     "report": "nyc report",
     "clean": "rimraf \"dist/*\"",
     "prepublishOnly": "npm run-script build",
-    "push": "git push --tags origin HEAD:master"
+    "push": "git push --tags origin HEAD:master",
+    "example": "parcel ./example/index.html"
   },
   "nyc": {
     "include": [
@@ -81,5 +85,8 @@
   },
   "staticFiles": {
     "staticPath": "example/public"
-  }
+  },
+  "browserslist": [
+    "last 1 Chrome versions"
+  ]
 }
