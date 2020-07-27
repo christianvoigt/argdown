@@ -20,7 +20,7 @@ var basePath = process.env.BASE_URL || "/";
 export default {
   name: "viz-js-output",
   methods: {
-    updateMap: function() {
+    updateMap: function () {
       if (!this.$_vizJsMap) {
         return;
       }
@@ -31,47 +31,47 @@ export default {
 
       const props = {
         dot: this.$store.getters.dot,
-        settings: this.$store.getters.config.vizJs
+        settings: this.$store.getters.config.vizJs,
       };
-      this.$_vizJsMap.render(props).catch(e => console.log(e));
-    }
+      this.$_vizJsMap.render(props).catch((e) => console.log(e));
+    },
   },
   computed: {
-    dot: function() {
+    dot: function () {
       this.updateMap();
       this.$store.getters.config;
       return this.$store.getters.dot;
-    }
+    },
   },
   watch: {
-    dot: function() {
+    dot: function () {
       // console.log('map watcher called!')
-    }
+    },
   },
 
-  mounted: function() {
+  mounted: function () {
     const svgContainer = this.$refs.container;
-    const urlToFullRenderJs = basePath + "full.render.js";
+    const workerURL = basePath + "render.browser.js";
     this.$_vizJsMap = new VizJsMap(svgContainer, {
-      workerURL: urlToFullRenderJs
+      workerURL: workerURL,
     });
     this.updateMap();
     var el = this.$refs.container;
     var $store = this.$store;
-    saveVizAsPng = function() {
+    saveVizAsPng = function () {
       var scale = $store.state.pngScale;
       saveAsPng(el.getElementsByTagName("svg")[0], scale, false);
     };
-    saveVizAsSvg = function() {
+    saveVizAsSvg = function () {
       saveAsSvg(el.getElementsByTagName("svg")[0], false);
     };
     EventBus.$on("save-map-as-svg", saveVizAsSvg);
     EventBus.$on("save-map-as-png", saveVizAsPng);
   },
-  beforeDestroy: function() {
+  beforeDestroy: function () {
     EventBus.$off("save-map-as-svg", saveVizAsSvg);
     EventBus.$off("save-map-as-png", saveVizAsPng);
-  }
+  },
 };
 </script>
 
