@@ -370,6 +370,7 @@ const styles = html`
       padding: 0.4rem 0.8rem;
       border-radius: 4px;
       border: 0;
+      cursor: pointer;
       transition: background-color 0.1s ease;
       box-sizing: border-box;
       border-bottom: 1px solid

@@ -1,6 +1,6 @@
 {
   "name": "@argdown/web-components",
-  "version": "1.4.8",
+  "version": "1.5.0",
   "description": "Components that help to embed Argdown in the browser",
   "main": "dist/argdown-map.js",
   "files": [
@@ -8,7 +8,7 @@
   ],
   "source": "src/argdown-map.ts",
   "scripts": {
-    "start": "parcel src/index.html --open",
+    "example": "parcel src/index.html --open",
     "build": "yarn run clean && parcel build src/argdown-map.ts",
     "clean": "rimraf \"dist/*\"",
     "prepublishOnly": "yarn run build"
