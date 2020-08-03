@@ -52,7 +52,7 @@ export default {
   mounted: function () {
     const svgContainer = this.$refs.container;
     const workerURL = basePath + "render.browser.js";
-    this.$_vizJsMap = new VizJsMap(svgContainer, {
+    this.$_vizJsMap = new VizJsMap(svgContainer, null, {
       workerURL: workerURL,
     });
     this.updateMap();
