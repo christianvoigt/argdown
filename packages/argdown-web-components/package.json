@@ -1,6 +1,6 @@
 {
   "name": "@argdown/web-components",
-  "version": "1.4.8",
+  "version": "1.5.0",
   "description": "Components that help to embed Argdown in the browser",
   "main": "dist/argdown-map.js",
   "files": [
