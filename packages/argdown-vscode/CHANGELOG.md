@@ -1,5 +1,25 @@
 # Release Notes 2020
 
+## v1.5.x (July 2020)
+
+Apart from some smaller bug-fixes and features, this release brings **three major improvements**:
+
+- With the new [Pandoc filter](https://argdown.org/guide/publishing-argdown-markdown-with-pandoc.html) you can now publish Argdown-in-Markdown documents as pdf files.
+- The Pandoc filter and `@argdown/cli` can be extended by installing the new `@argdown/image-export` plugin that allows to [export maps to png, jpg and webp images](https://github.com/christianvoigt/argdown/tree/master/packages/argdown-image-export/).
+- The VSCode extension now adds [IntelliSense, validation, hover descriptions and quick navigation for `argdown.config.js` files](https://github.com/christianvoigt/argdown/tree/master/packages/argdown-vscode/README.md#configuration-files) making it much easier to find your way through the file format and the many configuration options.
+
+### Additional features & bug fixes
+
+- Using the command `argdown [input file glob]` you can check the validity of your Argdown files. `@argdown/cli` will return with errorCode 1 if there are any errors (closes [#167](https://github.com/christianvoigt/argdown/issues/167)).
+- In general, `@argdown/cli`'s error handling and logging has been improved to give more feedback to the user. If you don't want the additional "noise", use the new `--silent` flag.
+- You can now [set the line width and arrow size]() of edges in dot graphs (closes [#168](https://github.com/christianvoigt/argdown/issues/168))
+- You can now [customize the colors of the web-component](https://argdown.org/guide/embedding-your-maps-in-a-webpage.html#styling-the-component) by using css variables.
+- VSCode's new API for webview resources has been adopted (closes [#160](https://github.com/christianvoigt/argdown/issues/160)).
+- The VSCode extension no longer fails to export files if no workspace is open (fixes [#159](https://github.com/christianvoigt/argdown/issues/159)).
+- Upgraded parser to [Chevrotain 7.0.1](https://github.com/SAP/chevrotain)
+
+As always, all package dependencies have been upgraded.
+
 ## v1.4.x (April 2020)
 
 This release is improving the Argdown workflow significantly: It is now possible to
@@ -36,7 +56,7 @@ title: my argdown map
 Now we are back in Markdown.
 ````
 
-For more details read the guide on [using Argdown in Markdown](/guide/using-argdown-in-markdown.html).
+For more details read the guide on [using Argdown in Markdown](https://argdown.org/guide/using-argdown-in-markdown.html).
 
 ### The Argdown Web Component
 
@@ -46,7 +66,7 @@ Both the commandline tool and the VSCode extension provide a new "web component"
 
 In `@argdown/cli` use the new `argdown web-component [inputGlob] [outputFolder]` command to export your argdown file as web component html.
 
-For more details on how to setup and configure the web component, read the guide on [how to embed your argument maps in a web page](/guide/embedding-your-maps-in-a-webpage.html).
+For more details on how to setup and configure the web component, read the guide on [how to embed your argument maps in a web page](https://argdown.org/guide/embedding-your-maps-in-a-webpage.html).
 
 ### Remark, Markdown-It and Marked plugins
 
@@ -61,7 +81,7 @@ All of these exports will replace Argdown code fences with the Argdown web compo
 
 The Markdown parser plugins can be used to integrate Argdown support into any of the many applications that use these parsers, for example static site generators like [Gatsby](https://www.gatsbyjs.org/), [Eleventy](https://www.11ty.dev/) or [Vuepress](https://vuepress.vuejs.org/).
 
-Read more about how to set this up in the guide on [how to integrate Argdown-Markdown into existing applications](/guide/using-argdown-in-markdown.html#how-to-integrate-argdown-markdown-into-existing-applications).
+Read more about how to set this up in the guide on [how to integrate Argdown-Markdown into existing applications](https://argdown.org/guide/integrating-argdown-markdown-into-applications.html).
 
 ### Highlight.js plugin
 

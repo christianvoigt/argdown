@@ -5,7 +5,8 @@ import { IArgdownPreviewState } from "./IArgdownPreviewState";
 import { IViewProvider } from "./IViewProvider";
 export const vizjsViewProvider: IViewProvider = {
   // full.render.js has to be loaded after vizJsView.js
-  scripts: ["vizjsView.js", "full.render.js"],
+  // scripts: ["vizjsView.js", "full.render.js"],
+  scripts: ["vizjsView.js"],
   generateView: async () => {
     return `<div id="svg-container"></div>`;
   },

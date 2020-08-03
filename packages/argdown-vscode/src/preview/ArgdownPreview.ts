@@ -482,7 +482,7 @@ export class ArgdownPreview {
         document,
         this._previewConfigurations,
         initialState,
-        this.editor.webview.cspSource
+        this.editor.webview
       );
       if (this._resource === resource) {
         this.editor.title = ArgdownPreview.getPreviewTitle(

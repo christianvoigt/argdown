@@ -72,7 +72,7 @@ export class ArgdownContentProvider {
     argdownDocument: vscode.TextDocument,
     previewConfigurations: ArgdownPreviewConfigurationManager,
     initialState: IArgdownPreviewState,
-    cspSource: string
+    webview: vscode.Webview
   ): Promise<string> {
     const sourceUri = argdownDocument.uri;
     const config = previewConfigurations.getConfiguration(sourceUri);
@@ -86,12 +86,12 @@ export class ArgdownContentProvider {
       syncPreviewSelectionWithEditor: config.syncPreviewSelectionWithEditor,
       doubleClickToSwitchToEditor: config.doubleClickToSwitchToEditor,
       disableSecurityWarnings: this.cspArbiter.shouldDisableSecurityWarnings(),
-      cspSource
+      cspSource: webview.cspSource
     };
 
     // Content Security Policy
     const nonce = new Date().getTime() + "" + new Date().getMilliseconds();
-    const csp = this.getCspForResource(sourceUri, nonce, cspSource);
+    const csp = this.getCspForResource(sourceUri, nonce, webview.cspSource);
     let viewHtml = "";
     viewHtml = await viewProvider.generateView(
       this.engine,
@@ -121,15 +121,13 @@ export class ArgdownContentProvider {
         ).replace(/"/g, "&quot;")}" data-strings="${JSON.stringify(
       previewStrings
     ).replace(/"/g, "&quot;")}">
-				<script src="${this.extensionResourcePath("pre.js")}" nonce="${nonce}"></script>
+				<script src="${this.extensionResourcePath("pre.js", webview)}" nonce="${nonce}"></script>
 				<script nonce="${nonce}">window.initialState = ${JSON.stringify(
       initialState,
       jsonReplacer
     )};</script>
-				${this.getStyles(sourceUri, nonce, config)}
-				<base href="${argdownDocument.uri
-          .with({ scheme: "vscode-resource" })
-          .toString(true)}">
+				${this.getStyles(sourceUri, nonce, config, webview)}
+				<base href="${webview.asWebviewUri(argdownDocument.uri).toString()}">
 			</head>
 			<body class="vscode-body argdown ${view}-active ${
       menuLocked ? "locked" : "unlocked"
@@ -137,7 +135,7 @@ export class ArgdownContentProvider {
       config.wordWrap ? "wordWrap" : ""
     } ${config.markEditorSelection ? "showEditorSelection" : ""}">
 				${body}
-				${this.getScriptsForView(viewProvider.scripts, nonce)}
+				${this.getScriptsForView(viewProvider.scripts, nonce, webview)}
 				${this.getScripts(nonce)}
 			</body>
 			</html>`;
@@ -167,15 +165,13 @@ export class ArgdownContentProvider {
 	</nav></div>`;
   }
 
-  private extensionResourcePath(mediaFile: string): string {
-    return vscode.Uri.file(
+  private extensionResourcePath(mediaFile: string, webview:vscode.Webview): vscode.Uri {
+    return webview.asWebviewUri(vscode.Uri.file(
       this.context.asAbsolutePath(path.join("media", mediaFile))
-    )
-      .with({ scheme: "vscode-resource" })
-      .toString();
+    ));
   }
 
-  private fixHref(resource: vscode.Uri, href: string): string {
+  private fixHref(resource: vscode.Uri, href: string, webview:vscode.Webview): string{
     if (!href) {
       return href;
     }
@@ -188,9 +184,7 @@ export class ArgdownContentProvider {
 
     // Use href as file URI if it is absolute
     if (path.isAbsolute(href) || hrefUri.scheme === "file") {
-      return vscode.Uri.file(href)
-        .with({ scheme: "vscode-resource" })
-        .toString();
+      return webview.asWebviewUri(vscode.Uri.file(href)).toString();
     }
 
     // Use a workspace relative path if there is a workspace
@@ -209,7 +203,8 @@ export class ArgdownContentProvider {
 
   private computeCustomStyleSheetIncludes(
     resource: vscode.Uri,
-    config: ArgdownPreviewConfiguration
+    config: ArgdownPreviewConfiguration,
+    webview: vscode.Webview
   ): string {
     if (Array.isArray(config.styles)) {
       return config.styles
@@ -219,7 +214,8 @@ export class ArgdownContentProvider {
             "&quot;"
           )}" href="${this.fixHref(
             resource,
-            style
+            style,
+            webview
           )}" type="text/css" media="screen">`;
         })
         .join("\n");
@@ -243,7 +239,8 @@ export class ArgdownContentProvider {
   private getStyles(
     resource: vscode.Uri,
     nonce: string,
-    config: ArgdownPreviewConfiguration
+    config: ArgdownPreviewConfiguration,
+    webview: vscode.Webview
   ): string {
     const baseStyles = this.contributions.previewStyles
       .map(
@@ -254,14 +251,14 @@ export class ArgdownContentProvider {
 
     return `${baseStyles}
 			${this.getSettingsOverrideStyles(nonce, config)}
-			${this.computeCustomStyleSheetIncludes(resource, config)}`;
+			${this.computeCustomStyleSheetIncludes(resource, config, webview)}`;
   }
-  private getScriptsForView(scripts: string[], nonce: string): string {
+  private getScriptsForView(scripts: string[], nonce: string, webview:vscode.Webview): string {
     return scripts
       .map(
         script =>
           `<script src="${this.extensionResourcePath(
-            script
+            script, webview
           )}" nonce="${nonce}" charset="UTF-8"></script>`
       )
       .join("\n");
