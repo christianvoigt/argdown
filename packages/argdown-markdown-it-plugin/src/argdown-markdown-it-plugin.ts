@@ -30,14 +30,16 @@ const createArgdownPlugin = (config?: ((env:any)=>IArgdownRequest) | IArgdownReq
           "export-svg",
           "highlight-source",
           "export-web-component"
-        ],
-        webComponent: {
+        ]},
+        currentConfig, 
+        {        
+          webComponent: {
           addGlobalStyles: false,
           addWebComponentPolyfill: false,
           addWebComponentScript: false,
           initialView: initialView ||"map"
         }
-      },currentConfig);
+      });
       if(additionalSettings){
         request.webComponent = defaultsDeep({}, additionalSettings, request.webComponent);
       }

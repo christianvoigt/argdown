@@ -2,18 +2,17 @@ import "@argdown/web-components/dist/argdown-map.css";
 import "@argdown/web-components";
 import MarkdownIt from "markdown-it";
 import createArgdownPlugin from "../src/argdown-markdown-it-plugin";
+import { IWebComponentExportSettings, IArgdownRequest } from "@argdown/core";
 const mdi = new MarkdownIt();
 // const defaultSettings = {
 //     withoutMaximize: true,
 //     withoutZoom: true,
 //     views: { source: false, map: true }
 //   };
-const defaultSettings = {};
-mdi.use(
-  createArgdownPlugin(() => {
-    return defaultSettings;
-  })
-);
+const defaultSettings: IArgdownRequest = {
+  webComponent: { withoutHeader: true }
+};
+mdi.use(createArgdownPlugin(defaultSettings));
 const initialInput = `
 # Try out the new Markdown-Argdown Workflow!
 
