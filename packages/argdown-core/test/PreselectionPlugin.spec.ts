@@ -1,6 +1,12 @@
 import { expect } from "chai";
-import { ArgdownApplication, ParserPlugin, ModelPlugin, DataPlugin, PreselectionPlugin } from "../src/index";
-
+import {
+  ArgdownApplication,
+  ParserPlugin,
+  ModelPlugin,
+  DataPlugin,
+  PreselectionPlugin
+} from "../src/index";
+import { describe, it } from "mocha";
 const app = new ArgdownApplication();
 const parserPlugin = new ParserPlugin();
 const dataPlugin = new DataPlugin();
@@ -237,7 +243,8 @@ describe("PreselectionPlugin", function() {
     //console.log(result.arguments);
 
     expect(result.selection!.statements.length).to.equal(1);
-    expect(result.selection!.statements.find(s => s.members[0].text === "s2")).to.exist;
+    expect(result.selection!.statements.find(s => s.members[0].text === "s2"))
+      .to.exist;
     expect(result.selection!.arguments.length).to.equal(1); // excludeDisconnected will only be applied in the selection round.
     expect(result.selection!.arguments.find(a => a.title === "a")).to.exist;
   });
