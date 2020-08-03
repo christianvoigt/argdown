@@ -8,6 +8,9 @@
         "sourceMap": true,
         "strict": true,
         "noImplicitAny": true,
-        "noUnusedLocals": true
+        "noUnusedLocals": true,
+        "esModuleInterop": true,
+        "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true
     }
 }

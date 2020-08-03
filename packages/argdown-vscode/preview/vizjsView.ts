@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import vizRenderStringSync from "@aduh95/viz.js/sync";
 import { onceDocumentLoaded } from "./events";
 import { createPosterForVsCode } from "./messaging";
 import { getSettings } from "./settings";
@@ -40,13 +41,6 @@ const onSelectionChanged: OnSelectionChangedHandler = id => {
 };
 
 const svgContainer = d3.select<HTMLElement, null>("#svg-container")!;
-declare global {
-  interface Window {
-    Viz: { render?: any; Module?: any };
-  }
-}
-// create a global fake Viz so that full.render.js will register its objects
-window.Viz = {};
 let vizJsMap: VizJsMap | null = null;
 
 const updateMap = () => {
@@ -65,12 +59,10 @@ const updateMap = () => {
   }
 };
 onceDocumentLoaded(() => {
-  if (!window || !window.Viz || !window.Viz.render || !window.Viz.Module) {
-    return;
-  }
   vizJsMap = new VizJsMap(
     svgContainer.node()!,
-    { render: window.Viz.render, Module: window.Viz.Module },
+    vizRenderStringSync,
+    null,
     onZoomChanged,
     onSelectionChanged
   );
