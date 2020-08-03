@@ -1,5 +1,6 @@
-import Viz from "viz.js";
-import { Module, render } from "viz.js/full.render";
+// import Viz from "@aduh95/viz.js";
+// const dot2svg = require("@aduh95/viz.js/async");
+import vizRenderStringAsync from "@aduh95/viz.js/async";
 import {
   IRequestHandler,
   checkResponseFields,
@@ -13,7 +14,8 @@ import {
 } from "../IAsyncArgdownPlugin";
 import defaultsDeep from "lodash.defaultsdeep";
 
-const viz = new Viz({ Module, render });
+// const worker = getWorker();
+// const viz = new Viz({ worker });
 export class DotToSvgExportPlugin implements IAsyncArgdownPlugin {
   name = "DotToSvgExportPlugin";
   defaults: IVizJsSettings;
@@ -35,20 +37,12 @@ export class DotToSvgExportPlugin implements IAsyncArgdownPlugin {
     checkResponseFields(this, response, ["dot"]);
 
     let { engine, nop, removeProlog } = this.getSettings(request);
-    response.svg = await viz.renderString(response.dot, { engine, nop });
-    if (removeProlog) {
-      response.svg = this.removeProlog(response.svg!);
-    }
-  };
-  run: IRequestHandler = (request, response) => {
-    checkResponseFields(this, response, ["dot"]);
-
-    let { engine, nop, removeProlog } = this.getSettings(request);
-    response.svg = viz.renderString(response.dot, {
+    response.svg = await vizRenderStringAsync(response.dot!, {
       engine,
       nop,
       format: "svg"
     });
+    // .finally(() => viz.terminateWorker());
     if (removeProlog) {
       response.svg = this.removeProlog(response.svg!);
     }

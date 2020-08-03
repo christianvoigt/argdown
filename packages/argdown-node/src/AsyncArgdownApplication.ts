@@ -4,7 +4,6 @@ import isFunction from "lodash.isfunction";
 import isString from "lodash.isstring";
 import isEmpty from "lodash.isempty";
 import isObject from "lodash.isobject";
-import isArray from "lodash.isarray";
 import cloneDeep from "lodash.clonedeep";
 import {
   ArgdownApplication,
@@ -37,7 +36,7 @@ export class AsyncArgdownApplication extends ArgdownApplication {
         this.logger.setLevel(req.logLevel);
       }
       if (req.process) {
-        if (isArray(req.process)) {
+        if (Array.isArray(req.process)) {
           processorsToRun = req.process;
         } else if (
           isString(req.process) &&

@@ -33,12 +33,12 @@
   "author": "Christian Voigt",
   "license": "MIT",
   "dependencies": {
+    "@aduh95/viz.js": "^3.1.0",
     "@argdown/core": "^1.4.9",
     "@types/glob": "^7.1.1",
     "@types/lodash.clonedeep": "^4.5.6",
     "@types/lodash.defaultsdeep": "^4.6.6",
     "@types/lodash.includes": "^4.3.6",
-    "@types/lodash.isarray": "^4.0.6",
     "@types/lodash.isempty": "^4.4.6",
     "@types/lodash.isfunction": "^3.0.6",
     "@types/lodash.isobject": "^3.0.6",
@@ -51,15 +51,13 @@
     "lodash.clonedeep": "^4.5.0",
     "lodash.defaultsdeep": "^4.6.1",
     "lodash.includes": "^4.3.0",
-    "lodash.isarray": "^4.0.0",
     "lodash.isempty": "^4.4.0",
     "lodash.isfunction": "^3.0.9",
     "lodash.isobject": "^3.0.2",
     "lodash.isstring": "^4.0.1",
     "mkdirp": "^1.0.3",
     "pdfkit": "^0.11.0",
-    "svg-to-pdfkit": "^0.1.8",
-    "viz.js": "^2.1.2"
+    "svg-to-pdfkit": "^0.1.8"
   },
   "devDependencies": {
     "@types/chai": "^4.2.11",
