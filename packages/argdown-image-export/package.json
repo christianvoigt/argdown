@@ -22,18 +22,18 @@
   "author": "Christian Voigt",
   "license": "MIT",
   "devDependencies": {
-    "@argdown/node": "^1.4.9",
+    "@argdown/node": "^1.5.0",
     "@types/chai": "^4.2.11",
-    "@types/mocha": "8.0.0",
+    "@types/mocha": "^8.0.1",
     "chai": "^4.2.0",
-    "mocha": "8.0.1",
+    "mocha": "^8.0.1",
     "parcel": "^1.12.4",
     "rimraf": "^3.0.2",
     "ts-node": "^8.9.1",
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "@argdown/core": "^1.4.9",
+    "@argdown/core": "^1.5.0",
     "lodash.defaultsdeep": "^4.6.1",
     "svg-to-img": "^2.0.9"
   }
