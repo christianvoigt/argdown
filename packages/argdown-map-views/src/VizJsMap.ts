@@ -34,8 +34,9 @@ export const vizJsDefaultSettings = {
   // format: "svg"
 };
 export class VizJsMap implements CanSelectNode {
-  vizJsConfig: VizConstructorOptions;
+  vizJsConfig?: VizConstructorOptions;
   viz: any;
+  renderSync?: (str:string, settings:IVizJsSettings)=>string;
   zoomManager: ZoomManager;
   svgContainer: HTMLElement;
   selectedElement?: SVGGraphicsElement | null;
@@ -43,39 +44,37 @@ export class VizJsMap implements CanSelectNode {
   onSelectionChanged?: OnSelectionChangedHandler;
   constructor(
     svgContainer: HTMLElement,
-    config: VizConstructorOptions,
+    renderSync: ((str:string, settings:IVizJsSettings)=>string) | null, // sync render mode still needed for vscode as long as webviews do not support web workers, set vizjsConfig to null if renderSync is used.
+    config: VizConstructorOptions | null, // should be used if web workers are supported, renderSync should be set null in that case
     onZoomChanged?: OnZoomChangedHandler,
     onSelectionChanged?: OnSelectionChangedHandler
   ) {
-    this.vizJsConfig = config;
+    if(!renderSync && config){
+      this.vizJsConfig = config;
+      this.viz = new Viz(this.vizJsConfig);      
+    }else if(renderSync){
+      this.renderSync = renderSync;
+    }
     this.svgContainer = svgContainer;
     this.zoomManager = new ZoomManager(onZoomChanged, true);
-    this.viz = new Viz(this.vizJsConfig);
     this.onSelectionChanged = onSelectionChanged;
   }
-  async dot2svg(dot: string, options: IVizJsSettings) {
-    if (this.viz === undefined) {
+  async renderAsync(dot: string, options: IVizJsSettings) {
+    if (this.viz === undefined && this.vizJsConfig) {
       this.viz = new Viz(this.vizJsConfig);
     }
-    console.log("before renderString");
-    const result = this.viz.renderString(dot, options);
-    result
-      .then(() => {
-        console.log("Promise resolved!");
-      })
-      .catch(() => {
-        console.log("Promise failed!");
-      });
-    console.log("after renderString");
-    console.log(`result: ${result}`);
-    return result;
+    return this.viz.renderString(dot, options);
   }
   async render(props: VizJsMapProps) {
     const settings = isObject(props.settings) ? props.settings : {};
     mergeDefaults(settings, vizJsDefaultSettings);
-    console.log(settings);
-    let svgString = await this.dot2svg(props.dot, settings);
-    console.log(svgString);
+    let svgString = "";
+    if(this.renderSync){
+      svgString = this.renderSync(props.dot, settings);
+    }
+    else{
+      svgString = await this.renderAsync(props.dot, settings);
+    }
     if (settings.removeProlog) {
       svgString = svgString.replace(
         /<\?[ ]*xml[\S ]+?\?>[\s]*<\![ ]*DOCTYPE[\S\s]+?\.dtd\"[ ]*>/,

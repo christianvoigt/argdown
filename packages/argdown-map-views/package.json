@@ -18,7 +18,6 @@
   ],
   "author": "Christian Voigt",
   "license": "MIT",
-  "browserslist": "last 2 versions, ie 10",
   "readmeFilename": "Readme.md",
   "dependencies": {
     "@argdown/core": "^1.4.9",
@@ -31,7 +30,7 @@
     "dagre-d3": "0.6.3",
     "lodash.defaultsdeep": "^4.6.1",
     "string-pixel-width": "^1.10.0",
-    "viz.js": "^2.1.2"
+    "@aduh95/viz.js": "^3.1.0"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.144",

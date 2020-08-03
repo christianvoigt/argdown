@@ -61,8 +61,8 @@ const createDagreMap = (container: HTMLElement) => {
 };
 const createVizJsMap = (container: HTMLElement) => {
   container.innerHTML = "";
-  const vizJsMap = new VizJsMap(container, {
-    workerURL: "http://localhost:2764/render.browser.js"
+  const vizJsMap = new VizJsMap(container, null, {
+    workerURL: "http://localhost:1234/render.browser.js"
   });
   const response = app.run({
     input: `
