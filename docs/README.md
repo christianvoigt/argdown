@@ -9,7 +9,7 @@ actionLink: /guide/
 footer: MIT Licensed | Copyright © 2018-present Christian Voigt | Funded by Debatelab, KIT Karlsuhe
 ---
 
-<p class="latest-news">April 2020: v1.4.9 has been released (<a href="/changes">changelog</a>)</p>
+<p class="latest-news">August 2020: v1.5.0 has been released (<a href="/changes">changelog</a>)</p>
 <div class="features">
   <div class="feature">
     <h2>Simple</h2>
@@ -21,7 +21,7 @@ footer: MIT Licensed | Copyright © 2018-present Christian Voigt | Funded by Deb
   </div>
   <div class="feature">
     <h2>Powerful</h2>
-    <p>Argdown can even be used within Markdown. Your code is transformed into an <a href="https://en.wikipedia.org/wiki/Argument_map">argument map</a> while you are typing. When your are ready you can publish your analysis as pdf, embed it as a web-component in a webpage or simply export your map as an image.</p>
+    <p>Argdown can even be used within Markdown! Your code is transformed into an <a href="https://en.wikipedia.org/wiki/Argument_map">argument map</a> while you are typing. When your are ready, you can publish your analysis as pdf, embed it as a web-component in a webpage or simply export your map as an image.</p>
   </div>
 </div>
 

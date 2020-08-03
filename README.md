@@ -2,13 +2,13 @@
 
 ![Argdown logo](./argdown-arrow.png?raw=true "Argdown logo")
 
-**v1.4.9 released! Check out [the new features](https://argdown.org/changes/)**
+**v1.5.0 released! Check out [the new features](https://argdown.org/changes/)**
 
 [Argdown](https://christianvoigt.github.io/argdown) is a simple syntax for analyzing complex argumentation.
 
 - Listing pros & cons in Argdown is as simple as writing a twitter message. You don't have to learn anything new, except a few simple rules that will feel very natural.
 - With these simple rules you will be able to define more complex relations between arguments or dive into the details of their logical premise-conclusion structures.
-- Your document is transformed into an [argument map](https://en.wikipedia.org/wiki/Argument_map) while you are typing. You can export your analysis as HTML, SVG, PDF, PNG or JSON. If that is not enough, you can easily extend Argdown with your own plugin.
+- Argdown can even be used within Markdown! Your code is transformed into an <a href="https://en.wikipedia.org/wiki/Argument_map">argument map</a> while you are typing. When your are ready, you can publish your analysis as pdf, embed it as a web-component in a webpage or simply export your map as an image.
 
 Start with [the docs](https://christianvoigt.github.io/argdown) or try it out in the [Browser Sandbox](http://christianvoigt.github.io/argdown).
 
