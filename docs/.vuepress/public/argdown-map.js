@@ -77,8 +77,8 @@ parcelRequire=function(e,r,t,n){var i,o="function"==typeof parcelRequire&&parcel
         background-color: rgba(256, 256, 256, 0.8);
         padding-right: 0.8rem;
         border-radius: 3px;
-        color: #ccc;
-        fill: #ccc;
+        color: var(--argdown-logo-color);
+        fill: var(--argdown-logo-color);
         text-decoration: none;
       }
       .argdown-mark .icon {
@@ -428,28 +428,28 @@ parcelRequire=function(e,r,t,n){var i,o="function"==typeof parcelRequire&&parcel
 },{"d3-zoom":"MHdZ","d3-selection":"ysDv"}],"u5Q1":[function(require,module,exports) {
 
 },{}],"uXi1":[function(require,module,exports) {
-"use strict";var e=require("lit-html"),t=require("haunted"),o=require("./ArgdownMark"),i=require("./ExpandIcon"),n=require("./MinimizeIcon"),r=require("d3-selection"),l=require("./zoomUtils");require("./snow-in-spring.argdown-theme.css"),require("./global-styles.css");const a=function(a){const[u,c]=(0,t.useState)(a.initialView||"map"),[d,m]=(0,t.useState)(!1),[h,p]=(0,t.useState)(!1),[g,f]=(0,t.useState)(""),w=(0,t.useRef)(null),x=(0,t.useRef)(null),[v,b]=(0,t.useState)(null!==a.querySelector('[slot="map"]')),[y,S]=(0,t.useState)(null!==a.querySelector('[slot="source"]')),$=()=>{b(null!==a.querySelector('[slot="map"]')),S(null!==a.querySelector('[slot="source"]')),w.current=a.shadowRoot.querySelector(".component").getBoundingClientRect().height};(0,t.useLayoutEffect)(()=>{"map"==u&&(w.current=a.shadowRoot.querySelector(".component").getBoundingClientRect().height)},[u]);return(0,t.useEffect)(()=>{if("true"===a.withoutZoom)return;const e=a.shadowRoot.querySelector(".map-slot");if(!e)return;const t=e.assignedNodes();if(h&&t.length>0){const e=(0,r.select)(t[0]).select("svg"),o=e.select("g"),i=(0,r.select)(a.shadowRoot.querySelector(".map-view"));d||i.attr("style",`height:${w.current}px;`),a.classList.add("zooming");const n={viewBox:e.attr("viewBox"),transform:o.attr("transform")};e.attr("viewBox",null),e.attr("style","height:100%; max-height: none;");const s="true"===a.withoutHeader?0:40,u=(0,l.addZoom)(e,s);return()=>{(0,l.removeZoom)(e,u),a.classList.remove("zooming"),e.attr("style",""),e.attr("viewBox",n.viewBox),o.attr("transform",n.transform),i.attr("style",null)}}},[h]),(0,t.useEffect)(()=>{"true"!==a.withoutZoom&&"map"!==u&&h&&(p(!1),x.current&&(clearTimeout(x.current),x.current=null))},[u,h]),(0,t.useEffect)(()=>{if("true"!==a.withoutZoom)if(d){if(h){(0,r.select)(a.shadowRoot.querySelector(".content")).attr("style",null)}p(!0)}else p(!1)},[d]),e.html`
+"use strict";var t=require("lit-html"),e=require("haunted"),o=require("./ArgdownMark"),r=require("./ExpandIcon"),n=require("./MinimizeIcon"),i=require("d3-selection"),l=require("./zoomUtils");require("./snow-in-spring.argdown-theme.css"),require("./global-styles.css");const a=function(a){const[u,c]=(0,e.useState)(a.initialView||"map"),[d,m]=(0,e.useState)(!1),[h,g]=(0,e.useState)(!1),[p,f]=(0,e.useState)(""),w=(0,e.useRef)(null),v=(0,e.useRef)(null),[b,x]=(0,e.useState)(null!==a.querySelector('[slot="map"]')),[y,S]=(0,e.useState)(null!==a.querySelector('[slot="source"]')),$=()=>{x(null!==a.querySelector('[slot="map"]')),S(null!==a.querySelector('[slot="source"]')),w.current=a.shadowRoot.querySelector(".component").getBoundingClientRect().height};(0,e.useLayoutEffect)(()=>{"map"==u&&(w.current=a.shadowRoot.querySelector(".component").getBoundingClientRect().height)},[u]);return(0,e.useEffect)(()=>{if("true"===a.withoutZoom)return;const t=a.shadowRoot.querySelector(".map-slot");if(!t)return;const e=t.assignedNodes();if(h&&e.length>0){const t=(0,i.select)(e[0]).select("svg"),o=t.select("g"),r=(0,i.select)(a.shadowRoot.querySelector(".map-view"));d||r.attr("style",`height:${w.current}px;`),a.classList.add("zooming");const n={viewBox:t.attr("viewBox"),transform:o.attr("transform")};t.attr("viewBox",null),t.attr("style","height:100%; max-height: none;");const s="true"===a.withoutHeader?0:40,u=(0,l.addZoom)(t,s);return()=>{(0,l.removeZoom)(t,u),a.classList.remove("zooming"),t.attr("style",""),t.attr("viewBox",n.viewBox),o.attr("transform",n.transform),r.attr("style",null)}}},[h]),(0,e.useEffect)(()=>{"true"!==a.withoutZoom&&"map"!==u&&h&&(g(!1),v.current&&(clearTimeout(v.current),v.current=null))},[u,h]),(0,e.useEffect)(()=>{if("true"!==a.withoutZoom)if(d){if(h){(0,i.select)(a.shadowRoot.querySelector(".content")).attr("style",null)}g(!0)}else g(!1)},[d]),t.html`
     ${s}
     <div
       class="component ${d?"expanded":""} ${"true"===a.withoutHeader?"without-header":""}"
     >
-      ${"true"!==a.withoutHeader?e.html`
+      ${"true"!==a.withoutHeader?t.html`
             <header>
               ${"true"!==a.withoutLogo?(0,o.ArgdownMark)():null}
               <nav>
-                ${g&&""!==g?e.html`
-                      <div class="zoom-message">${g}</div>
+                ${p&&""!==p?t.html`
+                      <div class="zoom-message">${p}</div>
                     `:null}
                 <ul class="flat">
                   <li>
-                    ${"map"===u?y?e.html`
+                    ${"map"===u?y?t.html`
                             <button
                               title="Source"
                               @click=${()=>c("source")}
                             >
                               Source
                             </button>
-                          `:null:v?e.html`
+                          `:null:b?t.html`
                           <button
                             title="Map"
                             @click=${()=>c("map")}
@@ -459,19 +459,19 @@ parcelRequire=function(e,r,t,n){var i,o="function"==typeof parcelRequire&&parcel
                         `:null}
                   </li>
                   <li>
-                    ${"true"!==a.withoutMaximize?d?e.html`
+                    ${"true"!==a.withoutMaximize?d?t.html`
                             <button
                               title="Minimize"
                               @click=${()=>{m(!1)}}
                             >
                               ${(0,n.MinimizeIcon)()}
                             </button>
-                          `:e.html`
+                          `:t.html`
                             <button
                               title="Expand"
                               @click=${()=>m(!0)}
                             >
-                              ${(0,i.ExpandIcon)()}
+                              ${(0,r.ExpandIcon)()}
                             </button>
                           `:null}
                   </li>
@@ -479,11 +479,11 @@ parcelRequire=function(e,r,t,n){var i,o="function"==typeof parcelRequire&&parcel
               </nav>
             </header>
           `:null}
-      ${"map"===u?e.html`
+      ${"map"===u?t.html`
             <div
-              @click=${()=>{"true"!==a.withoutZoom&&(f(""),p(!0))}}
-              @mouseout=${()=>{"true"!==a.withoutZoom&&(f(""),x.current||(x.current=setTimeout(()=>p(!1),3e3)))}}
-              @mouseover=${()=>{"true"!==a.withoutZoom&&(x.current&&(clearTimeout(x.current),x.current=null),"map"!=u||h||""!=g||f("Click to enable zoom"))}}
+              @click=${()=>{"true"!==a.withoutZoom&&(f(""),g(!0))}}
+              @mouseout=${()=>{"true"!==a.withoutZoom&&(f(""),v.current||(v.current=setTimeout(()=>g(!1),3e3)))}}
+              @mouseover=${()=>{"true"!==a.withoutZoom&&(v.current&&(clearTimeout(v.current),v.current=null),"map"!=u||h||""!=p||f("Click to enable zoom"))}}
               class="map-view${h?" zooming":""}"
             >
               <slot
@@ -492,22 +492,22 @@ parcelRequire=function(e,r,t,n){var i,o="function"==typeof parcelRequire&&parcel
                 @slotchange="${$}"
               ></slot>
             </div>
-          `:e.html`
+          `:t.html`
             <div class="source-view">
               <slot name="source" @slotchange="${$}"></slot>
             </div>
           `}
     </div>
-  `},s=e.html`
+  `},s=t.html`
   <style>
     :host {
       display: block;
-      background-color: #fff;
-      border: 1px solid #eee;
+      background-color: var(--argdown-bg-color, #fff);
+      border: 1px solid var(--argdown-border-color, #eee);
     }
     :host .component {
       display: flex;
-      background-color: #fff;
+      background-color: var(--argdown-bg-color, #fff);
       flex-direction: column;
       position: relative;
       width: 100%;
@@ -592,8 +592,8 @@ parcelRequire=function(e,r,t,n){var i,o="function"==typeof parcelRequire&&parcel
       pointer-events: auto;
     }
     nav .zoom-message {
-      color: #ccc;
-      background-color: #fff;
+      color: var(--argdown-logo-color, #ccc);
+      background-color: var(--argdown-bg-color, #fff);
       display: flex;
       align-items: center;
       padding: 0 1rem;
@@ -615,26 +615,28 @@ parcelRequire=function(e,r,t,n){var i,o="function"==typeof parcelRequire&&parcel
         Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
       display: inline-block;
       font-size: 0.8rem;
-      color: #fff;
-      background-color: #3e8eaf;
+      color: var(--argdown-button-font-color, #fff);
+      background-color: var(--argdown-button-bg-color, #3e8eaf);
       padding: 0.4rem 0.8rem;
       border-radius: 4px;
       border: 0;
+      cursor: pointer;
       transition: background-color 0.1s ease;
       box-sizing: border-box;
-      border-bottom: 1px solid #38809d;
+      border-bottom: 1px solid
+        var(--argdown-button-border-bottom-color, #38809d);
       font-weight: 500;
       margin: 0 3px;
     }
     button:hover {
-      background-color: #387e9c;
+      background-color: var(--argdown-button-bg-hover-color, #387e9c);
     }
     button svg {
       height: 0.8rem;
       width: auto;
-      color: #fff;
+      color: var(--argdown-button-font-color, #fff);
     }
   </style>
-`;a.observedAttributes=["initial-view","without-zoom","without-maximize","without-logo","without-header"],customElements.define("argdown-map",(0,t.component)(a));
+`;a.observedAttributes=["initial-view","without-zoom","without-maximize","without-logo","without-header"],customElements.define("argdown-map",(0,e.component)(a));
 },{"lit-html":"SPDu","haunted":"JghE","./ArgdownMark":"UIDT","./ExpandIcon":"ey8r","./MinimizeIcon":"SU2R","d3-selection":"ysDv","./zoomUtils":"zUQk","./snow-in-spring.argdown-theme.css":"u5Q1","./global-styles.css":"u5Q1"}]},{},["uXi1"], null)
 //# sourceMappingURL=/argdown-map.js.map
