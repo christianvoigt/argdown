@@ -11,6 +11,7 @@ export const tryToInstallImageExport = async (
   }
   triedToInstallImageExport = true;
   try {
+    //@ts-ignore
     const { installImageExport } = await import("@argdown/image-export");
     installImageExport(argdown);
     imageExportInstalled = true;

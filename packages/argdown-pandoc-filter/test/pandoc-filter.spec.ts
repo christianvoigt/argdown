@@ -28,7 +28,7 @@ const rimrafPromise = function(path: string) {
 };
 
 describe("Argdown Pandoc Filter", function() {
-  this.timeout(50000);
+  this.timeout(100000);
   it("generates html with web-component", async () => {
     const output = await execPandocOnFile(`example-web-component.md`, "html");
     (expect(output) as any).to.matchSnapshot(this);
