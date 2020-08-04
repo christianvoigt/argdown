@@ -17,8 +17,11 @@ Apart from some smaller bug-fixes and features, this release brings **three majo
 - VSCode's new API for webview resources has been adopted (closes [#160](https://github.com/christianvoigt/argdown/issues/160)).
 - The VSCode extension no longer fails to export files if no workspace is open (fixes [#159](https://github.com/christianvoigt/argdown/issues/159)).
 - Upgraded parser to [Chevrotain 7.0.1](https://github.com/SAP/chevrotain)
+- Upgraded to [@aduh95/viz.js 3.1.0](https://github.com/aduh95/viz.js) in all packages using Viz.js
 
 As always, all package dependencies have been upgraded.
+
+Thanks again to [Antoine du Hamel](https://github.com/aduh95) for his work on maintaining [@aduh95/viz.js](https://github.com/aduh95/viz.js).
 
 ## v1.4.x (April 2020)
 
