@@ -29,6 +29,10 @@ Thanks again to [Antoine du Hamel](https://github.com/aduh95) for his work on ma
 
 - `@argdown/cli`: Fixes missing `import-global` package ([#179](https://github.com/christianvoigt/argdown/issues/179))
 
+#### 1.5.2
+
+- `@argdown/cli` & `@argdown/node`: Fixes uncaught EExist error when running `argdown html` ([#180](https://github.com/christianvoigt/argdown/issues/180))
+
 
 ## v1.4.x (April 2020)
 
