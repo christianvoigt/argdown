@@ -10,7 +10,7 @@
   "engines": {
     "node": ">= 13.7.0"
   },
-  "version": "1.5.0",
+  "version": "1.5.1",
   "license": "MIT",
   "main": "dist/cli.js",
   "dependencies": {
@@ -19,6 +19,7 @@
     "@argdown/node": "^1.5.0",
     "@types/markdown-it": "^10.0.1",
     "@types/yargs": "^15.0.4",
+    "import-global": "^0.1.0",
     "markdown-it": "11.0.0",
     "pkginfo": "^0.4.1",
     "yargs": "^15.3.1"
@@ -59,7 +60,6 @@
     "chai-fs": "^2.0.0",
     "copyfiles": "^2.2.0",
     "glob": "^7.1.6",
-    "import-global": "^0.1.0",
     "intercept-stdout": "^0.1.2",
     "mkdirp": "^1.0.3",
     "mocha": "^8.0.1",
