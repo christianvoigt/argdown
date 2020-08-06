@@ -208,6 +208,15 @@ describe("argdown-cli", function() {
           (<any>expect(filePathToCss).to.be.a).file();
         });
       })
+      .then(()=>{
+        // Let's do it a second time to check if the copy css plugin swallows the eexist error
+        return execPromise(cmd, function(error, _stdout, stderr) {
+          expect(error).to.equal(null);
+          expect(stderr).to.equal("");
+          (<any>expect(filePathToHtml).to.be.a).file();
+          (<any>expect(filePathToCss).to.be.a).file();
+        });
+      })
       .then(() => {
         return rimrafPromise(htmlFolder);
       });

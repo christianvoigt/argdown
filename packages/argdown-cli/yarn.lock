@@ -70,10 +70,10 @@
     "@types/markdown-it" "^10.0.0"
     lodash.defaultsdeep "^4.6.1"
 
-"@argdown/node@^1.5.0":
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/@argdown/node/-/node-1.5.0.tgz#0763fbf793b4b01d6735e35d219a5f279c5d9a53"
-  integrity sha512-0EOnj45VFqveqfpd9DYKqVBz4bl5UFp8qAu5/FhRpioGhmFnGERyVp1BwY/Px6c7pBOCt57dOiIjve6KBLA69w==
+"@argdown/node@^1.5.2":
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/@argdown/node/-/node-1.5.2.tgz#8a230fd8ef3535d947bf640834d967014f637626"
+  integrity sha512-IRUowag+18G94bVM/KZBOHUKCUnPbIbpR4BmUBNGk9/LE+fqE8VyYxpWmr4rILl+n4vrea1rTIDKM2QFFNV2DA==
   dependencies:
     "@aduh95/viz.js" "^3.1.0"
     "@argdown/core" "^1.5.0"

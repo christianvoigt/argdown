@@ -10,13 +10,13 @@
   "engines": {
     "node": ">= 13.7.0"
   },
-  "version": "1.5.1",
+  "version": "1.5.2",
   "license": "MIT",
   "main": "dist/cli.js",
   "dependencies": {
     "@argdown/core": "^1.5.0",
     "@argdown/markdown-it-plugin": "^1.5.0",
-    "@argdown/node": "^1.5.0",
+    "@argdown/node": "^1.5.2",
     "@types/markdown-it": "^10.0.1",
     "@types/yargs": "^15.0.4",
     "import-global": "^0.1.0",
