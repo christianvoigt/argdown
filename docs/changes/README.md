@@ -23,6 +23,13 @@ As always, all package dependencies have been upgraded.
 
 Thanks again to [Antoine du Hamel](https://github.com/aduh95) for his work on maintaining [@aduh95/viz.js](https://github.com/aduh95/viz.js).
 
+### Patches
+
+#### 1.5.1
+
+- `@argdown/cli`: Fixes missing `import-global` package ([#179](https://github.com/christianvoigt/argdown/issues/179))
+
+
 ## v1.4.x (April 2020)
 
 This release is improving the Argdown workflow significantly: It is now possible to
