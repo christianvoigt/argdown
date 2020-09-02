@@ -3,7 +3,7 @@
   "engines": {
     "node": ">= 13.7.0"
   },
-  "version": "1.5.0",
+  "version": "1.5.2",
   "description": "Turns Argdown code fences into svg, png, jpg, webp or web-component argument maps",
   "bin": {
     "argdown-filter": "dist/index.js"
@@ -52,8 +52,8 @@
     "parcel": "^1.12.4",
     "rimraf": "^3.0.2",
     "source-map-support": "^0.5.16",
-    "ts-node": "^8.8.1",
-    "typescript": "^3.8.3"
+    "ts-node": "9.0.0",
+    "typescript": "4.0.2"
   },
   "dependencies": {
     "@argdown/core": "^1.5.0",

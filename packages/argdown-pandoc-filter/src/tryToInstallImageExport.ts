@@ -20,7 +20,8 @@ export const tryToInstallImageExport = async (
       const { installImageExport } = importGlobal("@argdown/image-export");
       installImageExport(argdown);
       imageExportInstalled = true;
-    } catch (e) {}
+    } catch (e) {
+    }
   }
   return imageExportInstalled;
 };
