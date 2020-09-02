@@ -26,8 +26,16 @@ Generate a pdf file from your Argdown-in-Markdown file:
 pandoc -f markdown my-argdown-in-markdown-file.md --filter argdown-filter -o my-pdf-file.pdf
 ```
 
-Generate a html file from your Argdown-in-Markdown file:
+Generate a html file from your Argdown-in-Markdown file on **OSX** or **Linux**:
 
 ```sh
 pandoc -s -f markdown my-argdown-in-markdown-file.md --filter argdown-filter -o my-html-file.html
 ```
+
+On **Windows 10** you have to use `argdown-filter.cmd` instead:
+
+```sh
+pandoc input-file.md -f markdown -t pdf --filter argdown-filter.cmd -o output-file.pdf
+```
+
+On **Windows 8.1** using node filters this way currently does not work (see [here](https://github.com/jgm/pandoc/issues/3458) and [here](https://github.com/raghur/mermaid-filter#installation-and-usage)).

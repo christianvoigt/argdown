@@ -47,17 +47,27 @@ This is _Markdown_ code. Here comes an _Argdown_ code block:
 ```
 ````
 
-To export `input-file.md` to a PDF document named `output-file.pdf`, run the following command:
+To export `input-file.md` to a PDF document named `output-file.pdf`, run the following command on OSX or Linux:
 
 ```sh
 pandoc input-file.md -f markdown -t pdf --filter argdown-filter -o output-file.pdf
 ```
 
-To export `input-file.md` to a HTML document named `output-file.html`, run the following command:
+On **Windows 10** you have to use `argdown-filter.cmd` instead:
+
+```sh
+pandoc input-file.md -f markdown -t pdf --filter argdown-filter.cmd -o output-file.pdf
+```
+
+On **Windows 8.1** using node filters this way currently does not work (see [here](https://github.com/jgm/pandoc/issues/3458) and [here](https://github.com/raghur/mermaid-filter#installation-and-usage)).
+
+To export `input-file.md` to a HTML document named `output-file.html`, run the following command on OSX or Linux:
 
 ```sh
 pandoc input-file.md -f markdown -t html -s --filter argdown-filter -o output-file.html
 ```
+
+On Windows use `--filter argdown-filter.cmd`.
 
 Consult the [Pandoc documentation](https://pandoc.org/MANUAL.html) for further information on the general use of Pandoc.
 
