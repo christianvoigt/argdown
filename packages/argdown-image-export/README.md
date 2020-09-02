@@ -11,7 +11,7 @@ Because of puppeteer's large size and [Linux installation requirements](https://
 Install the package globally:
 
 ```sh
-npm install -g @argdown/png-export
+npm install -g @argdown/image-export
 ```
 
 If you are using Linux, you might have to install additional dependencies for Puppeteer. Check the installation notes for [svg-to-img](https://github.com/etienne-martin/svg-to-img) and Google's [troubleshooting document](https://developers.google.com/web/tools/puppeteer/troubleshooting#chrome_headless_doesnt_launch_on_unix) for further information.
