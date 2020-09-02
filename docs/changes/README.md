@@ -33,6 +33,7 @@ Thanks again to [Antoine du Hamel](https://github.com/aduh95) for his work on ma
 
 - `@argdown/cli` & `@argdown/node`: Fixes uncaught EExist error when running `argdown html` ([#180](https://github.com/christianvoigt/argdown/issues/180))
 - `@argdown/image-export`: fixes missing `@argdown/node` dependency (was only devDependency), ([#186](https://github.com/christianvoigt/argdown/issues/186))
+- `@argdown/pandoc-filter`: fixes typescript compilation of optional chaining, ([#187](https://github.com/christianvoigt/argdown/issues/186))
 
 
 ## v1.4.x (April 2020)
