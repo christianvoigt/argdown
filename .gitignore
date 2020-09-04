@@ -15,6 +15,7 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 .yarn
+.yarnrc
 
 # Editor directories and files
 .idea
