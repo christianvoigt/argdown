@@ -20,8 +20,8 @@ import {
   WebComponentExportPlugin,
   HighlightSourcePlugin
 } from "@argdown/core";
+import {SyncDotToSvgExportPlugin } from "@argdown/core/dist/plugins/SyncDotToSvgExportPlugin";
 import { SaveAsFilePlugin } from "./plugins/SaveAsFilePlugin";
-import { DotToSvgExportPlugin } from "./plugins/DotToSvgExportPlugin";
 import { SvgToPdfExportPlugin } from "./plugins/SvgToPdfExportPlugin";
 import { CopyDefaultCssPlugin } from "./plugins/CopyDefaultCssPlugin";
 import { LogParserErrorsPlugin } from "./plugins/LogParserErrorsPlugin";
@@ -120,7 +120,7 @@ argdown.addPlugin(saveAsGraphML, "save-as-graphml");
 const stdoutGraphML = new StdOutPlugin({ dataKey: "graphml" });
 argdown.addPlugin(stdoutGraphML, "stdout-graphml");
 
-const dotToSvgExport = new DotToSvgExportPlugin();
+const dotToSvgExport = new SyncDotToSvgExportPlugin();
 argdown.addPlugin(dotToSvgExport, "export-svg");
 const saveSvgAsSvg = new SaveAsFilePlugin({
   outputDir: "./svg",

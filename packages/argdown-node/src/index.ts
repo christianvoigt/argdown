@@ -53,7 +53,7 @@ export * from "./argdown";
 export * from "./IAsyncArgdownPlugin";
 export * from "./AsyncArgdownApplication";
 export * from "./plugins/CopyDefaultCssPlugin";
-export * from "./plugins/DotToSvgExportPlugin";
+// export * from "./plugins/DotToSvgExportPlugin";
 export * from "./plugins/IncludePlugin";
 export * from "./plugins/LoadFilePlugin";
 export * from "./plugins/LogParserErrorsPlugin";
