@@ -35,6 +35,10 @@ Thanks again to [Antoine du Hamel](https://github.com/aduh95) for his work on ma
 - `@argdown/image-export`: fixes missing `@argdown/node` dependency (was only devDependency), ([#186](https://github.com/christianvoigt/argdown/issues/186))
 - `@argdown/pandoc-filter`: fixes typescript compilation of optional chaining, ([#187](https://github.com/christianvoigt/argdown/issues/186))
 
+### 1.5.3
+
+- `@argdown/node`, `@argdown/language-server`, `argdown-vscode`: Fixes svg/png export in VSCode by reverting to SyncDotToSvgExportPlugin ([#193](https://github.com/christianvoigt/argdown/issues/193))
+- `@argdown/language-server`, `argdown-vscode`: upgrade bundling configs to webpack 5
 
 ## v1.4.x (April 2020)
 

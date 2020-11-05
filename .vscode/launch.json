@@ -10,8 +10,7 @@
       "args": ["--extensionDevelopmentPath=${cwd}/packages/argdown-vscode"],
       "stopOnEntry": false,
       "sourceMaps": true,
-      "outFiles": ["${cwd}/packages/argdown-vscode/dist/**/*.js"],
-      "preLaunchTask": "watch:argdown-vscode"
+      "outFiles": ["${cwd}/packages/argdown-vscode/dist/**/*.js"]
     },
     {
       "name": "Attach to argdown-language-server",
@@ -23,8 +22,7 @@
         "../../*": "${cwd}/packages/argdown-language-server/*"
       },
       "restart": true,
-      "outFiles": ["${cwd}/packages/argdown-language-server/dist/**/*.js"],
-      "preLaunchTask": "watch:argdown-languageserver"
+      "outFiles": ["${cwd}/packages/argdown-language-server/dist/**/*.js"]
     }
   ],
   "compounds": [
