@@ -3,6 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 const path = require("path");
+const webpack = require("webpack");
 
 module.exports = {
   entry: {
@@ -21,14 +22,36 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: [".tsx", ".ts", ".js"]
+    extensions: [".tsx", ".ts", ".js"],
+    fallback: {
+      fs: false,
+      stream: false
+    },
+    alias: {
+      process: "process/browser",
+      crypto: "crypto-browserify",
+      path: "path-browserify"
+    }
   },
-  devtool: "inline-source-map",
+  devtool: 'cheap-module-source-map',
   output: {
     filename: "[name].js",
     path: path.resolve(__dirname, "media")
   },
   node: {
-    fs: "empty"
-  }
+    global: false
+  },
+ plugins: [
+    new webpack.DefinePlugin({
+      global: 'window',		// Placeholder for global used in any node_modules
+    }),
+    // fix "process is not defined" error:
+    new webpack.ProvidePlugin({
+      process: "process/browser",
+    }),
+    new webpack.ProvidePlugin({
+      path: "path-browserify",
+    })
+],
+ 
 };

@@ -1,7 +1,6 @@
 // At the moment this is only working in "development" mode. In "production" mode the Argdown in Markdown feature is not working.
 // Using PDFKit fix from here: https://github.com/Pzixel/PDFKit-example/blob/master/webpack.config.js
 
-const StringReplacePlugin = require("string-replace-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 
 //@ts-check
@@ -9,11 +8,11 @@ const TerserPlugin = require("terser-webpack-plugin");
 ("use strict");
 
 const path = require("path");
+const webpack = require("webpack");
 
 /**@type {import('webpack').Configuration}*/
 const config = {
   target: "node", // vscode extensions run in a Node.js-context 📖 -> https://webpack.js.org/configuration/node/
-
   entry: "./src/extension.ts", // the entry point of this extension, 📖 -> https://webpack.js.org/configuration/entry-context/
   output: {
     // the bundle is stored in the 'dist' folder (check package.json), 📖 -> https://webpack.js.org/configuration/output/
@@ -30,11 +29,9 @@ const config = {
     // support reading TypeScript and JavaScript files, 📖 -> https://github.com/TypeStrong/ts-loader
     extensions: [".ts", ".js"],
     alias: {
-      "unicode-properties": "unicode-properties/unicode-properties.cjs.js",
-      pdfkit: "pdfkit/js/pdfkit.js"
+        pdfkit: path.resolve(__dirname, 'node_modules/pdfkit/js/pdfkit.standalone.js')
     }
   },
-  plugins: [new StringReplacePlugin()],
   module: {
     rules: [
       {
@@ -54,30 +51,6 @@ const config = {
       {
         test: /\.css$/,
         use: ["style-loader", "css-loader"]
-      },
-      {
-        enforce: "pre",
-        test: /unicode-properties[\/\\]unicode-properties/,
-        loader: StringReplacePlugin.replace({
-          replacements: [
-            {
-              pattern: "var fs = _interopDefault(require('fs'));",
-              replacement: function() {
-                return "var fs = require('fs');";
-              }
-            }
-          ]
-        })
-      },
-      {
-        test: /unicode-properties[\/\\]unicode-properties/,
-        loader: "transform-loader?brfs"
-      },
-      { test: /pdfkit[/\\]js[/\\]/, loader: "transform-loader?brfs" },
-      { test: /fontkit[\/\\]index.js$/, loader: "transform-loader?brfs" },
-      {
-        test: /linebreak[\/\\]src[\/\\]linebreaker.js/,
-        loader: "transform-loader?brfs"
       }
     ]
   },
@@ -85,8 +58,6 @@ const config = {
     minimizer: [
       new TerserPlugin({
         parallel: true,
-        cache: true,
-        // sourceMap: true,
         terserOptions: {
           ecma: 8,
           keep_classnames: true,
@@ -94,7 +65,8 @@ const config = {
         }
       })
     ]
-  }
+  },
+  experiments: { asyncWebAssembly: true }
 };
 
 module.exports = config;

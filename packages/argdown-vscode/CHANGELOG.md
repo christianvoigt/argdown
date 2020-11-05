@@ -23,6 +23,23 @@ As always, all package dependencies have been upgraded.
 
 Thanks again to [Antoine du Hamel](https://github.com/aduh95) for his work on maintaining [@aduh95/viz.js](https://github.com/aduh95/viz.js).
 
+### Patches
+
+#### 1.5.1
+
+- `@argdown/cli`: Fixes missing `import-global` package ([#179](https://github.com/christianvoigt/argdown/issues/179))
+
+#### 1.5.2
+
+- `@argdown/cli` & `@argdown/node`: Fixes uncaught EExist error when running `argdown html` ([#180](https://github.com/christianvoigt/argdown/issues/180))
+- `@argdown/image-export`: fixes missing `@argdown/node` dependency (was only devDependency), ([#186](https://github.com/christianvoigt/argdown/issues/186))
+- `@argdown/pandoc-filter`: fixes typescript compilation of optional chaining, ([#187](https://github.com/christianvoigt/argdown/issues/186))
+
+### 1.5.3
+
+- `@argdown/node`, `@argdown/language-server`, `argdown-vscode`: Fixes svg/png export in VSCode by reverting to SyncDotToSvgExportPlugin ([#193](https://github.com/christianvoigt/argdown/issues/193))
+- `@argdown/language-server`, `argdown-vscode`: upgrade bundling configs to webpack 5
+
 ## v1.4.x (April 2020)
 
 This release is improving the Argdown workflow significantly: It is now possible to
