@@ -14,7 +14,7 @@
     "@argdown/codemirror-mode": "^1.5.0",
     "@argdown/core": "^1.5.0",
     "@argdown/map-views": "^1.5.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "file-saver": "^2.0.2",
     "vue": "^2.6.10",
     "vue-async-computed": "^3.7.0",
