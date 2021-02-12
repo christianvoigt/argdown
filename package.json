@@ -3,6 +3,7 @@
   "author": "Christian Voigt <1pxsolidblack@googlemail.com>",
   "repository": "https://github.com/christianvoigt/argdown",
   "private": true,
+  "license": "MIT",
   "scripts": {
     "lerna:bootstrap": "lerna bootstrap",
     "lerna:version": "lerna version",
@@ -22,10 +23,10 @@
   "readmeFilename": "Readme.md",
   "preferGlobal": true,
   "devDependencies": {
-    "@vuepress/plugin-pwa": "^1.4.1",
+    "@vuepress/plugin-pwa": "1.8.0",
     "esm": "^3.2.25",
     "lerna": "^3.20.2",
-    "vuepress": "^1.4.1"
+    "vuepress": "1.8.0"
   },
   "workspace-sources": {
     "*": [

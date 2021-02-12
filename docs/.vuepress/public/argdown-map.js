@@ -29,11 +29,11 @@ parcelRequire=function(e,r,t,n){var i,o="function"==typeof parcelRequire&&parcel
 },{"./interface":"kmQA","./symbols":"zczj"}],"XOve":[function(require,module,exports) {
 "use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.BaseScheduler=void 0;var e=require("./state"),t=require("./symbols");const s=Promise.resolve().then.bind(Promise.resolve());function r(){let e,t=[];function r(){e=null;let s=t;t=[];for(var r=0,h=s.length;r<h;r++)s[r]()}return function(h){t.push(h),null==e&&(e=s(r))}}const h=r(),u=r();class i{constructor(s,r){this.renderer=s,this.host=r,this.state=new e.State(this.update.bind(this),r),this[t.phaseSymbol]=null,this._updateQueued=!1}update(){this._updateQueued||(h(()=>{let e=this.handlePhase(t.updateSymbol);u(()=>{this.handlePhase(t.commitSymbol,e),u(()=>{this.handlePhase(t.effectsSymbol)})}),this._updateQueued=!1}),this._updateQueued=!0)}handlePhase(e,s){switch(this[t.phaseSymbol]=e,e){case t.commitSymbol:return this.commit(s),void this.runEffects(t.layoutEffectsSymbol);case t.updateSymbol:return this.render();case t.effectsSymbol:return this.runEffects(t.effectsSymbol)}this[t.phaseSymbol]=null}render(){return this.state.run(()=>this.renderer.call(this.host,this.host))}runEffects(e){this.state._runEffects(e)}teardown(){this.state.teardown()}}exports.BaseScheduler=i;
 },{"./state":"kS2Q","./symbols":"zczj"}],"YsXC":[function(require,module,exports) {
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.makeComponent=r;var e=require("./scheduler");const t=(e="")=>e.replace(/-+([a-z])?/g,(e,t)=>t?t.toUpperCase():"");function r(r){class s extends e.BaseScheduler{constructor(e,t,r){super(e,r||t),this.frag=t}commit(e){r(e,this.frag)}}return function(e,r,o){const c=(o||r||{}).baseElement||HTMLElement,{observedAttributes:n=[],useShadowDOM:a=!0,shadowRootInit:u={}}=o||r||{};class l extends c{constructor(){super(),!1===a?this._scheduler=new s(e,this):(this.attachShadow({mode:"open",...u}),this._scheduler=new s(e,this.shadowRoot,this))}static get observedAttributes(){return e.observedAttributes||n||[]}connectedCallback(){this._scheduler.update()}disconnectedCallback(){this._scheduler.teardown()}attributeChangedCallback(e,r,s){if(r===s)return;let o=""===s||s;Reflect.set(this,t(e),o)}}const i=new Proxy(c.prototype,{getPrototypeOf:e=>e,set(e,t,r,s){let o;if(t in e){if((o=Object.getOwnPropertyDescriptor(e,t))&&o.set)return o.set.call(s,r),!0;Reflect.set(e,t,r)}return o="symbol"==typeof t||"_"===t[0]?{enumerable:!0,configurable:!0,writable:!0,value:r}:function(e){let t=e;return Object.freeze({enumerable:!0,configurable:!0,get:()=>t,set(e){t=e,this._scheduler.update()}})}(r),Object.defineProperty(s,t,o),o.set&&o.set.call(s,r),!0}});return Object.setPrototypeOf(l.prototype,i),l}}
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.makeComponent=r;var e=require("./scheduler");const t=(e="")=>e.replace(/-+([a-z])?/g,(e,t)=>t?t.toUpperCase():"");function r(r){class s extends e.BaseScheduler{constructor(e,t,r){super(e,r||t),this.frag=t}commit(e){r(e,this.frag)}}return function(e,r,o){const c=(o||r||{}).baseElement||HTMLElement,{observedAttributes:n=[],useShadowDOM:a=!0,shadowRootInit:l={}}=o||r||{};class u extends c{constructor(){super(),!1===a?this._scheduler=new s(e,this):(this.attachShadow({mode:"open",...l}),this._scheduler=new s(e,this.shadowRoot,this))}static get observedAttributes(){return e.observedAttributes||n||[]}connectedCallback(){this._scheduler.update()}disconnectedCallback(){this._scheduler.teardown()}attributeChangedCallback(e,r,s){if(r===s)return;let o=""===s||s;Reflect.set(this,t(e),o)}}const i=new Proxy(c.prototype,{getPrototypeOf:e=>e,set(e,t,r,s){let o;return t in e?(o=Object.getOwnPropertyDescriptor(e,t))&&o.set?(o.set.call(s,r),!0):(Reflect.set(e,t,r,s),!0):(o="symbol"==typeof t||"_"===t[0]?{enumerable:!0,configurable:!0,writable:!0,value:r}:function(e){let t=e;return Object.freeze({enumerable:!0,configurable:!0,get:()=>t,set(e){t=e,this._scheduler.update()}})}(r),Object.defineProperty(s,t,o),o.set&&o.set.call(s,r),!0)}});return Object.setPrototypeOf(u.prototype,i),u}}
 },{"./scheduler":"XOve"}],"eQZq":[function(require,module,exports) {
 "use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.hook=s,exports.Hook=void 0;var e=require("./interface"),t=require("./symbols");class r{constructor(e,t){this.id=e,this.state=t}}function o(r,...o){let s=(0,e.notify)(),n=e.current[t.hookSymbol],u=n.get(s);return u||(u=new r(s,e.current,...o),n.set(s,u)),u.update(...o)}function s(e){return o.bind(null,e)}exports.Hook=r;
 },{"./interface":"kmQA","./symbols":"zczj"}],"LRUU":[function(require,module,exports) {
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.createEffect=s;var t=require("./hook");function s(s){return(0,t.hook)(class extends t.Hook{constructor(t,e,a,h){super(t,e),s(e,this)}update(t,s){this.callback=t,this.lastValues=this.values,this.values=s}call(){this.values&&!this.hasChanged()||this.run()}run(){this.teardown(),this._teardown=this.callback.call(this.state)}teardown(){"function"==typeof this._teardown&&this._teardown()}hasChanged(){return!this.lastValues||this.values.some((t,s)=>this.lastValues[s]!==t)}})}
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.createEffect=s;var t=require("./hook");function s(s){return(0,t.hook)(class extends t.Hook{constructor(t,e,a,h){super(t,e),s(e,this)}update(t,s){this.callback=t,this.values=s}call(){this.values&&!this.hasChanged()||this.run(),this.lastValues=this.values}run(){this.teardown(),this._teardown=this.callback.call(this.state)}teardown(){"function"==typeof this._teardown&&this._teardown()}hasChanged(){return!this.lastValues||this.values.some((t,s)=>this.lastValues[s]!==t)}})}
 },{"./hook":"eQZq"}],"mgsT":[function(require,module,exports) {
 "use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.setEffects=s,exports.useEffect=void 0;var e=require("./symbols"),t=require("./create-effect");function s(t,s){t[e.effectsSymbol].push(s)}const f=(0,t.createEffect)(s);exports.useEffect=f;
 },{"./symbols":"zczj","./create-effect":"LRUU"}],"d3YY":[function(require,module,exports) {
@@ -428,48 +428,48 @@ parcelRequire=function(e,r,t,n){var i,o="function"==typeof parcelRequire&&parcel
 },{"d3-zoom":"MHdZ","d3-selection":"ysDv"}],"u5Q1":[function(require,module,exports) {
 
 },{}],"uXi1":[function(require,module,exports) {
-"use strict";var t=require("lit-html"),e=require("haunted"),o=require("./ArgdownMark"),r=require("./ExpandIcon"),n=require("./MinimizeIcon"),i=require("d3-selection"),l=require("./zoomUtils");require("./snow-in-spring.argdown-theme.css"),require("./global-styles.css");const a=function(a){const[u,c]=(0,e.useState)(a.initialView||"map"),[d,m]=(0,e.useState)(!1),[h,g]=(0,e.useState)(!1),[p,f]=(0,e.useState)(""),w=(0,e.useRef)(null),v=(0,e.useRef)(null),[b,x]=(0,e.useState)(null!==a.querySelector('[slot="map"]')),[y,S]=(0,e.useState)(null!==a.querySelector('[slot="source"]')),$=()=>{x(null!==a.querySelector('[slot="map"]')),S(null!==a.querySelector('[slot="source"]')),w.current=a.shadowRoot.querySelector(".component").getBoundingClientRect().height};(0,e.useLayoutEffect)(()=>{"map"==u&&(w.current=a.shadowRoot.querySelector(".component").getBoundingClientRect().height)},[u]);return(0,e.useEffect)(()=>{if("true"===a.withoutZoom)return;const t=a.shadowRoot.querySelector(".map-slot");if(!t)return;const e=t.assignedNodes();if(h&&e.length>0){const t=(0,i.select)(e[0]).select("svg"),o=t.select("g"),r=(0,i.select)(a.shadowRoot.querySelector(".map-view"));d||r.attr("style",`height:${w.current}px;`),a.classList.add("zooming");const n={viewBox:t.attr("viewBox"),transform:o.attr("transform")};t.attr("viewBox",null),t.attr("style","height:100%; max-height: none;");const s="true"===a.withoutHeader?0:40,u=(0,l.addZoom)(t,s);return()=>{(0,l.removeZoom)(t,u),a.classList.remove("zooming"),t.attr("style",""),t.attr("viewBox",n.viewBox),o.attr("transform",n.transform),r.attr("style",null)}}},[h]),(0,e.useEffect)(()=>{"true"!==a.withoutZoom&&"map"!==u&&h&&(g(!1),v.current&&(clearTimeout(v.current),v.current=null))},[u,h]),(0,e.useEffect)(()=>{if("true"!==a.withoutZoom)if(d){if(h){(0,i.select)(a.shadowRoot.querySelector(".content")).attr("style",null)}g(!0)}else g(!1)},[d]),t.html`
-    ${s}
+"use strict";var t=require("lit-html"),e=require("haunted"),o=require("./ArgdownMark"),r=require("./ExpandIcon"),i=require("./MinimizeIcon"),n=require("d3-selection"),l=require("./zoomUtils");require("./snow-in-spring.argdown-theme.css"),require("./global-styles.css");let a=0;const s=()=>{const t="argdown-map-"+a;return a++,t},u=function(a){a.id||(a.id=s());const[u,d]=(0,e.useState)(a.initialView||"map");(0,e.useEffect)(()=>{a.initialView&&""!=a.initialView&&d(a.initialView)},[a.initialView]);const[m,h]=(0,e.useState)(!1),[g,p]=(0,e.useState)(!1),[w,f]=(0,e.useState)(""),v=(0,e.useRef)(null),b=(0,e.useRef)(null),[x,y]=(0,e.useState)(null!==a.querySelector('[slot="map"]')),[S,$]=(0,e.useState)(null!==a.querySelector('[slot="source"]')),z=()=>{y(null!==a.querySelector('[slot="map"]')),$(null!==a.querySelector('[slot="source"]')),v.current=a.shadowRoot.querySelector(".component").getBoundingClientRect().height};(0,e.useLayoutEffect)(()=>{"map"==u&&(v.current=a.shadowRoot.querySelector(".component").getBoundingClientRect().height)},[u]);return(0,e.useEffect)(()=>{if("true"===a.withoutZoom)return;const t=a.shadowRoot.querySelector(".map-slot");if(!t)return;const e=t.assignedNodes();if(g&&e.length>0){const t=(0,n.select)(e[0]).select("svg"),o=t.select("g"),r=(0,n.select)(a.shadowRoot.querySelector(".map-view"));m||r.attr("style",`height:${v.current}px;`),a.classList.add("zooming");const i={viewBox:t.attr("viewBox"),transform:o.attr("transform")};t.attr("viewBox",null),t.attr("style","height:100%; max-height: none;");const s="true"===a.withoutHeader?0:40,u=(0,l.addZoom)(t,s);return()=>{(0,l.removeZoom)(t,u),a.classList.remove("zooming"),t.attr("style",""),t.attr("viewBox",i.viewBox),o.attr("transform",i.transform),r.attr("style",null)}}},[g]),(0,e.useEffect)(()=>{"true"!==a.withoutZoom&&"map"!==u&&g&&(p(!1),b.current&&(clearTimeout(b.current),b.current=null))},[u,g]),(0,e.useEffect)(()=>{if("true"!==a.withoutZoom)if(m){if(g){(0,n.select)(a.shadowRoot.querySelector(".content")).attr("style",null)}p(!0)}else p(!1)},[m]),t.html`
+    ${c}
     <div
-      class="component ${d?"expanded":""} ${"true"===a.withoutHeader?"without-header":""}"
+      class="component ${m?"expanded":""} ${"true"===a.withoutHeader?"without-header":""}"
     >
       ${"true"!==a.withoutHeader?t.html`
             <header>
               ${"true"!==a.withoutLogo?(0,o.ArgdownMark)():null}
               <nav>
-                ${p&&""!==p?t.html`
-                      <div class="zoom-message">${p}</div>
+                ${w&&""!==w?t.html`
+                      <div class="zoom-message">${w}</div>
                     `:null}
                 <ul class="flat">
                   <li>
-                    ${"map"===u?y?t.html`
+                    ${"map"===u?S?t.html`
                             <button
                               title="Source"
-                              @click=${()=>c("source")}
+                              @click=${()=>d("source")}
                             >
                               Source
                             </button>
-                          `:null:b?t.html`
+                          `:null:x?t.html`
                           <button
                             title="Map"
-                            @click=${()=>c("map")}
+                            @click=${()=>d("map")}
                           >
                             Map
                           </button>
                         `:null}
                   </li>
                   <li>
-                    ${"true"!==a.withoutMaximize?d?t.html`
+                    ${"true"!==a.withoutMaximize?m?t.html`
                             <button
                               title="Minimize"
-                              @click=${()=>{m(!1)}}
+                              @click=${()=>{h(!1)}}
                             >
-                              ${(0,n.MinimizeIcon)()}
+                              ${(0,i.MinimizeIcon)()}
                             </button>
                           `:t.html`
                             <button
                               title="Expand"
-                              @click=${()=>m(!0)}
+                              @click=${()=>h(!0)}
                             >
                               ${(0,r.ExpandIcon)()}
                             </button>
@@ -481,24 +481,24 @@ parcelRequire=function(e,r,t,n){var i,o="function"==typeof parcelRequire&&parcel
           `:null}
       ${"map"===u?t.html`
             <div
-              @click=${()=>{"true"!==a.withoutZoom&&(f(""),g(!0))}}
-              @mouseout=${()=>{"true"!==a.withoutZoom&&(f(""),v.current||(v.current=setTimeout(()=>g(!1),3e3)))}}
-              @mouseover=${()=>{"true"!==a.withoutZoom&&(v.current&&(clearTimeout(v.current),v.current=null),"map"!=u||h||""!=p||f("Click to enable zoom"))}}
-              class="map-view${h?" zooming":""}"
+              @click=${()=>{"true"!==a.withoutZoom&&(f(""),p(!0))}}
+              @mouseout=${()=>{"true"!==a.withoutZoom&&(f(""),b.current||(b.current=setTimeout(()=>p(!1),3e3)))}}
+              @mouseover=${()=>{"true"!==a.withoutZoom&&(b.current&&(clearTimeout(b.current),b.current=null),"map"!=u||g||""!=w||f("Click to enable zoom"))}}
+              class="map-view${g?" zooming":""}"
             >
               <slot
                 name="map"
                 class="map-slot"
-                @slotchange="${$}"
+                @slotchange="${z}"
               ></slot>
             </div>
           `:t.html`
             <div class="source-view">
-              <slot name="source" @slotchange="${$}"></slot>
+              <slot name="source" @slotchange="${z}"></slot>
             </div>
           `}
     </div>
-  `},s=t.html`
+  `},c=t.html`
   <style>
     :host {
       display: block;
@@ -637,6 +637,6 @@ parcelRequire=function(e,r,t,n){var i,o="function"==typeof parcelRequire&&parcel
       color: var(--argdown-button-font-color, #fff);
     }
   </style>
-`;a.observedAttributes=["initial-view","without-zoom","without-maximize","without-logo","without-header"],customElements.define("argdown-map",(0,e.component)(a));
+`;u.observedAttributes=["initial-view","without-zoom","without-maximize","without-logo","without-header"],customElements.define("argdown-map",(0,e.component)(u));
 },{"lit-html":"SPDu","haunted":"JghE","./ArgdownMark":"UIDT","./ExpandIcon":"ey8r","./MinimizeIcon":"SU2R","d3-selection":"ysDv","./zoomUtils":"zUQk","./snow-in-spring.argdown-theme.css":"u5Q1","./global-styles.css":"u5Q1"}]},{},["uXi1"], null)
 //# sourceMappingURL=/argdown-map.js.map
