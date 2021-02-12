@@ -25,16 +25,16 @@
   "dependencies": {
     "d3-selection": "^1.4.1",
     "d3-zoom": "^1.8.3",
-    "haunted": "^4.7.0",
-    "lit-html": "^1.2.1"
+    "haunted": "4.7.1",
+    "lit-html": "1.2.1"
   },
   "devDependencies": {
     "@types/d3": "^5.7.2",
-    "@webcomponents/webcomponentsjs": "^2.4.3",
+    "@webcomponents/webcomponentsjs": "2.5.0",
     "parcel": "^1.12.4",
-    "parcel-plugin-static-files-copy": "^2.3.1",
+    "parcel-plugin-static-files-copy": "2.5.1",
     "rimraf": "^3.0.2",
-    "typescript": "^3.8.3"
+    "typescript": "4.1.4"
   },
   "browserslist": [
     "Chrome > 50"

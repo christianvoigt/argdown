@@ -1169,10 +1169,10 @@
   resolved "https://registry.yarnpkg.com/@types/q/-/q-1.5.4.tgz#15925414e0ad2cd765bfef58842f7e26a7accb24"
   integrity sha512-1HcDas8SEj4z1Wc696tH56G8OlRaH/sqZOynNNB+HF0WOeXPaxTtbYzJY2oEfiUxjSKjhCKr+MvR7dCHcEelug==
 
-"@webcomponents/webcomponentsjs@^2.4.3":
-  version "2.4.4"
-  resolved "https://registry.yarnpkg.com/@webcomponents/webcomponentsjs/-/webcomponentsjs-2.4.4.tgz#14b7e78da47f8f0071ff96c35335b871534179bc"
-  integrity sha512-UWXZYbaDLLfhm+xONXTiDciyhOSwKRrZieGQHFMSMGSxY4mbjZ5uYzOKgnuX0luYFvjJw32G3r0sCwQZPJIR4Q==
+"@webcomponents/webcomponentsjs@2.5.0":
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/@webcomponents/webcomponentsjs/-/webcomponentsjs-2.5.0.tgz#61b27785a6ad5bfd68fa018201fe418b118cb38d"
+  integrity sha512-C0l51MWQZ9kLzcxOZtniOMohpIFdCLZum7/TEHv3XWFc1Fvt5HCpbSX84x8ltka/JuNKcuiDnxXFkiB2gaePcg==
 
 abab@^2.0.0:
   version "2.0.4"
@@ -2822,10 +2822,10 @@ hash.js@^1.0.0, hash.js@^1.0.3:
     inherits "^2.0.3"
     minimalistic-assert "^1.0.1"
 
-haunted@^4.7.0:
-  version "4.7.0"
-  resolved "https://registry.yarnpkg.com/haunted/-/haunted-4.7.0.tgz#23c653f4701ccf970f5e2939fe3c05fee7cc5fc0"
-  integrity sha512-ajsUengbSL2ELljJ2VLU2o5BfG/drzZV+BvSLALvIBx+24owmxC5iW7+SK/Y667JaVmratEPR010bYpGKAt7ow==
+haunted@4.7.1:
+  version "4.7.1"
+  resolved "https://registry.yarnpkg.com/haunted/-/haunted-4.7.1.tgz#7b16791745cd217846988c58ab08abfce6e9db24"
+  integrity sha512-bUQGPlKIAR1Ou22tjF4YgRaNaUHdeJx6T1x06h3iC7yvreHMpodO3/ixchEAU3QK1e4SjzvaFA0of0m9jiE4Kg==
   dependencies:
     lit-html "^1.0.0"
 
@@ -3369,7 +3369,7 @@ levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
-lit-html@^1.0.0, lit-html@^1.2.1:
+lit-html@1.2.1, lit-html@^1.0.0:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/lit-html/-/lit-html-1.2.1.tgz#1fb933dc1e2ddc095f60b8086277d4fcd9d62cc8"
   integrity sha512-GSJHHXMGLZDzTRq59IUfL9FCdAlGfqNp/dEa7k7aBaaWD+JKaCjsAk9KYm2V12ItonVaYx2dprN66Zdm1AuBTQ==
@@ -3812,10 +3812,10 @@ pako@~1.0.5:
   resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.11.tgz#6c9599d340d54dfd3946380252a35705a6b992bf"
   integrity sha512-4hLB8Py4zZce5s4yd9XzopqwVv/yGNhV1Bl8NTmCq1763HeK2+EwVTv+leGeL13Dnh2wfbqowVPXCIO0z4taYw==
 
-parcel-plugin-static-files-copy@^2.3.1:
-  version "2.4.3"
-  resolved "https://registry.yarnpkg.com/parcel-plugin-static-files-copy/-/parcel-plugin-static-files-copy-2.4.3.tgz#daa4536f2285d4e573eafc7ea4f9503317526796"
-  integrity sha512-tUZn54XsZIZ9hhhNQkyaWaHLvjOj2wra8pp4yPjp1b5p1frQ+YEwG6eaNtaQVyA+UvORsZg+Wni7n9gIOBE8eA==
+parcel-plugin-static-files-copy@2.5.1:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/parcel-plugin-static-files-copy/-/parcel-plugin-static-files-copy-2.5.1.tgz#5a6e19e2e60909d8897aafbd93d7d4f7f7fa3b65"
+  integrity sha512-iDi04brJU10xZYSXlOCjBfILaaoWaA7k9E78t6QpQmLOly7RykNMb9UE3bQy1ZEQx3tJINteF4HcIHrDpIK15w==
   dependencies:
     minimatch "3.0.4"
     path "0.12.7"
@@ -5192,10 +5192,10 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typescript@^3.8.3:
-  version "3.9.7"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.7.tgz#98d600a5ebdc38f40cb277522f12dc800e9e25fa"
-  integrity sha512-BLbiRkiBzAwsjut4x/dsibSTB6yWpwT5qWmC2OfuCg3GgVQCSgMs4vEctYPhsaGtd0AeuuHMkjZ2h2WG8MSzRw==
+typescript@4.1.4:
+  version "4.1.4"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.1.4.tgz#f058636e2f4f83f94ddaae07b20fd5e14598432f"
+  integrity sha512-+Uru0t8qIRgjuCpiSPpfGuhHecMllk5Zsazj5LZvVsEStEjmIRRBZe+jHjGQvsgS7M1wONy2PQXd67EMyV6acg==
 
 uncss@^0.17.3:
   version "0.17.3"
