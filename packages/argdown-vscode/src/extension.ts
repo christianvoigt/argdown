@@ -10,7 +10,7 @@ import {
   TransportKind,
   Middleware,
   ForkOptions
-} from "vscode-languageclient";
+} from "vscode-languageclient/node";
 import { LanguageServerConfiguration } from "./LanguageServerConfiguration";
 import { CommandManager } from "./commands/CommandManager";
 import * as commands from "./commands/index";
@@ -24,7 +24,7 @@ import {
   PreviewSecuritySelector
 } from "./preview/security";
 import { ArgdownExtensionContributions } from "./preview/ArgdownExtensionContributions";
-import { ConfigurationWorkspaceMiddleware } from "vscode-languageclient/lib/configuration";
+import { WorkspaceMiddleware  } from "vscode-languageclient/node";
 import createArgdownMarkdownItPlugin from "@argdown/markdown-it-plugin";
 //import { ForkOptions } from "vscode-languageclient/lib/client";
 
@@ -125,7 +125,7 @@ export function activate(context: vscode.ExtensionContext) {
   };
 
   languageServerConfiguration = new LanguageServerConfiguration();
-  let middleware: ConfigurationWorkspaceMiddleware | Middleware = {
+  let middleware: WorkspaceMiddleware | Middleware = {
     workspace: {
       configuration: languageServerConfiguration.computeConfiguration
     }

@@ -5,7 +5,7 @@ import {
   LanguageClient,
   CancellationToken,
   DidChangeConfigurationNotification
-} from "vscode-languageclient";
+} from "vscode-languageclient/node";
 
 export class LanguageServerConfiguration {
   private configurationListener: Disposable | undefined;
