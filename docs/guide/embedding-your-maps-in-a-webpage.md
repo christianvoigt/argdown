@@ -312,6 +312,13 @@ webComponent:
 
 ### Hiding the header completely
 
+To hide the header completely use the following setting:
+
+```yaml
+webComponent:
+  withoutHeader: true
+```
+
 This is especially useful if you want to print the HTML page. If you use this feature and hide the Argdown logo, we would appreciate it, if you would help Argdown getting more publicity in some other way (for example by adding a footnote to your paper).
 
 ```argdown
