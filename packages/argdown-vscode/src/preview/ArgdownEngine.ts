@@ -32,7 +32,7 @@ export class ArgdownEngine {
         ...argdownConfig.html,
         headless: true
       },
-      throwExceptions: true
+      throwExceptions: false
     };
     const response = await argdown.runAsync(request);
     return response.html!;
@@ -59,7 +59,7 @@ export class ArgdownEngine {
         "colorize",
         "find-element-at-position"
       ],
-      throwExceptions: true
+      throwExceptions: false
     };
     const response = await argdown.runAsync(request);
     if (response.elementAtPosition) {
@@ -90,7 +90,7 @@ export class ArgdownEngine {
       ...argdownConfig,
       input: input,
       process: ["parse-input", "build-model"],
-      throwExceptions: true
+      throwExceptions: false
     };
     const response = await argdown.runAsync(request);
     if (!response.sections || response.sections.length == 0) {
@@ -135,7 +135,7 @@ export class ArgdownEngine {
       ...argdownConfig,
       input: input,
       process: ["parse-input", "build-model", "build-map", "colorize"],
-      throwExceptions: true
+      throwExceptions: false
     };
     const response = await argdown.runAsync(request);
     const node = this.findNodeInMapNodeTree(
@@ -200,7 +200,7 @@ export class ArgdownEngine {
         "transform-closed-groups",
         "colorize"
       ],
-      throwExceptions: true
+      throwExceptions: false
     };
     const response = await argdown.runAsync(request);
     return response.map!;
@@ -229,7 +229,7 @@ export class ArgdownEngine {
         "colorize",
         "export-json"
       ],
-      throwExceptions: true
+      throwExceptions: false
     };
     const response = await argdown.runAsync(request);
     return response.json!;
@@ -251,7 +251,7 @@ export class ArgdownEngine {
         "colorize",
         "export-dot"
       ],
-      throwExceptions: true
+      throwExceptions: false
     };
     const response = await argdown.runAsync(request);
     return response.dot!;
@@ -272,7 +272,7 @@ export class ArgdownEngine {
         "colorize",
         "export-graphml"
       ],
-      throwExceptions: true
+      throwExceptions: false
     };
     const response = await argdown.runAsync(request);
     return response.graphml!;

@@ -5,11 +5,6 @@
 /*!***************************************************!*\
   !*** ./node_modules/lodash.defaultsdeep/index.js ***!
   \***************************************************/
-/*! unknown exports (runtime-defined) */
-/*! runtime requirements: __webpack_exports__, module.loaded, module.id, module, __webpack_require__.nmd, __webpack_require__.* */
-/*! CommonJS bailout: exports is used directly at 93:48-55 */
-/*! CommonJS bailout: exports is used directly at 93:80-87 */
-/*! CommonJS bailout: module.exports is used directly at 2025:0-14 */
 /***/ ((module, exports, __webpack_require__) => {
 
 /* module decorator */ module = __webpack_require__.nmd(module);
@@ -2046,9 +2041,6 @@ module.exports = defaultsDeep;
 /*!***********************************************!*\
   !*** ./node_modules/lodash.throttle/index.js ***!
   \***********************************************/
-/*! unknown exports (runtime-defined) */
-/*! runtime requirements: module */
-/*! CommonJS bailout: module.exports is used directly at 439:0-14 */
 /***/ ((module) => {
 
 /**
@@ -2498,11 +2490,6 @@ module.exports = throttle;
 /*!*************************************!*\
   !*** ./preview/activeLineMarker.ts ***!
   \*************************************/
-/*! flagged exports */
-/*! export ActiveLineMarker [provided] [no usage info] [missing usage info prevents renaming] */
-/*! export __esModule [provided] [no usage info] [missing usage info prevents renaming] */
-/*! other exports [not provided] [no usage info] */
-/*! runtime requirements: __webpack_exports__, __webpack_require__ */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -2546,11 +2533,6 @@ exports.ActiveLineMarker = ActiveLineMarker;
 /*!***************************!*\
   !*** ./preview/events.ts ***!
   \***************************/
-/*! flagged exports */
-/*! export __esModule [provided] [no usage info] [missing usage info prevents renaming] */
-/*! export onceDocumentLoaded [provided] [no usage info] [missing usage info prevents renaming] */
-/*! other exports [not provided] [no usage info] */
-/*! runtime requirements: __webpack_exports__ */
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -2578,10 +2560,6 @@ exports.onceDocumentLoaded = onceDocumentLoaded;
 /*!*****************************!*\
   !*** ./preview/htmlView.ts ***!
   \*****************************/
-/*! flagged exports */
-/*! export __esModule [provided] [no usage info] [missing usage info prevents renaming] */
-/*! other exports [not provided] [no usage info] */
-/*! runtime requirements: __webpack_exports__, __webpack_require__ */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -2731,18 +2709,13 @@ if (settings.scrollEditorWithPreview) {
 /*!*************************!*\
   !*** ./preview/menu.ts ***!
   \*************************/
-/*! flagged exports */
-/*! export __esModule [provided] [no usage info] [missing usage info prevents renaming] */
-/*! export initMenu [provided] [no usage info] [missing usage info prevents renaming] */
-/*! other exports [not provided] [no usage info] */
-/*! runtime requirements: __webpack_exports__ */
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.initMenu = void 0;
-exports.initMenu = (messaging) => {
+const initMenu = (messaging) => {
     document.addEventListener("click", event => {
         if (!event) {
             return;
@@ -2770,6 +2743,7 @@ exports.initMenu = (messaging) => {
         }
     }, true);
 };
+exports.initMenu = initMenu;
 
 
 /***/ }),
@@ -2778,11 +2752,6 @@ exports.initMenu = (messaging) => {
 /*!******************************!*\
   !*** ./preview/messaging.ts ***!
   \******************************/
-/*! flagged exports */
-/*! export __esModule [provided] [no usage info] [missing usage info prevents renaming] */
-/*! export createPosterForVsCode [provided] [no usage info] [missing usage info prevents renaming] */
-/*! other exports [not provided] [no usage info] */
-/*! runtime requirements: __webpack_exports__, __webpack_require__ */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -2794,7 +2763,7 @@ exports.initMenu = (messaging) => {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.createPosterForVsCode = void 0;
 const settings_1 = __webpack_require__(/*! ./settings */ "./preview/settings.ts");
-exports.createPosterForVsCode = (vscode) => {
+const createPosterForVsCode = (vscode) => {
     return new class {
         postMessage(type, body) {
             vscode.postMessage({
@@ -2808,6 +2777,7 @@ exports.createPosterForVsCode = (vscode) => {
         }
     }();
 };
+exports.createPosterForVsCode = createPosterForVsCode;
 
 
 /***/ }),
@@ -2816,14 +2786,6 @@ exports.createPosterForVsCode = (vscode) => {
 /*!********************************!*\
   !*** ./preview/scroll-sync.ts ***!
   \********************************/
-/*! flagged exports */
-/*! export __esModule [provided] [no usage info] [missing usage info prevents renaming] */
-/*! export getEditorLineNumberForPageOffset [provided] [no usage info] [missing usage info prevents renaming] */
-/*! export getElementsForSourceLine [provided] [no usage info] [missing usage info prevents renaming] */
-/*! export getLineElementsAtPageOffset [provided] [no usage info] [missing usage info prevents renaming] */
-/*! export scrollToRevealSourceLine [provided] [no usage info] [missing usage info prevents renaming] */
-/*! other exports [not provided] [no usage info] */
-/*! runtime requirements: __webpack_exports__, __webpack_require__ */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -2969,11 +2931,6 @@ exports.getEditorLineNumberForPageOffset = getEditorLineNumberForPageOffset;
 /*!*****************************!*\
   !*** ./preview/settings.ts ***!
   \*****************************/
-/*! flagged exports */
-/*! export __esModule [provided] [no usage info] [missing usage info prevents renaming] */
-/*! export getSettings [provided] [no usage info] [missing usage info prevents renaming] */
-/*! other exports [not provided] [no usage info] */
-/*! runtime requirements: __webpack_exports__, __webpack_require__ */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
@@ -3009,11 +2966,6 @@ exports.getSettings = getSettings;
 /*!**************************!*\
   !*** ./preview/state.ts ***!
   \**************************/
-/*! flagged exports */
-/*! export ArgdownPreviewStore [provided] [no usage info] [missing usage info prevents renaming] */
-/*! export __esModule [provided] [no usage info] [missing usage info prevents renaming] */
-/*! other exports [not provided] [no usage info] */
-/*! runtime requirements: __webpack_exports__, __webpack_require__ */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
