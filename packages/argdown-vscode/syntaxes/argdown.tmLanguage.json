@@ -96,7 +96,7 @@
       ]
     },
     {
-      "begin": "^(#{6})(\\s*)",
+      "begin": "^(#{6})(\\s+)",
       "end": "^\\s*$",
       "name": "markup.heading.heading-6.argdown",
       "captures": {
@@ -114,7 +114,7 @@
       ]
     },
     {
-      "begin": "^(#{5})(\\s*)",
+      "begin": "^(#{5})(\\s+)",
       "end": "^\\s*$",
       "name": "markup.heading.heading-5.argdown",
       "captures": {
@@ -132,7 +132,7 @@
       ]
     },
     {
-      "begin": "^(#{4})(\\s*)",
+      "begin": "^(#{4})(\\s+)",
       "end": "^\\s*$",
       "name": "markup.heading.heading-4.argdown",
       "captures": {
@@ -150,7 +150,7 @@
       ]
     },
     {
-      "begin": "^(#{3})(\\s*)",
+      "begin": "^(#{3})(\\s+)",
       "end": "^\\s*$",
       "name": "markup.heading.heading-3.argdown",
       "captures": {
@@ -168,7 +168,7 @@
       ]
     },
     {
-      "begin": "^(#{2})(\\s*)",
+      "begin": "^(#{2})(\\s+)",
       "end": "^\\s*$",
       "name": "markup.heading.heading-2.argdown",
       "captures": {
@@ -186,7 +186,7 @@
       ]
     },
     {
-      "begin": "^(#{1})(\\s*)",
+      "begin": "^(#{1})(\\s+)",
       "end": "^\\s*$",
       "name": "markup.heading.heading-1.argdown",
       "captures": {
