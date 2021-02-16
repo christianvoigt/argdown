@@ -1,6 +1,6 @@
 {
   "name": "@argdown/gatsby-remark-plugin",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Turns Argdown code fences into svg argument maps",
   "main": "index.js",
   "files": [
@@ -26,7 +26,7 @@
   "license": "MIT",
   "devDependencies": {},
   "dependencies": {
-    "@argdown/remark-plugin": "^1.5.0",
+    "@argdown/remark-plugin": "^1.6.0",
     "to-vfile": "^6.0.0"
   },
   "browserslist": [
