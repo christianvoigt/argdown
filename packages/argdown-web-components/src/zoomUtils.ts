@@ -1,12 +1,12 @@
 import { zoom, ZoomBehavior, zoomIdentity } from "d3-zoom";
-import { select, event, Selection } from "d3-selection";
+import { select, Selection } from "d3-selection";
 
 export const addZoom = (
   svg: Selection<SVGSVGElement, null, HTMLElement, any>,
   headerOffset: number
 ) => {
   const g = svg.select<SVGGraphicsElement>("g");
-  const listener = function() {
+  const listener = function(event) {
     g.attr("transform", event.transform);
   };
   const zoomBehavior = zoom<SVGSVGElement, null>().on("zoom", listener);
