@@ -88,7 +88,7 @@ export class DataPlugin implements IArgdownPlugin {
               .replace(blockFormatEndPattern, "");
           }
         }
-        const data = yaml.safeLoad(dataStr, options);
+        const data = yaml.load(dataStr, options);
         if (parentNode) {
           parentNode.data = data;
         }
@@ -98,7 +98,7 @@ export class DataPlugin implements IArgdownPlugin {
         let dataStr = token.image
           .replace(frontMatterStartPattern, "")
           .replace(frontMatterEndPattern, "");
-        const data: any = yaml.safeLoad(dataStr, options);
+        const data: any = yaml.load(dataStr, options);
         if (parentNode) {
           parentNode.data = data;
         }

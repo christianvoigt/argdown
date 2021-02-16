@@ -196,17 +196,17 @@ export class HtmlExportPlugin implements IArgdownPlugin {
         token,
         parentNode
       ) => {
-        const argument = response.arguments![token.title!];
+        const argument = response.arguments![token.title!] || response.arguments![token.title!+" - 1"];// if argument was exploded, simply take argument generated from first step
         let htmlId = "";
         if (argument.members.length == 0 && argument.pcs.length == 0) {
           let htmlId = getHtmlId(
             "argument",
-            argument!.title!,
+            token!.title!,
             response.htmlIds!
           );
           response.htmlIds![htmlId] = true;
         }
-        let htmlIdLink = getHtmlId("argument", argument.title!);
+        let htmlIdLink = getHtmlId("argument", token.title!);
         let classes = "reference argument-reference";
         const isTopLevel = parentNode!.statement!.isTopLevel;
         if (isTopLevel) {
@@ -218,7 +218,7 @@ export class HtmlExportPlugin implements IArgdownPlugin {
         response.html += `<a id="${htmlId}" href="#${htmlIdLink}" data-line="${
           token.startLine
         }" class="has-line ${classes}">&lt;<span class="title argument-title">${escapeHtml(
-          argument!.title
+          token!.title
         )}</span>&gt; </a>`;
       },
       [TokenNames.ARGUMENT_DEFINITION]: (
@@ -227,12 +227,12 @@ export class HtmlExportPlugin implements IArgdownPlugin {
         token,
         parentNode
       ) => {
-        const argument = response.arguments![token.title!];
+        const argument = response.arguments![token.title!] || response.arguments![token.title!+" - 1"]; // if argument was exploded, simply take argument generated from first step
         let htmlId = "";
         if (argument.pcs.length == 0) {
-          htmlId = getHtmlId("argument", argument!.title!, response.htmlIds!);
+          htmlId = getHtmlId("argument", token.title!, response.htmlIds!);
         }
-        let htmlIdLink = getHtmlId("argument", argument.title!);
+        let htmlIdLink = getHtmlId("argument", token.title!);
         response.htmlIds![htmlId] = true;
         let classes = "definition argument-definition definiendum";
         const isTopLevel = parentNode!.statement!.isTopLevel;
@@ -244,7 +244,7 @@ export class HtmlExportPlugin implements IArgdownPlugin {
           classes += " " + $.getCssClassesFromTags(response, argument!.tags!);
         }
         response.html += `<a id="${htmlId}" href="#${htmlIdLink}" class="${classes}">&lt;<span class="title argument-title">${escapeHtml(
-          argument!.title
+          token!.title
         )}</span>&gt;: </a>`;
       },
       [TokenNames.ARGUMENT_MENTION]: (
@@ -257,7 +257,7 @@ export class HtmlExportPlugin implements IArgdownPlugin {
       ) => {
         let htmlId = getHtmlId("argument", token.title!);
         let classes = "mention argument-mention";
-        const argument = response.arguments![token.title!];
+        const argument = response.arguments![token.title!] || response.arguments![token.title!+" - 1"]; // if argument was exploded, simply take argument generated from first step
         if (!argument) {
           logger.log("error", "Mentioned argument not found: " + token.title);
         }

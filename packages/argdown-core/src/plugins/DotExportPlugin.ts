@@ -351,14 +351,15 @@ export class DotExportPlugin implements IArgdownPlugin {
     let color =
       node.color && validateColorString(node.color) ? node.color : "#63AEF2";
     label = getLabel(node, settings);
+    const shape = label == `""`? "circle":"box";
     if (node.type === ArgdownTypes.ARGUMENT_MAP_NODE) {
       dot += `  ${node.id} [label=${label}, margin="${
         settings.argument!.margin
-      }", shape="box", style="filled,rounded", fillcolor="${color}", fontcolor="${
+      }", shape="${shape}", style="filled,rounded", fillcolor="${color}", fontcolor="${
         node.fontColor
       }",  type="${node.type}"];\n`;
     } else if (node.type === ArgdownTypes.STATEMENT_MAP_NODE) {
-      dot += `  ${node.id} [label=${label}, shape="box",  margin="${
+      dot += `  ${node.id} [label=${label}, shape="${shape}",  margin="${
         settings.statement!.margin
       }", style="filled,rounded,bold", color="${color}", fillcolor="white", labelfontcolor="white", fontcolor="${
         node.fontColor
@@ -402,6 +403,9 @@ const getLabel = (node: IMapNode, settings: IDotSettings): string => {
   const text = node.labelText;
   const color = node.fontColor;
   let label = "";
+  if(stringIsEmpty(title) && stringIsEmpty(text)){
+    return `""`;
+  }
   if (settings.useHtmlLabels) {
     const maxLineWidth = isArgumentNode
       ? settings.argument!.lineWidth!
@@ -410,6 +414,10 @@ const getLabel = (node: IMapNode, settings: IDotSettings): string => {
       ? settings.argument!.minWidth!
       : settings.statement!.minWidth!;
     label += `<<TABLE WIDTH="${minNodeWidth}" ALIGN="CENTER" BORDER="0" CELLSPACING="0">`;
+    // if(!stringIsEmpty(node.image)){
+    //   const img = `<TR><TD><IMG SRC="${node.image}"/></TD></TR>`;
+    //   label += img;
+    // }
     if (!stringIsEmpty(title)) {
       let { fontSize, font, bold, charactersInLine } = isArgumentNode
         ? settings.argument!.title!

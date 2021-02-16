@@ -17,6 +17,7 @@ import { HtmlExportPlugin } from "./plugins/HtmlExportPlugin";
 import { JSONExportPlugin } from "./plugins/JSONExportPlugin";
 import { GraphMLExportPlugin } from "./plugins/GraphMLExportPlugin";
 import { WebComponentExportPlugin } from "./plugins/WebComponentExportPlugin";
+import { ExplodeArgumentsPlugin } from "./plugins/ExplodeArgumentsPlugin";
 
 /***
  * Default instance of a sync ArgdownApplication with all plugins of @argdown/core loaded and default processes defined.
@@ -27,6 +28,7 @@ export const argdown = new ArgdownApplication();
 argdown.addPlugin(new ParserPlugin(), "parse-input");
 argdown.addPlugin(new DataPlugin(), "build-model");
 argdown.addPlugin(new ModelPlugin(), "build-model");
+argdown.addPlugin(new ExplodeArgumentsPlugin(), "build-model");
 argdown.addPlugin(new RegroupPlugin(), "build-model");
 argdown.addPlugin(new PreselectionPlugin(), "build-map");
 argdown.addPlugin(new StatementSelectionPlugin(), "build-map");

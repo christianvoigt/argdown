@@ -537,6 +537,7 @@ export interface IMapNode extends HasTitle, HasTags, HasColor, HasFontColor {
   labelText?: string;
   labelTextRanges?: IRange[];
   id: string;
+  image?: string;
 }
 /**
  * A group node within an argument map.

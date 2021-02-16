@@ -354,4 +354,31 @@ selection:
     });
     expect(result.map!.edges.length).to.equal(1);
   });
+it("can create labels without text", function() {
+    let source = `
+===
+selection:
+  statementSelectionMode: all
+  excludeDisconnected: false
+map:
+  statementLabelMode: none
+  argumentLabelMode: none
+===
+  
+<An argument title>
+
+[A statement title]
+    
+  `;
+    let result = app.run({
+      process: ["parse-input", "build-model", "build-map"],
+      input: source,
+      logLevel: "error"
+    });
+    expect(result.map!.nodes.length).to.equal(2);
+    expect(result.map!.nodes[0].labelText).to.not.exist;
+    expect(result.map!.nodes[0].labelTitle).to.not.exist;
+    expect(result.map!.nodes[1].labelText).to.not.exist;
+    expect(result.map!.nodes[1].labelTitle).to.not.exist;
+  });
 });

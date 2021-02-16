@@ -21,7 +21,8 @@ import defaultsDeep from "lodash.defaultsdeep";
 export enum LabelMode {
   HIDE_UNTITLED = "hide-untitled",
   TITLE = "title",
-  TEXT = "text"
+  TEXT = "text",
+  NONE = "none"
 }
 /**
  * The settings for the [[MapPlugin]].
@@ -159,14 +160,17 @@ const createStatementNode = (
     color: ec.color,
     id: "n" + Number(initialNodeCount + index)
   };
-  if (settings.statementLabelMode !== LabelMode.TITLE) {
+  if(ec.data && ec.data["image"]){
+    node.image = ec.data["image"];
+  }
+  if (settings.statementLabelMode !== LabelMode.TITLE && settings.statementLabelMode !== LabelMode.NONE) {
     const canonicalMember = IEquivalenceClass.getCanonicalMember(ec);
     node.labelText = canonicalMember ? canonicalMember.text : undefined;
     node.labelTextRanges = canonicalMember ? canonicalMember.ranges : undefined;
   }
   if (
-    settings.statementLabelMode !== LabelMode.TEXT ||
-    stringIsEmpty(node.labelText)
+    settings.statementLabelMode !== LabelMode.NONE && (settings.statementLabelMode !== LabelMode.TEXT ||
+    stringIsEmpty(node.labelText))
   ) {
     if (
       settings.statementLabelMode === LabelMode.TITLE ||
@@ -191,14 +195,17 @@ const createArgumentNode = (
     color: a.color,
     id: "n" + Number(initialNodeCount + index)
   };
-  if (settings.argumentLabelMode != LabelMode.TITLE) {
+  if(a.data && a.data["image"]){
+    node.image = a.data["image"];
+  }
+  if (settings.argumentLabelMode != LabelMode.TITLE && settings.argumentLabelMode != LabelMode.NONE) {
     const canonicalMember = IArgument.getCanonicalMember(a);
     node.labelText = canonicalMember ? canonicalMember.text : undefined;
     node.labelTextRanges = canonicalMember ? canonicalMember.ranges : undefined;
   }
   if (
-    settings.argumentLabelMode !== LabelMode.TEXT ||
-    stringIsEmpty(node.labelText)
+    settings.argumentLabelMode != LabelMode.NONE && (settings.argumentLabelMode !== LabelMode.TEXT ||
+    stringIsEmpty(node.labelText))
   ) {
     if (
       !a.title!.startsWith("Untitled") ||

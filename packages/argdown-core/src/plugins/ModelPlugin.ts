@@ -59,6 +59,7 @@ export interface IModelPluginSettings {
   removeTagsFromText?: boolean;
   transformArgumentRelations?: boolean;
   shortcodes?: ISpecialCharacterDictionary;
+  explodeArguments?: boolean;
 }
 declare module "../index" {
   interface IArgdownRequest {
