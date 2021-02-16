@@ -1,6 +1,6 @@
 import hljs from "highlight.js";
 import argdown from "../src/index";
-import "../snow-in-spring.argdown-theme.css";
+import "../src/snow-in-spring.argdown-theme.css";
 hljs.registerLanguage("argdown", argdown);
 
 const initialInput = `
