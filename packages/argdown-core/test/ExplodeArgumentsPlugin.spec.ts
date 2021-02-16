@@ -6,7 +6,11 @@ import {
   ModelPlugin,
   ExplodeArgumentsPlugin,
   IArgdownRequest,
-  DataPlugin
+  DataPlugin,
+  PreselectionPlugin,
+  StatementSelectionPlugin,
+  ArgumentSelectionPlugin,
+  MapPlugin
 } from "../src/index";
 
 const app = new ArgdownApplication();
@@ -17,6 +21,16 @@ app.addPlugin(parserPlugin, "parse-input");
 app.addPlugin(new DataPlugin(), "build-model");
 app.addPlugin(modelPlugin, "build-model");
 app.addPlugin(explodePlugin, "build-model");
+
+const preselectionPlugin = new PreselectionPlugin();
+app.addPlugin(preselectionPlugin, "build-map");
+const statementSelectionPlugin = new StatementSelectionPlugin();
+app.addPlugin(statementSelectionPlugin, "build-map");
+const argumentSelectionPlugin = new ArgumentSelectionPlugin();
+app.addPlugin(argumentSelectionPlugin, "build-map");
+const mapPlugin = new MapPlugin();
+app.addPlugin(mapPlugin, "build-map");
+
 
 describe("ExplodeArguments", function() {
   it("can explode an argument into its inferential steps", function() {
@@ -66,14 +80,14 @@ describe("ExplodeArguments", function() {
 ----
 (3) s3
 (4) s4    
-(5) s4    
+(5) s5    
 -- 
 {uses: [3, 4]} 
 --
-(6) s3
-(7) s4    
+(6) s6
+(7) s7    
 ----
-(8) s5 {uses: [1, 3, 6, 7]}
+(8) s8 {uses: [1, 3, 6, 7]}
 `;
     let request:IArgdownRequest = {
       process: ["parse-input", "build-model"],
@@ -97,5 +111,31 @@ describe("ExplodeArguments", function() {
     expect(step2.pcs.length).to.equal(3);
     const step3 = result.arguments!["a1 - 3"];
     expect(step3.pcs.length).to.equal(5);
+  });
+  it("can explode an argument into its inferential steps and add support relations between argument nodes", function() {
+    const input = `
+<a1>
+
+(1) s1
+(2) s2
+----
+(3) s3
+(4) s4    
+(5) s5    
+----
+(6) s6
+`;
+    let request:IArgdownRequest = {
+      process: ["parse-input", "build-model", "build-map"],
+      input,
+      model: {
+          explodeArguments: true
+      }
+    };
+    let result = app.run(request);
+    console.log(result.map!.nodes.map(n=>n.title).join(", "));
+    expect(result.map).to.exist;
+    expect(result.map!.nodes!.length).to.equal(2);
+    expect(result.map!.edges!.length).to.equal(1);
   });
 });

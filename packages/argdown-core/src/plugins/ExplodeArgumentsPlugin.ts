@@ -71,27 +71,30 @@ export class ExplodeArgumentsPlugin implements IArgdownPlugin {
     if(uses != null){
       step = uses.map((i)=>{
         const zeroI = i - 1;
-        if(!Number.isInteger(zeroI) && zeroI < 0 || zeroI > argument.pcs.length){
+        if(!Number.isInteger(zeroI) || zeroI < 0 || zeroI > argument.pcs.length){
           throw new ArgdownPluginError(this.name, "invalid-data",`'uses' list for statement ${index} of argument ${argument.title} contains invalid statement index: ${i}`);
         }
-        const pcsStatement:IPCSStatement = {...argument.pcs[zeroI], role: StatementRole.PREMISE};
-        this.substituteStatementInEquivalenceClass(response, argument.pcs[zeroI], pcsStatement);
-        return pcsStatement;
+        const oldStatement = argument.pcs[zeroI];
+        const newStatement:IPCSStatement = {...oldStatement, role: StatementRole.PREMISE};
+        this.substituteStatementInEquivalenceClass(response, oldStatement, newStatement);
+        return newStatement;
       })
     }else{
       step = [];
       for(let i = index - 1; i >= 0; i--){
-        const statement = argument.pcs[i];
-        const newStatement:IPCSStatement = {...statement, role: StatementRole.PREMISE};
+        const oldStatement = argument.pcs[i];
+        const newStatement:IPCSStatement = {...oldStatement, role: StatementRole.PREMISE};
         step.push(newStatement);
-        this.substituteStatementInEquivalenceClass(response, statement, newStatement);
-        if(statement.role == StatementRole.INTERMEDIARY_CONCLUSION){
+        this.substituteStatementInEquivalenceClass(response, oldStatement, newStatement);
+        if(oldStatement.role == StatementRole.INTERMEDIARY_CONCLUSION){
           break;
         }
       }
       step.reverse();
     }
-    step.push(conclusion);
+    const newConclusion:IPCSStatement = {...conclusion, role: StatementRole.MAIN_CONCLUSION};
+    this.substituteStatementInEquivalenceClass(response, conclusion, newConclusion);
+    step.push(newConclusion);
     return step;
   }
   substituteStatementInEquivalenceClass(response:IArgdownResponse, oldStatement:IPCSStatement, newStatement:IPCSStatement){
