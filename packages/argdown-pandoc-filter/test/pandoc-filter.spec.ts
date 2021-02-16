@@ -17,7 +17,7 @@ async function execPandocOnFile(fileName: string, format: "html" | "pdf") {
   return String(stdout);
 }
 const rimrafPromise = function(path: string) {
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     rimraf(path, {}, function(err) {
       if (err) {
         reject(err);

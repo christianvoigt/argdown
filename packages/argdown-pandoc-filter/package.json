@@ -3,7 +3,7 @@
   "engines": {
     "node": ">= 13.7.0"
   },
-  "version": "1.5.2",
+  "version": "1.6.0",
   "description": "Turns Argdown code fences into svg, png, jpg, webp or web-component argument maps",
   "bin": {
     "argdown-filter": "dist/index.js"
@@ -38,7 +38,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@argdown/image-export": "^1.5.0",
+    "@argdown/image-export": "^1.6.0",
     "@types/chai": "^4.2.11",
     "@types/chai-fs": "^2.0.2",
     "@types/lodash.defaultsdeep": "^4.6.6",
@@ -52,12 +52,12 @@
     "parcel": "^1.12.4",
     "rimraf": "^3.0.2",
     "source-map-support": "^0.5.16",
-    "ts-node": "9.0.0",
-    "typescript": "4.0.2"
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.5"
   },
   "dependencies": {
-    "@argdown/core": "^1.5.0",
-    "@argdown/node": "^1.5.0",
+    "@argdown/core": "^1.6.0",
+    "@argdown/node": "^1.6.0",
     "import-global": "^0.1.0",
     "lodash.defaultsdeep": "^4.6.1",
     "pandoc-filter": "^2.0.0"
