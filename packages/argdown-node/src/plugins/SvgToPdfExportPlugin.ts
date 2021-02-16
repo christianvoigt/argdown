@@ -115,7 +115,7 @@ export class SvgToPdfExportPlugin implements IAsyncArgdownPlugin {
   };
   // https://github.com/devongovett/pdfkit/issues/265
   async savePdfToFile(pdf: any, fileName: string) {
-    return new Promise(resolve => {
+    return new Promise<void>(resolve => {
       // To determine when the PDF has finished being written successfully
       // we need to confirm the following 2 conditions:
       //
