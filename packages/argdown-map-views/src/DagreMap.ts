@@ -131,8 +131,9 @@ export class DagreMap implements CanSelectNode {
       return;
     }
     // Create the input graph
-    const g = new dagreD3.graphlib.Graph({ compound: true })
-      .setGraph({
+    const g = new dagreD3.graphlib.Graph({ compound: true });
+
+    g.setGraph({
         rankdir: settings.rankDir,
         ranksep: settings.rankSep,
         nodesep: settings.nodeSep,
@@ -205,12 +206,12 @@ export class DagreMap implements CanSelectNode {
 
     // Run the renderer. This is what draws the final graph.
     try {
-      render(svgGraph as any, g);
+      render(svgGraph as any, g as any); // don't know whats wrong with types, so using any for now
     } catch (e) {
       console.log(e);
     }
-    const width = g.graph().width;
-    const height = g.graph().height;
+    const width = g.graph().width || 0;
+    const height = g.graph().height || 0;
 
     this.zoomManager.init(svg, svgGraph, width, height);
     if (!props.scale || !props.position) {
