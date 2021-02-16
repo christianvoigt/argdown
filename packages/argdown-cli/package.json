@@ -10,19 +10,19 @@
   "engines": {
     "node": ">= 13.7.0"
   },
-  "version": "1.5.2",
+  "version": "1.6.0",
   "license": "MIT",
   "main": "dist/cli.js",
   "dependencies": {
-    "@argdown/core": "^1.5.0",
-    "@argdown/markdown-it-plugin": "^1.5.0",
-    "@argdown/node": "^1.5.2",
-    "@types/markdown-it": "^10.0.1",
-    "@types/yargs": "^15.0.4",
+    "@argdown/core": "^1.6.0",
+    "@argdown/markdown-it-plugin": "^1.6.0",
+    "@argdown/node": "^1.6.0",
+    "@types/markdown-it": "^12.0.1",
+    "@types/yargs": "^16.0.0",
     "import-global": "^0.1.0",
-    "markdown-it": "11.0.0",
+    "markdown-it": "^12.0.4",
     "pkginfo": "^0.4.1",
-    "yargs": "^15.3.1"
+    "yargs": "^16.2.0"
   },
   "bin": {
     "argdown": "./dist/cli.js"
@@ -50,7 +50,7 @@
   "readmeFilename": "Readme.md",
   "preferGlobal": true,
   "devDependencies": {
-    "@argdown/image-export": "^1.5.0",
+    "@argdown/image-export": "^1.6.0",
     "@types/chai": "^4.2.11",
     "@types/chai-fs": "^2.0.2",
     "@types/mocha": "^8.0.0",
@@ -66,10 +66,9 @@
     "nyc": "^15.0.0",
     "rimraf": "^3.0.2",
     "source-map-support": "^0.5.16",
-    "ts-node": "^8.8.1",
-    "typedoc": "^0.17.6",
-    "typescript": "^3.8.3",
-    "typescript-workspace-plugin": "^2.0.1"
+    "ts-node": "^9.1.1",
+    "typedoc": "^0.20.25",
+    "typescript": "^4.1.5"
   },
   "nyc": {
     "include": [

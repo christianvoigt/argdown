@@ -7,7 +7,7 @@ import rimraf from "rimraf";
 const fs = require("fs");
 
 const rimrafPromise = function(path: string) {
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     rimraf(path, {}, function(err) {
       if (err) {
         reject(err);
@@ -20,7 +20,7 @@ interface IExecCallback {
   (error: Error | null, stdout: any, stderr: any): void;
 }
 const execPromise = (cmd: string, callback: IExecCallback) => {
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     require("child_process").exec(
       cmd,
       (error: Error | null, stdout: any, stderr: any) => {
