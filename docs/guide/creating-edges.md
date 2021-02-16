@@ -11,6 +11,8 @@ meta:
 If you already have reconstructed the premise-conclusion-structure of your arguments and want to know how to connect your arguments with relations, read the syntax documentation on [relations of reconstructed arguments](/syntax/#relations-of-reconstructed-arguments).
 
 To better understand the relations between your reconstructed arguments it is probably also a good idea to make yourself familiar with the difference between the ["loose" and "strict" modes](/syntax/#relations-between-statements) of the Argdown parser.
+
+If you want to simply visualize the _complete_ inference trees of your logical reconstruction, you can skip this section and follow the steps in [the next section](/guide/creating-oldschool-argument-maps-and-inference-trees.html).
 :::
 
 Not all relations of an argument's internal [premise-conclusion-structure (pcs)](/syntax/#premise-conclusion-structures) will appear automatically as edges of argument nodes in the argument map.

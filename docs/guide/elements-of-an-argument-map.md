@@ -1,5 +1,5 @@
 ---
-title: Elements of an Argument Map
+title: Elements of an argument map
 meta:
   - name: description
     content: Explains the different elements in an Argdown argument map.

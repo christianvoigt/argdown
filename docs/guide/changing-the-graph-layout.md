@@ -1,11 +1,11 @@
 ---
-title: Changing the Graph Layout
+title: Changing the graph layout
 meta:
   - name: description
     content: How to change the layout of your argument map
 ---
 
-# Changing the Graph Layout
+# Changing the graph layout
 
 You have currently three options to layout your argument map with Argdown:
 

@@ -179,6 +179,22 @@ interface IArgdownConfig {
      *
      **/
     shortcodes?: {[key:string]: {unicode:string}}
+    /**
+     * If true, each inferential step of a premise-conclusion-structure
+     * is automatically put into its own argument
+     * (without touching your original source code).
+     *
+     * Use this to visualize the internal logical structure of your arguments.
+     *
+     * Example (json):
+     *
+     * {
+     *    "model": {
+     *      "explodeArguments": true
+     *    }
+     * }
+     **/
+    explodeArguments?: boolean;
   };
   // settings for the color plugin
   color?: {
@@ -380,8 +396,8 @@ interface IArgdownConfig {
   };
   // settings for the map plugin
   map: {
-    statementLabelMode?: "hide-untitled" | "title" | "text"; // default is "hide-untitled"
-    argumentLabelMode?: "hide-untitled" | "title" | "text"; // default is "hide-untitled"
+    statementLabelMode?: "hide-untitled" | "title" | "text" | "none"; // default is "hide-untitled"
+    argumentLabelMode?: "hide-untitled" | "title" | "text" | "none"; // default is "hide-untitled"
     addTags?: boolean; // should tags be added to the node labels?
   };
   // settings for the group and regroup plugins

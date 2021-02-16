@@ -189,6 +189,10 @@ disposition for criminal behaviour.
 
 If you are new to argument mapping, read our [tutorial](/guide/a-first-example.md) about how this debate was reconstructed.
 
+:::tip Choose your own argument map style
+This map hides a lot of the logical details for simplicty's sake (to dive into the details, click on "Source"). If you prefer argument maps where _every_ premise and inferential step is visualized, it takes [only a few configuration changes](/guide/creating-oldschool-argument-maps-and-inference-trees.html) to produce them with Argdown.
+:::
+
 ## Learn Argdown in 3 Minutes
 
 Argdown's formula consists of three ingredients:

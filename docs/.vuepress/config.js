@@ -86,7 +86,7 @@ module.exports = {
       "/changes/": [
         {
           title: "Changes",
-          children: [["", "Release Notes 2020"], "2019", "2018"]
+          children: [["", "Release Notes 2021"], "2020", "2019", "2018"]
         }
       ],
       "/guide/": [
@@ -107,6 +107,7 @@ module.exports = {
             "changing-the-graph-layout",
             "creating-statement-and-argument-nodes",
             "creating-edges",
+            "creating-oldschool-argument-maps-and-inference-trees",
             "creating-group-nodes",
             "changing-the-node-style",
             "changing-the-node-size",

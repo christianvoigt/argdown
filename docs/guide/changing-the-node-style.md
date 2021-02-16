@@ -46,6 +46,7 @@ You can use the `argumentLabelMode` and `statementLabelMode` map settings to cha
 - `title`: Show only the title of the statement or argument.
 - `text`: Show only the text of the canonical statement or argument description.
 - `hide-untitled` (default): Show title and text, but hide titles if the argument or equivalence class is anonoymous (has no manually defined title).
+- `none`: Hide title and text and only show an empty circle (useful if for [oldschool argument maps and inference trees](/guide/creating-oldschool-argument-maps-and-inference-trees.html))
 
 In the following example we use `title` for arguments and `text` for statements:
 

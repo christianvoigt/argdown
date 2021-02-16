@@ -15,9 +15,11 @@ The default rules that decide which _statements_ will get their own node [are mo
 
 :::tip Choose your own style
 
-In this respect Argdown distinguishes itself from many argument mapping tools that represent arguments only as "inference nodes" that link different premises together. Such tools force you to represent every statement as a node in your map. This becomes quickly overwhelming and unmanagable in complex debates (at least if you reconstruct every argument's premise-conclusion-structure in detail).
+In this respect Argdown distinguishes itself from many argument mapping tools that represent arguments only as "inference nodes" that link different premises together. Such tools force you to represent every statement and inferential step as a node in your map. This becomes quickly overwhelming and unmanagable in complex debates (at least if you reconstruct every argument's premise-conclusion-structure in detail).
 
-In contrast, Argdown lets you choose what you want to emphasize in your map. You can even choose to only add the central thesis of the debate to your map and otherwise only visualize arguments. This is a good choice for complex debates. On the other hand, for small debates, you might prefer the "oldschool" style of argument mapping that represents each statement as its own node in the map. By using the [all-mode](#all-mode) it is easy to do so.
+In contrast, Argdown lets you choose what you want to emphasize in your map. You can even choose to only add the central thesis of the debate to your map and otherwise only visualize arguments (that may contain many inferential steps). This is a good choice for complex debates.
+
+On the other hand, for small debates or single arguments, you might prefer the "oldschool" style of argument mapping that represents each statement and inferential step as its own node in the map. In that case just follow [these step](/guide/creating-oldschool-argument-maps-and-inference-trees.html) and you are good to go.
 :::
 
 The selection process is divided up into two phases:
@@ -445,3 +447,70 @@ selection:
 <b> {isInMap: false}
     - <a>
 ```
+
+## Creating argument nodes for each inferential step
+
+Using the `explodeArguments` option you can automatically create several argument nodes from a singular complex argument. Your premise-conclusion-structures will be divided up into separate inferential steps (containing only one inference and conclusion). Each step will be put into its own argument so that each inferential step is represented as an argument node in the map. The arguments will be renamed, appending the step number to their name.
+
+Here is an example:
+
+```argdown
+===
+model:
+    explodeArguments: true
+selection:
+    statementSelectionMode: with-relations
+===
+
+<my complex argument>
+
+(1) first premise
+    - <a2> #con
+(2) second premise
+----
+(3) intermediary conclusion
+    - <a3> #con
+(4) fourth premise
+----
+(5) main conclusion
+    - <a5> #con
+
+```
+
+Note how in this case attacks against the intermediary conclusion can be visualized, because it was automatically added as a statement to the map (using the statementSelectionMode `with-relations`).
+
+### Defining which statements are used in an inferential step
+
+In complex arguments an inferential step sometimes does use statements for its inference that were already listed as premise in another inferential step. In other cases a conclusion of another inferential step is used that is not the directly preceding step.
+
+In both of these cases you have to tell Argdown explicitely _which_ statements were used in the inferential step. You can do so by adding a metadata list to the conclusion or the inference:
+
+```argdown
+===
+model:
+    explodeArguments: true
+selection:
+    statementSelectionMode: all
+dot:
+    vizJsSettings:
+        rankDir: TB
+===
+
+<my complex argument>
+
+(1) first premise
+(2) second premise
+----
+(3) first intermediary conclusion
+(4) third premise
+--
+{uses: [1,4]}
+--
+(5) second intermediary conclusion
+----
+(6) main conclusion {uses: [3,5]}
+```
+
+:::tip The perfect configuration for your inference trees
+Jump over to the section on [how to create oldschool argument maps and inference trees](/guide/creating-oldschool-argument-maps-and-inference-trees.html) for even more configuration tips on how to visualize the inferential structure of complex arguments.
+:::
