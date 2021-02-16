@@ -1,6 +1,6 @@
 {
   "name": "@argdown/map-views",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "Browser-based map views for Argdown data using dagre-d3 and viz.js",
   "main": "./dist/index",
   "types": "./dist/index.d.ts",
@@ -22,17 +22,17 @@
   "dependencies": {
     "@aduh95/viz.js": "^3.1.0",
     "@argdown/core": "^1.6.0",
-    "@types/d3": "^6.3.0",
     "@types/dagre-d3": "^0.6.2",
     "@types/lodash.defaultsdeep": "^4.6.6",
     "babel-polyfill": "^6.26.0",
-    "d3-selection": "^2.0.0",
-    "d3-zoom": "^2.0.0",
+    "d3-selection": "^1.4.2",
+    "d3-zoom": "^1.8.3",
     "dagre-d3": "^0.6.4",
     "lodash.defaultsdeep": "^4.6.1",
     "string-pixel-width": "^1.10.0"
   },
   "devDependencies": {
+    "@types/d3": "^5.7.2",
     "@types/lodash": "^4.14.144",
     "@types/mocha": "^8.0.0",
     "@types/node": "^14.0.23",

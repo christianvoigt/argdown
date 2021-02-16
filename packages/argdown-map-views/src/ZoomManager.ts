@@ -1,6 +1,6 @@
 import { IMapState, defaultMapState } from "./IMapState";
-import { zoom, zoomIdentity } from "d3-zoom";
-import { Selection } from "d3-selection";
+import { zoom, ZoomBehavior, zoomIdentity } from "d3-zoom";
+import { event, Selection } from "d3-selection";
 import defaultsDeep from "lodash.defaultsdeep";
 
 export type OnZoomChangedHandler = (data: {
@@ -9,9 +9,9 @@ export type OnZoomChangedHandler = (data: {
   position: { x: number; y: number };
 }) => void;
 export class ZoomManager {
-  zoom?: any;
-  svg?: Selection<SVGSVGElement, any, any, any>;
-  svgGraph?: Selection<SVGGraphicsElement, any, any, any>;
+  zoom?: ZoomBehavior<SVGSVGElement, {}>;
+  svg?: Selection<SVGSVGElement, {}, null | HTMLElement, any>;
+  svgGraph?: Selection<SVGGraphicsElement, {}, null | HTMLElement, any>;
   state: IMapState;
   moveToDuration: number;
   onZoomChanged?: OnZoomChangedHandler;
@@ -27,8 +27,8 @@ export class ZoomManager {
     this.graphIsBottomAligned = graphIsBottomAligned;
   }
   init(
-    svg: Selection<SVGSVGElement, any, any, any>,
-    svgGraph: Selection<SVGGraphicsElement, any, any, any>,
+    svg: Selection<SVGSVGElement, any, null | HTMLElement, any>,
+    svgGraph: Selection<SVGGraphicsElement, any, null | HTMLElement, any>,
     width: number,
     height: number
   ) {
@@ -38,7 +38,7 @@ export class ZoomManager {
     this.svg = svg;
     this.svgGraph = svgGraph;
     const self = this;
-    this.zoom = zoom<SVGSVGElement, any>().on("zoom", function(event) {
+    this.zoom = zoom<SVGSVGElement, {}>().on("zoom", function() {
       // eslint-disable-next-line
       self.svgGraph!.attr("transform", event.transform);
       self.state.scale = event.transform.k;
@@ -52,7 +52,7 @@ export class ZoomManager {
         });
       }
     });
-    //this.svg!.call(this.zoom!).on("dblclick.zoom", null);
+    this.svg!.call(this.zoom!).on("dblclick.zoom", null);
   }
   showAllAndCenterMap() {
     if (!this.svg) {

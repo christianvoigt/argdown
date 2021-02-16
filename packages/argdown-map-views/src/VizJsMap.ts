@@ -82,7 +82,7 @@ export class VizJsMap implements CanSelectNode {
       );
     }
     this.svgContainer.innerHTML = svgString;
-    const svg = select(this.svgContainer).select<SVGSVGElement>("svg");
+    const svg = select<HTMLElement, null>(this.svgContainer).select<SVGSVGElement>("svg");
     svg.attr("class", "map-svg");
     svg.attr("width", "100%");
     svg.attr("height", "100%");
