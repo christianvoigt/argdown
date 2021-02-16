@@ -60,7 +60,7 @@ export class CopyDefaultCssPlugin implements IAsyncArgdownPlugin {
     );
     const { COPYFILE_EXCL } = fs.constants;
     try{
-      await new Promise((resolve, reject) => {
+      await new Promise<void>((resolve, reject) => {
         fs.copyFile(
           pathToDefaultCssFile,
           path.resolve(absoluteOutputDir, "argdown.css"),
