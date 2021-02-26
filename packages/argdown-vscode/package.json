@@ -16,7 +16,7 @@
     "url": "https://github.com/christianvoigt/argdown/issues"
   },
   "engines": {
-    "vscode": "^1.43.0"
+    "vscode": "^1.53.0"
   },
   "categories": [
     "Programming Languages",
@@ -49,7 +49,7 @@
     "onWebviewPanel:argdown.preview",
     "workspaceContains:**/*.{argdown,ad,argdn,adown}"
   ],
-  "main": "./dist/extension",
+  "main": "./dist/main",
   "contributes": {
     "languages": [
       {
@@ -522,26 +522,32 @@
     "copy-changelog": "node ./copy-changelog.js"
   },
   "dependencies": {
-    "@aduh95/viz.js": "3.2.1",
-    "@argdown/core": "^1.5.0",
+    "@aduh95/viz.js": "3.3.3",
+    "@argdown/core": "^1.6.2",
     "@argdown/language-server": "^1.5.3",
     "@argdown/map-views": "^1.5.0",
     "@argdown/markdown-it-plugin": "^1.5.0",
     "@argdown/node": "^1.5.3",
     "@argdown/web-components": "^1.5.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.13.0",
     "d3": "^5.9.1",
     "dagre-d3": "^0.6.3",
     "lodash.defaultsdeep": "^4.6.1",
     "lodash.throttle": "^4.1.1",
+    "pdfkit": "^0.11.0",
+    "string-replace-loader": "^3.0.1",
     "vscode-languageclient": "7.0.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.13.1",
+    "@babel/preset-env": "^7.13.0",
     "@types/d3": "5.16.3",
     "@types/dagre-d3": "0.6.0",
     "@types/lodash.defaultsdeep": "^4.6.6",
     "@types/lodash.throttle": "^4.1.6",
     "@types/node": "14.14.27",
     "@types/vscode": "1.53.0",
+    "babel-loader": "^8.2.2",
     "brfs": "^2.0.2",
     "crypto-browserify": "^3.12.0",
     "css-loader": "5.0.2",

@@ -6,6 +6,8 @@ const path = require("path");
 const webpack = require("webpack");
 
 module.exports = {
+  target: "web",
+  devtool: "inline-source-map",
   entry: {
     htmlView: "./preview/htmlView.ts",
     dagreView: "./preview/dagreView.ts",
@@ -25,15 +27,12 @@ module.exports = {
     extensions: [".tsx", ".ts", ".js"],
     fallback: {
       fs: false,
-      stream: false
-    },
-    alias: {
-      process: "process/browser",
-      crypto: "crypto-browserify",
-      path: "path-browserify"
+      stream: false,
+      crypto: require.resolve("crypto-browserify"),
+      path: require.resolve("path-browserify"),
+      process: require.resolve("process")
     }
   },
-  devtool: 'cheap-module-source-map',
   output: {
     filename: "[name].js",
     path: path.resolve(__dirname, "media")
@@ -41,17 +40,16 @@ module.exports = {
   node: {
     global: false
   },
- plugins: [
+  plugins: [
     new webpack.DefinePlugin({
-      global: 'window',		// Placeholder for global used in any node_modules
+      global: "window" // Placeholder for global used in any node_modules
     }),
     // fix "process is not defined" error:
     new webpack.ProvidePlugin({
-      process: "process/browser",
+      process: "process"
     }),
     new webpack.ProvidePlugin({
-      path: "path-browserify",
+      path: "path-browserify"
     })
-],
- 
+  ]
 };
