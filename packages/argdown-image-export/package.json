@@ -1,6 +1,6 @@
 {
   "name": "@argdown/image-export",
-  "version": "1.6.0",
+  "version": "1.6.2",
   "description": "PNG, JPG and WEBP export for Argdown",
   "main": "dist/index.js",
   "module": "dist-esm/index.js",
@@ -32,8 +32,8 @@
     "typescript": "^4.1.5"
   },
   "dependencies": {
-    "@argdown/core": "^1.6.0",
-    "@argdown/node": "^1.6.0",
+    "@argdown/core": "^1.6.2",
+    "@argdown/node": "^1.6.2",
     "lodash.defaultsdeep": "^4.6.1",
     "svg-to-img": "^2.0.9"
   }
