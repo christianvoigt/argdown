@@ -1,4 +1,6 @@
+/* tslint:disable-next-line */
 import Viz from "@aduh95/viz.js";
+
 import { VizConstructorOptions } from "@aduh95/viz.js";
 import { select } from "d3-selection";
 
@@ -20,6 +22,7 @@ export interface IVizJsSettings {
   removeProlog?: boolean;
   engine?: GraphvizEngine;
   nop?: number;
+  images?: [{ path: string; width: number; height: number }];
 }
 export interface VizJsMapProps {
   dot: string;
@@ -36,7 +39,7 @@ export const vizJsDefaultSettings = {
 export class VizJsMap implements CanSelectNode {
   vizJsConfig?: VizConstructorOptions;
   viz: any;
-  renderSync?: (str:string, settings:IVizJsSettings)=>string;
+  renderSync?: (str: string, settings: IVizJsSettings) => string;
   zoomManager: ZoomManager;
   svgContainer: HTMLElement;
   selectedElement?: SVGGraphicsElement | null;
@@ -44,15 +47,15 @@ export class VizJsMap implements CanSelectNode {
   onSelectionChanged?: OnSelectionChangedHandler;
   constructor(
     svgContainer: HTMLElement,
-    renderSync: ((str:string, settings:IVizJsSettings)=>string) | null, // sync render mode still needed for vscode as long as webviews do not support web workers, set vizjsConfig to null if renderSync is used.
+    renderSync: ((str: string, settings: IVizJsSettings) => string) | null, // sync render mode still needed for vscode as long as webviews do not support web workers, set vizjsConfig to null if renderSync is used.
     config: VizConstructorOptions | null, // should be used if web workers are supported, renderSync should be set null in that case
     onZoomChanged?: OnZoomChangedHandler,
     onSelectionChanged?: OnSelectionChangedHandler
   ) {
-    if(!renderSync && config){
+    if (!renderSync && config) {
       this.vizJsConfig = config;
-      this.viz = new Viz(this.vizJsConfig);      
-    }else if(renderSync){
+      this.viz = new Viz(this.vizJsConfig);
+    } else if (renderSync) {
       this.renderSync = renderSync;
     }
     this.svgContainer = svgContainer;
@@ -69,10 +72,9 @@ export class VizJsMap implements CanSelectNode {
     const settings = isObject(props.settings) ? props.settings : {};
     mergeDefaults(settings, vizJsDefaultSettings);
     let svgString = "";
-    if(this.renderSync){
+    if (this.renderSync) {
       svgString = this.renderSync(props.dot, settings);
-    }
-    else{
+    } else {
       svgString = await this.renderAsync(props.dot, settings);
     }
     if (settings.removeProlog) {
@@ -81,8 +83,21 @@ export class VizJsMap implements CanSelectNode {
         ""
       );
     }
+    if (settings.images) {
+      for (let image of settings.images) {
+        if ((image as any).dataUrl) {
+          const stringToReplace = new RegExp(image.path, "g");
+          svgString = svgString.replace(
+            stringToReplace,
+            (image as any).dataUrl
+          );
+        }
+      }
+    }
     this.svgContainer.innerHTML = svgString;
-    const svg = select<HTMLElement, null>(this.svgContainer).select<SVGSVGElement>("svg");
+    const svg = select<HTMLElement, null>(this.svgContainer).select<
+      SVGSVGElement
+    >("svg");
     svg.attr("class", "map-svg");
     svg.attr("width", "100%");
     svg.attr("height", "100%");
