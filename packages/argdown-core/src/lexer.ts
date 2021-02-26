@@ -252,7 +252,7 @@ tokenList.push(InferenceStart);
 
 export const FrontMatter = createToken({
   name: TokenNames.FRONT_MATTER,
-  pattern: /===+[^=]*===+/,
+  pattern: /===+[\s\S]*?===+/,
   label: "Front Matter (YAML)"
 });
 tokenList.push(FrontMatter);

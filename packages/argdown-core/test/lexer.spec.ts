@@ -650,6 +650,23 @@ p:->:q
     expectToken(lexer.StatementDefinition);
     expectToken(lexer.Freestyle);
   });
+  it("can lex frontmatter with equal sign", function() {
+    let source = `
+    ===
+    some: "front=matter"
+    ===
+    
+    [title]: text
+    `;
+    const result = lexer.tokenize(source);
+    startTest(result.tokens);
+    //expect(result.tokens.length).to.equal(5);
+    expectToken(lexer.Newline);
+    expectToken(lexer.FrontMatter);
+    expectToken(lexer.Emptyline);
+    expectToken(lexer.StatementDefinition);
+    expectToken(lexer.Freestyle);
+  });
   it("can lex meta data", function() {
     let source = `
     # heading {some: meta data}
