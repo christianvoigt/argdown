@@ -353,6 +353,57 @@
         }
       }
     },
+    "images": {
+      "title": "Images",
+      "description": "Settings for node images",
+      "type": "object",
+      "properties": {
+        "useData": {
+          "type": "boolean",
+          "title": "useData",
+          "description": "Use metadata images list to assign images to nodes",
+          "default": "true"
+        },
+        "useTags": {
+          "type": "boolean",
+          "default": true,
+          "title": "useTags",
+          "description": "Use tags to assign images to nodes"
+        },
+        "convertToDataUrls": {
+          "type": "boolean",
+          "default": false,
+          "title": "convertToDataUrls",
+          "description": "If true, images are inlined (using data urls). Use this if you want to make your exported maps portable (recommended for pdf export)."
+        },
+        "files": {
+          "title": "files",
+          "description": "Ids, paths and sizes of the images used",
+          "type": "object",
+          "additionalProperties": {
+            "title": "Image file",
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "title": "Path",
+                "description": "Filepath or url to your image (svg, jpg, png). Can be relative or absolute. If you use a relative filepath, the path is relative to the location of your Argdown file. If you use a complete url, it has to be a https address."
+              },
+              "height": {
+                "type": "number",
+                "title": "height",
+                "description": "height of the image"
+              },
+              "width": {
+                "type": "number",
+                "title": "width",
+                "description": "width of the image"
+              }
+            }
+          }
+        }
+      }
+    },
     "selection": {
       "title": "Selection",
       "description": "Settings of the selection plugins. The selection plugins decide which arguments, statements and sections of the document will be visualized in the argument map.",
@@ -451,16 +502,16 @@
       "properties": {
         "statementLabelMode": {
           "title": "statementLabelMode",
-          "description": "Adds statement title, text or both (hide-untitled) to statement node",
+          "description": "Adds statement title, text, both (hide-untitled) or none to statement node",
           "type": "string",
-          "enum": ["hide-untitled", "title", "text"],
+          "enum": ["hide-untitled", "title", "text", "none"],
           "default": "hide-untitled"
         },
         "argumentLabelMode": {
           "title": "argumentLabelMode",
-          "description": "Adds argument title, description or both (hide-untitled) to argument node",
+          "description": "Adds argument title, description, both (hide-untitled) or none to argument node",
           "type": "string",
-          "enum": ["hide-untitled", "title", "text"],
+          "enum": ["hide-untitled", "title", "text", "none"],
           "default": "hide-untitled"
         },
         "addTags": {
@@ -757,6 +808,17 @@
               "title": "margin",
               "type": "string"
             },
+            "shape": {
+              "title": "node shape",
+              "type": "string",
+              "default": "box",
+              "description": "Any shape supported by Graphviz (try 'circle')"
+            },
+            "style": {
+              "title": "node style",
+              "type": "string",
+              "description": "Any node style supported by Graphviz"
+            },
             "title": {
               "title": "title",
               "description": "Style of argument titles",
@@ -800,6 +862,22 @@
                   "type": "integer"
                 }
               }
+            },
+            "images": {
+              "title": "Images",
+              "description": "Style of node images",
+              "type": "object",
+              "properties": {
+                "position": {
+                  "type": "string",
+                  "title": "position",
+                  "enum": ["top", "bottom"]
+                },
+                "padding": {
+                  "type": "number",
+                  "title": "padding"
+                }
+              }
             }
           }
         },
@@ -819,6 +897,17 @@
             "margin": {
               "title": "margin",
               "type": "string"
+            },
+            "shape": {
+              "title": "node shape",
+              "type": "string",
+              "default": "box",
+              "description": "Any shape supported by Graphviz (try 'circle')"
+            },
+            "style": {
+              "title": "node style",
+              "type": "string",
+              "description": "Any node style supported by Graphviz"
             },
             "title": {
               "title": "title",
@@ -861,6 +950,22 @@
                 "charactersInLine": {
                   "title": "charactersInLine",
                   "type": "integer"
+                }
+              }
+            },
+            "images": {
+              "title": "Images",
+              "description": "Style of node images",
+              "type": "object",
+              "properties": {
+                "position": {
+                  "type": "string",
+                  "title": "position",
+                  "enum": ["top", "bottom"]
+                },
+                "padding": {
+                  "type": "number",
+                  "title": "padding"
                 }
               }
             }
@@ -1297,6 +1402,27 @@
             "preserveAspectRatio": {
               "title": "preserveAspectRatio",
               "type": "string"
+            }
+          }
+        },
+        "fonts": {
+          "title": "fonts",
+          "description": "custom fonts that should be registered with PDFKit",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "title": "custom font",
+            "properties": {
+              "name": {
+                "type": "string",
+                "title": "name of the font",
+                "description": "For example, use 'arial' and 'arial Bold' to change default fonts"
+              },
+              "path": {
+                "type": "string",
+                "title": "path to the font file",
+                "description": "The path can be relative to the Argdown document's location"
+              }
             }
           }
         }
