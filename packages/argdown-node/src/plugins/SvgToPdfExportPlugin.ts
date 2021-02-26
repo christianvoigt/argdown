@@ -1,5 +1,6 @@
 import PDFDocument from "pdfkit";
-var fs = require("fs");
+// var fs = require("fs");
+import { promises as fs, createWriteStream } from "fs";
 let path = require("path");
 let mkdirp = require("mkdirp");
 import SVGtoPDF from "svg-to-pdfkit";
@@ -16,7 +17,8 @@ import {
   checkResponseFields,
   ensure,
   DefaultSettings,
-  mergeDefaults
+  mergeDefaults,
+  ArgdownPluginError
 } from "@argdown/core";
 import { IFileNameProvider } from "./SaveAsFilePlugin";
 
@@ -36,6 +38,7 @@ export interface ISvgToPdfSettings {
   width?: number;
   height?: number;
   padding?: number;
+  fonts?: { name: string; path: string }[];
 }
 declare module "@argdown/core" {
   interface IArgdownRequest {
@@ -106,9 +109,52 @@ export class SvgToPdfExportPlugin implements IAsyncArgdownPlugin {
       size: [settings.width || 0, settings.height || 0],
       ...settings.pdf
     });
+    if (settings.fonts) {
+      for (let font of settings.fonts) {
+        try {
+          const baseDir =
+            request.inputPath && !!path.extname(request.inputPath)
+              ? path.dirname(request.inputPath)
+              : request.inputPath || "";
+          const fontPath = path.resolve(baseDir || process.cwd(), font.path);
+          const buffer = await fs.readFile(fontPath);
+          const arrayBuffer = this.toArrayBuffer(buffer);
+          doc.registerFont(font.name, arrayBuffer);
+        } catch (e) {
+          throw new ArgdownPluginError(
+            this.name,
+            "pdf-custom-font-load-failed",
+            `Could not register custom font ${font.name}.\n` + e.message
+          );
+        }
+      }
+    }
+    const fontCallback = settings.fonts
+      ? (family: string, bold: boolean, italic: boolean, _fontOptions: any) => {
+          let face = family.replace(/["']/g, "").replace(/-/g, " ");
+          if (bold && italic) face = `${face} Bold Italic`;
+          if (bold) face = `${face} Bold`;
+          if (italic) face = `${face} Italic`;
+          const re = new RegExp(`${face}( Regular)?$`);
+          let match = settings.fonts!.find(fontObj => {
+            return re.test(fontObj.name);
+          });
+          if (match !== undefined) {
+            return match.name;
+          } else {
+            throw new ArgdownPluginError(
+              this.name,
+              "pdf-custom-font-not-found",
+              `Could not find custom pdf font: ${face}`
+            );
+          }
+        }
+      : null;
+
     SVGtoPDF(doc, response.svg, settings.padding, settings.padding, {
       width: settings.width! - settings.padding! * 2,
       height: settings.height! - settings.padding! * 2,
+      fontCallback,
       ...settings.svg
     });
     await this.savePdfToFile(doc, filePath);
@@ -130,7 +176,7 @@ export class SvgToPdfExportPlugin implements IAsyncArgdownPlugin {
         }
       };
 
-      const writeStream = fs.createWriteStream(fileName);
+      const writeStream = createWriteStream(fileName);
       writeStream.on("close", stepFinished);
       pdf.pipe(writeStream);
 
@@ -142,5 +188,13 @@ export class SvgToPdfExportPlugin implements IAsyncArgdownPlugin {
   getFileName(file: string): string {
     let extension = path.extname(file);
     return path.basename(file, extension);
+  }
+  toArrayBuffer(buf: Buffer) {
+    var ab = new ArrayBuffer(buf.length);
+    var view = new Uint8Array(ab);
+    for (var i = 0; i < buf.length; ++i) {
+      view[i] = buf[i];
+    }
+    return ab;
   }
 }
