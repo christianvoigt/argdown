@@ -111,6 +111,7 @@ module.exports = {
             "creating-group-nodes",
             "changing-the-node-style",
             "changing-the-node-size",
+            "adding-images",
             "colorizing-maps",
             "using-logical-symbols-and-emojis"
           ]

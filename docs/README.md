@@ -9,7 +9,7 @@ actionLink: /guide/
 footer: MIT Licensed | Copyright © 2018-present Christian Voigt | Funded by Debatelab, KIT Karlsuhe
 ---
 
-<p class="latest-news">August 2020: v1.5.3 has been released (<a href="/changes">changelog</a>)</p>
+<p class="latest-news">February 2021: v1.7.0 has been released (<a href="/changes">changelog</a>)</p>
 <div class="features">
   <div class="feature">
     <h2>Simple</h2>

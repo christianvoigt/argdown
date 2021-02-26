@@ -302,6 +302,28 @@ interface IArgdownConfig {
      **/
     groupColors?: { [title: string]: string | number };
   };
+  // settings for node images
+  images?: {
+    useTags?: boolean; //assign images with tags (default: true)
+    useData?: boolean; // assign images with metadata "images" list (default: true)
+    // can be used to use "inline" images (better portability)
+    convertToDataUrls?:boolean;
+    /**
+    * A dictionary of image files that can be assigned to argument or statement nodes
+    * using tags or metadata. Images can be svg, jpg, png files.
+    *
+    * Example (json):
+    *
+    * {
+    *   "images": {
+    *       "image-id": {path: "images/my-image.jpg", width: 100, height: 100}
+    *   }
+    * }
+    */
+    files?: {
+      [key:string]: {path: string; width?: number; height: number;}
+    }
+  };
   // settings for the selection plugins
   selection?: {
     /**
@@ -632,6 +654,8 @@ interface IArgdownConfig {
        **/
       minWidth?:number;
       margin?:number; // default is "0.11,0.055"
+      shape?:string; // any node shape supported by Graphviz
+      style?:string; // any node style, supported by Graphviz
       title?:{
         font?:string;
         fontSize?:number;
@@ -644,6 +668,10 @@ interface IArgdownConfig {
         bold?:boolean;
         charactersInLine?:number;
       };
+      images?:{
+        position?:"top"|"bottom"; // default is "top"
+        padding?: number;
+      }
     };
     statement?:{
       lineWidth?:number;
@@ -652,6 +680,8 @@ interface IArgdownConfig {
        **/
       minWidth?:number;
       margin?:number; // default is "0.11,0.055"
+      shape?:string; // any node shape supported by Graphviz
+      style?:string; // any node style, supported by Graphviz
       title?:{
         font?:string;
         fontSize?:number;
@@ -664,6 +694,10 @@ interface IArgdownConfig {
         bold?:boolean;
         charactersInLine?:number;
       };
+      images?:{
+        position?:"top"|"bottom"; // default is "top"
+        padding?: number;
+      }
     };
     /**
      * Any settings strings that are allowed in a
@@ -844,6 +878,19 @@ interface IArgdownConfig {
       assumePt?: boolean;
       preserveAspectRatio?: string;
     };
+    /**
+     * Custom fonts to register with PDFKit (to add Unicode support)
+     *
+     * Example (yaml):
+     *
+     * ===
+     * svgToPdf:
+     *  fonts:
+     *    - {name: "arial", path: "./DejaVuSans.ttf"}
+     *    - {name: "arial Bold", path: "./DejaVuSans-Bold.ttf"}
+     * ===
+     */
+    fonts?:{name:string; path: string;}[];
   }
   /**
    * Settings for the WebComponentExportPlugin

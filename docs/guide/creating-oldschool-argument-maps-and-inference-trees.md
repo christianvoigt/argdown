@@ -18,23 +18,26 @@ To change this behaviour so that Argdown creates oldschool argument maps you can
 - use the **"all" statement selection mode** to insert all statements as nodes
 - use the **"explodeArguments" setting** to automatically put all inferential steps of an argument into their separate argument nodes
 - list the statements that were used in each inferential steps in the conclusion's or inference's **"uses" metadata**
-- use the **argument label mode "none"** to visualize arguments as small colored circles without any text (you can use the statement label mode "text" to save even more space)
+- use the **argument label mode "none"** and the **shape "circle"** to visualize arguments as small colored circles without any text (you can use the statement label mode "text" to save even more space)
 - use the **rank direction "TB"** (top to bottom) to let the arrows flow in the same direction as your premise-conclusion-structures
 
-Here is how this will look like (click on the "Map" button to see the visualization):
+Here is how this will look like (click on the "Source" button to see the configuration):
 
-```argdown
+```argdown-map
 ===
 selection:
-  statementSelectionMode: all
+  statementSelectionMode: all # adds all statements as nodes to the map
 model:
-  explodeArguments: true
+  explodeArguments: true # adds argument nodes for each inferential step of each argument
 map:
-  argumentLabelMode: none
-  statementLabelMode: text
+  argumentLabelMode: none # no text in argument nodes
+  statementLabelMode: text # no titles in statement nodes
 dot:
+    argument:
+        shape: circle # argument nodes are in the shape of circles
+        minWidth: 0.2 # let's make those circles really small
     graphVizSettings:
-        rankdir: TB
+        rankdir: TB # arrows flow from top to bottom (to produce a tree-like structure)
 ===
 
 <My complex argument>
@@ -71,6 +74,10 @@ If you do not want to add these configuration options to each of your Argdown fi
     "statementLabelMode": "text"
   },
   "dot": {
+    "argument": {
+      "shape": "circle",
+      "minWidth": 0.3
+    },
     "graphVizSettings": {
       "rankdir": "TB"
     }

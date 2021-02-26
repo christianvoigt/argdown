@@ -25,7 +25,7 @@
   "devDependencies": {
     "@vuepress/plugin-pwa": "1.8.0",
     "esm": "^3.2.25",
-    "lerna": "^3.20.2",
+    "lerna": "^3.22.1",
     "vuepress": "1.8.0"
   },
   "workspace-sources": {

@@ -46,7 +46,7 @@ You can use the `argumentLabelMode` and `statementLabelMode` map settings to cha
 - `title`: Show only the title of the statement or argument.
 - `text`: Show only the text of the canonical statement or argument description.
 - `hide-untitled` (default): Show title and text, but hide titles if the argument or equivalence class is anonoymous (has no manually defined title).
-- `none`: Hide title and text and only show an empty circle (useful if for [oldschool argument maps and inference trees](/guide/creating-oldschool-argument-maps-and-inference-trees.html))
+- `none`: Hide title and text and only show an empty node (useful for [oldschool argument maps and inference trees](/guide/creating-oldschool-argument-maps-and-inference-trees.html))
 
 In the following example we use `title` for arguments and `text` for statements:
 
@@ -113,3 +113,26 @@ dot:
 Similar configuration options exist for `dagre` and `graphml` configuration.
 
 Please note that VizJs only supports a [small number of fonts](https://github.com/mdaines/viz.js/wiki/Caveats#Fonts) and the same is true for the library that is used by all map export plugins for [text width measurement](#The-measureLineWidth-Setting). Please consult these links for the fonts available.
+
+## Changing the node shape and style
+
+You can use the `dot/argument/shape` and `dot/statement/shape` settings to [choose one of the node shapes supported by Graphviz](https://graphviz.org/doc/info/shapes.html) and the `dot/argument/style` and `dot/statement/style` settings to [change the node style](https://graphviz.org/doc/info/shapes.html):
+
+```argdown
+===
+dot:
+    argument:
+        shape: circle
+        style: filled
+        minWidth: 0
+    statement:
+        shape: star
+        style: filled, dashed
+        minWidth: 0
+===
+
+<a1>
+    +> [s1]
+    <- <a2>
+        + [s2]
+```
