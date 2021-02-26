@@ -23,6 +23,7 @@ import {
 import { addLineBreaks } from "../utils";
 import defaultsDeep from "lodash.defaultsdeep";
 import merge from "lodash.merge";
+import { IImagesSettings } from "./MapNodeImagesPlugin";
 
 export interface IRankMap {
   [key: string]: IRank;
@@ -56,6 +57,8 @@ export interface IDotSettings {
     lineWidth?: number;
     minWidth?: number;
     margin?: string;
+    shape?: string;
+    style?: string;
     title?: {
       font: string;
       fontSize: number;
@@ -67,12 +70,18 @@ export interface IDotSettings {
       fontSize: number;
       bold: boolean;
       charactersInLine?: number;
+    };
+    images?: {
+      position: "top" | "bottom";
+      padding: number;
     };
   };
   argument?: {
     lineWidth?: number;
     minWidth?: number;
     margin?: string;
+    shape?: string;
+    style?: string;
     title?: {
       font: string;
       fontSize: number;
@@ -84,6 +93,10 @@ export interface IDotSettings {
       fontSize: number;
       bold: boolean;
       charactersInLine?: number;
+    };
+    images?: {
+      position: "top" | "bottom";
+      padding: number;
     };
   };
   edge?: {
@@ -139,6 +152,8 @@ const defaultSettings: DefaultSettings<IDotSettings> = {
     lineWidth: 180,
     minWidth: 180,
     margin: "0.11,0.055",
+    shape: "box",
+    style: "filled, rounded",
     title: ensure.object({
       font: "arial",
       fontSize: 10,
@@ -150,12 +165,18 @@ const defaultSettings: DefaultSettings<IDotSettings> = {
       fontSize: 10,
       bold: false,
       charactersInLine: 40
+    }),
+    images: ensure.object({
+      position: "top",
+      padding: 0
     })
   }),
   statement: ensure.object({
     lineWidth: 180,
     minWidth: 180,
     margin: "0.11,0.055",
+    shape: "box",
+    style: "filled,rounded,bold",
     title: ensure.object({
       font: "arial",
       fontSize: 10,
@@ -167,6 +188,10 @@ const defaultSettings: DefaultSettings<IDotSettings> = {
       fontSize: 10,
       bold: false,
       charactersInLine: 40
+    }),
+    images: ensure.object({
+      position: "top",
+      padding: 0
     })
   }),
   edge: ensure.object({
@@ -239,7 +264,7 @@ export class DotExportPlugin implements IArgdownPlugin {
     dot += `graph [bgcolor = "${settings.mapBgColor}" ]`;
 
     for (let node of response.map!.nodes) {
-      dot += this.exportNodesRecursive(node, response, settings);
+      dot += this.exportNodesRecursive(node, request, response, settings);
     }
 
     dot += "\n\n";
@@ -286,6 +311,7 @@ export class DotExportPlugin implements IArgdownPlugin {
   };
   exportNodesRecursive(
     node: IMapNode,
+    request: IArgdownRequest,
     response: IArgdownResponse,
     settings: IDotSettings
   ): string {
@@ -339,7 +365,12 @@ export class DotExportPlugin implements IArgdownPlugin {
         dot += ` labelloc = "${labelloc}";\n\n`;
         if (groupNode.children) {
           for (let child of groupNode.children) {
-            dot += this.exportNodesRecursive(child, response, settings);
+            dot += this.exportNodesRecursive(
+              child,
+              request,
+              response,
+              settings
+            );
           }
         }
         dot += `\n}\n\n`;
@@ -350,20 +381,32 @@ export class DotExportPlugin implements IArgdownPlugin {
     let label = "";
     let color =
       node.color && validateColorString(node.color) ? node.color : "#63AEF2";
-    label = getLabel(node, settings);
-    const shape = label == `""`? "circle":"box";
+    const imageSettings = request.images || {};
+    imageSettings.files = imageSettings.files || {};
+    label = getLabel(node, settings, imageSettings);
     if (node.type === ArgdownTypes.ARGUMENT_MAP_NODE) {
+      const shape = settings.argument!.shape;
+      const widthProp =
+        label == `""` ? `, width="${settings.argument!.minWidth}"` : "";
       dot += `  ${node.id} [label=${label}, margin="${
         settings.argument!.margin
-      }", shape="${shape}", style="filled,rounded", fillcolor="${color}", fontcolor="${
-        node.fontColor
-      }",  type="${node.type}"];\n`;
+      }", shape="${shape}", style="${
+        settings.argument!.style
+      }", fillcolor="${color}", fontcolor="${node.fontColor}",  type="${
+        node.type
+      }"${widthProp}];\n`;
     } else if (node.type === ArgdownTypes.STATEMENT_MAP_NODE) {
+      const shape = settings.statement!.shape;
+      const widthProp =
+        label == `""` ? `, width="${settings.statement!.minWidth}"` : "";
+
       dot += `  ${node.id} [label=${label}, shape="${shape}",  margin="${
         settings.statement!.margin
-      }", style="filled,rounded,bold", color="${color}", fillcolor="white", labelfontcolor="white", fontcolor="${
+      }", style="${
+        settings.statement!.style
+      }", color="${color}", fillcolor="white", labelfontcolor="white", fontcolor="${
         node.fontColor
-      }", type="${node.type}"];\n`;
+      }", type="${node.type}"${widthProp}];\n`;
     }
     return dot;
   }
@@ -397,13 +440,17 @@ const addLineBreaksAndEscape = (
 const escapeQuotesForDot = (str: string): string => {
   return str.replace(/\"/g, '\\"');
 };
-const getLabel = (node: IMapNode, settings: IDotSettings): string => {
+const getLabel = (
+  node: IMapNode,
+  settings: IDotSettings,
+  imageSettings: IImagesSettings
+): string => {
   const isArgumentNode = node.type === ArgdownTypes.ARGUMENT_MAP_NODE;
   const title = node.labelTitle;
   const text = node.labelText;
   const color = node.fontColor;
   let label = "";
-  if(stringIsEmpty(title) && stringIsEmpty(text)){
+  if (stringIsEmpty(title) && stringIsEmpty(text)) {
     return `""`;
   }
   if (settings.useHtmlLabels) {
@@ -413,11 +460,30 @@ const getLabel = (node: IMapNode, settings: IDotSettings): string => {
     const minNodeWidth = isArgumentNode
       ? settings.argument!.minWidth!
       : settings.statement!.minWidth!;
+    const imagesPosition = isArgumentNode
+      ? settings.argument?.images?.position
+      : settings.statement?.images?.position;
+    const imagesPadding = isArgumentNode
+      ? settings.argument?.images?.padding
+      : settings.statement?.images?.padding;
     label += `<<TABLE WIDTH="${minNodeWidth}" ALIGN="CENTER" BORDER="0" CELLSPACING="0">`;
-    // if(!stringIsEmpty(node.image)){
-    //   const img = `<TR><TD><IMG SRC="${node.image}"/></TD></TR>`;
-    //   label += img;
-    // }
+    let img = "";
+    if (node.images) {
+      if (node.images.length == 1) {
+        img = `<TR><TD ALIGN="CENTER"><IMG SCALE="true" ALIGN="CENTER" SRC="${
+          imageSettings.files![node.images[0]].path
+        }"/></TD></TR>`;
+      } else if (node.images.length > 1) {
+        img = `<TR><TD><TABLE ALIGN="CENTER" BORDER="0" CELLSPACING="${imagesPadding}"><TR>${node.images
+          ?.map(
+            image => `<TD><IMG SRC="${imageSettings.files![image].path}"/></TD>`
+          )
+          .join("")}</TR></TABLE></TD></TR>`;
+      }
+    }
+    if (imagesPosition == "top") {
+      label += img;
+    }
     if (!stringIsEmpty(title)) {
       let { fontSize, font, bold, charactersInLine } = isArgumentNode
         ? settings.argument!.title!
@@ -462,6 +528,10 @@ const getLabel = (node: IMapNode, settings: IDotSettings): string => {
       textLabel = `<TR><TD ALIGN="TEXT" WIDTH="${minNodeWidth}" BALIGN="CENTER"><FONT FACE="${font}" POINT-SIZE="${fontSize}" COLOR="${color}">${textLabel}</FONT></TD></TR>`;
       label += textLabel;
     }
+    if (imagesPosition == "bottom") {
+      label += img;
+    }
+
     label += "</TABLE>>";
   } else {
     label = '"' + escapeQuotesForDot(title || "Untitled") + '"';

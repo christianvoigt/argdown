@@ -18,6 +18,7 @@ import { JSONExportPlugin } from "./plugins/JSONExportPlugin";
 import { GraphMLExportPlugin } from "./plugins/GraphMLExportPlugin";
 import { WebComponentExportPlugin } from "./plugins/WebComponentExportPlugin";
 import { ExplodeArgumentsPlugin } from "./plugins/ExplodeArgumentsPlugin";
+import { MapNodeImagesPlugin } from "./plugins/MapNodeImagesPlugin";
 
 /***
  * Default instance of a sync ArgdownApplication with all plugins of @argdown/core loaded and default processes defined.
@@ -37,6 +38,7 @@ argdown.addPlugin(new MapPlugin(), "build-map");
 argdown.addPlugin(new GroupPlugin(), "build-map");
 argdown.addPlugin(new ClosedGroupPlugin(), "transform-closed-groups");
 argdown.addPlugin(new ColorPlugin(), "colorize");
+argdown.addPlugin(new MapNodeImagesPlugin(), "add-images");
 argdown.addPlugin(new HtmlExportPlugin(), "export-html");
 argdown.addPlugin(new JSONExportPlugin(), "export-json");
 argdown.addPlugin(new DotExportPlugin(), "export-dot");
@@ -52,6 +54,7 @@ argdown.defaultProcesses = {
     "build-map",
     "transform-closed-groups",
     "colorize",
+    "add-images",
     "export-dot",
     "export-svg"
   ],
@@ -61,6 +64,7 @@ argdown.defaultProcesses = {
     "build-map",
     "transform-closed-groups",
     "colorize",
+    "add-images",
     "export-dot"
   ],
   "export-graphml": [
@@ -68,6 +72,7 @@ argdown.defaultProcesses = {
     "build-model",
     "build-map",
     "colorize",
+    "add-images",
     "export-graphml"
   ],
   "export-json": [
@@ -75,6 +80,7 @@ argdown.defaultProcesses = {
     "build-model",
     "build-map",
     "colorize",
+    "add-images",
     "export-json"
   ],
   "export-html": ["parse-input", "build-model", "colorize", "export-html"],
@@ -84,6 +90,7 @@ argdown.defaultProcesses = {
     "build-map",
     "transform-closed-groups",
     "colorize",
+    "add-images",
     "export-dot",
     "export-svg",
     "highlight-source",

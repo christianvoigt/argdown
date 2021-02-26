@@ -160,17 +160,19 @@ const createStatementNode = (
     color: ec.color,
     id: "n" + Number(initialNodeCount + index)
   };
-  if(ec.data && ec.data["image"]){
-    node.image = ec.data["image"];
+  if(ec.data && ec.data["images"] && Array.isArray(ec.data["images"])){
+    node.images = ec.data["images"];
   }
-  if (settings.statementLabelMode !== LabelMode.TITLE && settings.statementLabelMode !== LabelMode.NONE) {
+  if (settings.statementLabelMode == LabelMode.TEXT 
+    || settings.statementLabelMode == LabelMode.HIDE_UNTITLED) {
     const canonicalMember = IEquivalenceClass.getCanonicalMember(ec);
     node.labelText = canonicalMember ? canonicalMember.text : undefined;
     node.labelTextRanges = canonicalMember ? canonicalMember.ranges : undefined;
   }
   if (
-    settings.statementLabelMode !== LabelMode.NONE && (settings.statementLabelMode !== LabelMode.TEXT ||
-    stringIsEmpty(node.labelText))
+    settings.statementLabelMode == LabelMode.TITLE || 
+    settings.statementLabelMode == LabelMode.HIDE_UNTITLED ||
+    (settings.statementLabelMode == LabelMode.TEXT && stringIsEmpty(node.labelText))
   ) {
     if (
       settings.statementLabelMode === LabelMode.TITLE ||
@@ -195,17 +197,19 @@ const createArgumentNode = (
     color: a.color,
     id: "n" + Number(initialNodeCount + index)
   };
-  if(a.data && a.data["image"]){
-    node.image = a.data["image"];
+  if(a.data && a.data["images"] && Array.isArray(a.data["images"])){
+    node.images = a.data["images"].map((img)=>img);
   }
-  if (settings.argumentLabelMode != LabelMode.TITLE && settings.argumentLabelMode != LabelMode.NONE) {
+  if (settings.argumentLabelMode == LabelMode.TEXT || 
+    settings.argumentLabelMode == LabelMode.HIDE_UNTITLED) {
     const canonicalMember = IArgument.getCanonicalMember(a);
     node.labelText = canonicalMember ? canonicalMember.text : undefined;
     node.labelTextRanges = canonicalMember ? canonicalMember.ranges : undefined;
   }
   if (
-    settings.argumentLabelMode != LabelMode.NONE && (settings.argumentLabelMode !== LabelMode.TEXT ||
-    stringIsEmpty(node.labelText))
+    settings.argumentLabelMode == LabelMode.TITLE ||
+    settings.argumentLabelMode == LabelMode.HIDE_UNTITLED || 
+    (settings.argumentLabelMode == LabelMode.TEXT && stringIsEmpty(node.labelText))
   ) {
     if (
       !a.title!.startsWith("Untitled") ||

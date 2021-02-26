@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@aduh95/viz.js@^3.1.0":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/@aduh95/viz.js/-/viz.js-3.3.0.tgz#55aa417aeb0df3eb57db3d688447f94668b6605d"
-  integrity sha512-E64AQK3eYQ6EfPu9/hPwgZ+DRiGv1H84DXBajuFUz3Q7n8kKCx12cvvAdNTBEJQ+AwUiDcua4ZNdKHF7hcNw0Q==
+"@aduh95/viz.js@^3.3.3":
+  version "3.3.3"
+  resolved "https://registry.yarnpkg.com/@aduh95/viz.js/-/viz.js-3.3.3.tgz#1e284d4455eb9e9c4c5b2ddfdd96b007ac41e42e"
+  integrity sha512-LC9QtXVpZAsWp58ifJepMRDmCpXyi5hc6mClodSuFfUCPyU2h42Up+la9hFC+j0Waaz/htahM+Z5cavWDS72Tg==
 
 "@arcanis/slice-ansi@^1.0.2":
   version "1.0.2"

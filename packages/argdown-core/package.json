@@ -9,13 +9,13 @@
     "Markdown",
     "Chevrotain"
   ],
-  "version": "1.6.0",
+  "version": "1.6.2",
   "license": "MIT",
   "main": "./dist/index.js",
   "module": "./dist-esm/index.js",
   "types": "./dist/index.d.ts",
   "dependencies": {
-    "@aduh95/viz.js": "^3.1.0",
+    "@aduh95/viz.js": "^3.3.3",
     "@argdown/highlightjs": "^1.6.0",
     "@types/chai": "^4.2.11",
     "@types/js-yaml": "4.0.0",
@@ -62,6 +62,7 @@
     "copy:css": "copyfiles -u 1 \"src/**/*.css\" dist && copyfiles -u 1 \"src/**/*.css\" dist-esm",
     "test": "mocha -r ts-node/register --full-trace ./test/**/*.spec.ts",
     "test:map": "mocha -r ts-node/register --full-trace ./test/MapPlugin.spec.ts",
+    "test:mapNodeImages": "mocha -r ts-node/register --full-trace ./test/MapNodeImagesPlugin.spec.ts",
     "test:explode": "mocha -r ts-node/register --full-trace ./test/ExplodeArgumentsPlugin.spec.ts",
     "test:dot": "mocha -r ts-node/register --full-trace ./test/DotExportPlugin.spec.ts",
     "test:svgSync": "mocha -r ts-node/register --full-trace ./test/SyncDotToSvgExportPlugin.spec.ts",

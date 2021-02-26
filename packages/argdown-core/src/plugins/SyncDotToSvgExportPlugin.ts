@@ -5,6 +5,7 @@ import defaultsDeep from "lodash.defaultsdeep";
 import { IArgdownRequest } from "..";
 import { checkResponseFields } from "../ArgdownPluginError";
 import { GraphvizEngine, IVizJsSettings } from "./VizJsSettings";
+import { RenderOptions } from "@aduh95/viz.js";
 
 const defaultSettings: DefaultSettings<IVizJsSettings> = {
   removeProlog: true,
@@ -35,16 +36,37 @@ export class SyncDotToSvgExportPlugin implements IArgdownPlugin {
     const requiredResponseFields: string[] = ["dot"];
     checkResponseFields(this, response, requiredResponseFields);
     let { engine, nop, removeProlog } = this.getSettings(request);
-    response.svg = (vizRenderStringSync as any)(response.dot, {
+    const files = request.images?.files;
+    const settings: RenderOptions = {
       engine,
       nop,
       format: "svg"
-    });
+    };
+    if (files) {
+      settings.images = Object.values(files).map(({ path, width, height }) => ({
+        path,
+        width: width || 100,
+        height: height || 100
+      }));
+    }
+    response.svg = vizRenderStringSync(response.dot!, settings);
     if (removeProlog) {
       response.svg = response.svg!.replace(
         /<\?[ ]*xml[\S ]+?\?>[\s]*<\![ ]*DOCTYPE[\S\s]+?\.dtd\"[ ]*>/,
         ""
       );
+    }
+    if (
+      request.images &&
+      request.images.convertToDataUrls &&
+      request.images.files
+    ) {
+      for (let image of Object.values(request.images.files)) {
+        if (image.dataUrl) {
+          const stringToReplace = new RegExp(image.path, "g");
+          response.svg = response.svg?.replace(stringToReplace, image.dataUrl);
+        }
+      }
     }
     return response;
   };
