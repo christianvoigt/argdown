@@ -296,6 +296,7 @@ export class AsyncArgdownApplication extends ArgdownApplication {
       // For Js config files we have to use loadJSFile which is synchronous
       try {
         let jsModuleExports = loadJSFile(filePath);
+
         if (jsModuleExports.config) {
           config = jsModuleExports.config;
         } else {
@@ -321,11 +322,10 @@ export class AsyncArgdownApplication extends ArgdownApplication {
  * @private
  */
 const loadJSFile = (filePath: string) => {
-  let absoluteFilePath = path.resolve(process.cwd(), filePath);
   try {
-    return importFresh(absoluteFilePath);
+    return importFresh(filePath);
   } catch (e) {
-    e.message = `Cannot read file: ${absoluteFilePath}\nError: ${e.message}`;
+    e.message = `Cannot read file: ${filePath}\nError: ${e.message}`;
     throw e;
   }
 };

@@ -18,9 +18,11 @@ import {
   RegroupPlugin,
   ClosedGroupPlugin,
   WebComponentExportPlugin,
-  HighlightSourcePlugin
+  HighlightSourcePlugin,
+  ExplodeArgumentsPlugin,
+  MapNodeImagesPlugin
 } from "@argdown/core";
-import {SyncDotToSvgExportPlugin } from "@argdown/core/dist/plugins/SyncDotToSvgExportPlugin";
+import { SyncDotToSvgExportPlugin } from "@argdown/core/dist/plugins/SyncDotToSvgExportPlugin";
 import { SaveAsFilePlugin } from "./plugins/SaveAsFilePlugin";
 import { SvgToPdfExportPlugin } from "./plugins/SvgToPdfExportPlugin";
 import { CopyDefaultCssPlugin } from "./plugins/CopyDefaultCssPlugin";
@@ -28,6 +30,8 @@ import { LogParserErrorsPlugin } from "./plugins/LogParserErrorsPlugin";
 import { StdOutPlugin } from "./plugins/StdOutPlugin";
 import { IncludePlugin } from "./plugins/IncludePlugin";
 import { LoadFilePlugin } from "./plugins/LoadFilePlugin";
+import { ImageSizePlugin } from "./plugins/ImageSizePlugin";
+import { GenerateDataUrlsPlugin } from "./plugins/GenerateDataUrlsPlugin";
 
 export const argdown = new AsyncArgdownApplication();
 
@@ -44,6 +48,7 @@ const dataPlugin = new DataPlugin();
 argdown.addPlugin(dataPlugin, "build-model");
 const modelPlugin = new ModelPlugin();
 argdown.addPlugin(modelPlugin, "build-model");
+argdown.addPlugin(new ExplodeArgumentsPlugin(), "build-model");
 const regroupPlugin = new RegroupPlugin();
 argdown.addPlugin(regroupPlugin, "build-model");
 
@@ -60,6 +65,9 @@ argdown.addPlugin(groupPlugin, "build-map");
 argdown.addPlugin(new ClosedGroupPlugin(), "transform-closed-groups");
 const colorPlugin = new ColorPlugin();
 argdown.addPlugin(colorPlugin, "colorize");
+argdown.addPlugin(new MapNodeImagesPlugin(), "add-images");
+argdown.addPlugin(new ImageSizePlugin(), "add-images");
+argdown.addPlugin(new GenerateDataUrlsPlugin(), "add-images");
 
 const stdoutArgdown = new StdOutPlugin({
   dataKey: "input",
@@ -153,6 +161,7 @@ argdown.defaultProcesses = {
     "build-map",
     "transform-closed-groups",
     "colorize",
+    "add-images",
     "export-dot",
     "export-svg",
     "save-svg-as-svg"
@@ -164,6 +173,7 @@ argdown.defaultProcesses = {
     "build-map",
     "transform-closed-groups",
     "colorize",
+    "add-images",
     "export-dot",
     "export-svg",
     "save-svg-as-pdf"
@@ -175,6 +185,7 @@ argdown.defaultProcesses = {
     "build-map",
     "transform-closed-groups",
     "colorize",
+    "add-images",
     "export-dot",
     "save-as-dot"
   ],
@@ -184,6 +195,7 @@ argdown.defaultProcesses = {
     "build-model",
     "build-map",
     "colorize",
+    "add-images",
     "export-graphml",
     "save-as-graphml"
   ],
@@ -193,6 +205,7 @@ argdown.defaultProcesses = {
     "build-model",
     "build-map",
     "colorize",
+    "add-images",
     "export-json",
     "save-as-json"
   ],
@@ -201,6 +214,7 @@ argdown.defaultProcesses = {
     "parse-input",
     "build-model",
     "colorize",
+    "add-images",
     "export-html",
     "save-as-html"
   ],
@@ -211,6 +225,7 @@ argdown.defaultProcesses = {
     "build-map",
     "transform-closed-groups",
     "colorize",
+    "add-images",
     "export-dot",
     "export-svg",
     "highlight-source",
