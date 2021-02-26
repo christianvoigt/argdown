@@ -8,10 +8,8 @@ import {
   LanguageClientOptions,
   ServerOptions,
   TransportKind,
-  Middleware,
   ForkOptions
 } from "vscode-languageclient/node";
-import { LanguageServerConfiguration } from "./LanguageServerConfiguration";
 import { CommandManager } from "./commands/CommandManager";
 import * as commands from "./commands/index";
 
@@ -24,12 +22,10 @@ import {
   PreviewSecuritySelector
 } from "./preview/security";
 import { ArgdownExtensionContributions } from "./preview/ArgdownExtensionContributions";
-import { WorkspaceMiddleware  } from "vscode-languageclient/node";
 import createArgdownMarkdownItPlugin from "@argdown/markdown-it-plugin";
 //import { ForkOptions } from "vscode-languageclient/lib/client";
 
 let client: LanguageClient;
-let languageServerConfiguration: LanguageServerConfiguration;
 
 export function activate(context: vscode.ExtensionContext) {
   vscode.languages.setLanguageConfiguration("argdown", {
@@ -37,7 +33,7 @@ export function activate(context: vscode.ExtensionContext) {
   });
   // -- PREVIEW --
   const logger = new Logger();
-  const argdownEngine = new ArgdownEngine();
+  const argdownEngine = new ArgdownEngine(logger);
   const cspArbiter = new ExtensionContentSecurityPolicyArbiter(
     context.globalState,
     context.workspaceState
@@ -124,17 +120,13 @@ export function activate(context: vscode.ExtensionContext) {
     }
   };
 
-  languageServerConfiguration = new LanguageServerConfiguration();
-  let middleware: WorkspaceMiddleware | Middleware = {
-    workspace: {
-      configuration: languageServerConfiguration.computeConfiguration
-    }
-  };
-
   // Options to control the language client
   let clientOptions: LanguageClientOptions = {
     // Register the server for plain text documents
-    documentSelector: [{ language: "argdown" }],
+    documentSelector: [
+      { scheme: "untitled", language: "argdown" },
+      { scheme: "file", language: "argdown" }
+    ],
     synchronize: {
       // Notify the server about file changes to '.clientrc files contain in the workspace
       fileEvents: vscode.workspace.createFileSystemWatcher("**/.clientrc")
@@ -143,7 +135,6 @@ export function activate(context: vscode.ExtensionContext) {
       // necessary anymore.
       // configurationSection: [ 'lspMultiRootSample' ]
     },
-    middleware: middleware as Middleware,
     outputChannelName: "Argdown Language Server"
   };
   // Create the language client and start the client.
@@ -155,9 +146,6 @@ export function activate(context: vscode.ExtensionContext) {
   );
   // Register new proposed protocol if available.
   client.registerProposedFeatures();
-  client.onReady().then(() => {
-    languageServerConfiguration.initialize(client);
-  });
 
   // Start the client. This will also launch the server
   client.start();
@@ -208,6 +196,5 @@ export function deactivate(): Thenable<void> {
   if (!client) {
     return Promise.resolve();
   }
-  languageServerConfiguration.dispose();
   return client.stop();
 }

@@ -20,12 +20,19 @@ export const vizjsViewProvider: IViewProvider = {
     argdownDocument: vscode.TextDocument,
     config: ArgdownPreviewConfiguration
   ) => {
-    const dot = await argdownEngine.exportDot(argdownDocument, config);
-    const settings =
+    const { dot, request } = await argdownEngine.exportDot(
+      argdownDocument,
+      config
+    );
+    let settings: any =
       config.argdownConfig && config.argdownConfig.vizJs
-        ? JSON.stringify(config.argdownConfig.vizJs)
-        : "{}";
-    return { dot, settings };
+        ? { ...config.argdownConfig.vizJs }
+        : {};
+    if (request.images && request.images.files) {
+      settings.images = Object.values(request.images.files);
+    }
+    const settingsStr = JSON.stringify(settings);
+    return { dot, settings: settingsStr };
   },
   contributeToInitialState: async (
     data: IArgdownPreviewState,
@@ -33,11 +40,17 @@ export const vizjsViewProvider: IViewProvider = {
     argdownDocument: vscode.TextDocument,
     config: ArgdownPreviewConfiguration
   ) => {
-    const dot = await argdownEngine.exportDot(argdownDocument, config);
-    const settings =
+    const { dot, request } = await argdownEngine.exportDot(
+      argdownDocument,
+      config
+    );
+    let settings: any =
       config.argdownConfig && config.argdownConfig.vizJs
-        ? config.argdownConfig.vizJs
+        ? { ...config.argdownConfig.vizJs }
         : {};
+    if (request.images && request.images.files) {
+      settings.images = Object.values(request.images.files);
+    }
     data.vizJs.dot = dot;
     data.vizJs.settings = settings;
     return data;

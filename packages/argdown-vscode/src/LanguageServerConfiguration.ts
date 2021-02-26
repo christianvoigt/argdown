@@ -13,7 +13,11 @@ export class LanguageServerConfiguration {
 
   // Convert VS Code specific settings to a format acceptable by the server. Since
   // both client and server do use JSON the conversion is trivial.
-  computeConfiguration(params: ConfigurationParams, _token: CancellationToken, _next: Function): any[] {
+  computeConfiguration(
+    params: ConfigurationParams,
+    _token: CancellationToken,
+    _next: Function
+  ): any[] {
     if (!params.items) {
       return [];
     }
@@ -28,9 +32,12 @@ export class LanguageServerConfiguration {
       }
       let config: WorkspaceConfiguration;
       if (item.scopeUri && this.client) {
-        config = workspace.getConfiguration("argdown", this.client.protocol2CodeConverter.asUri(item.scopeUri));
+        config = workspace.getConfiguration(
+          "argdown",
+          this.client.protocol2CodeConverter.asUri(item.scopeUri)
+        );
       } else {
-        config = workspace.getConfiguration("argdown");
+        config = workspace.getConfiguration("argdown", null);
       }
       result.push({
         configFile: config.get("configFile")

@@ -55,7 +55,9 @@ export class Logger {
 
   private readTrace(): Trace {
     return Trace.fromString(
-      workspace.getConfiguration("argdown").get<string>("preview.trace", "off")
+      workspace
+        .getConfiguration("argdown", null)
+        .get<string>("preview.trace", "off")
     );
   }
 

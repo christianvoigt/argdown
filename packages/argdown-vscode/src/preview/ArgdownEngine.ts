@@ -14,10 +14,23 @@ import {
   IMap,
   stringifyArgdownData
 } from "@argdown/core";
+import { Logger } from "./Logger";
 argdown.addPlugin(findElementAtPositionPlugin, "find-element-at-position");
 
 export class ArgdownEngine {
-  public constructor() {}
+  public constructor(logger: Logger) {
+    let logLevel = "verbose";
+    argdown.logger = {
+      setLevel(level: string) {
+        logLevel = level;
+      },
+      log(_level: string, message: string) {
+        if (logLevel == "verbose") {
+          logger.log(message);
+        }
+      }
+    };
+  }
   public async exportHtml(
     doc: vscode.TextDocument,
     config: ArgdownPreviewConfiguration
@@ -193,12 +206,14 @@ export class ArgdownEngine {
     const request = {
       ...argdownConfig,
       input: input,
+      inputPath: doc.uri.fsPath,
       process: [
         "parse-input",
         "build-model",
         "build-map",
         "transform-closed-groups",
-        "colorize"
+        "colorize",
+        "add-images"
       ],
       throwExceptions: false
     };
@@ -221,6 +236,7 @@ export class ArgdownEngine {
     const request = {
       ...argdownConfig,
       input: input,
+      inputPath: doc.uri.fsPath,
       process: [
         "parse-input",
         "build-model",
@@ -237,24 +253,26 @@ export class ArgdownEngine {
   public async exportDot(
     doc: vscode.TextDocument,
     config: ArgdownPreviewConfiguration
-  ): Promise<string> {
+  ): Promise<{ dot: string; request: IArgdownRequest }> {
     const argdownConfig = config.argdownConfig || {};
     const input = doc.getText();
-    const request: IArgdownRequest = {
+    const request = {
       ...argdownConfig,
       input: input,
+      inputPath: doc.uri.fsPath,
       process: [
         "parse-input",
         "build-model",
         "build-map",
         "transform-closed-groups",
         "colorize",
+        "add-images",
         "export-dot"
       ],
       throwExceptions: false
     };
     const response = await argdown.runAsync(request);
-    return response.dot!;
+    return { dot: response.dot!, request };
   }
   public async exportGraphML(
     doc: vscode.TextDocument,
@@ -262,14 +280,16 @@ export class ArgdownEngine {
   ): Promise<string> {
     const argdownConfig = config.argdownConfig || {};
     const input = doc.getText();
-    const request: IArgdownRequest = {
+    const request = {
       ...argdownConfig,
       input: input,
+      inputPath: doc.uri.fsPath,
       process: [
         "parse-input",
         "build-model",
         "build-map",
         "colorize",
+        "add-images",
         "export-graphml"
       ],
       throwExceptions: false
@@ -285,6 +305,7 @@ export class ArgdownEngine {
       return {};
     }
     const workspaceFolder = vscode.workspace.getWorkspaceFolder(resource);
+
     let configPath = configFile;
     if (workspaceFolder) {
       let rootPath = workspaceFolder.uri.fsPath;

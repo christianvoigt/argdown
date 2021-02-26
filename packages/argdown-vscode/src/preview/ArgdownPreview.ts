@@ -568,7 +568,7 @@ export class ArgdownPreview {
   }
   private async onDidChangeLockMenu(lockMenu: boolean) {
     await vscode.workspace
-      .getConfiguration("argdown")
+      .getConfiguration("argdown", null)
       .update("preview.lockMenu", lockMenu, true);
   }
   private async onDidSelectMapNode(id: string) {

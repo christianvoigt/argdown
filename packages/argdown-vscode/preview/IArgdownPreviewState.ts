@@ -22,6 +22,9 @@ export interface IArgdownPreviewState {
     scale?: number;
     dot?: string;
     settings?: IVizJsSettings;
+    images?: [
+      { path: string; width: number; height: number; dataUrl?: string }
+    ];
   };
   html: {
     line: number;
