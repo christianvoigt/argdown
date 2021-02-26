@@ -1,14 +1,16 @@
 import {
   IArgdownRequest,
   WebComponentExportPlugin,
-  IWebComponentExportSettings
+  IWebComponentExportSettings,
+  ArgdownApplication
 } from "@argdown/core";
-import { argdown } from "@argdown/core/dist/argdown";
+import { argdown as defaultArgdownApplication } from "@argdown/core/dist/argdown";
 import type MarkdownIt from "markdown-it"; 
 import defaultsDeep from "lodash.defaultsdeep";
 import Token from "markdown-it/lib/token";
 
-const createArgdownPlugin = (config?: ((env:any)=>IArgdownRequest) | IArgdownRequest) => {
+const createArgdownPlugin = (config?: ((env:any)=>IArgdownRequest) | IArgdownRequest, customArgdownApplication?: ArgdownApplication) => {
+  const argdown = customArgdownApplication || defaultArgdownApplication;
   const webComponentPlugin = argdown.getPlugin(
     WebComponentExportPlugin.name,
     "export-web-component"
@@ -20,17 +22,7 @@ const createArgdownPlugin = (config?: ((env:any)=>IArgdownRequest) | IArgdownReq
     const generateWebComponent = (code: string, initialView?: string, additionalSettings?: IWebComponentExportSettings) => {
       const request: IArgdownRequest = defaultsDeep({
         input: code,
-        process: [
-          "parse-input",
-          "build-model",
-          "build-map",
-          "transform-closed-groups",
-          "colorize",
-          "export-dot",
-          "export-svg",
-          "highlight-source",
-          "export-web-component"
-        ]},
+        process: "export-web-component"},
         currentConfig, 
         {        
           webComponent: {

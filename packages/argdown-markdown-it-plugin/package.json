@@ -1,6 +1,6 @@
 {
   "name": "@argdown/markdown-it-plugin",
-  "version": "1.6.0",
+  "version": "1.6.2",
   "description": "Turns Argdown code fences into svg argument maps",
   "main": "dist/argdown-markdown-it-plugin.js",
   "scripts": {
@@ -61,7 +61,7 @@
     "typescript": "^4.1.5"
   },
   "dependencies": {
-    "@argdown/core": "^1.6.0",
+    "@argdown/core": "^1.6.2",
     "@types/lodash.defaultsdeep": "^4.6.6",
     "@types/markdown-it": "^12.0.1",
     "lodash.defaultsdeep": "^4.6.1"
