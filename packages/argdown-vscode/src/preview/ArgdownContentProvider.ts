@@ -121,7 +121,10 @@ export class ArgdownContentProvider {
         ).replace(/"/g, "&quot;")}" data-strings="${JSON.stringify(
       previewStrings
     ).replace(/"/g, "&quot;")}">
-				<script src="${this.extensionResourcePath("pre.js", webview)}" nonce="${nonce}"></script>
+				<script src="${this.extensionResourcePath(
+          "pre.js",
+          webview
+        )}" nonce="${nonce}"></script>
 				<script nonce="${nonce}">window.initialState = ${JSON.stringify(
       initialState,
       jsonReplacer
@@ -165,13 +168,22 @@ export class ArgdownContentProvider {
 	</nav></div>`;
   }
 
-  private extensionResourcePath(mediaFile: string, webview:vscode.Webview): vscode.Uri {
-    return webview.asWebviewUri(vscode.Uri.file(
-      this.context.asAbsolutePath(path.join("media", mediaFile))
-    ));
+  private extensionResourcePath(
+    mediaFile: string,
+    webview: vscode.Webview
+  ): vscode.Uri {
+    return webview.asWebviewUri(
+      vscode.Uri.file(
+        this.context.asAbsolutePath(path.join("media", mediaFile))
+      )
+    );
   }
 
-  private fixHref(resource: vscode.Uri, href: string, webview:vscode.Webview): string{
+  private fixHref(
+    resource: vscode.Uri,
+    href: string,
+    webview: vscode.Webview
+  ): string {
     if (!href) {
       return href;
     }
@@ -253,12 +265,17 @@ export class ArgdownContentProvider {
 			${this.getSettingsOverrideStyles(nonce, config)}
 			${this.computeCustomStyleSheetIncludes(resource, config, webview)}`;
   }
-  private getScriptsForView(scripts: string[], nonce: string, webview:vscode.Webview): string {
+  private getScriptsForView(
+    scripts: string[],
+    nonce: string,
+    webview: vscode.Webview
+  ): string {
     return scripts
       .map(
         script =>
           `<script src="${this.extensionResourcePath(
-            script, webview
+            script,
+            webview
           )}" nonce="${nonce}" charset="UTF-8"></script>`
       )
       .join("\n");
@@ -275,21 +292,21 @@ export class ArgdownContentProvider {
   private getCspForResource(
     resource: vscode.Uri,
     nonce: string,
-    cspSource: string
+    rule: string
   ): string {
-    switch (this.cspArbiter.getSecurityLevelForResource(resource)) {
+    const securityLevel = this.cspArbiter.getSecurityLevelForResource(resource);
+    switch (securityLevel) {
       case ArgdownPreviewSecurityLevel.AllowInsecureContent:
-        return `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${cspSource} http: https: data:; media-src ${cspSource} http: https: data:; script-src 'nonce-${nonce}'; style-src ${cspSource} 'unsafe-inline' http: https: data:; font-src ${cspSource} http: https: data:;">`;
-
+        return `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' ${rule} http: https: data:; media-src 'self' ${rule} http: https: data:; script-src 'nonce-${nonce}'; style-src 'self' ${rule} 'unsafe-inline' http: https: data:; font-src 'self' ${rule} http: https: data:;">`;
       case ArgdownPreviewSecurityLevel.AllowInsecureLocalContent:
-        return `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${cspSource} https: data: http://localhost:* http://127.0.0.1:*; media-src ${cspSource} https: data: http://localhost:* http://127.0.0.1:*; script-src 'nonce-${nonce}'; style-src ${cspSource} 'unsafe-inline' https: data: http://localhost:* http://127.0.0.1:*; font-src ${cspSource} https: data: http://localhost:* http://127.0.0.1:*;">`;
+        return `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' ${rule} https: data: http://localhost:* http://127.0.0.1:*; media-src 'self' ${rule} https: data: http://localhost:* http://127.0.0.1:*; script-src 'nonce-${nonce}'; style-src 'self' ${rule} 'unsafe-inline' https: data: http://localhost:* http://127.0.0.1:*; font-src 'self' ${rule} https: data: http://localhost:* http://127.0.0.1:*;">`;
 
       case ArgdownPreviewSecurityLevel.AllowScriptsAndAllContent:
-        return "";
+        return `<meta http-equiv="Content-Security-Policy" content="">`;
 
       case ArgdownPreviewSecurityLevel.Strict:
       default:
-        return `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${cspSource} https: data:; media-src ${cspSource} https: data:; script-src 'nonce-${nonce}'; style-src ${cspSource} 'unsafe-inline' https: data:; font-src ${cspSource} https: data:;">`;
+        return `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' ${rule} https: data:; media-src 'self' ${rule} https: data:; script-src 'nonce-${nonce}'; style-src 'self' ${rule} 'unsafe-inline' https: data:; font-src 'self' ${rule} https: data:;">`;
     }
   }
 }
