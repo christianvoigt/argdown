@@ -18,8 +18,9 @@ import {
   TextDocumentIdentifier,
   WorkspaceFolder,
   DocumentSymbolParams,
-  FoldingRangeParams
-} from "vscode-languageserver";
+  FoldingRangeParams,
+  DidChangeConfigurationNotification
+} from "vscode-languageserver/node";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { URI } from "vscode-uri";
 import { IArgdownSettings } from "./IArgdownSettings";
@@ -39,11 +40,6 @@ import {
   provideRenameWorkspaceEdit
 } from "./providers/index";
 import { argdown, IArgdownRequest } from "@argdown/node";
-import {
-  WorkspaceFoldersInitializeParams,
-  WorkspaceFoldersClientCapabilities
-} from "vscode-languageserver-protocol/lib/protocol.workspaceFolders";
-import { ConfigurationClientCapabilities } from "vscode-languageserver-protocol/lib/protocol.configuration";
 import { IArgdownResponse } from "@argdown/core";
 import { FoldingRangesPlugin } from "./providers/FoldingRangesPlugin";
 
@@ -54,7 +50,7 @@ const RUN_COMMAND = "argdown.run";
 
 // Create a connection for the server. The connection uses Node's IPC as a transport
 let connection = createConnection(ProposedFeatures.all);
-let logLevel = "none";
+let logLevel = "verbose";
 argdown.logger = {
   setLevel: (level: string) => {
     logLevel = level;
@@ -68,6 +64,7 @@ argdown.logger = {
 
 let hasConfigurationCapability = false;
 let hasWorkspaceFolderCapability = false;
+// let hasDiagnosticRelatedInformationCapability: boolean = false;
 
 // Create a simple text document manager. The text document manager
 // supports full document sync only
@@ -77,22 +74,22 @@ let workspaceFolders: WorkspaceFolder[];
 // After the server has started the client sends an initilize request. The server receives
 // in the passed params the rootPath of the workspace plus the client capabilites.
 connection.onInitialize(
-  (
-    params: InitializeParams & WorkspaceFoldersInitializeParams
-  ): InitializeResult => {
+  (params: InitializeParams): InitializeResult => {
     let capabilities = params.capabilities;
 
     // Does the client support the `workspace/configuration` request?
     // If not, we will fall back using global settings
-    hasWorkspaceFolderCapability =
-      !!(capabilities as WorkspaceFoldersClientCapabilities).workspace &&
-      !!(capabilities as WorkspaceFoldersClientCapabilities).workspace!
-        .workspaceFolders;
-    hasConfigurationCapability =
-      !!(capabilities as ConfigurationClientCapabilities).workspace &&
-      !!(capabilities as ConfigurationClientCapabilities).workspace!
-        .configuration;
-
+    hasWorkspaceFolderCapability = !!(
+      capabilities.workspace && !!capabilities.workspace.workspaceFolders
+    );
+    hasConfigurationCapability = !!(
+      capabilities.workspace && !!capabilities.workspace.configuration
+    );
+    // hasDiagnosticRelatedInformationCapability = !!(
+    //   capabilities.textDocument &&
+    //   capabilities.textDocument.publishDiagnostics &&
+    //   capabilities.textDocument.publishDiagnostics.relatedInformation
+    // );
     if (params.workspaceFolders) {
       workspaceFolders = params.workspaceFolders;
 
@@ -133,6 +130,13 @@ connection.onInitialize(
 
 connection.onInitialized(() => {
   connection.console.log("Argdown language server initialized.");
+  if (hasConfigurationCapability) {
+    // Register for all configuration changes.
+    connection.client.register(
+      DidChangeConfigurationNotification.type,
+      undefined
+    );
+  }
   if (hasWorkspaceFolderCapability) {
     connection.workspace.onDidChangeWorkspaceFolders(event => {
       // Removed folders.
@@ -191,7 +195,7 @@ connection.onDidChangeConfiguration(change => {
     documentSettings.clear();
   } else {
     globalSettings = <IArgdownSettings>(
-      (change.settings.lspMultiRootSample || defaultSettings)
+      (change.settings.languageServerExample || defaultSettings)
     );
   }
 
@@ -205,7 +209,10 @@ function getDocumentSettings(resource: string): Thenable<IArgdownSettings> {
   }
   let result = documentSettings.get(resource);
   if (!result) {
-    result = connection.workspace.getConfiguration({ scopeUri: resource });
+    result = connection.workspace.getConfiguration({
+      scopeUri: resource,
+      section: "argdown"
+    });
     documentSettings.set(resource, result);
   }
   return result;
@@ -266,10 +273,10 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
   connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
 }
 
-connection.onDidChangeWatchedFiles(_change => {
-  // Monitored files have change in VSCode
-  connection.console.log("We recevied an file change event");
-});
+// connection.onDidChangeWatchedFiles(_change => {
+//   // Monitored files have change in VSCode
+//   connection.console.log("We recevied an file change event");
+// });
 const processDocForProviders = async (textDocument: TextDocumentIdentifier) => {
   const doc = documents.get(textDocument.uri);
   if (doc) {
@@ -445,7 +452,7 @@ const getConfigPath = async (doc: TextDocument | undefined) => {
     let configPath: string | undefined = undefined;
     let settings = await getDocumentSettings(doc.uri);
     const docPath = URI.parse(doc.uri).fsPath;
-    if (workspaceFolders && workspaceFolders.length > 0) {
+    if (workspaceFolders && workspaceFolders.length > 0 && settings) {
       let workspaceFolder = workspaceFolders.find(f =>
         docPath.startsWith(URI.parse(f.uri).fsPath)
       );
@@ -457,7 +464,9 @@ const getConfigPath = async (doc: TextDocument | undefined) => {
         : undefined;
     }
     if (!configPath) {
-      configPath = path.dirname(docPath);
+      configPath = settings
+        ? path.resolve(path.dirname(docPath), settings.configFile)
+        : path.dirname(docPath);
     }
     return configPath;
   }

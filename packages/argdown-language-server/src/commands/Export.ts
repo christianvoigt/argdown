@@ -1,7 +1,6 @@
 import { URI } from "vscode-uri";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { AsyncArgdownApplication } from "@argdown/node";
-import { IArgdownRequest } from "@argdown/core";
 interface IDictionary<T> {
   [Key: string]: T;
 }
@@ -27,6 +26,7 @@ const requestProviders: IDictionary<(r: any) => any> = {
         "build-map",
         "transform-closed-groups",
         "colorize",
+        "add-images",
         "export-dot",
         "export-svg",
         "save-svg-as-svg"
@@ -42,6 +42,7 @@ const requestProviders: IDictionary<(r: any) => any> = {
         "build-map",
         "transform-closed-groups",
         "colorize",
+        "add-images",
         "export-dot",
         "export-svg",
         "highlight-source",
@@ -59,6 +60,7 @@ const requestProviders: IDictionary<(r: any) => any> = {
         "build-map",
         "transform-closed-groups",
         "colorize",
+        "add-images",
         "export-dot",
         "export-svg",
         "save-svg-as-pdf"
@@ -80,6 +82,7 @@ const requestProviders: IDictionary<(r: any) => any> = {
         "build-map",
         "transform-closed-groups",
         "colorize",
+        "add-images",
         "export-dot",
         "save-as-dot"
       ]
@@ -93,6 +96,7 @@ const requestProviders: IDictionary<(r: any) => any> = {
         "build-model",
         "build-map",
         "colorize",
+        "add-images",
         "export-graphml",
         "save-as-graphml"
       ]
@@ -131,9 +135,10 @@ export const exportContent = async (
   configPath?: string
 ) => {
   const config = configPath ? await argdownEngine.loadConfig(configPath) : {};
-  let request: IArgdownRequest = { ...config };
+  let request = { ...config };
   if (args.process === "vizjs-to-pdf" || args.process === "dagre-to-pdf") {
     request.outputPath = URI.parse(args.target).fsPath;
+    request.inputPath = URI.parse(args.source).fsPath;
     const getRequest = requestProviders[args.process];
     request = getRequest(request);
     const response = {
