@@ -17,7 +17,7 @@ const config = {
   },
   devtool: "source-map",
   externals: {
-    vscode: "commonjs vscode", // the vscode-module is created on-the-fly and must be excluded. Add other modules that cannot be webpack'ed, 📖 -> https://webpack.js.org/configuration/externals/
+    vscode: "commonjs vscode" // the vscode-module is created on-the-fly and must be excluded. Add other modules that cannot be webpack'ed, 📖 -> https://webpack.js.org/configuration/externals/
   },
   resolve: {
     // support reading TypeScript and JavaScript files, 📖 -> https://github.com/TypeStrong/ts-loader
@@ -31,8 +31,8 @@ const config = {
     rules: [
       {
         test: /\.mjs$/,
-        type: 'javascript/auto',
-    },
+        type: "javascript/auto"
+      },
       {
         test: /\.ts$/,
         exclude: /node_modules/,
@@ -53,36 +53,58 @@ const config = {
       },
       {
         test: /unicode-properties[\/\\]unicode-properties/,
-        loader: 'string-replace-loader',
+        loader: "string-replace-loader",
         options: {
           search: "var fs = _interopDefault(require('fs'));",
-          replace: "var fs = require('fs');",
+          replace: "var fs = require('fs');"
         },
         enforce: "pre"
       },
       {
         test: /unicode-properties[\/\\]unicode-properties/,
         loader: "transform-loader",
-        options:{
+        options: {
           brfs: true
         }
       },
-      { test: /pdfkit[/\\]js[/\\]/, loader: "transform-loader",
-      options:{
-        brfs: true
-      } },
-      { test: /fontkit[\/\\]index.js$/, loader: "transform-loader",
-      options:{
-        brfs: true
-      } },
+      {
+        test: /pdfkit[/\\]js[/\\]/,
+        loader: "transform-loader",
+        options: {
+          brfs: true
+        }
+      },
+      {
+        test: /fontkit[\/\\]index.js$/,
+        loader: "transform-loader",
+        options: {
+          brfs: true
+        }
+      },
       {
         test: /linebreak[\/\\]src[\/\\]linebreaker.js/,
         loader: "transform-loader",
-        options:{
+        options: {
           brfs: true
         }
+      },
+      {
+        enforce: "pre",
+        test: /import-fresh[\/\\]index\.js/,
+        loader: "string-replace-loader",
+        options: {
+          search:
+            "return parent === undefined ? require(filePath) : parent.require(filePath);",
+          replace:
+            "return parent === undefined ? require(/* webpackIgnore: true */ filePath) : parent.require(/* webpackIgnore: true */ filePath);"
+        }
       }
-    ]
+    ],
+    parser: {
+      javascript: {
+        commonjsMagicComments: true
+      }
+    }
   },
   experiments: { asyncWebAssembly: true }
 };
