@@ -10,6 +10,7 @@ import DebugLexerParserOutput from "@/components/DebugLexerParserOutput";
 import DebugModelOutput from "@/components/DebugModelOutput";
 import DebugNavigation from "@/components/DebugNavigation";
 import MapNavigation from "@/components/MapNavigation";
+import store from "../store";
 
 const VizJsOutput = () => import("@/components/VizJsOutput.vue");
 
@@ -17,13 +18,13 @@ const DagreD3Output = () => import("@/components/DagreD3Output.vue");
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   mode: "history",
   base: "/sandbox/",
   scrollBehavior(to) {
     if (to.hash) {
       return {
-        selector: to.hash
+        selector: to.hash,
       };
     }
   },
@@ -33,8 +34,8 @@ export default new Router({
       name: "debug-lexer-parser",
       components: {
         default: DebugLexerParserOutput,
-        "output-header": DebugNavigation
-      }
+        "output-header": DebugNavigation,
+      },
     },
     { path: "/debug", redirect: { name: "debug-lexer-parser" } },
     {
@@ -42,53 +43,53 @@ export default new Router({
       name: "debug-model",
       components: {
         default: DebugModelOutput,
-        "output-header": DebugNavigation
-      }
+        "output-header": DebugNavigation,
+      },
     },
     {
       path: "/map",
       name: "map-viz-js",
       components: {
         default: VizJsOutput,
-        "output-header": MapNavigation
-      }
+        "output-header": MapNavigation,
+      },
     },
     {
       path: "/map/dagre-d3",
       name: "map-dagre-d3",
       components: {
         default: DagreD3Output,
-        "output-header": MapNavigation
-      }
+        "output-header": MapNavigation,
+      },
     },
     {
       path: "/map/dot",
       name: "map-dot",
       components: {
         default: DotOutput,
-        "output-header": MapNavigation
-      }
+        "output-header": MapNavigation,
+      },
     },
     {
       path: "/map/graphml",
       name: "map-graphml",
       components: {
         default: GraphMLOutput,
-        "output-header": MapNavigation
-      }
+        "output-header": MapNavigation,
+      },
     },
     {
       path: "/html",
       name: "html",
       components: {
         default: HtmlOutput,
-        "output-header": HtmlNavigation
-      }
+        "output-header": HtmlNavigation,
+      },
     },
     {
       path: "/json",
       name: "json",
-      component: JSONOutput
+      component: JSONOutput,
     },
     { path: "/", redirect: { name: "html" } },
     {
@@ -96,11 +97,23 @@ export default new Router({
       name: "html-source",
       components: {
         default: HtmlOutput,
-        "output-header": HtmlNavigation
+        "output-header": HtmlNavigation,
       },
       props: {
-        default: { source: true }
-      }
-    }
-  ]
+        default: { source: true },
+      },
+    },
+  ],
 });
+let currentArgdownQuery = "";
+router.beforeEach((to, from, next) => {
+  if (to.query.argdown && to.query.argdown != currentArgdownQuery) {
+    store.commit("setArgdownInput", decodeURIComponent(to.query.argdown));
+    currentArgdownQuery = to.query.argdown;
+    delete to.query.argdown;
+    next(to);
+    return;
+  }
+  next();
+});
+export default router;

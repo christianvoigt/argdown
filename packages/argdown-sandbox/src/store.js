@@ -23,7 +23,8 @@ import {
   LabelMode,
   tokensToString,
   astToString,
-  GraphMLExportPlugin
+  GraphMLExportPlugin,
+  ExplodeArgumentsPlugin,
 } from "@argdown/core";
 import axios from "axios";
 
@@ -31,11 +32,12 @@ const app = new ArgdownApplication();
 const parserPlugin = new ParserPlugin();
 const dataPlugin = new DataPlugin();
 const modelPlugin = new ModelPlugin();
+const explodeArgumentsPlugin = new ExplodeArgumentsPlugin();
 const regroupPlugin = new RegroupPlugin();
 const colorPlugin = new ColorPlugin();
 
 const htmlExport = new HtmlExportPlugin({
-  headless: true
+  headless: true,
 });
 const jsonExport = new JSONExportPlugin({ removeEmbeddedRelations: true });
 const preselectionPlugin = new PreselectionPlugin();
@@ -50,6 +52,7 @@ import primer from "!!raw-loader!../public/examples/argdown-primer.argdown";
 app.addPlugin(parserPlugin, "parse-input");
 app.addPlugin(dataPlugin, "build-model");
 app.addPlugin(modelPlugin, "build-model");
+app.addPlugin(explodeArgumentsPlugin, "build-model");
 app.addPlugin(regroupPlugin, "build-model");
 app.addPlugin(colorPlugin, "colorize");
 app.addPlugin(preselectionPlugin, "build-map");
@@ -70,36 +73,36 @@ var examples = {
     id: "argdown-primer",
     title: "Argdown Primer",
     url: "/sandbox/examples/argdown-primer.argdown",
-    cachedContent: primer
+    cachedContent: primer,
   },
   greenspan: {
     id: "greenspan",
     title:
       "Why the Fed didn't Intervene to Prevent the 2008 Financial Crisis -- An Analysis of Alan Greenspan's Arguments",
-    url: "/sandbox/examples/greenspan-schefczyk_hardwrap.argdown"
+    url: "/sandbox/examples/greenspan-schefczyk_hardwrap.argdown",
   },
   softdrugs: {
     id: "softdrugs",
     title: "Pros and Cons Legalisation of Soft Drugs -- A Simple Analysis",
-    url: "/sandbox/examples/legalisation-softdrugs.argdown"
+    url: "/sandbox/examples/legalisation-softdrugs.argdown",
   },
   semmelweis: {
     id: "semmelweis",
     title:
       "A Stylized Reconstruction of the Scientific Debate That led Ignaz Semmelweis to Understand Childbed Fever",
-    url: "/sandbox/examples/semmelweis_betz.argdown"
+    url: "/sandbox/examples/semmelweis_betz.argdown",
   },
   "state-censorship": {
     id: "state-censorship",
     title:
       "Censorship from the State -- Some Pros and Cons Reconstructed in Detail",
-    url: "/sandbox/examples/state-censorship.argdown"
+    url: "/sandbox/examples/state-censorship.argdown",
   },
   populism: {
     id: "populism",
     title: "The Core Argument of Populism",
-    url: "/sandbox/examples/Populism-Core-Argument-Argdown-Example.argdown"
-  }
+    url: "/sandbox/examples/Populism-Core-Argument-Argdown-Example.argdown",
+  },
 };
 
 export default new Vuex.Store({
@@ -110,34 +113,34 @@ export default new Vuex.Store({
     config: {
       selection: {
         excludeDisconnected: true,
-        statementSelectionMode: StatementSelectionMode.WITH_TITLE
+        statementSelectionMode: StatementSelectionMode.WITH_TITLE,
       },
       map: {
         statementLabelMode: LabelMode.HIDE_UNTITLED,
-        argumentLabelMode: LabelMode.HIDE_UNTITLED
+        argumentLabelMode: LabelMode.HIDE_UNTITLED,
       },
       group: {
-        groupDepth: 2
+        groupDepth: 2,
       },
       dot: {
         graphVizSettings: {
           rankdir: "BT",
           concentrate: "false",
           ratio: "auto",
-          size: "10,10"
-        }
+          size: "10,10",
+        },
       },
       dagre: _.defaultsDeep({}, dagreDefaultSettings),
       vizJs: _.defaultsDeep({}, vizJsDefaultSettings),
       model: {
-        removeTagsFromText: false
+        removeTagsFromText: false,
       },
-      logLevel: "error"
+      logLevel: "error",
     },
     viewState: "default",
     showSettings: false,
     showSaveAsPngDialog: false,
-    pngScale: 1
+    pngScale: 1,
   },
   mutations: {
     setUseArgVu(state, value) {
@@ -163,14 +166,14 @@ export default new Vuex.Store({
     },
     closeSaveAsPngDialog(state) {
       state.showSaveAsPngDialog = false;
-    }
+    },
   },
   getters: {
-    argdownData: state => {
+    argdownData: (state) => {
       const request = _.defaultsDeep(
         {
           input: state.argdownInput,
-          process: ["parse-input", "build-model"]
+          process: ["parse-input", "build-model"],
         },
         state.config
       );
@@ -187,7 +190,7 @@ export default new Vuex.Store({
       const data = getters.argdownData;
       return _.defaultsDeep({}, data.frontMatter, state.config);
     },
-    examples: state => {
+    examples: (state) => {
       return Object.values(state.examples);
     },
     html: (state, getters) => {
@@ -197,7 +200,7 @@ export default new Vuex.Store({
       }
       const request = _.defaultsDeep(
         {
-          process: ["colorize", "export-html"]
+          process: ["colorize", "export-html"],
         },
         data.frontMatter,
         state.config
@@ -216,8 +219,8 @@ export default new Vuex.Store({
             "build-map",
             "transform-closed-groups",
             "colorize",
-            "export-dot"
-          ]
+            "export-dot",
+          ],
         },
         data.frontMatter,
         state.config
@@ -232,7 +235,7 @@ export default new Vuex.Store({
       }
       const request = _.defaultsDeep(
         {
-          process: ["build-map", "colorize", "export-graphml"]
+          process: ["build-map", "colorize", "export-graphml"],
         },
         data.frontMatter,
         state.config
@@ -247,7 +250,7 @@ export default new Vuex.Store({
       }
       const request = _.defaultsDeep(
         {
-          process: ["build-map", "colorize", "export-json"]
+          process: ["build-map", "colorize", "export-json"],
         },
         data.frontMatter,
         state.config
@@ -285,7 +288,7 @@ export default new Vuex.Store({
       }
       const request = _.defaultsDeep(
         {
-          process: ["build-map", "colorize", "transform-closed-groups"]
+          process: ["build-map", "colorize", "transform-closed-groups"],
         },
         data.frontMatter,
         state.config
@@ -296,9 +299,9 @@ export default new Vuex.Store({
     tags: (state, getters) => {
       return getters.argdownData.tags;
     },
-    useArgVu: state => {
+    useArgVu: (state) => {
       return state.useArgVu;
-    }
+    },
   },
   actions: {
     loadExample({ commit, state }, payload) {
@@ -311,12 +314,12 @@ export default new Vuex.Store({
           commit("setArgdownInput", example.cachedContent);
           resolve();
         }
-        axios.get(example.url).then(response => {
+        axios.get(example.url).then((response) => {
           commit("cacheExample", { id: example.id, content: response.data });
           commit("setArgdownInput", response.data);
           resolve();
         });
       });
-    }
-  }
+    },
+  },
 });

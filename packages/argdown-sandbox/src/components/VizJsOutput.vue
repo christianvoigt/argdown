@@ -28,10 +28,13 @@ export default {
       if (exceptions && exceptions.length > 0) {
         return;
       }
-
+      let images = undefined;
+      if(this.$store.getters.config.images && this.$store.getters.config.images.files){
+        images = Object.values(this.$store.getters.config.images.files);
+      }
       const props = {
         dot: this.$store.getters.dot,
-        settings: this.$store.getters.config.vizJs,
+        settings: {...this.$store.getters.config.vizJs, images},
       };
       this.$_vizJsMap.render(props).catch((e) => console.log(e));
     },

@@ -4,7 +4,7 @@
       id="top-slot"
       v-if="
         $store.state.viewState != 'input-maximized' &&
-          $store.state.viewState != 'output-maximized'
+        $store.state.viewState != 'output-maximized'
       "
     >
       <app-header></app-header>
@@ -36,7 +36,7 @@
         <argdown-input
           v-bind:value="$store.state.argdownInput"
           v-on:change="
-            value => {
+            (value) => {
               $store.commit('setArgdownInput', value);
             }
           "
@@ -91,30 +91,30 @@ import "../node_modules/@argdown/core/dist/plugins/argdown.css";
 
 export default {
   name: "app",
-  data: function() {
+  data: function () {
     return {
-      argdownInput: ""
+      argdownInput: "",
     };
   },
   computed: {
-    viewStateClass: function() {
+    viewStateClass: function () {
       return {
-        [this.$store.state.viewState]: true
+        [this.$store.state.viewState]: true,
         // "show-settings": this.$store.state.showSettings
       };
-    }
+    },
   },
   components: {
     AppHeader,
     ArgdownInput,
     AppNavigation,
-    InputNavigation
+    InputNavigation,
     // ,
     // Settings
   },
   created() {
     this.$store.commit("setArgdownInput", this.$store.state.argdownInput); // ensure that the initial input is parsed
-  }
+  },
 };
 </script>
 
