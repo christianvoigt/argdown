@@ -10,13 +10,13 @@
   "engines": {
     "node": ">= 13.7.0"
   },
-  "version": "1.6.0",
+  "version": "1.7.0",
   "license": "MIT",
   "main": "dist/cli.js",
   "dependencies": {
-    "@argdown/core": "^1.6.0",
-    "@argdown/markdown-it-plugin": "^1.6.0",
-    "@argdown/node": "^1.6.0",
+    "@argdown/core": "^1.7.0",
+    "@argdown/markdown-it-plugin": "^1.7.0",
+    "@argdown/node": "^1.7.0",
     "@types/markdown-it": "^12.0.1",
     "@types/yargs": "^16.0.0",
     "import-global": "^0.1.0",
@@ -50,7 +50,7 @@
   "readmeFilename": "Readme.md",
   "preferGlobal": true,
   "devDependencies": {
-    "@argdown/image-export": "^1.6.0",
+    "@argdown/image-export": "^1.7.0",
     "@types/chai": "^4.2.11",
     "@types/chai-fs": "^2.0.2",
     "@types/mocha": "^8.0.0",
