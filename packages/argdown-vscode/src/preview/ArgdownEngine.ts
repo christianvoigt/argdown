@@ -310,7 +310,12 @@ export class ArgdownEngine {
     if (workspaceFolder) {
       let rootPath = workspaceFolder.uri.fsPath;
       configPath = path.resolve(rootPath, configFile);
-    } else if (!path.isAbsolute(configPath)) {
+    } else {
+      let rootPath = path.dirname(resource.fsPath);
+      configPath = path.resolve(rootPath, configFile);
+    }
+
+    if (!path.isAbsolute(configPath)) {
       return {};
     }
     return await argdown.loadConfig(configPath);
