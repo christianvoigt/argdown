@@ -359,6 +359,7 @@ button .icon {
   .dropdown-content {
     display: none;
     position: absolute;
+    top: 0;
     background-color: #f9f9f9;
     min-width: 350px;
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);

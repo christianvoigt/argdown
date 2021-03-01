@@ -10,7 +10,7 @@ Vue.use(AsyncComputed);
 
 Vue.config.productionTip = false;
 
-Vue.filter("tokenName", function(token) {
+Vue.filter("tokenName", function (token) {
   return token.tokenType.name;
 });
 
@@ -19,6 +19,6 @@ new Vue({
   el: "#app",
   router,
   store,
-  render: h => h(App),
-  components: { App }
+  render: (h) => h(App),
+  components: { App },
 });
