@@ -4,9 +4,9 @@
 
 This release adds features that let you further adapt Argdown maps to your style of reconstruction.
 
-First of all, you can now use icons and images in your nodes to visually categorize your statements and arguments or make them visually more distinct from each other.
+First of all, you can now use [icons and images](#adding-images-to-your-nodes) in your nodes to visually categorize your statements and arguments or make them visually more distinct from each other.
 
-Secondly, Argdown is now better suited to produce inference trees from complex arguments. You can now produce argument maps that more closely resemble other argument mapping tools that do not have the concept of arguments as "containers" of premise-conclusion structures but rather treat arguments as "connectors" between premises and a conclusion in a map.
+Secondly, Argdown is now better suited to produce [inference trees](#creating-old-school-argument-maps-and-inference-trees) from complex arguments. You can now produce argument maps that more closely resemble other argument mapping tools that do not have the concept of arguments as "containers" of premise-conclusion structures but rather treat arguments as "connectors" between premises and a conclusion in a map.
 
 ### Adding images to your nodes
 
@@ -74,7 +74,12 @@ Argdown can now be used to create argument maps in which each inferential step i
 
 A [new chapter in the guide](/guide/creating-oldschool-argument-maps-and-inference-trees.html) introduces the optimal configuration for these kinds of maps. You can simply copy & paste the example settings used in this chapter into your own map or configuration file.
 
-## Bug fixes
+### Other new features
+
+- Shareable links for the sandbox: You can now click on "Copy Link" to link directly to your code example in the [Argdown Sandbox](https://argdown.org/sandbox/).
+- Custom fonts for pdf export: If you need to use unicode fonts, you can register these fonts with the pdf export (see [#213](https://github.com/christianvoigt/argdown/issues/213) for the details)
+
+### Bug fixes
 
 - argdown-vscode: fixed missing csp error ([216](https://github.com/christianvoigt/argdown/issues/216))
 - argdown-vscode: fixed loading of `argdown.config.js` files ([#215](https://github.com/christianvoigt/argdown/issues/215))
@@ -87,7 +92,7 @@ A [new chapter in the guide](/guide/creating-oldschool-argument-maps-and-inferen
 
 As always, all package dependencies have been upgraded.
 
-## Where are the relase notes for 1.6.x?
+### Where are the relase notes for 1.6.x?
 
 While releasing the first packages of 1.6.x I found a way to add images to Viz.Js, which is a feature that has been on the wishlist for many users for a long time. Additionally the bundling up of `argdown-vscode` led to new issues with 1.6.x that had to be fixed anyway. So I decided to stop the release process of 1.6.x and skip to 1.7.x directly.
 
