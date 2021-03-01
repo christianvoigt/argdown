@@ -1,6 +1,6 @@
 {
   "name": "@argdown/web-components",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "Components that help to embed Argdown in the browser",
   "main": "dist/argdown-map.js",
   "files": [
@@ -34,7 +34,7 @@
     "parcel": "^1.12.4",
     "parcel-plugin-static-files-copy": "^2.5.1",
     "rimraf": "^3.0.2",
-    "typescript": "^4.1.5"
+    "typescript": "4.2.2"
   },
   "browserslist": [
     "Chrome > 50"
