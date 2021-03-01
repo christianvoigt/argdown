@@ -57,7 +57,7 @@
     "build": "yarn run clean && yarn run build:commonjs && yarn run build:esm && yarn run copy:css",
     "build:commonjs": "tsc",
     "build:esm": "tsc -m es6 --target ES2018 --outDir dist-esm",
-    "docs:build": "node ./node_modules/typedoc/bin/typedoc",
+    "docs:build": "node ./node_modules/typedoc/bin/typedoc ./src/",
     "copy:argdown": "copyfiles \"test/**/*.{ad,argdown}\" dist/",
     "copy:css": "copyfiles -u 1 \"src/**/*.css\" dist && copyfiles -u 1 \"src/**/*.css\" dist-esm",
     "test": "mocha -r ts-node/register --full-trace ./test/**/*.spec.ts",

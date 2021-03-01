@@ -466,7 +466,7 @@ const getConfigPath = async (doc: TextDocument | undefined) => {
     if (!configPath) {
       configPath = settings
         ? path.resolve(path.dirname(docPath), settings.configFile)
-        : path.dirname(docPath);
+        : path.resolve(path.dirname(docPath), "argdown.config.json");
     }
     return configPath;
   }

@@ -15,7 +15,7 @@
     "build:commonjs": "tsc",
     "build:esm": "tsc -m ES2020 --target ES2020 --outDir dist-esm",
     "build:src": "tsc",
-    "docs:build": "node ./node_modules/typedoc/bin/typedoc",
+    "docs:build": "node ./node_modules/typedoc/bin/typedoc ./src/",
     "test": "mocha -r ts-node/register --full-trace --bail --require source-map-support/register ./test/**/*.spec.ts",
     "coverage": "nyc mocha -r ts-node/register --full-trace --bail --require source-map-support/register ./test/**/*.spec.ts",
     "report": "nyc report",
