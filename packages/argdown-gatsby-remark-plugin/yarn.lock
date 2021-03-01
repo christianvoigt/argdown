@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@aduh95/viz.js@^3.1.0":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/@aduh95/viz.js/-/viz.js-3.3.0.tgz#55aa417aeb0df3eb57db3d688447f94668b6605d"
-  integrity sha512-E64AQK3eYQ6EfPu9/hPwgZ+DRiGv1H84DXBajuFUz3Q7n8kKCx12cvvAdNTBEJQ+AwUiDcua4ZNdKHF7hcNw0Q==
+"@aduh95/viz.js@^3.3.3":
+  version "3.3.3"
+  resolved "https://registry.yarnpkg.com/@aduh95/viz.js/-/viz.js-3.3.3.tgz#1e284d4455eb9e9c4c5b2ddfdd96b007ac41e42e"
+  integrity sha512-LC9QtXVpZAsWp58ifJepMRDmCpXyi5hc6mClodSuFfUCPyU2h42Up+la9hFC+j0Waaz/htahM+Z5cavWDS72Tg==
 
 "@arcanis/slice-ansi@^1.0.2":
   version "1.0.2"
@@ -14,27 +14,27 @@
   dependencies:
     grapheme-splitter "^1.0.4"
 
-"@argdown/core@^1.6.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@argdown/core/-/core-1.6.0.tgz#90ffc627faa6d9b67eb9bb9719d3884592614b35"
-  integrity sha512-7j4ky+RXpb5m9E6NZVoh/Y5T8zgRvg+SotYZBbptLDegC6LGJcZjF1rokFXelgCuq0hoxNz5CDAoZ+FGRBhvPA==
+"@argdown/core@^1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@argdown/core/-/core-1.7.0.tgz#3f491891c520447696a00a6e47d0a55a1c0a0cd0"
+  integrity sha512-XE1rsx9f1O+TV1lM3NpdKF/fJLEqu6GH7gyP0EGGr4tosssKfavRX8x9Glw1a3xajtlDFNKdbBM1/fpi7j5WQA==
   dependencies:
-    "@aduh95/viz.js" "^3.1.0"
+    "@aduh95/viz.js" "^3.3.3"
     "@argdown/highlightjs" "^1.6.0"
     "@types/chai" "^4.2.11"
-    "@types/js-yaml" "4.0.0"
+    "@types/js-yaml" "^4.0.0"
     "@types/lodash.clonedeep" "^4.5.6"
     "@types/lodash.defaultsdeep" "^4.6.6"
     "@types/lodash.last" "^3.0.6"
     "@types/lodash.merge" "^4.6.6"
     "@types/lodash.partialright" "^4.2.6"
     "@types/lodash.union" "^4.6.6"
-    "@types/node" "14.14.28"
+    "@types/node" "^14.14.31"
     "@yarnpkg/pnpify" "^2.0.0-rc.21"
-    chevrotain "7.1.1"
+    chevrotain "^8.0.1"
     eventemitter3 "^4.0.0"
     highlight.js "^10.0.1"
-    js-yaml "4.0.0"
+    js-yaml "^4.0.0"
     lodash.clonedeep "^4.5.0"
     lodash.defaultsdeep "^4.6.1"
     lodash.last "^3.0.0"
@@ -51,12 +51,12 @@
   resolved "https://registry.yarnpkg.com/@argdown/highlightjs/-/highlightjs-1.6.0.tgz#6537e9b927e6d43310a5a2116d55d408fa695cd8"
   integrity sha512-fHWWttvpsSVTmBipTAhcfwUU9X/c6w0WMKJzEcYQveE1TKciPP/q94JXd8EaBqTiApoCG/XviOsr4Oxjp4WMbw==
 
-"@argdown/remark-plugin@^1.6.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@argdown/remark-plugin/-/remark-plugin-1.6.0.tgz#1c9d62297d12d504edc6a6a8e455e936695bee4a"
-  integrity sha512-QW2CYACfu99F05tTYr29hIacm8N1/EvZXcZLtq/JjYm6CInYw1At/GJfVSAMnrlNngz9QjUFGAE+1ITrErLmzA==
+"@argdown/remark-plugin@^1.7.0":
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/@argdown/remark-plugin/-/remark-plugin-1.7.0.tgz#dc9f0026fc7f87dff98e41a5b8d4fb959d91da56"
+  integrity sha512-9DhGYqDWPKELyTgFEhZSdPXPidO1l7CBPcJeWmIzjlJ/KizC2ZM44n/B625igZ+GP9QDiOecbtnf4IxQkw3RfQ==
   dependencies:
-    "@argdown/core" "^1.6.0"
+    "@argdown/core" "^1.7.0"
     "@types/lodash.defaultsdeep" "^4.6.6"
     lodash.defaultsdeep "^4.6.1"
     unist-builder "^2.0.3"
@@ -121,7 +121,7 @@
   resolved "https://registry.yarnpkg.com/@types/http-cache-semantics/-/http-cache-semantics-4.0.0.tgz#9140779736aa2655635ee756e2467d787cfe8a2a"
   integrity sha512-c3Xy026kOF7QOTn00hbIllV1dLR9hG9NkSrLQgCVs8NF6sBU+VGWjD3wLPhmh1TYAc7ugCFsvHYMN4VcBN1U1A==
 
-"@types/js-yaml@4.0.0":
+"@types/js-yaml@^4.0.0":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@types/js-yaml/-/js-yaml-4.0.0.tgz#d1a11688112091f2c711674df3a65ea2f47b5dfb"
   integrity sha512-4vlpCM5KPCL5CfGmTbpjwVKbISRYhduEJvvUWsH5EB7QInhEj94XPZ3ts/9FPiLZFqYO0xoW4ZL8z2AabTGgJA==
@@ -180,7 +180,7 @@
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.168.tgz#fe24632e79b7ade3f132891afff86caa5e5ce008"
   integrity sha512-oVfRvqHV/V6D1yifJbVRU3TMp8OT6o6BG+U9MkwuJ3U8/CsDHvalRpsxBqivn71ztOFZBTfJMvETbqHiaNSj7Q==
 
-"@types/node@*", "@types/node@14.14.28":
+"@types/node@*":
   version "14.14.28"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.28.tgz#cade4b64f8438f588951a6b35843ce536853f25b"
   integrity sha512-lg55ArB+ZiHHbBBttLpzD07akz0QPrZgUODNakeC09i62dnrywr9mFErHuaPlB6I7z+sEbK+IYmplahvplCj2g==
@@ -189,6 +189,11 @@
   version "13.13.42"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-13.13.42.tgz#ff343be01fca44b59e785e20b840357cb704a7f2"
   integrity sha512-g+w2QgbW7k2CWLOXzQXbO37a7v5P9ObPvYahKphdBLV5aqpbVZRhTpWCT0SMRqX1i30Aig791ZmIM2fJGL2S8A==
+
+"@types/node@^14.14.31":
+  version "14.14.31"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.31.tgz#72286bd33d137aa0d152d47ec7c1762563d34055"
+  integrity sha512-vFHy/ezP5qI0rFgJ7aQnjDXwAMrG0KqqIH7tQG5PPv3BWBayOPIQNBjVc/P6hhdZfMx51REc6tfDNXHUio893g==
 
 "@types/responselike@*", "@types/responselike@^1.0.0":
   version "1.0.0"
@@ -425,10 +430,10 @@ chalk@^3.0.0:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
 
-chevrotain@7.1.1:
-  version "7.1.1"
-  resolved "https://registry.yarnpkg.com/chevrotain/-/chevrotain-7.1.1.tgz#5122814eafd1585a9601f9180a7be9c42d5699c6"
-  integrity sha512-wy3mC1x4ye+O+QkEinVJkPf5u2vsrDIYW9G7ZuwFl6v/Yu0LwUuT2POsb+NUWApebyxfkQq6+yDfRExbnI5rcw==
+chevrotain@^8.0.1:
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/chevrotain/-/chevrotain-8.0.1.tgz#35580d4ef32b0dc7d573c57f274e35f93a57bf65"
+  integrity sha512-nE//TMrGF7Kb7mwrGbpTspMqcVMwcUKZ7/3AEbmDPW3kD0aBVUaqWjbHDgZDEuxCG8CaSos9hMN7EKJn1TgHqw==
   dependencies:
     regexp-to-ast "0.5.0"
 
@@ -725,13 +730,6 @@ isexe@^2.0.0:
   resolved "https://registry.yarnpkg.com/isexe/-/isexe-2.0.0.tgz#e8fbf374dc556ff8947a10dcb0572d633f2cfa10"
   integrity sha1-6PvzdNxVb/iUehDcsFctYz8s+hA=
 
-js-yaml@4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-4.0.0.tgz#f426bc0ff4b4051926cd588c71113183409a121f"
-  integrity sha512-pqon0s+4ScYUvX30wxQi3PogGFAlUyH0awepWvwkj4jD4v+ova3RiYw8bmA6x2rDrEaj8i/oWKoRxpVNW+Re8Q==
-  dependencies:
-    argparse "^2.0.1"
-
 js-yaml@^3.10.0:
   version "3.14.1"
   resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.14.1.tgz#dae812fdb3825fa306609a8717383c50c36a0537"
@@ -739,6 +737,13 @@ js-yaml@^3.10.0:
   dependencies:
     argparse "^1.0.7"
     esprima "^4.0.0"
+
+js-yaml@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-4.0.0.tgz#f426bc0ff4b4051926cd588c71113183409a121f"
+  integrity sha512-pqon0s+4ScYUvX30wxQi3PogGFAlUyH0awepWvwkj4jD4v+ova3RiYw8bmA6x2rDrEaj8i/oWKoRxpVNW+Re8Q==
+  dependencies:
+    argparse "^2.0.1"
 
 json-buffer@3.0.1:
   version "3.0.1"
