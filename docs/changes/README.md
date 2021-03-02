@@ -14,6 +14,8 @@ You can now use tags or metadata to add images to statements or arguments. Here 
 
 ```argdown-map
 ===
+model:
+  mode: strict
 dot:
     statement:
         images:
@@ -21,7 +23,7 @@ dot:
 ===
 
 [Dogs!]: Dogs are better than cats. {images: ["/dog1.jpg"]}
-    >< [Cats!]: Cats are better than dogs. {images: ["/cat1.jpg"]}
+    <- [Cats!]: Cats are better than dogs. {images: ["/cat1.jpg"]}
 ```
 
 For further details, please read the new [guide on adding images](/guide/adding-images.html).

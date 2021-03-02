@@ -92,8 +92,12 @@ This feature can be deactivated by setting `images/useTags` to false.
 You can also use metadata to add images to nodes. In this case you can **omit the frontmatter metadata**, as it will be created automatically from the metadata:
 
 ```argdown-map
+===
+model:
+  mode: strict
+===
 Dogs are better than cats. {images: ["/dog1.jpg", "/dog2.jpg"]}
-    >< Cats are better than dogs. {images: ["/cat1.jpg", "/cat2.jpg"]}
+    <- Cats are better than dogs. {images: ["/cat1.jpg", "/cat2.jpg"]}
 ```
 
 :::warning
@@ -110,6 +114,8 @@ You can change the image position by using the `dot/statement/images/position` a
 
 ```argdown-map
 ===
+model:
+  mode: strict
 dot:
     statement:
         images:
@@ -117,7 +123,7 @@ dot:
 ===
 
 [Dogs!]: Dogs are better than cats. {images: ["/dog1.jpg", "/dog2.jpg"]}
-    >< [Cats!]: Cats are better than dogs. {images: ["/cat1.jpg", "/cat2.jpg"]}
+    <- [Cats!]: Cats are better than dogs. {images: ["/cat1.jpg", "/cat2.jpg"]}
 ```
 
 ## Adding padding
@@ -126,6 +132,8 @@ You can add padding around the images by using the `dot/statement/images/padding
 
 ```argdown-map
 ===
+model:
+  mode: strict
 dot:
     statement:
         images:
@@ -133,7 +141,7 @@ dot:
 ===
 
 [Dogs!]: Dogs are better than cats. {images: ["/dog1.jpg", "/dog2.jpg"]}
-    >< [Cats!]: Cats are better than dogs. {images: ["/cat1.jpg", "/cat2.jpg"]}
+    <- [Cats!]: Cats are better than dogs. {images: ["/cat1.jpg", "/cat2.jpg"]}
 ```
 
 ## Using "inline" images for better portability
@@ -142,12 +150,14 @@ If you do not want to depend on external image files, you can "inline" the image
 
 ```argdown
 ===
+model:
+  mode: strict
 images:
     convertToDataUrls: true
 ===
 
 [Dogs!]: Dogs are better than cats. {images: ["/dog1.jpg", "/dog2.jpg"]}
-    >< [Cats!]: Cats are better than dogs. {images: ["/cat1.jpg", "/cat2.jpg"]}
+    <- [Cats!]: Cats are better than dogs. {images: ["/cat1.jpg", "/cat2.jpg"]}
 
 ```
 
