@@ -2,7 +2,12 @@ import { IArgdownPlugin, IRequestHandler } from "../IArgdownPlugin";
 import { ArgdownPluginError, IArgdownRequest, IArgdownResponse } from "..";
 import { checkResponseFields } from "../ArgdownPluginError";
 import { isObject } from "../utils";
-import { IArgument, IConclusion, IPCSStatement, StatementRole } from "../model/model";
+import {
+  IArgument,
+  IConclusion,
+  IPCSStatement,
+  StatementRole
+} from "../model/model";
 
 export class ExplodeArgumentsPlugin implements IArgdownPlugin {
   name = "ExplodeArgumentsPlugin";
@@ -18,89 +23,171 @@ export class ExplodeArgumentsPlugin implements IArgdownPlugin {
     const requiredResponseFields: string[] = ["arguments", "statements"];
     checkResponseFields(this, response, requiredResponseFields);
     let { explodeArguments } = this.getSettings(request);
-    if(explodeArguments){
-        for(let title of Object.keys(response.arguments!)){
-                this.explodeArgument(response, response.arguments![title]);
-        }
+    if (explodeArguments) {
+      for (let title of Object.keys(response.arguments!)) {
+        this.explodeArgument(response, response.arguments![title]);
+      }
     }
     return response;
-  }
-  explodeArgument(response:IArgdownResponse, argument:IArgument){
-    const steps:IPCSStatement[][] = argument.pcs.reduce((prev, curr, index)=>{
-        if(curr.role == StatementRole.INTERMEDIARY_CONCLUSION || curr.role == StatementRole.MAIN_CONCLUSION){
-          const step:IPCSStatement[] = this.getInferentialStep(response, argument, curr as IConclusion, index);
+  };
+  explodeArgument(response: IArgdownResponse, argument: IArgument) {
+    const steps: IPCSStatement[][] = argument.pcs.reduce(
+      (prev, curr, index) => {
+        if (
+          curr.role == StatementRole.INTERMEDIARY_CONCLUSION ||
+          curr.role == StatementRole.MAIN_CONCLUSION
+        ) {
+          const step: IPCSStatement[] = this.getInferentialStep(
+            response,
+            argument,
+            curr as IConclusion,
+            index
+          );
           prev.push(step);
         }
         return prev;
-      }, [] as IPCSStatement[][]);
-    if(steps.length <= 1){
+      },
+      [] as IPCSStatement[][]
+    );
+    if (steps.length <= 1) {
       return;
     }
-    const newArguments:IArgument[] = steps.map((step, stepIndex)=>{
+    const newArguments: IArgument[] = steps.map((step, stepIndex) => {
       const title = `${argument.title} - ${stepIndex + 1}`;
-      return {...argument, pcs: step.map(s=>{
-        s.argumentTitle = title;
-        return s;
-      }), title, relations:[]} as IArgument;
+      return {
+        ...argument,
+        pcs: step.map(s => {
+          s.argumentTitle = title;
+          return s;
+        }),
+        title,
+        relations: []
+      } as IArgument;
     });
-    const last = newArguments[newArguments.length -1];
-    last.relations = [...argument.relations!.map(r=>{
-      if(r.from == argument){
-        r.from = last;
-      }else{
-        r.to = last;
-      }
-      return r;
-    })];
+    const last = newArguments[newArguments.length - 1];
+    last.relations = [
+      ...argument.relations!.map(r => {
+        if (r.from == argument) {
+          r.from = last;
+        } else {
+          r.to = last;
+        }
+        return r;
+      })
+    ];
     delete response.arguments![argument.title!];
-    for(let newArgument of newArguments){
-      if(response.arguments![newArgument.title!]){
-        throw new ArgdownPluginError(this.name, "argument-already-exists", `Can not create argument '${newArgument.title}'. An argument with that title already exists.`);
+    for (let newArgument of newArguments) {
+      if (response.arguments![newArgument.title!]) {
+        throw new ArgdownPluginError(
+          this.name,
+          "argument-already-exists",
+          `Can not create argument '${newArgument.title}'. An argument with that title already exists.`
+        );
       }
       response.arguments![newArgument.title!] = newArgument;
     }
   }
-  getInferentialStep(response:IArgdownResponse, argument:IArgument, conclusion: IConclusion, index:number){
-    let uses:number[]|null = null;
-    if(conclusion.inference && conclusion.inference.data && conclusion.inference.data["uses"] && Array.isArray(conclusion.inference.data["uses"])){
+  getInferentialStep(
+    response: IArgdownResponse,
+    argument: IArgument,
+    conclusion: IConclusion,
+    index: number
+  ) {
+    let uses: number[] | null = null;
+    if (
+      conclusion.inference &&
+      conclusion.inference.data &&
+      conclusion.inference.data["uses"] &&
+      Array.isArray(conclusion.inference.data["uses"])
+    ) {
       uses = conclusion.inference.data["uses"];
-    }else if(conclusion.data && conclusion.data["uses"] && Array.isArray(conclusion.data["uses"])){
+    } else if (
+      conclusion.data &&
+      conclusion.data["uses"] &&
+      Array.isArray(conclusion.data["uses"])
+    ) {
       uses = conclusion.data.uses;
+    } else if (
+      conclusion.inference &&
+      conclusion.inference.data &&
+      conclusion.inference.data["from"] &&
+      Array.isArray(conclusion.inference.data["from"])
+    ) {
+      uses = conclusion.inference.data["from"];
+    } else if (
+      conclusion.data &&
+      conclusion.data["uses"] &&
+      Array.isArray(conclusion.data["from"])
+    ) {
+      uses = conclusion.data.from;
     }
-    let step:IPCSStatement[]
-    if(uses != null){
-      step = uses.map((i)=>{
+    let step: IPCSStatement[];
+    if (uses != null) {
+      step = uses.map(i => {
         const zeroI = i - 1;
-        if(!Number.isInteger(zeroI) || zeroI < 0 || zeroI > argument.pcs.length){
-          throw new ArgdownPluginError(this.name, "invalid-data",`'uses' list for statement ${index} of argument ${argument.title} contains invalid statement index: ${i}`);
+        if (
+          !Number.isInteger(zeroI) ||
+          zeroI < 0 ||
+          zeroI > argument.pcs.length
+        ) {
+          throw new ArgdownPluginError(
+            this.name,
+            "invalid-data",
+            `'uses' list for statement ${index} of argument ${argument.title} contains invalid statement index: ${i}`
+          );
         }
         const oldStatement = argument.pcs[zeroI];
-        const newStatement:IPCSStatement = {...oldStatement, role: StatementRole.PREMISE};
-        this.substituteStatementInEquivalenceClass(response, oldStatement, newStatement);
+        const newStatement: IPCSStatement = {
+          ...oldStatement,
+          role: StatementRole.PREMISE
+        };
+        this.substituteStatementInEquivalenceClass(
+          response,
+          oldStatement,
+          newStatement
+        );
         return newStatement;
-      })
-    }else{
+      });
+    } else {
       step = [];
-      for(let i = index - 1; i >= 0; i--){
+      for (let i = index - 1; i >= 0; i--) {
         const oldStatement = argument.pcs[i];
-        const newStatement:IPCSStatement = {...oldStatement, role: StatementRole.PREMISE};
+        const newStatement: IPCSStatement = {
+          ...oldStatement,
+          role: StatementRole.PREMISE
+        };
         step.push(newStatement);
-        this.substituteStatementInEquivalenceClass(response, oldStatement, newStatement);
-        if(oldStatement.role == StatementRole.INTERMEDIARY_CONCLUSION){
+        this.substituteStatementInEquivalenceClass(
+          response,
+          oldStatement,
+          newStatement
+        );
+        if (oldStatement.role == StatementRole.INTERMEDIARY_CONCLUSION) {
           break;
         }
       }
       step.reverse();
     }
-    const newConclusion:IPCSStatement = {...conclusion, role: StatementRole.MAIN_CONCLUSION};
-    this.substituteStatementInEquivalenceClass(response, conclusion, newConclusion);
+    const newConclusion: IPCSStatement = {
+      ...conclusion,
+      role: StatementRole.MAIN_CONCLUSION
+    };
+    this.substituteStatementInEquivalenceClass(
+      response,
+      conclusion,
+      newConclusion
+    );
     step.push(newConclusion);
     return step;
   }
-  substituteStatementInEquivalenceClass(response:IArgdownResponse, oldStatement:IPCSStatement, newStatement:IPCSStatement){
+  substituteStatementInEquivalenceClass(
+    response: IArgdownResponse,
+    oldStatement: IPCSStatement,
+    newStatement: IPCSStatement
+  ) {
     const ec = response.statements![newStatement.title!];
-    const index = ec.members.findIndex((m)=>m == oldStatement);
-    if(index != -1){
+    const index = ec.members.findIndex(m => m == oldStatement);
+    if (index != -1) {
       ec.members.splice(index, 1);
     }
     ec.members.push(newStatement);
