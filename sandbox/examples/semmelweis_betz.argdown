@@ -1,0 +1,305 @@
+===
+title: A Stylized Reconstruction of the Scientific Debate 
+    That led Ignaz Semmelweis to Understand Childbed Fever  
+author: Gregor Betz
+date: 19/10/2018
+model:
+    mode: strict
+dot: 
+    graphVizSettings: 
+      "rankdir": "TB"  
+      "ranksep": "1"    
+===
+
+
+# Three Rival Hypotheses
+
+/* Semmelweis and his colleagues considered three 
+explanations for the outbreak of so-called childbed fever 
+in their Vienna hospital: */
+
+[Epidemic Influence Hypothesis]: The outbreak of childbed 
+fever is controlled by epidemic influences. #H1
+
+[Rough Examination Hypothesis]: The outbreak of childbed 
+fever is controlled by injuries that stem from incompetent 
+examinations. #H2 
+
+[Cadavric Substance Hypothesis]: The outbreak of childbed 
+fever is controlled by the degree of contamination with 
+cadavric substance. #H3 
+
+/* The explanations were understood to be rivals: */
+
+[Epidemic Influence Hypothesis]
+  -> [Rough Examination Hypothesis]     // H1 and H2 are contrary
+  -> [Cadavric Substance Hypothesis]    // H1 amd H3 are contrary
+
+[Rough Examination Hypothesis]
+  -> [Cadavric Substance Hypothesis]    // H2 and H3 are contrary
+
+
+# Evidence
+
+/* The following items of evidence were considered to be 
+relevant for deciding which of the three hypotheses is 
+correct. */
+
+[Difference Between Divisions]: By default, more women 
+contract childbed fever in the First than in the Second 
+Division of the hospital.
+
+[Washing Helps]: If the students who examine the women in 
+the First Division disinfect their hands, the ratio of 
+women contracting childbed fever is the same in both 
+divisions.
+
+[Death of Kolletschka]: A colleague of Semmelweis suffered 
+from symptoms similar to childbed fever and eventually died.
+
+[Birth at Home]: The mortality of women who give birth at 
+home or on their way to the hospital is significantly lower 
+than in the First Division.
+
+[No Variations]: Cases of childbed fever and corresponding 
+mortality rates do not display spatio-temporal variations 
+(e.g. seasonal, or from district to district) that are 
+characteristic for epidemic diseases.
+
+
+# Arguments and Further Theses {isGroup: false}
+
+/* The arguments reconstructed in this section detail 
+whether the three hypotheses can explain or whether they 
+conflict with the available evidence. Arguments are tagged 
+according to whether the lay out explanatory relations or 
+conflicts of hypothesis H1, H2, and H3. In addition to 
+these arguments, the section makes further auxiliary 
+assumptions explicit. */
+
+
+## Inferential Relations between 
+@[Epidemic Influence Hypothesis] and the 
+Available Evidence {isGroup: false}
+
+/* Relying on a crucial auxiliary assumption, H1 can 
+explain various pieces of evidence. Yet it conflicts with 
+observation @[No Variations]. */
+
+[Difference in Exposure]: Women in the First Division are 
+exposed to epidemic diseases more heavily than those who 
+give birth at home, on their way to the hospital, or in the 
+Second Division. #H1 #aux 
+
+
+<Epidemic Exposition 1>: Women in the First Division are 
+exposed to epidemic diseases more heavily than those in the 
+Second Divison. #H1 
+
+  (1) [Epidemic Influence Hypothesis]
+  (2) [Difference in Exposure]
+  (3) If childbed fever is controlled by infections and 
+  women of one group are more frequently infected than 
+  those in another group, than members of the first group 
+  will catch childbed fever more frequently.
+  ----
+  (4) [Difference Between Divisions]
+
+
+<Epidemic Exposition 2>: Women in the First Division are 
+exposed to epidemic diseases more heavily than those who 
+give birth at home or on their way to the hospital. #H1 
+
+  (1) [Epidemic Influence Hypothesis]
+  (2) [Difference in Exposure]
+  (3) If childbed fever is controlled by infections and 
+  women of one group are more frequently infected than 
+  those in another group, than members of the first group 
+  will catch childbed fever more frequently.
+  ----
+  (4) [Birth at Home]
+
+
+<Epidemic Variations>: If caused by epidemic diseases, 
+childbed fever would show characteristic variations. #H1 
+
+  (1) [Epidemic Influence Hypothesis]
+  (2) If childbed fever is controlled by infections, then 
+  it displays spatio-temporal variations (e.g. seasonal, or 
+  from district to district) that are characteristic for 
+  epidemic diseases.
+  ----
+  (3) Cases of childbed fever and corresponding mortality 
+  rates display spatio-temporal variations (e.g. seasonal, 
+  or from district to district) that are characteristic for 
+  epidemic diseases.
+    -> [No Variations]
+
+
+## Inferential Relations between 
+@[Rough Examination Hypothesis] and 
+the Available Evidence {isGroup: false}
+
+/* Hypothesis H2 provides an explanation of a single 
+evidence item; however, the explanation builds on highly 
+contest assumptions (as the attacks on the premises make 
+explicit). */
+
+<Inexperienced Medical Students>: Women in the First 
+Division are examined by medical students who, because of 
+their inexperience, cause more injuries due to rough 
+examinations than midwives. #H2 
+
+  (1) [Rough Examination Hypothesis]
+  (2) [Medical Students vs Midwives]: Women in the First 
+  Division are examined by medical students, women in the 
+  Second Division by midwives.
+  (3) [More Injuries]: Due to their inexperience, medical 
+  students cause more injuries during examination than 
+  midwives. #H2 
+  (4) If childbed fever is caused by injuries and women in 
+  one group are examined by persons who inflict more 
+  injuries than those persons which examine women in 
+  another group, then members of the former group will 
+  suffer from childbed fever more frequently.
+    - [Examination Injuries Insignificant]: Difference in 
+    examination doesn't entail difference in childbed fever.
+  ----
+  (5) [Difference Between Divisions]
+
+
+<Medical Students Skillfull>: Medical students are no less 
+skillfull than midwives and carry out the examinations in 
+approximately the same way.
+
+  (1) Medical students are no less skillfull than midwives 
+  and carry out the examinations in approximately the same 
+  way.
+  (2) If medical students are no less skillfull than 
+  midwives and carry out the examinations in approximately 
+  the same way, then they cause no more injuries during 
+  examination than midwives.
+  ----
+  (3) Medical students don't cause more injuries during 
+  examination than midwives.
+    >< [More Injuries]
+
+
+<Main Injuries due to Birth>: The main injuries that women 
+suffer are due to giving birth itself and not to previous 
+or posterior examinations.
+
+  (1) The main injuries that women suffer are due to giving 
+  birth itself and not to previous or posterior 
+  examinations.
+  (2) If injuries that stem from examinations are much less 
+  severe than the injuries which stem from giving birth 
+  itself, all women that give birth, no matter whether they 
+  have been examined roughly or not, will suffer from the 
+  same degree of injuries.
+  (3) If all women who give birth, no matter whether they 
+  have been examined roughly or not, will suffer from the 
+  same degree of injuries, then difference in examination 
+  doesn't entail difference in childbed fever (i.e., it is 
+  not the case that, provided childbed fever is caused by 
+  injuries and women in one group are examined by persons 
+  who inflict more injuries than those persons which 
+  examine women in another group, members of the former 
+  group will suffer from childbed fever more frequently).
+  ----
+  (4) [Examination Injuries Insignificant]
+
+
+## Inferential Relations between 
+@[Cadavric Substance Hypothesis] and 
+the Available Evidence {isGroup: false}
+
+/* Hypothesis H3 accounts for four of the five evidence 
+items; it doesn't contradict any observation. @[Cadavric 
+Substance Hypothesis] is therefore by far the best 
+explanation for the available evidence. */
+
+<Medical Students Contaminate 1>: Medical students, who 
+carry out examinations in the First but not in the Second 
+Division, contaminate the women with cadavric substance. 
+#H3 
+
+  (1) [Cadavric Substance Hypothesis]
+  (2) [Medical Students vs Midwives]: Women in the First 
+  Division are examined by medical students, women in the 
+  Second Division by midwives.
+  (3) Medical students are, by default and unlike midwives, 
+  stained with cadavric substance and contamine the persons 
+  they examine.
+  (4) If childbed fever is caused by contamination with 
+  cadavric substance and if women in one group are 
+  contaminated to a higher degree than women in another 
+  group, then members of the former group will suffer from 
+  childbed fever more frequently.
+  ----
+  (5) [Difference Between Divisions]
+
+
+<Medical Students Contaminate 2>: Medical students, who 
+carry out examinations, contaminate the women in the First 
+Division with cadavric substance, yet not those who give 
+birth at home. #H3 
+
+  (1) [Cadavric Substance Hypothesis]
+  (2) Women in the First Division are examined by medical 
+  students, women who give birth at home or on their way to 
+  the hospital not.
+  (3) Medical students are, by default, stained with 
+  cadavric substance and contaminate the persons they 
+  examine.
+  (4) If childbed fever is caused by contamination with 
+  cadavric substance and if women in one group are 
+  contaminated to a higher degree than women in another 
+  group, then members of the former group will suffer from 
+  childbed fever more frequently.
+  ----
+  (5) [Birth at Home]
+
+
+<Washing Blocks Contamination>: Disinfecting, by preventing 
+contamination with cadavric substance, reduces the ratio of 
+women who suffer from childbed fever. #H3 
+
+  (1) [Cadavric Substance Hypothesis]
+  (2) If the students who examine the women in the First 
+  Division disinfect their hands, they reduce the extent to 
+  which they are stained with cadavric substance.
+  (3) If the students who examine the women in the First 
+  Division reduce the extent to which they are stained with 
+  cadavric substance, and if childbed fever is caused by 
+  contamination with cadavric substance, then fewer persons 
+  examined by the students will suffer from childbed fever.
+  ----
+  (4) [Washing Helps]
+
+
+<Kolletschka Contaminated>: Kolletschka was slightly 
+wounded during an autopsy and infected with cadavric 
+substance. #H3 
+
+  (1) [Cadavric Substance Hypothesis]
+  (2) Kolletschka was slightly wounded during an autopsy, 
+  and infected with cadavric substance.
+  (3) If childbed fever is caused by contamination with 
+  cadavric substance and if a person is contaminated with 
+  cadavric substance, then the person will show symptoms 
+  similar to childbed fever (and eventually die).
+  ----
+  (4) [Death of Kolletschka]
+
+
+
+/*** 
+ * Last tip: Try out another rendering of the argument
+ * map by inserting, in the corresponding dot-file, as 
+ * new line below "subgraph cluster_1 {": 
+ *
+ *   "{rank = same; n0;n1;n2};"
+ *
+***/
+
