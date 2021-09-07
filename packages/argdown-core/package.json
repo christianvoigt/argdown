@@ -9,14 +9,14 @@
     "Markdown",
     "Chevrotain"
   ],
-  "version": "1.7.2",
+  "version": "1.7.3",
   "license": "MIT",
   "main": "./dist/index.js",
   "module": "./dist-esm/index.js",
   "types": "./dist/index.d.ts",
   "files": [
-    "./dist",
-    "./dist-esm"
+    "dist/",
+    "dist-esm/"
   ],
   "dependencies": {
     "@aduh95/viz.js": "^3.3.3",
