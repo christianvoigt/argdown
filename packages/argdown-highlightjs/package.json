@@ -1,11 +1,12 @@
 {
   "name": "@argdown/highlightjs",
-  "version": "1.7.0",
+  "version": "1.7.2",
   "description": "Argdown language definition for highlightjs",
   "main": "dist/index.js",
   "module": "dist-esm/index.js",
   "files": [
-    "dist/theme.css"
+    "./dist",
+    "./dist-esm"
   ],
   "scripts": {
     "sandbox": "parcel ./test/sandbox.html",
@@ -26,22 +27,22 @@
   "author": "Christian Voigt",
   "license": "MIT",
   "devDependencies": {
-    "@parcel/config-default": "^2.0.0-nightly.612",
-    "@parcel/optimizer-cssnano": "^2.0.0-nightly.612",
-    "@parcel/optimizer-htmlnano": "^2.0.0-nightly.612",
-    "@parcel/packager-css": "^2.0.0-nightly.612",
-    "@parcel/packager-html": "^2.0.0-nightly.612",
-    "@parcel/transformer-css": "^2.0.0-nightly.612",
-    "@parcel/transformer-html": "^2.0.0-nightly.612",
-    "@parcel/transformer-postcss": "^2.0.0-nightly.612",
-    "@parcel/transformer-posthtml": "^2.0.0-nightly.612",
-    "@parcel/transformer-typescript-tsc": "^2.0.0-nightly.612",
-    "@parcel/validator-typescript": "^2.0.0-nightly.612",
-    "highlight.js": "^10.0.1",
-    "parcel": "^2.0.0-nightly.610",
+    "@parcel/config-default": "^2.0.0-nightly.826",
+    "@parcel/optimizer-cssnano": "^2.0.0-nightly.826",
+    "@parcel/optimizer-htmlnano": "2.0.0-rc.0",
+    "@parcel/packager-css": "^2.0.0-nightly.826",
+    "@parcel/packager-html": "^2.0.0-nightly.826",
+    "@parcel/transformer-css": "^2.0.0-nightly.826",
+    "@parcel/transformer-html": "^2.0.0-nightly.826",
+    "@parcel/transformer-postcss": "^2.0.0-nightly.826",
+    "@parcel/transformer-posthtml": "^2.0.0-nightly.826",
+    "@parcel/transformer-typescript-tsc": "^2.0.0-nightly.826",
+    "@parcel/validator-typescript": "^2.0.0-nightly.826",
+    "highlight.js": "^11.1.0",
+    "parcel": "^2.0.0-nightly.824",
     "postcss": "^8.2.1",
     "rimraf": "^3.0.2",
-    "ts-node": "^9.1.1",
+    "ts-node": "^10.1.0",
     "typescript": "^4.1.5"
   }
 }

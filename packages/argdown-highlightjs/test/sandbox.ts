@@ -54,7 +54,7 @@ const updateOutput = () => {
   const input = document.querySelector("textarea")!.value;
   const output = document.querySelector("#output")!;
   output.innerHTML = `<pre class="language-argdown"><code data="language-argdown" class="language-argdown">${
-    hljs.highlight("argdown", input).value
+    hljs.highlight(input, { language: "argdown" }).value
   }</code></pre>`;
 };
 document.querySelector("textarea")!.innerHTML = initialInput;
