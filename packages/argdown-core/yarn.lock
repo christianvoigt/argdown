@@ -14,10 +14,10 @@
   dependencies:
     grapheme-splitter "^1.0.4"
 
-"@argdown/highlightjs@1.7.2":
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/@argdown/highlightjs/-/highlightjs-1.7.2.tgz#a25725d6ab7f7a95166ce2c79b26194c13848d40"
-  integrity sha512-wdyui6cVIvpn4WuDa+k5tpnx4rtO1rBQqTQADKJYsFQRrmESvkM3cwS8aZQYYIf67kOlUW2MITCO71vPUhYS2A==
+"@argdown/highlightjs@1.7.4":
+  version "1.7.4"
+  resolved "https://registry.yarnpkg.com/@argdown/highlightjs/-/highlightjs-1.7.4.tgz#a5bac84e4e391a4a6c2fb66c291f5883e798805e"
+  integrity sha512-xSQkvcvCg0PKxXqto8KW6ldQCb1NIGITvZinUK3rGQYLGgFgLviJ5OmFAT45GFppFCTkySUahc5st5VDXTzNFg==
 
 "@babel/code-frame@^7.14.5":
   version "7.14.5"
