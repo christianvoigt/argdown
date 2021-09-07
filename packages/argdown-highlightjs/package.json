@@ -5,8 +5,8 @@
   "main": "dist/index.js",
   "module": "dist-esm/index.js",
   "files": [
-    "./dist",
-    "./dist-esm"
+    "dist/",
+    "dist-esm/"
   ],
   "scripts": {
     "sandbox": "parcel ./test/sandbox.html",
