@@ -59,7 +59,7 @@ export class HighlightSourcePlugin implements IArgdownPlugin {
       ? this.removeFrontMatter(request.input!)
       : request.input;
     response.highlightedSource = `<pre class="language-argdown"><code class="language-argdown">${
-      hljs.highlight("argdown", code || "").value
+      hljs.highlight(code || "", { language: "argdown" }).value
     }</code></pre>`;
   };
   removeFrontMatter(str: string) {

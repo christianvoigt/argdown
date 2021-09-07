@@ -347,7 +347,7 @@ export class ArgdownApplication {
           } catch (e) {
             if (req.throwExceptions) {
               throw e;
-            } else {
+            } else if (e instanceof ArgdownPluginError) {
               e.processor = processorId;
               exceptions.push(e);
               cancelProcessor = true;
@@ -370,7 +370,7 @@ export class ArgdownApplication {
         } catch (e) {
           if (req.throwExceptions) {
             throw e;
-          } else {
+          } else if (e instanceof ArgdownPluginError) {
             e.processor = processorId;
             exceptions.push(e);
             this.logger.log(
@@ -393,7 +393,7 @@ export class ArgdownApplication {
           } catch (e) {
             if (req.throwExceptions) {
               throw e;
-            } else {
+            } else if (e instanceof ArgdownPluginError) {
               e.processor = processorId;
               this.logger.log("warning", `Processor ${processorId} canceled.`);
               exceptions.push(e);
