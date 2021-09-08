@@ -1,42 +1,45 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<style>
+  <style>
     main {
-        font-family: Arial, Helvetica, sans-serif;
-        display: flex;
-        width: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+      display: flex;
+      width: 100%;
     }
 
     textarea {
-        display: block;
-        height: 500px;
-        width: 100%;
+      display: block;
+      height: 500px;
+      width: 100%;
     }
 
     #input,
     #output {
-        padding: 2rem;
-        flex: 1;
-        min-height: 500px;
+      padding: 2rem;
+      flex: 1;
+      min-height: 500px;
     }
 
     #input {
-        background-color: #eee;
+      background-color: #eee;
     }
 
     #submit {
-        margin-top: 1rem;
+      margin-top: 1rem;
     }
-</style>
-<script src="https://unpkg.com/@webcomponents/webcomponentsjs@2.4.3/webcomponents-bundle.js"></script>
-<main>
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2.5.0/webcomponents-bundle.js"></script>
+  <main>
     <div id="input">
-        <h1>Sandbox: Markdown with Argdown-Map Code Fences</h1>
-        <textarea>
-</textarea>
-        <button id="submit">Submit</button>
-        <p>Markdown parsed by <a href="https://github.com/markdown-it/markdown-it">markdown-it</a></p>
+      <h1>Sandbox: Markdown with Argdown-Map Code Fences</h1>
+      <textarea></textarea>
+      <button id="submit">Submit</button>
+      <p>
+        Markdown parsed by
+        <a href="https://github.com/markdown-it/markdown-it">markdown-it</a>
+      </p>
     </div>
     <div id="output"></div>
-</main>
-<script src="sandbox.ts" />
+  </main>
+  <script type="module" src="sandbox.ts" />
+</html>
