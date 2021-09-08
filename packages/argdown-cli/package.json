@@ -10,19 +10,19 @@
   "engines": {
     "node": ">= 13.7.0"
   },
-  "version": "1.7.0",
+  "version": "1.7.4",
   "license": "MIT",
   "main": "dist/cli.js",
   "dependencies": {
-    "@argdown/core": "^1.7.0",
-    "@argdown/markdown-it-plugin": "^1.7.0",
-    "@argdown/node": "^1.7.0",
+    "@argdown/core": "^1.7.4",
+    "@argdown/markdown-it-plugin": "^1.7.4",
+    "@argdown/node": "^1.7.4",
     "@types/markdown-it": "^12.0.1",
-    "@types/yargs": "^16.0.0",
+    "@types/yargs": "^17.0.2",
     "import-global": "^0.1.0",
     "markdown-it": "^12.0.4",
     "pkginfo": "^0.4.1",
-    "yargs": "^16.2.0"
+    "yargs": "^17.0.1"
   },
   "bin": {
     "argdown": "./dist/cli.js"
@@ -50,11 +50,11 @@
   "readmeFilename": "Readme.md",
   "preferGlobal": true,
   "devDependencies": {
-    "@argdown/image-export": "^1.7.0",
+    "@argdown/image-export": "^1.7.4",
     "@types/chai": "^4.2.11",
     "@types/chai-fs": "^2.0.2",
-    "@types/mocha": "^8.0.0",
-    "@types/node": "^14.0.22",
+    "@types/mocha": "^9.0.0",
+    "@types/node": "^16.4.3",
     "@types/rimraf": "^3.0.0",
     "chai": "^4.2.0",
     "chai-fs": "^2.0.0",
@@ -62,12 +62,12 @@
     "glob": "^7.1.6",
     "intercept-stdout": "^0.1.2",
     "mkdirp": "^1.0.3",
-    "mocha": "^8.0.1",
+    "mocha": "^9.0.3",
     "nyc": "^15.0.0",
     "rimraf": "^3.0.2",
     "source-map-support": "^0.5.16",
-    "ts-node": "^9.1.1",
-    "typedoc": "^0.20.25",
+    "ts-node": "^10.1.0",
+    "typedoc": "^0.21.4",
     "typescript": "^4.1.5"
   },
   "nyc": {
