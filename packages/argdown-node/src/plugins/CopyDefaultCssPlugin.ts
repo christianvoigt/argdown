@@ -59,7 +59,7 @@ export class CopyDefaultCssPlugin implements IAsyncArgdownPlugin {
       "Copying default argdown.css to folder: " + absoluteOutputDir
     );
     const { COPYFILE_EXCL } = fs.constants;
-    try{
+    try {
       await new Promise<void>((resolve, reject) => {
         fs.copyFile(
           pathToDefaultCssFile,
@@ -72,15 +72,16 @@ export class CopyDefaultCssPlugin implements IAsyncArgdownPlugin {
             resolve();
           }
         );
-      });      
-    }catch(error){
-      if (error.code !== 'EEXIST') {
+      });
+    } catch (error) {
+      if (error instanceof Error && (error as any).code !== "EEXIST") {
         throw error;
-      }else{
+      } else {
         logger.log(
           "verbose",
-          "Did not copy default argdown.css, because file already exists: " + absoluteOutputDir
-        );    
+          "Did not copy default argdown.css, because file already exists: " +
+            absoluteOutputDir
+        );
       }
     }
   };

@@ -92,7 +92,7 @@ export class AsyncArgdownApplication extends ArgdownApplication {
           } catch (e) {
             if (req.throwExceptions) {
               throw e;
-            } else {
+            } else if (e instanceof ArgdownPluginError) {
               e.processor = processorId;
               exceptions.push(e);
               cancelProcessor = true;
@@ -112,7 +112,7 @@ export class AsyncArgdownApplication extends ArgdownApplication {
         } catch (e) {
           if (req.throwExceptions) {
             throw e;
-          } else {
+          } else if (e instanceof ArgdownPluginError) {
             e.processor = processorId;
             cancelProcessor = true;
             exceptions.push(e);
@@ -142,7 +142,7 @@ export class AsyncArgdownApplication extends ArgdownApplication {
         } catch (e) {
           if (req.throwExceptions) {
             throw e;
-          } else {
+          } else if (e instanceof ArgdownPluginError) {
             e.processor = processorId;
             cancelProcessor = true;
             this.logger.log("warning", `Processor ${processorId} canceled.`);
@@ -287,10 +287,12 @@ export class AsyncArgdownApplication extends ArgdownApplication {
         const buffer = await readFileAsync(filePath, "utf8");
         config = JSON.parse(buffer);
       } catch (e) {
-        this.logger.log(
-          "verbose",
-          "[AsyncArgdownApplication]: No config found: " + e.toString()
-        );
+        if (e instanceof Error) {
+          this.logger.log(
+            "verbose",
+            "[AsyncArgdownApplication]: No config found: " + e.toString()
+          );
+        }
       }
     } else if (extension === ".js") {
       // For Js config files we have to use loadJSFile which is synchronous
@@ -304,10 +306,12 @@ export class AsyncArgdownApplication extends ArgdownApplication {
           config = jsModuleExports;
         }
       } catch (e) {
-        this.logger.log(
-          "verbose",
-          "[AsyncArgdownApplication]: No config found: " + e.toString()
-        );
+        if (e instanceof Error) {
+          this.logger.log(
+            "verbose",
+            "[AsyncArgdownApplication]: No config found: " + e.toString()
+          );
+        }
       }
     }
     return config;
@@ -325,7 +329,9 @@ const loadJSFile = (filePath: string) => {
   try {
     return importFresh(filePath);
   } catch (e) {
-    e.message = `Cannot read file: ${filePath}\nError: ${e.message}`;
+    if (e instanceof Error) {
+      e.message = `Cannot read file: ${filePath}\nError: ${e.message}`;
+    }
     throw e;
   }
 };

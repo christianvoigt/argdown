@@ -50,11 +50,13 @@ export class ImageSizePlugin implements IAsyncArgdownPlugin {
         image.width = dimensions.width;
         image.height = dimensions.height;
       } catch (err) {
-        throw new ArgdownPluginError(
-          this.name,
-          "image-size-failed",
-          `'Getting the image size of '${image.path}' failed. ${err.message}`
-        );
+        if (err instanceof Error) {
+          throw new ArgdownPluginError(
+            this.name,
+            "image-size-failed",
+            `'Getting the image size of '${image.path}' failed. ${err.message}`
+          );
+        }
       }
     }
   };

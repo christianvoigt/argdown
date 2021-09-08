@@ -8,7 +8,7 @@ import path from "path";
 import rimraf from "rimraf";
 const rimrafPromise = function(path: string) {
   return new Promise<void>((resolve, reject) => {
-    rimraf(path, {}, function(err: Error) {
+    rimraf(path, {}, function(err: Error | null | undefined) {
       if (err) {
         reject(err);
       }
@@ -55,6 +55,7 @@ describe("SvgToPdfExportPlugin", () => {
         fonts:
             - {name: "arial", path: "./DejaVuSans.ttf"}
             - {name: "arial Bold", path: "./DejaVuSans-Bold.ttf"}
+            - {name: "Times,serif", path: "./DejaVuSans.ttf"}
     ===
 
         [B]: ДҖЛ̕

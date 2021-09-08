@@ -121,11 +121,13 @@ export class SvgToPdfExportPlugin implements IAsyncArgdownPlugin {
           const arrayBuffer = this.toArrayBuffer(buffer);
           doc.registerFont(font.name, arrayBuffer);
         } catch (e) {
-          throw new ArgdownPluginError(
-            this.name,
-            "pdf-custom-font-load-failed",
-            `Could not register custom font ${font.name}.\n` + e.message
-          );
+          if (e instanceof ArgdownPluginError) {
+            throw new ArgdownPluginError(
+              this.name,
+              "pdf-custom-font-load-failed",
+              `Could not register custom font ${font.name}.\n` + e.message
+            );
+          }
         }
       }
     }

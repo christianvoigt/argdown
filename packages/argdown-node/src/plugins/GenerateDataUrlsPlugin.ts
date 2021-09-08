@@ -50,11 +50,13 @@ export class GenerateDataUrlsPlugin implements IAsyncArgdownPlugin {
           // image.path = dataUrl;
         }
       } catch (err) {
-        throw new ArgdownPluginError(
-          this.name,
-          "inline-image-generation-failed",
-          `'Generating inline image of '${image.path}' failed. ${err.message}`
-        );
+        if (err instanceof Error) {
+          throw new ArgdownPluginError(
+            this.name,
+            "inline-image-generation-failed",
+            `'Generating inline image of '${image.path}' failed. ${err.message}`
+          );
+        }
       }
     }
   };
