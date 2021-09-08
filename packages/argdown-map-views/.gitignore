@@ -41,3 +41,4 @@ node_modules
 
 # parcel cache
 .cache
+.parcel-cache

@@ -1,8 +1,8 @@
 {
   "name": "@argdown/map-views",
-  "version": "1.7.0",
+  "version": "1.7.4",
   "description": "Browser-based map views for Argdown data using dagre-d3 and viz.js",
-  "main": "./dist/index",
+  "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist/"
@@ -21,34 +21,33 @@
   "readmeFilename": "Readme.md",
   "dependencies": {
     "@aduh95/viz.js": "^3.3.3",
-    "@argdown/core": "^1.7.0",
+    "@argdown/core": "^1.7.4",
     "@types/dagre-d3": "^0.6.2",
     "@types/lodash.defaultsdeep": "^4.6.6",
     "babel-polyfill": "^6.26.0",
-    "d3-selection": "^1.4.2",
-    "d3-zoom": "^1.8.3",
+    "d3-selection": "3.0.0",
+    "d3-zoom": "3.0.0",
     "dagre-d3": "^0.6.4",
     "lodash.defaultsdeep": "^4.6.1",
-    "parcel": "^2.0.0-nightly.610",
     "string-pixel-width": "^1.10.0"
   },
   "devDependencies": {
-    "@parcel/config-default": "^2.0.0-nightly.612",
-    "@parcel/transformer-typescript-tsc": "^2.0.0-nightly.612",
-    "@types/d3": "^5.7.2",
-    "@types/lodash": "^4.14.144",
-    "@types/mocha": "^8.0.0",
-    "@types/node": "^14.0.23",
+    "@parcel/config-default": "2.0.0-nightly.826",
+    "@parcel/transformer-typescript-tsc": "2.0.0-nightly.826",
+    "@types/d3": "7.0.0",
+    "@types/lodash": "^4.14.172",
+    "@types/mocha": "9.0.0",
+    "@types/node": "16.7.13",
     "chai": "^4.2.0",
     "copyfiles": "^2.1.1",
-    "mocha": "^8.0.1",
+    "mocha": "9.1.1",
     "nyc": "^15.1.0",
-    "parcel-bundler": "^1.12.4",
+    "parcel": "2.0.0-nightly.824",
     "parcel-plugin-static-files-copy": "^2.4.3",
     "rimraf": "^3.0.0",
     "source-map-support": "^0.5.13",
-    "ts-node": "^9.1.1",
-    "typescript": "^4.1.5"
+    "ts-node": "10.2.1",
+    "typescript": "4.4.2"
   },
   "scripts": {
     "deploy": "npm run test && npm run build && npm version patch && npm run push",

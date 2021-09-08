@@ -38,7 +38,7 @@ export class ZoomManager {
     this.svg = svg;
     this.svgGraph = svgGraph;
     const self = this;
-    this.zoom = zoom<SVGSVGElement, {}>().on("zoom", function() {
+    this.zoom = zoom<SVGSVGElement, {}>().on("zoom", function(event) {
       // eslint-disable-next-line
       self.svgGraph!.attr("transform", event.transform);
       self.state.scale = event.transform.k;
@@ -52,7 +52,7 @@ export class ZoomManager {
         });
       }
     });
-    this.svg!.call(this.zoom!).on("dblclick.zoom", null);
+    this.svg!.call(this.zoom! as any).on("dblclick.zoom", null);
   }
   showAllAndCenterMap() {
     if (!this.svg) {
@@ -102,7 +102,7 @@ export class ZoomManager {
       .transition()
       .duration(duration)
       .call(
-        self.zoom!.transform,
+        (self.zoom! as any).transform,
         // eslint-disable-next-line
         zoomIdentity.translate(x, y).scale(scale)
       );
