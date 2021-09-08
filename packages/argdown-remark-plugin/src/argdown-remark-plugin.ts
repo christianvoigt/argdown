@@ -5,11 +5,11 @@ import {
 } from "@argdown/core";
 import { argdown } from "@argdown/core/dist/argdown";
 import defaultsDeep from "lodash.defaultsdeep";
-import visit from "unist-util-visit";
+import { visit } from "unist-util-visit";
 import { Code } from "mdast";
-import { Parent } from "unist";
+import { Parent, Node, Data } from "unist";
 import { Transformer } from "unified";
-import u from "unist-builder";
+import { u } from "unist-builder";
 
 const generateWebComponent = (
   code: string,
@@ -101,7 +101,7 @@ export const remarkArgdownPlugin = (
         parent.children.splice(index, 1, u("html", { value: htmlOutput }));
       }
     };
-    visit<Code>(tree, "code", visitor as visit.Visitor<Code>);
+    visit<Node<Data>, any>(tree, "code", visitor as any);
   };
 };
 export default remarkArgdownPlugin;

@@ -1,5 +1,6 @@
 import { expect } from "chai";
-import remark from "remark";
+import { describe } from "mocha";
+import { remark } from "remark";
 import { remarkArgdownPlugin } from "../src/argdown-remark-plugin";
 // @ts-ignore
 import html from "remark-html";

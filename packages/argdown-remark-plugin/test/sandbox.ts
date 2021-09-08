@@ -1,9 +1,9 @@
-import "@argdown/web-components/dist/argdown-map.css";
+import "../node_modules/@argdown/web-components/dist/argdown-map.css";
 import "@argdown/web-components";
-import remark from "remark";
+import { remark } from "remark";
 import { remarkArgdownPlugin } from "../src/argdown-remark-plugin";
 // @ts-ignore
-import html from "remark-html";
+import { html } from "remark-html";
 
 // const defaultSettings = {
 //     withoutMaximize: true,
