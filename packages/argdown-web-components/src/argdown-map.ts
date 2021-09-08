@@ -15,11 +15,11 @@ import "./snow-in-spring.argdown-theme.css";
 import "./global-styles.css";
 
 let idCounter = 0;
-const getId = ()=>{
-  const id = "argdown-map-"+idCounter;
+const getId = () => {
+  const id = "argdown-map-" + idCounter;
   idCounter++;
   return id;
-}
+};
 const ArgdownMap = function(
   el: HTMLElement & {
     initialView: string;
@@ -29,18 +29,17 @@ const ArgdownMap = function(
     withoutHeader: string;
   }
 ) {
-  if(!el.id){
+  if (!el.id) {
     el.id = getId();
   }
   const [activeView, setActiveView] = useState(el.initialView || "map");
 
-
   // fixes issue when loading url with page anchor (initial view will first be undefined and only later change, even if set explicitely in html)
-  useEffect(()=>{
-    if(el.initialView && el.initialView != ""){
+  useEffect(() => {
+    if (el.initialView && el.initialView != "") {
       setActiveView(el.initialView);
     }
-  },[el.initialView]);
+  }, [el.initialView]);
   const [isExpanded, setIsExpanded] = useState(false);
   const [zoomIsActive, setZoomIsActive] = useState(false);
   const [zoomMessage, setZoomMessage] = useState("");
