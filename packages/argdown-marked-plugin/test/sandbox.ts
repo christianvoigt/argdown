@@ -1,4 +1,4 @@
-import "@argdown/web-components/dist/argdown-map.css";
+import "../node_modules/@argdown/web-components/dist/argdown-map.css";
 import "@argdown/web-components";
 import marked from "marked";
 import { addArgdownSupportToMarked } from "../src/argdown-marked-plugin";

@@ -47,7 +47,7 @@ export const addArgdownSupportToMarked = (
     const response = argdown.run(request);
     return response.webComponent;
   };
-  const tempCode = renderer.code.bind(renderer);
+  const tempCode = renderer.code.bind(renderer as any); // could not find out the required type of Renderer<T> here
   renderer.code = (
     code: string,
     language: string | undefined,
