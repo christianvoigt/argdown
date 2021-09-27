@@ -1,6 +1,6 @@
 import { IMapState, defaultMapState } from "./IMapState";
 import { zoom, ZoomBehavior, zoomIdentity } from "d3-zoom";
-import { event, Selection } from "d3-selection";
+import { Selection } from "d3-selection";
 import defaultsDeep from "lodash.defaultsdeep";
 
 export type OnZoomChangedHandler = (data: {

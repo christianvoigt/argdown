@@ -11,7 +11,7 @@ import {
   ColorPlugin,
   DotExportPlugin
 } from "@argdown/core";
-import { VizJsMap, DagreMap } from "../src/index";
+import { VizJsMap, DagreMap } from "../../src/index";
 import "babel-polyfill";
 
 const app = new ArgdownApplication();
@@ -62,7 +62,7 @@ const createDagreMap = (container: HTMLElement) => {
 const createVizJsMap = (container: HTMLElement) => {
   container.innerHTML = "";
   const vizJsMap = new VizJsMap(container, null, {
-    workerURL: "http://localhost:1234/render.browser.js"
+    workerURL: "http://localhost:1234/public/render.browser.js"
   });
   const response = app.run({
     input: `
