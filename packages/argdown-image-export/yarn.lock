@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@aduh95/viz.js@^3.3.3":
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/@aduh95/viz.js/-/viz.js-3.5.0.tgz#23f075b11a5555f33195c033b3330a8deab4bc2b"
-  integrity sha512-ahLdpRAoGsdgEfy2SGV2wnnHrBSLDHuwA32v+BoNGnz1gqajr8VMzF8y6mIQt28hHi4LQ272wqSi78DK4YdT2g==
+"@aduh95/viz.js@3.4.0":
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/@aduh95/viz.js/-/viz.js-3.4.0.tgz#635a020d95386c8acafbe025b2158238de889668"
+  integrity sha512-KI2nVf9JdwWCXqK6RVf+9/096G7VWN4Z84mnynlyZKao2xQENW8WNEjLmvdlxS5X8PNWXFC1zqwm7tveOXw/4A==
 
 "@arcanis/slice-ansi@^1.0.2":
   version "1.0.2"
@@ -14,12 +14,12 @@
   dependencies:
     grapheme-splitter "^1.0.4"
 
-"@argdown/core@^1.7.4":
-  version "1.7.4"
-  resolved "https://registry.yarnpkg.com/@argdown/core/-/core-1.7.4.tgz#6a211ad6ecc92eebbe4c4e80ad170711898926bd"
-  integrity sha512-gzFDXHBSk+yiUMd2qOJQYI0GxecsvSeNgozwZV4i4/Fs4FooFo0nkDlB1bBeENGAiERGZ2syS6RWQwYC1zo17A==
+"@argdown/core@^1.7.5":
+  version "1.7.5"
+  resolved "https://registry.yarnpkg.com/@argdown/core/-/core-1.7.5.tgz#5bebd6778d500fb55c892bc6f58608634879e68f"
+  integrity sha512-BcJd45xv8BLu0KhrfIIs/TQ/1WFkF+vZHJRmZVTzlYb7p25sSfBAPftcb2cIYZJ++dMcaEQlRUKIQ1mXLv5qBg==
   dependencies:
-    "@aduh95/viz.js" "^3.3.3"
+    "@aduh95/viz.js" "3.4.0"
     "@argdown/highlightjs" "1.7.4"
     "@types/chai" "^4.2.11"
     "@types/js-yaml" "^4.0.0"
@@ -51,13 +51,13 @@
   resolved "https://registry.yarnpkg.com/@argdown/highlightjs/-/highlightjs-1.7.4.tgz#a5bac84e4e391a4a6c2fb66c291f5883e798805e"
   integrity sha512-xSQkvcvCg0PKxXqto8KW6ldQCb1NIGITvZinUK3rGQYLGgFgLviJ5OmFAT45GFppFCTkySUahc5st5VDXTzNFg==
 
-"@argdown/node@^1.7.4":
-  version "1.7.4"
-  resolved "https://registry.yarnpkg.com/@argdown/node/-/node-1.7.4.tgz#1efa83dd0996abadbd412ac16dcb28f0af7adca5"
-  integrity sha512-5nnKjneBI0/lRZrRjKwxWW6uSSLBp08CxP4XmOhWbmS+xBRdilBx0qIQbSfkSs2722JPbsjCXfP4kEgbPna8lw==
+"@argdown/node@^1.7.5":
+  version "1.7.5"
+  resolved "https://registry.yarnpkg.com/@argdown/node/-/node-1.7.5.tgz#6a55ab56e770ff1765454cc96c2ffaa3683f5b76"
+  integrity sha512-z/3WLIKkUsAGBnsIPAImLvF9CaId91z+x11us0KaBkGAZJhBIcZqWjcdBURq2HTKDIP0jqmECbZ6ORdNPUVQIg==
   dependencies:
-    "@aduh95/viz.js" "^3.3.3"
-    "@argdown/core" "^1.7.4"
+    "@aduh95/viz.js" "3.4.0"
+    "@argdown/core" "^1.7.5"
     "@types/glob" "^7.1.1"
     "@types/lodash.clonedeep" "^4.5.6"
     "@types/lodash.defaultsdeep" "^4.6.6"
@@ -70,7 +70,7 @@
     "@types/pdfkit" "^0.11.0"
     axios "^0.21.1"
     chokidar "^3.3.1"
-    glob "^7.1.6"
+    glob "7.2.0"
     image-size "^1.0.0"
     image-type "^4.1.0"
     import-fresh "^3.2.1"
@@ -1349,10 +1349,22 @@ glob-parent@^5.1.2, glob-parent@~5.1.2:
   dependencies:
     is-glob "^4.0.1"
 
-glob@7.1.7, glob@^7.1.3, glob@^7.1.6:
+glob@7.1.7, glob@^7.1.3:
   version "7.1.7"
   resolved "https://registry.yarnpkg.com/glob/-/glob-7.1.7.tgz#3b193e9233f01d42d0b3f78294bbeeb418f94a90"
   integrity sha512-OvD9ENzPLbegENnYP5UUfJIirTg4+XwMWGaQfQTY0JenxNvvIKP3U3/tAQSPIu/lHxXYSZmpXlUHeqAIdKzBLQ==
+  dependencies:
+    fs.realpath "^1.0.0"
+    inflight "^1.0.4"
+    inherits "2"
+    minimatch "^3.0.4"
+    once "^1.3.0"
+    path-is-absolute "^1.0.0"
+
+glob@7.2.0:
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/glob/-/glob-7.2.0.tgz#d15535af7732e02e948f4c41628bd910293f6023"
+  integrity sha512-lmLf6gtyrPq8tTjSmrO94wBeQbFR3HbLHbuyD69wuyQkImp2hWqMGB47OX65FBkPffO641IP9jWa1z4ivqG26Q==
   dependencies:
     fs.realpath "^1.0.0"
     inflight "^1.0.4"
