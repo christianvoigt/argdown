@@ -1,6 +1,6 @@
 {
   "name": "@argdown/markdown-it-plugin",
-  "version": "1.7.6",
+  "version": "1.7.7",
   "description": "Turns Argdown code fences into svg argument maps",
   "main": "dist/argdown-markdown-it-plugin.js",
   "scripts": {
