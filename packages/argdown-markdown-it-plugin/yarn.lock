@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@aduh95/viz.js@^3.3.3":
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/@aduh95/viz.js/-/viz.js-3.5.0.tgz#23f075b11a5555f33195c033b3330a8deab4bc2b"
-  integrity sha512-ahLdpRAoGsdgEfy2SGV2wnnHrBSLDHuwA32v+BoNGnz1gqajr8VMzF8y6mIQt28hHi4LQ272wqSi78DK4YdT2g==
+"@aduh95/viz.js@3.4.0":
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/@aduh95/viz.js/-/viz.js-3.4.0.tgz#635a020d95386c8acafbe025b2158238de889668"
+  integrity sha512-KI2nVf9JdwWCXqK6RVf+9/096G7VWN4Z84mnynlyZKao2xQENW8WNEjLmvdlxS5X8PNWXFC1zqwm7tveOXw/4A==
 
 "@arcanis/slice-ansi@^1.0.2":
   version "1.0.2"
@@ -14,12 +14,12 @@
   dependencies:
     grapheme-splitter "^1.0.4"
 
-"@argdown/core@^1.7.4":
-  version "1.7.4"
-  resolved "https://registry.yarnpkg.com/@argdown/core/-/core-1.7.4.tgz#6a211ad6ecc92eebbe4c4e80ad170711898926bd"
-  integrity sha512-gzFDXHBSk+yiUMd2qOJQYI0GxecsvSeNgozwZV4i4/Fs4FooFo0nkDlB1bBeENGAiERGZ2syS6RWQwYC1zo17A==
+"@argdown/core@^1.7.5":
+  version "1.7.5"
+  resolved "https://registry.yarnpkg.com/@argdown/core/-/core-1.7.5.tgz#5bebd6778d500fb55c892bc6f58608634879e68f"
+  integrity sha512-BcJd45xv8BLu0KhrfIIs/TQ/1WFkF+vZHJRmZVTzlYb7p25sSfBAPftcb2cIYZJ++dMcaEQlRUKIQ1mXLv5qBg==
   dependencies:
-    "@aduh95/viz.js" "^3.3.3"
+    "@aduh95/viz.js" "3.4.0"
     "@argdown/highlightjs" "1.7.4"
     "@types/chai" "^4.2.11"
     "@types/js-yaml" "^4.0.0"
