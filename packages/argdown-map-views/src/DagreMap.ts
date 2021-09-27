@@ -134,15 +134,14 @@ export class DagreMap implements CanSelectNode {
     const g = new dagreD3.graphlib.Graph({ compound: true });
 
     g.setGraph({
-        rankdir: settings.rankDir,
-        ranksep: settings.rankSep,
-        nodesep: settings.nodeSep,
-        marginx: 20,
-        marginy: 20
-      })
-      .setDefaultEdgeLabel(function() {
-        return {};
-      });
+      rankdir: settings.rankDir,
+      ranksep: settings.rankSep,
+      nodesep: settings.nodeSep,
+      marginx: 20,
+      marginy: 20
+    }).setDefaultEdgeLabel(function() {
+      return {};
+    });
 
     for (let node of props.map.nodes) {
       createDagreNode(node, g, null, settings);
@@ -210,8 +209,8 @@ export class DagreMap implements CanSelectNode {
     } catch (e) {
       console.log(e);
     }
-    const width = g.graph().width || 0;
-    const height = g.graph().height || 0;
+    const width = (g.graph() as any).width || 0;
+    const height = (g.graph() as any).height || 0;
 
     this.zoomManager.init(svg, svgGraph, width, height);
     if (!props.scale || !props.position) {
