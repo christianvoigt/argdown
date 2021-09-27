@@ -35,6 +35,8 @@ const createArgdownPlugin = (config?: ((env:any)=>IArgdownRequest) | IArgdownReq
       if(additionalSettings){
         request.webComponent = defaultsDeep({}, additionalSettings, request.webComponent);
       }
+      const {svg} = argdown.run({...request, process: "export-svg"});
+      console.log(svg);
       const response = argdown.run(request);
       return response.webComponent;
     };

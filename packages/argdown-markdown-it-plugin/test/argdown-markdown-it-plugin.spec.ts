@@ -9,27 +9,39 @@ describe("Markdown It! Argdown Plugin", function() {
   this.timeout(5000);
   it("can replace code fences with argument maps", function() {
     const result = mdi.render(`
-# Markdown header
+# Try out the new Markdown-Argdown Workflow!
 
-Some *Markdown* text before the Argdown code fences.
+Some *Markdown* **Text**
 
 \`\`\`argdown-map
-[s1]: text
-    <- <a1>: text
+[s1]
+   - <a1>
 \`\`\`
 
-Some **Markdown** text after the Argdown code fences. And now another Argdown section: 
+Some more Markdown Text
 
 \`\`\`argdown-map
-[s1]: text
-    <- <a1>
+===
+webComponent:
+    initialView: "source"
+color:
+    colorScheme: iwanthue-red-roses
+===
 
-<a1>
+[s1]
+   - <a1>
+   + <a2>
+      - <a3>
+\`\`\`
 
-(1) asdds
-(2) asdadasd
------
-(3) sadasd
+And a link to [Argdown](https://argdown.org).
+
+\`\`\`argdown-map
+[s1]
+   - <a1>
+      + <a4>
+   + <a2>
+      - <a3>
 \`\`\`
 `);
     console.log(result);
