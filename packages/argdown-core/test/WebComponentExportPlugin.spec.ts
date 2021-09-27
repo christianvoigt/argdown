@@ -53,7 +53,7 @@ describe("WebComponentExportPlugin", function() {
       logLevel: "error"
     };
     const response = await app.run(request);
-    // console.log(response.webComponent);
+    console.log(response.webComponent);
     expect(response.webComponent).to.exist;
   });
 });

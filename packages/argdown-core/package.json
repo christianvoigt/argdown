@@ -9,7 +9,7 @@
     "Markdown",
     "Chevrotain"
   ],
-  "version": "1.7.4",
+  "version": "1.7.5",
   "license": "MIT",
   "main": "./dist/index.js",
   "module": "./dist-esm/index.js",
@@ -19,7 +19,7 @@
     "dist-esm/"
   ],
   "dependencies": {
-    "@aduh95/viz.js": "^3.3.3",
+    "@aduh95/viz.js": "3.4.0",
     "@argdown/highlightjs": "1.7.4",
     "@types/chai": "^4.2.11",
     "@types/js-yaml": "^4.0.0",
