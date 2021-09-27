@@ -1,6 +1,8 @@
 {
   "name": "@argdown/map-views",
-  "version": "1.7.7",
+  "version": "1.7.8",
+  "main": "./dist/index",
+  "types": "./dist/index.d.ts",
   "description": "Browser-based map views for Argdown data using dagre-d3 and viz.js",
   "files": [
     "dist/"
