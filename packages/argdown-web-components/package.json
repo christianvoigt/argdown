@@ -1,15 +1,25 @@
 {
   "name": "@argdown/web-components",
-  "version": "1.7.4",
+  "version": "1.7.10",
   "description": "Components that help to embed Argdown in the browser",
-  "main": "dist/argdown-map.js",
+  "targets": {
+    "dist": {
+      "source": "src/argdown-map.ts",
+      "context": "browser",
+      "outputFormat": "global",
+      "isLibrary": false,
+      "includeNodeModules": true,
+      "engines": {
+        "browsers": "> 0.5%, last 2 versions, not dead"
+      }
+    }
+  },
   "files": [
     "dist/"
   ],
-  "source": "src/argdown-map.ts",
   "scripts": {
     "example": "parcel src/index.html --open",
-    "build": "yarn run clean && parcel build src/argdown-map.ts",
+    "build": "yarn run clean && parcel build",
     "clean": "rimraf \"dist/*\"",
     "prepublishOnly": "yarn run build"
   },
@@ -23,18 +33,19 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@swc/helpers": "^0.2.13",
     "d3-selection": "3.0.0",
     "d3-zoom": "3.0.0",
     "haunted": "^4.7.1",
     "lit-html": "^1.3.0"
   },
   "devDependencies": {
-    "@parcel/transformer-typescript-tsc": "2.0.0-nightly.826",
+    "@parcel/transformer-typescript-tsc": "2.0.0-nightly.845",
     "@types/d3": "7.0.0",
     "@webcomponents/webcomponentsjs": "^2.6.0",
-    "parcel": "^2.0.0-nightly.824",
+    "parcel": "2.0.0-nightly.843",
     "parcel-plugin-static-files-copy": "^2.5.1",
     "rimraf": "^3.0.2",
-    "typescript": "^4.3.5"
+    "typescript": "^4.1.5"
   }
 }
