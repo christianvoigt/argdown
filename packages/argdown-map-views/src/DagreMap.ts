@@ -1,6 +1,7 @@
 import * as dagreD3 from "dagre-d3";
 import pixelWidth from "string-pixel-width";
 import { select } from "d3-selection";
+import "d3-transition";
 import {
   ArgdownTypes,
   IMapNode,

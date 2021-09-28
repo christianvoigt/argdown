@@ -3,7 +3,7 @@ import Viz from "@aduh95/viz.js";
 
 import { VizConstructorOptions } from "@aduh95/viz.js";
 import { select } from "d3-selection";
-
+import "d3-transition";
 // import { Module, render } from "viz.js/full.render";
 // import * as d3 from "d3";
 import { ZoomManager, OnZoomChangedHandler } from "./ZoomManager";
