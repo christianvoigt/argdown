@@ -1,8 +1,10 @@
 {
   "name": "@argdown/web-components",
-  "version": "1.7.11",
+  "version": "1.7.12",
   "description": "Components that help to embed Argdown in the browser",
+  "browser": "dist/argdown-map.js",
   "targets": {
+    "browser": false,
     "dist": {
       "source": "src/argdown-map.ts",
       "context": "browser",
