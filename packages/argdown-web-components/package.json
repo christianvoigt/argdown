@@ -1,6 +1,6 @@
 {
   "name": "@argdown/web-components",
-  "version": "1.7.10",
+  "version": "1.7.11",
   "description": "Components that help to embed Argdown in the browser",
   "targets": {
     "dist": {
@@ -10,7 +10,7 @@
       "isLibrary": false,
       "includeNodeModules": true,
       "engines": {
-        "browsers": "> 0.5%, last 2 versions, not dead"
+        "browsers": "Chrome 50"
       }
     }
   },
@@ -18,7 +18,8 @@
     "dist/"
   ],
   "scripts": {
-    "example": "parcel src/index.html --open",
+    "example": "parcel test/index.html --open",
+    "example-dist": "parcel test/index-dist.html --open",
     "build": "yarn run clean && parcel build",
     "clean": "rimraf \"dist/*\"",
     "prepublishOnly": "yarn run build"
@@ -40,10 +41,10 @@
     "lit-html": "^1.3.0"
   },
   "devDependencies": {
-    "@parcel/transformer-typescript-tsc": "2.0.0-nightly.845",
+    "@parcel/transformer-typescript-tsc": "2.0.0-nightly.849",
     "@types/d3": "7.0.0",
     "@webcomponents/webcomponentsjs": "^2.6.0",
-    "parcel": "2.0.0-nightly.843",
+    "parcel": "2.0.0-nightly.847",
     "parcel-plugin-static-files-copy": "^2.5.1",
     "rimraf": "^3.0.2",
     "typescript": "^4.1.5"
