@@ -36,7 +36,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@argdown/web-components": "^1.7.4",
+    "@argdown/web-components": "^1.7.11",
     "@parcel/transformer-typescript-tsc": "2.0.0-nightly.845",
     "@types/chai": "^4.2.11",
     "@types/mdast": "^3.0.2",

@@ -1,4 +1,4 @@
-// Currently not working as ESM module, waiting for Typescript to support conditional exports in package.json
+// Currently not working as ESM module (which is required for Remark, but not possible with @argdown/core at the moment). Waiting for Typescript to support conditional exports in package.json
 // If that is supported, we can try to support esm and commonjs in exports of @argdown/core
 // import { expect } from "chai";
 // import { describe } from "mocha";
