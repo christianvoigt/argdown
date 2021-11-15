@@ -10,7 +10,10 @@ const chaiSnapshot = require("mocha-chai-snapshot");
 use(chaiSnapshot);
 
 // const tis = this;
-async function execPandocOnFile(fileName: string, format: "html" | "pdf") {
+async function execPandocOnFile(
+  fileName: string,
+  format: "html" | "pdf" | "revealjs"
+) {
   const { stdout } = await exec(
     `pandoc -s -f markdown test/${fileName} --filter dist/index.js -t ${format}`
   );
@@ -69,5 +72,10 @@ describe("Argdown Pandoc Filter", function() {
     //(expect(output) as any).to.matchSnapshot(this); // not working
     expect(output).to.exist;
     expect(output).to.not.be.empty;
+  });
+  it("generates revealjs with 3 slides", async () => {
+    const output = await execPandocOnFile(`example-revealjs.md`, "revealjs");
+    //(expect(output) as any).to.matchSnapshot(this); // not working
+    (expect(output) as any).to.matchSnapshot(this);
   });
 });
