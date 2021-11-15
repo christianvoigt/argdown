@@ -4,6 +4,11 @@
 ("use strict");
 
 const path = require("path");
+const { IgnorePlugin } = require("webpack");
+const optionalPlugins = [];
+if (process.platform !== "darwin") {
+  optionalPlugins.push(new IgnorePlugin({ resourceRegExp: /^fsevents$/ }));
+}
 
 /**@type {import('webpack').Configuration}*/
 const config = {
@@ -21,7 +26,7 @@ const config = {
   },
   resolve: {
     // support reading TypeScript and JavaScript files, 📖 -> https://github.com/TypeStrong/ts-loader
-    extensions: [".ts", ".js", ".mjs"],
+    extensions: [".ts", ".js", ".mjs", ".cjs"],
     alias: {
       "unicode-properties": "unicode-properties/unicode-properties.cjs.js",
       pdfkit: "pdfkit/js/pdfkit.js"
@@ -29,10 +34,6 @@ const config = {
   },
   module: {
     rules: [
-      {
-        test: /\.mjs$/,
-        type: "javascript/auto"
-      },
       {
         test: /\.ts$/,
         exclude: /node_modules/,
@@ -106,6 +107,7 @@ const config = {
       }
     }
   },
+  plugins: [...optionalPlugins],
   experiments: { asyncWebAssembly: true }
 };
 
