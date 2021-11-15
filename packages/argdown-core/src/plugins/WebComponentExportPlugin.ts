@@ -64,9 +64,9 @@ const defaultSettings: DefaultSettings<IWebComponentExportSettings> = {
   addWebComponentScript: true,
   addWebComponentPolyfill: true,
   globalStylesUrl:
-    "https://cdn.jsdelivr.net/npm/@argdown/web-components/dist/argdown-map.css",
+    "https://cdn.jsdelivr.net/npm/@argdown/web-components@latest/dist/argdown-map.css",
   webComponentScriptUrl:
-    "https://cdn.jsdelivr.net/npm/@argdown/web-components/dist/argdown-map.js",
+    "https://cdn.jsdelivr.net/npm/@argdown/web-components@latest/dist/argdown-map.js",
   webComponentPolyfillUrl:
     "https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs/webcomponents-bundle.js"
 };
