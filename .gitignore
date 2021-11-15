@@ -28,3 +28,6 @@ lerna-debug.log*
 *.njsproj
 *.sln
 
+.vscode
+.parcel-cache
+.cache

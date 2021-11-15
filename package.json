@@ -17,16 +17,16 @@
     "prepare": "lerna run prepare",
     "copy-web-component": "node ./copy-web-component.js",
     "install-package": "lerna add @types/pdfkit --scope=@argdown/node",
-    "lerna:upgrade": "lerna exec yarn upgrade",
+    "lerna:upgrade": "lerna exec -- yarn upgrade",
     "lerna:install": "lerna exec -- yarn install"
   },
   "readmeFilename": "Readme.md",
   "preferGlobal": true,
   "devDependencies": {
-    "@vuepress/plugin-pwa": "1.8.0",
+    "@vuepress/plugin-pwa": "1.8.2",
     "esm": "^3.2.25",
-    "lerna": "^3.22.1",
-    "vuepress": "1.8.0"
+    "lerna": "4.0.0",
+    "vuepress": "1.8.2"
   },
   "workspace-sources": {
     "*": [
