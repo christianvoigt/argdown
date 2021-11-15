@@ -1,5 +1,9 @@
 # Release Notes 2021
 
+## v1.7.2-12 (September-November 2021)
+
+These small patch releases update dependencies, bundling processes and fix a small bug in the VSCode syntax highlighting ([#285](https://github.com/christianvoigt/argdown/issues/285)).
+
 ## v1.7.x (February 2021)
 
 This release adds features that let you further adapt Argdown maps to your style of reconstruction.
@@ -93,6 +97,12 @@ A [new chapter in the guide](/guide/creating-oldschool-argument-maps-and-inferen
 - argdown-core: fixes lexer error when frontmatter yaml data contains equal signs.
 
 As always, all package dependencies have been upgraded.
+
+### Patch releases
+
+#### @argdown/core and @argdown/node v1.7.1
+
+Updated chevrotain to 9.0.0 and updated other dependencies, see [#223](https://github.com/christianvoigt/argdown/issues/223).
 
 ### Where are the relase notes for 1.6.x?
 

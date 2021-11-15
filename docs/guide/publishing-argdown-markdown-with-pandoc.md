@@ -201,6 +201,7 @@ Here is how you use the web-component to highlight `argdown` code blocks:
 ---
 argdown:
   sourceHighlighter: web-component
+  mode: web-component
 ---
 
 ```argdown
@@ -218,3 +219,63 @@ webComponent:
 ````
 
 In this example we are also configuring the web-component export in the YAML frontmatter section so that the web-component is exported without the map view and without the header (containing logo and buttons). Of course you could also add this configuration to an `argdown.config.json` file and use the `config` option to point to this file (see above).
+
+## Creating slide-shows with Pandoc
+
+You can also use Pandoc to create a [slide show](https://pandoc.org/MANUAL.html#slide-shows) for a presentation. Here is an example of how to create a html slide show using Pandoc and [Reveal.js](https://revealjs.com/):
+
+````markdown
+---
+title: my presentation
+author: Christian Voigt
+argdown:
+  sourceHighlighter: web-component
+  mode: web-component
+---
+
+# First slide
+
+The Argdown source:
+
+<!-- you might have to customize the Reveal js css styles for this to look good -->
+
+```argdown
+===
+webComponent:
+    withoutHeader: true
+    views:
+        source: true
+        map: false
+sourceHighlighter:
+    removeFrontMatter: true
+===
+
+[s1]
+    <- <a1>
+```
+
+# Second slide
+
+The map:
+
+```argdown-map
+[s1]
+    <- <a1>
+```
+
+---
+
+## The third slide
+
+## You can also create new slides by using `---`
+
+Here is the fourth slide
+````
+
+You can generate your HTML slides with the following command:
+
+```sh
+pandoc -s --webtex -i -t revealjs ./my-slide.show.md  -V theme=black --filter argdown-filter.cmd -o slides.html
+```
+
+[Here](https://github.com/jgm/pandoc/wiki/Using-pandoc-to-produce-reveal.js-slides) you can read more about using Pandoc to generate Reveal.js slides.
