@@ -477,8 +477,8 @@
       }
     },
     {
-      "match": "(?<=^|\\s)(@\\[)([^\\[\\]]+)(\\])(?=\\s)",
-      "name": "variable.statement-title.definition.argdown",
+      "match": "(?<=^|\\s)(@\\[)([^\\[\\]]+)(\\])(?=\\s*)",
+      "name": "variable.statement-title.mention.argdown",
       "captures": {
         "1": {
           "name": "punctuation.definition.begin.argdown"

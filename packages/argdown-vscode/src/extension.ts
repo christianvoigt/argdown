@@ -23,7 +23,7 @@ import {
 } from "./preview/security";
 import { ArgdownExtensionContributions } from "./preview/ArgdownExtensionContributions";
 import createArgdownMarkdownItPlugin from "@argdown/markdown-it-plugin";
-//import { ForkOptions } from "vscode-languageclient/lib/client";
+// import { ForkOptions } from "vscode-languageclient/lib/client";
 
 let client: LanguageClient;
 
@@ -45,7 +45,6 @@ export function activate(context: vscode.ExtensionContext) {
     cspArbiter,
     contributions
   );
-
   const previewManager = new ArgdownPreviewManager(
     contentProvider,
     logger,
@@ -56,7 +55,6 @@ export function activate(context: vscode.ExtensionContext) {
     cspArbiter,
     previewManager
   );
-
   const commandManager = new CommandManager();
   context.subscriptions.push(commandManager);
   commandManager.register(new commands.ShowPreviewCommand(previewManager));
@@ -99,10 +97,8 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
   // --- LANGUGAGE SERVER ---
-
   // The debug options for the server
   let debugOptions: ForkOptions = { execArgv: ["--nolazy", "--inspect=6009"] };
-
   // If the extension is launched in debug mode then the debug server options are used
   // Otherwise the run options are used
   const modulePath = context.asAbsolutePath(
@@ -119,7 +115,6 @@ export function activate(context: vscode.ExtensionContext) {
       options: debugOptions
     }
   };
-
   // Options to control the language client
   let clientOptions: LanguageClientOptions = {
     // Register the server for plain text documents
@@ -146,10 +141,8 @@ export function activate(context: vscode.ExtensionContext) {
   );
   // Register new proposed protocol if available.
   client.registerProposedFeatures();
-
   // Start the client. This will also launch the server
   client.start();
-
   return {
     extendMarkdownIt(md: any) {
       const webComponentConfig = vscode.workspace.getConfiguration(

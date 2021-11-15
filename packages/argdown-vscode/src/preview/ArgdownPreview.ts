@@ -172,7 +172,9 @@ export class ArgdownPreview {
         msg.source = resource.toString();
         this.postMessage(msg);
       } catch (e) {
-        this._logger.log(e);
+        if (e instanceof Error) {
+          this._logger.log(e.message);
+        }
       }
     }, this._minDelayBetweenUpdates);
 
@@ -493,7 +495,9 @@ export class ArgdownPreview {
         this.editor.iconPath = this._contentProvider.iconPath;
       }
     } catch (e) {
-      this._logger.log(e);
+      if (e instanceof Error) {
+        this._logger.log(e.message);
+      }
     }
   }
 
@@ -583,7 +587,9 @@ export class ArgdownPreview {
       );
       this.jumpToRange(range);
     } catch (e) {
-      this._logger.log(e.stack);
+      if (e instanceof Error) {
+        this._logger.log(e.message);
+      }
     }
   }
   private async onDidSelectCluster(headingText: string) {
@@ -598,7 +604,9 @@ export class ArgdownPreview {
       );
       this.jumpToRange(range);
     } catch (e) {
-      this._logger.log(e.stack);
+      if (e instanceof Error) {
+        this._logger.log(e.message);
+      }
     }
   }
   private async jumpToRange(range: vscode.Range): Promise<void> {

@@ -3,7 +3,7 @@ import { createPosterForVsCode } from "./messaging";
 import { getSettings } from "./settings";
 import throttle = require("lodash.throttle");
 import { initMenu } from "./menu";
-import * as d3 from "d3";
+import { select } from "d3-selection";
 import { getSvgForExport, getPngAsString } from "./export";
 import { openScaleDialog } from "./scaleDialog";
 import { OnZoomChangedHandler } from "@argdown/map-views/dist/ZoomManager";
@@ -116,8 +116,7 @@ document.addEventListener("dblclick", event => {
         dagreMap!.selectNode(id);
         messagePoster.postMessage("didSelectMapNode", { id });
       } else if (node.classList.contains("cluster")) {
-        const heading = d3
-          .select(node)
+        const heading = select(node)
           .select<HTMLHeadingElement>("h3")
           .node()!.textContent;
         messagePoster.postMessage("didSelectCluster", { heading });

@@ -1,4 +1,4 @@
-import * as d3 from "d3";
+import { select } from "d3-selection";
 import vizRenderStringSync from "@aduh95/viz.js/sync";
 import { onceDocumentLoaded } from "./events";
 import { createPosterForVsCode } from "./messaging";
@@ -40,7 +40,7 @@ const onSelectionChanged: OnSelectionChangedHandler = id => {
   });
 };
 
-const svgContainer = d3.select<HTMLElement, null>("#svg-container")!;
+const svgContainer = document.getElementById("svg-container")!;
 let vizJsMap: VizJsMap | null = null;
 
 const updateMap = () => {
@@ -60,7 +60,7 @@ const updateMap = () => {
 };
 onceDocumentLoaded(() => {
   vizJsMap = new VizJsMap(
-    svgContainer.node()!,
+    svgContainer,
     vizRenderStringSync,
     null,
     onZoomChanged,
@@ -116,8 +116,7 @@ document.addEventListener("dblclick", event => {
         messagePoster.postMessage("didSelectMapNode", { id });
         return;
       } else if (node.classList.contains("cluster")) {
-        const heading = d3
-          .select(node)
+        const heading = select(node)
           .selectAll<SVGTextElement, null>("text")
           .nodes()!
           .reduce(

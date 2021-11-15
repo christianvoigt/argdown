@@ -12,6 +12,11 @@ const TerserPlugin = require("terser-webpack-plugin");
 
 const path = require("path");
 const webpack = require("webpack");
+const { IgnorePlugin } = require("webpack");
+const optionalPlugins = [];
+if (process.platform !== "darwin") {
+  optionalPlugins.push(new IgnorePlugin({ resourceRegExp: /^fsevents$/ }));
+}
 
 /**@type {import('webpack').Configuration}*/
 module.exports = {
@@ -119,5 +124,6 @@ module.exports = {
         }
       })
     ]
-  }
+  },
+  plugins: [...optionalPlugins]
 };
