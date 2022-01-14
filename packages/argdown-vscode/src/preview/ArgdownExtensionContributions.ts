@@ -1,14 +1,13 @@
 import * as vscode from "vscode";
-import * as path from "path";
 import { ArgdownEngine } from "./ArgdownEngine";
 
 const resolveExtensionResource = (
   extension: vscode.Extension<any>,
   resourcePath: string
 ): vscode.Uri => {
-  return vscode.Uri.file(path.join(extension.extensionPath, resourcePath)).with(
-    { scheme: "vscode-resource" }
-  );
+  return vscode.Uri.joinPath(extension.extensionUri, resourcePath).with({
+    scheme: "vscode-resource"
+  });
 };
 
 const resolveExtensionResources = (

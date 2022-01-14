@@ -21,10 +21,10 @@ if (process.platform !== "darwin") {
 /**@type {import('webpack').Configuration}*/
 module.exports = {
   target: "node", // vscode extensions run in a Node.js-context 📖 -> https://webpack.js.org/configuration/node/
-  entry: "./src/extension.ts", // the entry point of this extension, 📖 -> https://webpack.js.org/configuration/entry-context/
+  entry: { "node-main": "./src/node-main.ts" }, // the entry point of this extension, 📖 -> https://webpack.js.org/configuration/entry-context/
   output: {
     // the bundle is stored in the 'dist' folder (check package.json), 📖 -> https://webpack.js.org/configuration/output/
-    path: path.resolve(__dirname, "dist"),
+    path: path.resolve(__dirname, "dist/node"),
     filename: "[name].js",
     libraryTarget: "commonjs2",
     devtoolModuleFilenameTemplate: "../[resource-path]"
@@ -102,23 +102,23 @@ module.exports = {
     }
   },
   optimization: {
-    splitChunks: {
-      chunks: "all",
-      cacheGroups: {
-        svgtopdf: {
-          name: "svgtopdf",
-          test: /[\\/]node_modules[\\/]svg-to-pdfkit/,
-          chunks: "all"
-        }
-      }
-    },
+    // splitChunks: {
+    //   chunks: "all",
+    //   cacheGroups: {
+    //     svgtopdf: {
+    //       name: "svgtopdf",
+    //       test: /[\\/]node_modules[\\/]svg-to-pdfkit/,
+    //       chunks: "all"
+    //     }
+    //   }
+    // },
     minimize: true,
     minimizer: [
       new TerserPlugin({
         parallel: true,
         exclude: /svgtopdf/,
         terserOptions: {
-          ecma: 8,
+          ecma: 2017,
           keep_classnames: true,
           keep_fnames: true
         }

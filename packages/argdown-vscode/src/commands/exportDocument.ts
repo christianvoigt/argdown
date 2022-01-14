@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
-import * as path from "path";
 import { Command } from "./Command";
 import { isArgdownFile } from "../preview/util/file";
+import { Utils } from "vscode-uri";
 
 export interface IExportDocumentArgs {
   source: string;
@@ -27,15 +27,21 @@ const executeExport = async (
     }
     uri = doc.uri;
   }
+  if (vscode.env.appHost !== "desktop") {
+    vscode.window.showInformationMessage(
+      "This command is only supported in the desktop version of VSCode. Please install VSCode on your computer to use this feature."
+    );
+    return;
+  }
   if (!uri) {
     return;
   }
-  const filePath: string = uri.fsPath;
-  const fileDir: string = path.dirname(filePath);
-  const extension: string = path.extname(filePath);
-  const fileName: string = path.basename(filePath, extension);
-  const defaultUri = vscode.Uri.file(
-    path.resolve(fileDir, fileName + "." + defaultExtension)
+  const fileDir = Utils.dirname(uri);
+  //const extension: string = Utils.extname(uri);
+  const fileName: string = Utils.basename(uri);
+  const defaultUri = vscode.Uri.joinPath(
+    fileDir,
+    fileName + "." + defaultExtension
   );
   const option: vscode.SaveDialogOptions = {
     defaultUri,

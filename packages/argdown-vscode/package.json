@@ -5,7 +5,7 @@
   "icon": "media/argdown-mark-blue-256x256.png",
   "author": "Christian Voigt",
   "license": "MIT",
-  "version": "1.7.12",
+  "version": "1.8.0",
   "publisher": "christianvoigt",
   "homepage": "https://argdown.org",
   "repository": {
@@ -49,7 +49,8 @@
     "onWebviewPanel:argdown.preview",
     "workspaceContains:**/*.{argdown,ad,argdn,adown}"
   ],
-  "main": "./dist/main",
+  "main": "./dist/node/node-main.js",
+  "browser": "./dist/web/browser-main.js",
   "contributes": {
     "languages": [
       {
@@ -110,6 +111,10 @@
       }
     ],
     "commands": [
+      {
+        "command": "argdown.helloWorld",
+        "title": "Hello World"
+      },
       {
         "command": "argdown.exportDocumentToHtml",
         "title": "Export to HTML",
@@ -510,10 +515,13 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run build",
-    "build": "npm run build-extension-webpack && npm run build-preview && npm run copy-changelog",
+    "build": "npm run clean && npm run build-node-extension && npm run build-web-extension && npm run build-preview && npm run copy-changelog",
+    "watch-web": "webpack --config web-extension.webpack.config.js --mode development --watch",
+    "package-web": "webpack --mode production --devtool hidden-source-map",
     "watch": "tsc -w -p ./",
     "build-extension-tsc": "npm run clean && tsc -p ./",
-    "build-extension-webpack": "npm run clean && webpack --config extension.webpack.config.js --mode development",
+    "build-node-extension": "webpack --config node-extension.webpack.config.js --mode development",
+    "build-web-extension": "webpack --config web-extension.webpack.config.js --mode development",
     "build-preview": "webpack --config preview.webpack.config.js --mode development",
     "build-test": "tsc --project tsconfig-test.json",
     "test": "sh ./scripts/e2e.sh",
@@ -521,7 +529,8 @@
     "dev-build-extension": "tsc -p ./",
     "clean": "rimraf \"dist/*\"",
     "dev-build-preview": "webpack --config preview.webpack.config.js --mode development",
-    "copy-changelog": "node ./copy-changelog.js"
+    "copy-changelog": "node ./copy-changelog.js",
+    "open-in-browser": "vscode-test-web --extensionDevelopmentPath=. ./test"
   },
   "dependencies": {
     "@aduh95/viz.js": "3.4.0",
@@ -531,25 +540,26 @@
     "@argdown/markdown-it-plugin": "^1.7.7",
     "@argdown/node": "^1.7.5",
     "@argdown/web-components": "^1.7.12",
-    "@babel/plugin-transform-modules-commonjs": "7.16.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.16.8",
     "d3-selection": "^3.0.0",
     "dagre-d3": "^0.6.3",
     "lodash.defaultsdeep": "^4.6.1",
     "lodash.throttle": "^4.1.1",
-    "pdfkit": "^0.12.3",
-    "string-replace-loader": "3.0.3",
+    "pdfkit": "^0.13.0",
+    "string-replace-loader": "^3.1.0",
     "vscode-languageclient": "7.0.0"
   },
   "devDependencies": {
-    "@babel/core": "7.16.0",
-    "@babel/preset-env": "7.16.0",
+    "@babel/core": "^7.16.7",
+    "@babel/preset-env": "^7.16.8",
     "@types/d3": "7.1.0",
     "@types/dagre-d3": "0.6.3",
     "@types/lodash.defaultsdeep": "^4.6.6",
     "@types/lodash.throttle": "^4.1.6",
-    "@types/node": "16.11.7",
-    "@types/vscode": "1.62.0",
-    "@vscode/test-electron": "^1.6.2",
+    "@types/node": "^17.0.0",
+    "@types/vscode": "^1.63.1",
+    "@vscode/test-electron": "^2.0.3",
+    "@vscode/test-web": "^0.0.15",
     "babel-loader": "8.2.3",
     "brfs": "^2.0.2",
     "crypto-browserify": "^3.12.0",
@@ -561,11 +571,11 @@
     "raw-loader": "^4.0.1",
     "rimraf": "^3.0.2",
     "style-loader": "3.3.1",
-    "terser-webpack-plugin": "5.2.5",
+    "terser-webpack-plugin": "^5.3.0",
     "transform-loader": "^0.2.4",
     "ts-loader": "^9.2.6",
-    "typescript": "4.4.4",
-    "webpack": "5.64.0",
+    "typescript": "^4.5.4",
+    "webpack": "^5.66.0",
     "webpack-cli": "4.9.1"
   }
 }

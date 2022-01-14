@@ -1,5 +1,4 @@
 import * as vscode from "vscode";
-import * as path from "path";
 import { ArgdownEngine } from "./ArgdownEngine";
 
 import {
@@ -19,6 +18,7 @@ import { vizjsViewProvider } from "./vizjsViewProvider";
 import { dagreViewProvider } from "./dagreViewProvider";
 import { htmlViewProvider } from "./htmlViewProvider";
 import { IViewProvider } from "./IViewProvider";
+import { Utils } from "vscode-uri";
 /**
  * Strings used inside the argdown preview.
  *
@@ -62,10 +62,14 @@ export class ArgdownContentProvider {
     );
   }
   public get iconPath() {
-    const root = path.join(this.context.extensionPath, "media", "icons");
+    const root = vscode.Uri.joinPath(
+      this.context.extensionUri,
+      "media",
+      "icons"
+    );
     return {
-      light: vscode.Uri.file(path.join(root, "light", "preview.svg")),
-      dark: vscode.Uri.file(path.join(root, "dark", "preview.svg"))
+      light: vscode.Uri.joinPath(root, "light", "preview.svg"),
+      dark: vscode.Uri.joinPath(root, "dark", "preview.svg")
     };
   }
   public async provideHtmlContent(
@@ -173,16 +177,14 @@ export class ArgdownContentProvider {
     webview: vscode.Webview
   ): vscode.Uri {
     return webview.asWebviewUri(
-      vscode.Uri.file(
-        this.context.asAbsolutePath(path.join("media", mediaFile))
-      )
+      vscode.Uri.joinPath(this.context.extensionUri, "media", mediaFile)
     );
   }
 
   private fixHref(
     resource: vscode.Uri,
     href: string,
-    webview: vscode.Webview
+    _webview: vscode.Webview
   ): string {
     if (!href) {
       return href;
@@ -194,21 +196,16 @@ export class ArgdownContentProvider {
       return hrefUri.toString();
     }
 
-    // Use href as file URI if it is absolute
-    if (path.isAbsolute(href) || hrefUri.scheme === "file") {
-      return webview.asWebviewUri(vscode.Uri.file(href)).toString();
-    }
-
     // Use a workspace relative path if there is a workspace
     let root = vscode.workspace.getWorkspaceFolder(resource);
     if (root) {
-      return vscode.Uri.file(path.join(root.uri.fsPath, href))
+      return vscode.Uri.joinPath(root.uri, href)
         .with({ scheme: "vscode-resource" })
         .toString();
     }
 
     // Otherwise look relative to the argdown file
-    return vscode.Uri.file(path.join(path.dirname(resource.fsPath), href))
+    return vscode.Uri.joinPath(Utils.dirname(resource), href)
       .with({ scheme: "vscode-resource" })
       .toString();
   }

@@ -1,5 +1,4 @@
 import * as vscode from "vscode";
-import * as path from "path";
 import throttle from "lodash.throttle";
 
 import { Logger } from "./Logger";
@@ -15,6 +14,7 @@ import { ArgdownExtensionContributions } from "./ArgdownExtensionContributions";
 import { isArgdownFile } from "./util/file";
 import { ArgdownEngine } from "./ArgdownEngine";
 import { IArgdownPreviewState } from "./IArgdownPreviewState";
+import { Utils } from "vscode-uri";
 
 export namespace PreviewViews {
   export const HTML: string = "html";
@@ -414,7 +414,7 @@ export class ArgdownPreview {
     resource: vscode.Uri,
     locked: boolean
   ): string {
-    const basename = path.basename(resource.fsPath);
+    const basename = Utils.basename(resource);
     return locked ? `[Preview] ${basename}` : `Preview ${basename}`;
   }
 
@@ -513,7 +513,7 @@ export class ArgdownPreview {
     }
 
     if (!resource.scheme || resource.scheme === "file") {
-      return baseRoots.concat(vscode.Uri.file(path.dirname(resource.fsPath)));
+      return baseRoots.concat(Utils.dirname(resource));
     }
 
     return baseRoots;

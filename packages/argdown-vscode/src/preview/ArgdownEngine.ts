@@ -1,8 +1,7 @@
 import * as vscode from "vscode";
-import * as path from "path";
 import { ArgdownPreviewConfiguration } from "./ArgdownPreviewConfiguration";
+import { argdown } from "@argdown/core/dist-esm/argdown";
 import { findElementAtPositionPlugin } from "./FindElementAtPositionPlugin";
-import { argdown } from "@argdown/node";
 import {
   IArgdownRequest,
   ISection,
@@ -17,8 +16,18 @@ import {
 import { Logger } from "./Logger";
 argdown.addPlugin(findElementAtPositionPlugin, "find-element-at-position");
 
+export interface ArgdownConfigLoader {
+  (
+    configFile: string | undefined,
+    resource: vscode.Uri,
+    logger: Logger
+  ): Promise<IArgdownRequest>;
+}
 export class ArgdownEngine {
-  public constructor(logger: Logger) {
+  public constructor(
+    private logger: Logger,
+    private configLoader: ArgdownConfigLoader
+  ) {
     let logLevel = "verbose";
     argdown.logger = {
       setLevel(level: string) {
@@ -47,7 +56,7 @@ export class ArgdownEngine {
       },
       throwExceptions: false
     };
-    const response = await argdown.runAsync(request);
+    const response = await argdown.run(request);
     return response.html!;
   }
   public async getMapNodeId(
@@ -74,11 +83,15 @@ export class ArgdownEngine {
       ],
       throwExceptions: false
     };
-    const response = await argdown.runAsync(request);
-    if (response.elementAtPosition) {
-      const title = response.elementAtPosition.title;
+    const response = argdown.run(request);
+    if ((response as any).elementAtPosition) {
+      // TODO: fix extension of IArgdownResponse in FindElementAtPositionPlugin (probably caused by importing from @argdown/core/dist-esm/argdown)
+      const title = (response as any).elementAtPosition.title;
       let nodeType = ArgdownTypes.ARGUMENT_MAP_NODE;
-      if (response.elementAtPosition.type === ArgdownTypes.EQUIVALENCE_CLASS) {
+      if (
+        (response as any).elementAtPosition.type ===
+        ArgdownTypes.EQUIVALENCE_CLASS
+      ) {
         nodeType = ArgdownTypes.STATEMENT_MAP_NODE;
       }
       const node = this.findNodeInMapNodeTree(
@@ -92,11 +105,11 @@ export class ArgdownEngine {
     }
     return "";
   }
-  public async getRangeOfHeading(
+  public getRangeOfHeading(
     doc: vscode.TextDocument,
     config: ArgdownPreviewConfiguration,
     headingText: string
-  ): Promise<vscode.Range> {
+  ): vscode.Range {
     const argdownConfig = config.argdownConfig;
     const input = doc.getText();
     const request: IArgdownRequest = {
@@ -105,7 +118,7 @@ export class ArgdownEngine {
       process: ["parse-input", "build-model"],
       throwExceptions: false
     };
-    const response = await argdown.runAsync(request);
+    const response = argdown.run(request);
     if (!response.sections || response.sections.length == 0) {
       return new vscode.Range(0, 0, 0, 0);
     }
@@ -137,11 +150,11 @@ export class ArgdownEngine {
     }
     return null;
   }
-  public async getRangeOfMapNode(
+  public getRangeOfMapNode(
     doc: vscode.TextDocument,
     config: ArgdownPreviewConfiguration,
     id: string
-  ): Promise<vscode.Range> {
+  ): vscode.Range {
     const argdownConfig = config.argdownConfig;
     const input = doc.getText();
     const request: IArgdownRequest = {
@@ -150,7 +163,7 @@ export class ArgdownEngine {
       process: ["parse-input", "build-model", "build-map", "colorize"],
       throwExceptions: false
     };
-    const response = await argdown.runAsync(request);
+    const response = argdown.run(request);
     const node = this.findNodeInMapNodeTree(
       response.map!.nodes,
       (n: any) => n.id === id
@@ -217,14 +230,14 @@ export class ArgdownEngine {
       ],
       throwExceptions: false
     };
-    const response = await argdown.runAsync(request);
+    const response = argdown.run(request);
     return response.map!;
   }
-  public async exportMapJson(
+  public exportMapJson(
     doc: vscode.TextDocument,
     config: ArgdownPreviewConfiguration
-  ): Promise<string> {
-    const map = await this.getMap(doc, config);
+  ): string {
+    const map = this.getMap(doc, config);
     return stringifyArgdownData(map);
   }
   public async exportJson(
@@ -247,13 +260,13 @@ export class ArgdownEngine {
       ],
       throwExceptions: false
     };
-    const response = await argdown.runAsync(request);
+    const response = argdown.run(request);
     return response.json!;
   }
-  public async exportDot(
+  public exportDot(
     doc: vscode.TextDocument,
     config: ArgdownPreviewConfiguration
-  ): Promise<{ dot: string; request: IArgdownRequest }> {
+  ): { dot: string; request: IArgdownRequest } {
     const argdownConfig = config.argdownConfig || {};
     const input = doc.getText();
     const request = {
@@ -271,7 +284,7 @@ export class ArgdownEngine {
       ],
       throwExceptions: false
     };
-    const response = await argdown.runAsync(request);
+    const response = argdown.run(request);
     return { dot: response.dot!, request };
   }
   public async exportGraphML(
@@ -294,30 +307,13 @@ export class ArgdownEngine {
       ],
       throwExceptions: false
     };
-    const response = await argdown.runAsync(request);
+    const response = argdown.run(request);
     return response.graphml!;
   }
   public async loadConfig(
     configFile: string | undefined,
     resource: vscode.Uri
   ): Promise<IArgdownRequest> {
-    if (!configFile) {
-      return {};
-    }
-    const workspaceFolder = vscode.workspace.getWorkspaceFolder(resource);
-
-    let configPath = configFile;
-    if (workspaceFolder) {
-      let rootPath = workspaceFolder.uri.fsPath;
-      configPath = path.resolve(rootPath, configFile);
-    } else {
-      let rootPath = path.dirname(resource.fsPath);
-      configPath = path.resolve(rootPath, configFile);
-    }
-
-    if (!path.isAbsolute(configPath)) {
-      return {};
-    }
-    return await argdown.loadConfig(configPath);
+    return await this.configLoader(configFile, resource, this.logger);
   }
 }

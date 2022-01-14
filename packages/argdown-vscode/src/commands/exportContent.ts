@@ -1,8 +1,7 @@
 import * as vscode from "vscode";
-import * as fs from "fs";
-import * as path from "path";
 import { Command } from "./Command";
 import { isArgdownFile } from "../preview/util/file";
+import { Utils } from "vscode-uri";
 
 export interface IExportContentArgs {
   source: string;
@@ -23,20 +22,26 @@ const getTargetFileUri = async (
       return;
     }
     const doc = vscode.window.activeTextEditor.document;
-    if (doc.uri.scheme !== "file" || !isArgdownFile(doc)) {
+    if (!isArgdownFile(doc)) {
       return;
     }
     uri = doc.uri;
   }
+  if (vscode.env.appHost !== "desktop") {
+    vscode.window.showInformationMessage(
+      "This command is only supported in the desktop version of VSCode. Please install VSCode on your computer to use this feature."
+    );
+    return;
+  }
   if (!uri) {
     return;
   }
-  const filePath: string = uri.fsPath;
-  const fileDir: string = path.dirname(filePath);
-  const extension: string = path.extname(filePath);
-  const fileName: string = path.basename(filePath, extension);
-  const defaultUri = vscode.Uri.file(
-    path.resolve(fileDir, fileName + "." + defaultExtension)
+  const fileDir = Utils.dirname(uri);
+  // const extension: string = Utils.extname(uri);
+  const fileName: string = Utils.basename(uri);
+  const defaultUri = vscode.Uri.joinPath(
+    fileDir,
+    fileName + "." + defaultExtension
   );
   const option: vscode.SaveDialogOptions = {
     defaultUri,
@@ -52,23 +57,24 @@ const saveExportedFile = async (
 ) => {
   var fileUri = await getTargetFileUri(resource, filters, defaultExtension);
   if (fileUri) {
-    fs.writeFile(fileUri.fsPath, content, function(err) {
-      if (err) {
-        return console.log(err);
-      }
-    });
+    try {
+      const buf = Buffer.from(content, "utf8");
+      vscode.workspace.fs.writeFile(fileUri, buf);
+    } catch (e) {
+      return console.log(e);
+    }
   }
 };
 const savePng = async (resource: vscode.Uri, content: string) => {
   var fileUri = await getTargetFileUri(resource, { PNG: ["png"] }, "png");
   if (fileUri) {
-    var data = content.replace(/^data:image\/\w+;base64,/, "");
-    var buf = Buffer.from(data, "base64");
-    fs.writeFile(fileUri.fsPath, buf, function(err) {
-      if (err) {
-        return console.log(err);
-      }
-    });
+    const data = content.replace(/^data:image\/\w+;base64,/, "");
+    const buf = Buffer.from(data, "base64");
+    try {
+      await vscode.workspace.fs.writeFile(fileUri, buf);
+    } catch (e) {
+      return console.log(e);
+    }
   }
 };
 const sendToLanguageServer = async (
@@ -78,7 +84,7 @@ const sendToLanguageServer = async (
   defaultExtension: string,
   process: string
 ) => {
-  var fileUri = await getTargetFileUri(resource, filters, defaultExtension);
+  const fileUri = await getTargetFileUri(resource, filters, defaultExtension);
   if (fileUri) {
     const args: IExportContentArgs = {
       source: resource.toString(),
