@@ -32,6 +32,15 @@
         "reveal": "never"
       },
       "problemMatcher": []
+    },
+    {
+      "label": "watch:argdown-vscode-web",
+      "type": "npm",
+      "script": "watch-web",
+      "path": "packages/argdown-vscode/",
+      "group": "build",
+      "isBackground": true,
+      "problemMatcher": ["$ts-webpack-watch"]
     }
   ]
 }

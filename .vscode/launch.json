@@ -10,7 +10,19 @@
       "args": ["--extensionDevelopmentPath=${cwd}/packages/argdown-vscode"],
       "stopOnEntry": false,
       "sourceMaps": true,
-      "outFiles": ["${cwd}/packages/argdown-vscode/dist/**/*.js"]
+      "outFiles": ["${cwd}/packages/argdown-vscode/dist/node/**/*.js"]
+    },
+    {
+      "name": "Run Web Extension in VS Code",
+      "type": "pwa-extensionHost",
+      "debugWebWorkerHost": true,
+      "request": "launch",
+      "args": [
+        "--extensionDevelopmentPath=${cwd}/packages/argdown-vscode",
+        "--extensionDevelopmentKind=web"
+      ],
+      "outFiles": ["${cwd}/packages/argdown-vscode/dist/node/**/*.js"],
+      "preLaunchTask": "watch:argdown-vscode-web"
     },
     {
       "name": "Attach to argdown-language-server",
