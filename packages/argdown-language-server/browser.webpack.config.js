@@ -2,7 +2,7 @@
 //@ts-check
 
 ("use strict");
-
+const webpack = require("webpack");
 const path = require("path");
 const { IgnorePlugin } = require("webpack");
 const optionalPlugins = [];
@@ -12,24 +12,37 @@ if (process.platform !== "darwin") {
 
 /**@type {import('webpack').Configuration}*/
 const config = {
-  target: "node", // vscode extensions run in a Node.js-context 📖 -> https://webpack.js.org/configuration/node/
+  mode: "none",
+  target: "webworker", // vscode extensions run in a Node.js-context 📖 -> https://webpack.js.org/configuration/node/
 
-  entry: "./src/server.ts", // the entry point of this extension, 📖 -> https://webpack.js.org/configuration/entry-context/
+  entry: { "server-browser": "./src/server-browser.ts" }, // the entry point of this extension, 📖 -> https://webpack.js.org/configuration/entry-context/
   output: {
-    filename: "server.js",
-    libraryTarget: "commonjs2",
+    path: path.resolve(__dirname, "dist/web"),
+    filename: "[name].js",
     devtoolModuleFilenameTemplate: "../[resource-path]"
   },
-  devtool: "source-map",
+  devtool: "nosources-source-map",
   externals: {
     vscode: "commonjs vscode" // the vscode-module is created on-the-fly and must be excluded. Add other modules that cannot be webpack'ed, 📖 -> https://webpack.js.org/configuration/externals/
   },
   resolve: {
+    mainFields: ["browser", "module", "main"],
     // support reading TypeScript and JavaScript files, 📖 -> https://github.com/TypeStrong/ts-loader
     extensions: [".ts", ".js", ".mjs", ".cjs"],
     alias: {
       "unicode-properties": "unicode-properties/unicode-properties.cjs.js",
       pdfkit: "pdfkit/js/pdfkit.js"
+    },
+    fallback: {
+      // Webpack 5 no longer polyfills Node.js core modules automatically.
+      // see https://webpack.js.org/configuration/resolve/#resolvefallback
+      // for the list of Node.js core module polyfills.
+      assert: require.resolve("assert"),
+      fs: false,
+      stream: false,
+      crypto: require.resolve("crypto-browserify"),
+      path: require.resolve("path-browserify"),
+      process: require.resolve("process")
     }
   },
   module: {
@@ -107,7 +120,15 @@ const config = {
       }
     }
   },
-  plugins: [...optionalPlugins],
+  plugins: [
+    ...optionalPlugins,
+    new webpack.ProvidePlugin({
+      process: "process/browser" // provide a shim for the global `process` variable
+    })
+  ],
+  performance: {
+    hints: false
+  },
   experiments: { asyncWebAssembly: true }
 };
 
