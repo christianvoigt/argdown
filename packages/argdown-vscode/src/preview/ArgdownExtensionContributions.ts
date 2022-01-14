@@ -5,9 +5,7 @@ const resolveExtensionResource = (
   extension: vscode.Extension<any>,
   resourcePath: string
 ): vscode.Uri => {
-  return vscode.Uri.joinPath(extension.extensionUri, resourcePath).with({
-    scheme: "vscode-resource"
-  });
+  return vscode.Uri.joinPath(extension.extensionUri, resourcePath);
 };
 
 const resolveExtensionResources = (
