@@ -1,0 +1,153 @@
+===
+title: Pros and Cons Legalisation of Soft Drugs
+subTitle: A Simple Analysis  
+author: Gregor Betz (adaptation to Argdown)
+date: 22/10/2018
+color:
+    colorScheme: colorbrewer-category10
+    tagColors:
+        pro: 0
+        con: 1
+===
+
+/***
+ * This Argdown document is a straight-forward adaptation
+ * of pros and cons from T. Sather (ed.): 
+ * Pros and Cons: A Debater's Handbook, London 1999. 
+***/
+
+// Central claim:
+[Legalisation of Soft Drugs]: Soft drugs should be legal. 
+    + <No harm, no ban>: The role of legislation is to 
+    protect society from harm, but not to protect people 
+    from themselves. We do not legislate against fatty 
+    foods or lack of exercise, both of which have serious 
+    health implications. The individual's freedom is 
+    paramount unless serious harm is done by particular 
+    act. Taking soft drugs does not harm anybody else and 
+    has only minimal negative effects on the person taking 
+    them -- it is a 'victcimless crime'. As such, it should 
+    not be a crime at all. #pro 
+    - <Law must protect>: It is right that governments 
+    should legislate in a way that overrides personal 
+    freedom to protect people from themselves as well as 
+    from each other. That is why bare-knuckle boxing is 
+    banned and seatbelts are compulsory in some countries 
+    (e.g. Britain). These are ways in which personal 
+    freedom is overridden by legislation designed to 
+    protect personal safety. #con 
+        + <Soft drugs are harmful>: Soft drugs are harmful: 
+        cannabis smoke (as well as the tobacco with which 
+        it is often mixed) is carcinogenic, and prolonged 
+        cannabis smoking has been shown to cause brain 
+        damage and significant loss of motivation and 
+        short-term memory. Amphetamines interfere with the 
+        nervous system in a potentially damaging way. 
+        Drug-takers also put others at risk by taking 
+        mind-altering substances that can lead to 
+        unpredictable and dangerous behaviour. #con 
+            -> <No harm, no ban>
+    + <Lifestyle decision>: Individuals should be left to 
+    choose their own lifestyle and priorities. If that 
+    includes using drugs for pleasure and relaxation then 
+    that is a perfectly valid decision. #pro 
+        - <Moral leadership>: The government should provide 
+        moral leadership as well as legislating to protect 
+        the health of the individual and the safety of 
+        others. The drug-using lifestyle is a shallow, 
+        hedonistic, apathetic, inward-looking, uncreative 
+        form of escapism. Governments should legislate and 
+        speak out against drugs to discourage young people 
+        from this lifestyle and encourage them to engage in 
+        healthier and more creative pastimes. #con   
+    + <Alcohol and tobacco analogy>: The law is currently 
+    inconsistent. Cannabis and speed have comparable 
+    physical and mental effects to those of alcohol and 
+    tobacco, which are legal drugs. If anything, alcohol 
+    and tobacco have more seriously damaging effects. If 
+    alcohol and tobacco are legal then soft drugs should be 
+    too. #pro 
+        + <Tobacco and alcohol more dangerous>: 
+        Tobacco-related diseases kill millions each year, 
+        and alcohol is responsible for deaths on the road, 
+        civil disorder and domestic violence on a huge 
+        scale. Cannabis and speed make people 'spaced out' 
+        or hyperactive respectively for short periods in 
+        social situations and are relatively harmless. #pro  
+        - <Major differences>: The effects of soft drugs 
+        may be 'comparable' with those of alcohol and 
+        tobacco but there are important differences. 
+        Cannabis and speed are mindaltering in a 
+        way that alcohol and tobacco are not. #con 
+        <_ <Poor reason>: In any case, the fact that 
+        harmful and dangerous substances (tobacco and 
+        alcohol) are already, regrettably, socially 
+        entrenched is not a good reason to allow two more 
+        such substances to become more widely used and 
+        socially acceptable. #con // undercuts the analogy
+    + <Listen to society>: Speed and cannabis are widely 
+    used, not just by stereotypical 'drug users', but by a 
+    large minority of middle class and professional people. 
+    The current law makes criminals of many otherwise 
+    respectable' citizens. The government should listen to 
+    society. #pro 
+    - <Minimize destructive activity>: Our aim is to 
+    minimise drug use since it is a destructive, dangerous 
+    and anti-social activity. Legalising soft drugs will 
+    inevitably mean that there is an increase in drug use. 
+    Therefore, we should not legalise soft drugs, even if 
+    an alarming number of people already use them. #con 
+        + <Soft drugs are harmful>
+    - <Argument from addiction>:  We should be concerned 
+    about any addictive substance. While it would be 
+    impractical to ban many psychologically addictive 
+    things (like coffee or shopping), in the case of soft 
+    drugs they are already banned and there is no reason to 
+    reverse that situation. #con 
+        + <Soft drugs are addictive>: It is hard to draw an 
+        exact line between physical and psychological 
+        addiction - they are two sides of the same coin. 
+        Recent research has demonstrated that cannabis is 
+        highly addictive - in the US in particular, many 
+        self-help groups for cannabis addicts have recently 
+        been formed,with rapidly growing membership. 
+        Whether we call that addiction 'psychological' or 
+        'physical' is immaterial. #con 
+        <_ <Addiction no reason to ban>: Soft drugs are not 
+        physically addictive and even if they were that 
+        would not be a reason for them to be illegal -- 
+        caffeine, alcohol and nicotine are physically 
+        addictive and still legal. And being 
+        psychologically addictive is even less of a reason 
+        to ban something. Manythings, such as shopping, sex,
+        jogging or gambling may be psychologically 
+        addictive, and many people are inately susceptible 
+        to psychological addiction. We cannot ban all 
+        things that a minority might come to depend upon -- 
+        we should instead provide counselling for addicts. 
+        #pro // undercuts the @<Argument from addiction>
+    - <Slippery slope>: Soft drugs are dangerous because 
+    they start people down the 'slippery slope' to using 
+    ever-harder drugs. The same dealer will try to push 
+    harder drugs onto his clients who use soft drugs, by 
+    cutting cannabis or speed with cocaine or heroin or 
+    offering free samples to get them hooked. Legalisation 
+    of soft drugs would, ironically, provide a whole market 
+    for hard drug pushers, who would be able to undercut 
+    the prices of duty-inflated market goods. #con 
+        - <Coffee houses>: Legalising soft drugs, and 
+        allowing them to  be sold in licensed premises, 
+        perhaps like the 'coffee houses' in Amsterdam that 
+        sell cannabis, will separate them from the criminal 
+        underworld associated with drug dealing. The 
+        'slippery slope' would then no longer exist. People 
+        could purchase soft drugs without having to come 
+        into contact with dealers who might cut their drugs 
+        with harder drugs or try to get them onto harder 
+        drugs in other ways. (In any case, only a tiny 
+        minority of cannabis users ever go on to use harder 
+        drugs.) #pro 
+    + <Tax revenue>: Finally, the government could use the 
+    sale of soft drugs as a source of revenue through 
+    excise duty, as is already done with alcohol and 
+    tobacco. #pro 

@@ -1,0 +1,90 @@
+# :heart: Welcome to Argdown! :heart:
+
+[Intro]: Argdown is a simple syntax for defining argumentative 
+structures, inspired by Markdown.
+  + Writing a list of **pros & cons**   in Argdown is as 
+    simple as writing a twitter message (actually we are 
+    right in the middle of one).
+  + But you can also 
+    **logically reconstruct** more complex 
+    relations between arguments or dive into 
+    the details of their premise-conclusion structures.
+  + Finally, you can export Argdown as a graph and create 
+    **argument maps** of whole debates.
+
+This Argdown document only demonstrates the basic syntax elements. 
+The argument map produced is a "bogus debate". 
+
+To read a reconstruction of a *real* debate, select one of the 
+**example debates** by moving your mouse to the *"Examples"* button 
+on the upper left, above the text editor.
+
+## Argdown Basics
+
+This is a normal statement with __bold__ and _italic_ text, 
+a #tag and a [link](https://github.com/christianvoigt/argdown-parser).
+
+[Statement 1]: Another statement (after a blank line), 
+this time with a title defined in square brackets. 
+We can use the title to refer to this statement later 
+or mention it in other statements. #(Another tag)
+
+[Statement 2]: Let's do that now: The previous 
+statement was @[Statement 1].
+  + <Argument title>: Statements can be supported 
+    by __arguments__. Arguments are defined by 
+    using angle brackets. #tag
+  - <Another argument>: This arguments attacks @[Statement 2]. #tag
+    - <Yet another argument>: Arguments can also 
+      be supported or attacked. #yet-another-tag
+      <!--
+      By the way,
+      this is a multiline comment.
+      -->
+
+We can also do that the other way around:
+
+[Intro]
+  -> <Argument 1>
+
+Headings can be used to group arguments and statements together. 
+In the map these groups are visualized as grey boxes.
+
+Tags are visualized by the colors of the arguments and statements in the map.
+
+### Argument reconstructions
+
+So far, we have ignored the internal structure of arguments. Arguments 
+consist of premises from which conclusions are inferred. We can precisely 
+define this premise-conclusion structure with Argdown:
+
+<Argument 1>
+
+(1) First premise (this is is a normal statement 
+    and you can do everything with it, we have done 
+    with the statements above).
+(2) [Statement 2]: We have already defined a statement 
+    with this title.
+    Argdown allows you to add multiple statements 
+    to the same "equivalence class" by giving them 
+    the same title. The statements will then be treated 
+    as logically equivalent.
+--
+Some inference rule: p .^. (p .->. q) .->. q {some_additional_data: [1,2]}
+--
+(3) And now the conclusion 
+  -> Outgoing relations of the conclusion, 
+  are also interpreted as outgoing relations of 
+  the whole argument.
+  +> <Yet another argument>
+  <!--
+  The second relation is only "sketched",
+  because it does not declare which premise
+  of @<Argument 2> is supported.
+  (At this point this is not possible,
+  as we have not yet reconstructed @<Argument 2>)
+  -->
+  -> [Statement 1]
+
+  We can also link to headings: 
+  [Back to top](#heading-welcome-to-argdown)

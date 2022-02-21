@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Using Argdown in Markdown | Argdown</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    <link rel="shortcut icon" type="image/x-icon" href="https://argdown.org/favicon.ico">
+    <link rel="icon" type="image/png" href="https://argdown.org/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="https://argdown.org/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="https://argdown.org/site.webmanifest">
+    <link rel="apple-touch-icon-precomposed" href="https://argdown.org/apple-touch-icon.png">
+    <script src="https://argdown.org/argdown-map.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://argdown.org/argdown-map.css">
+    <meta name="description" content="How to use Argdown code fences in Markdown">
+    
+    <link rel="preload" href="/assets/css/0.styles.d44408e3.css" as="style"><link rel="preload" href="/assets/js/app.e91d5bc4.js" as="script"><link rel="preload" href="/assets/js/3.275776de.js" as="script"><link rel="preload" href="/assets/js/43.0def2f3c.js" as="script"><link rel="preload" href="/assets/js/5.6e73b733.js" as="script"><link rel="prefetch" href="/assets/js/10.bce1ef07.js"><link rel="prefetch" href="/assets/js/11.cf80334a.js"><link rel="prefetch" href="/assets/js/12.e422cfc7.js"><link rel="prefetch" href="/assets/js/13.839cb0f3.js"><link rel="prefetch" href="/assets/js/14.880b3b33.js"><link rel="prefetch" href="/assets/js/15.abbcfdfa.js"><link rel="prefetch" href="/assets/js/16.7fa548ca.js"><link rel="prefetch" href="/assets/js/17.9aa1c9f9.js"><link rel="prefetch" href="/assets/js/18.f829b0c0.js"><link rel="prefetch" href="/assets/js/19.6227120e.js"><link rel="prefetch" href="/assets/js/20.72f11159.js"><link rel="prefetch" href="/assets/js/21.6fee7a99.js"><link rel="prefetch" href="/assets/js/22.f250e760.js"><link rel="prefetch" href="/assets/js/23.613c08a0.js"><link rel="prefetch" href="/assets/js/24.7ebecc02.js"><link rel="prefetch" href="/assets/js/25.fd2bcd8f.js"><link rel="prefetch" href="/assets/js/26.7577404e.js"><link rel="prefetch" href="/assets/js/27.f21ea530.js"><link rel="prefetch" href="/assets/js/28.819ba326.js"><link rel="prefetch" href="/assets/js/29.1d933e8d.js"><link rel="prefetch" href="/assets/js/30.9046c3b0.js"><link rel="prefetch" href="/assets/js/31.d3d3b041.js"><link rel="prefetch" href="/assets/js/32.5b832a1e.js"><link rel="prefetch" href="/assets/js/33.205b099a.js"><link rel="prefetch" href="/assets/js/34.a30bd6fb.js"><link rel="prefetch" href="/assets/js/35.4f2a042f.js"><link rel="prefetch" href="/assets/js/36.a154eafd.js"><link rel="prefetch" href="/assets/js/37.1d8a6ac5.js"><link rel="prefetch" href="/assets/js/38.dd96ebb1.js"><link rel="prefetch" href="/assets/js/39.b297e62b.js"><link rel="prefetch" href="/assets/js/4.661920fa.js"><link rel="prefetch" href="/assets/js/40.43f1a9c5.js"><link rel="prefetch" href="/assets/js/41.85dbeb82.js"><link rel="prefetch" href="/assets/js/42.a71c61be.js"><link rel="prefetch" href="/assets/js/44.93eb6d80.js"><link rel="prefetch" href="/assets/js/45.663a3d08.js"><link rel="prefetch" href="/assets/js/46.d7f7b0d2.js"><link rel="prefetch" href="/assets/js/47.8df263fa.js"><link rel="prefetch" href="/assets/js/48.581f37b3.js"><link rel="prefetch" href="/assets/js/6.fc75f6f1.js"><link rel="prefetch" href="/assets/js/7.9a487c21.js"><link rel="prefetch" href="/assets/js/8.418c95c5.js"><link rel="prefetch" href="/assets/js/9.cc838dd5.js"><link rel="prefetch" href="/assets/js/vendors~docsearch.b03e88c6.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.d44408e3.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">Argdown</span></a> <div class="links"><form id="search-form" role="search" class="algolia-search-wrapper search-box"><input id="algolia-search-input" class="search-query"></form> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">
+  Home
+</a></div><div class="nav-item"><a href="/guide/" class="nav-link router-link-active">
+  Guide
+</a></div><div class="nav-item"><a href="/syntax/" class="nav-link">
+  Syntax
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="API" class="dropdown-title"><span class="title">API</span> <span class="arrow down"></span></button> <button type="button" aria-label="API" class="mobile-dropdown-title"><span class="title">API</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/api/" class="nav-link">
+  Overview
+</a></li><li class="dropdown-item"><!----> <a href="https://argdown.org/argdown-core/index.html" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  @argdown/core
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://argdown.org/argdown-node/index.html" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  @argdown/node
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div><div class="nav-item"><a href="/changes/" class="nav-link">
+  Changes
+</a></div><div class="nav-item"><a href="https://argdown.org/sandbox/" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Sandbox
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <a href="https://github.com/christianvoigt/argdown" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">
+  Home
+</a></div><div class="nav-item"><a href="/guide/" class="nav-link router-link-active">
+  Guide
+</a></div><div class="nav-item"><a href="/syntax/" class="nav-link">
+  Syntax
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="API" class="dropdown-title"><span class="title">API</span> <span class="arrow down"></span></button> <button type="button" aria-label="API" class="mobile-dropdown-title"><span class="title">API</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/api/" class="nav-link">
+  Overview
+</a></li><li class="dropdown-item"><!----> <a href="https://argdown.org/argdown-core/index.html" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  @argdown/core
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://argdown.org/argdown-node/index.html" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  @argdown/node
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div><div class="nav-item"><a href="/changes/" class="nav-link">
+  Changes
+</a></div><div class="nav-item"><a href="https://argdown.org/sandbox/" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Sandbox
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <a href="https://github.com/christianvoigt/argdown" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav>  <ul class="sidebar-links"><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Getting started</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Creating argument maps</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading open"><span>Publishing argument maps</span> <span class="arrow down"></span></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/guide/publishing-argument-maps.html" class="sidebar-link">Introduction</a></li><li><a href="/guide/embedding-your-maps-in-a-webpage.html" class="sidebar-link">Embedding your Argdown maps in a Webpage</a></li><li><a href="/guide/using-argdown-in-markdown.html" aria-current="page" class="active sidebar-link">Using Argdown in Markdown</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/guide/using-argdown-in-markdown.html#argdown-code-fences-in-markdown" class="sidebar-link">Argdown code fences in Markdown</a></li><li class="sidebar-sub-header"><a href="/guide/using-argdown-in-markdown.html#example" class="sidebar-link">Example</a></li></ul></li><li><a href="/guide/publishing-argdown-markdown-with-pandoc.html" class="sidebar-link">Publishing Argdown-Markdown with Pandoc</a></li><li><a href="/guide/integrating-argdown-markdown-into-applications.html" class="sidebar-link">Integrating Argdown-Markdown into applications</a></li></ul></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Configuration</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Extending Argdown</span> <span class="arrow right"></span></p> <!----></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="using-argdown-in-markdown"><a href="#using-argdown-in-markdown" class="header-anchor">#</a> Using Argdown in Markdown</h1> <p>Argdown is not aiming to replace <a href="https://commonmark.org/" target="_blank" rel="noopener noreferrer">Markdown<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a> in your workflow. Argdown is a domain-specific language for argument analysis and reconstruction, not a general markup language for arbitrary content. Many features of Markdown (e.g. tables, images or inline html) will probably never be implemented in Argdown.</p> <p>This documentation is a good example of how you can combine Markdown and Argdown: The explanatory text is written in Markdown with many Argdown examples in <a href="/guide/using-argdown-in-markdown.html#argdown-code-fences-in-markdown">code fences</a>.</p> <p>If you want to write a paper about your argument reconstruction or present it on your website, we recommend to do the same. Here are the tools to get you started:</p> <ul><li><p><strong>Preview</strong>: In VSCode (with the <a href="/guide/installing-the-vscode-extension.html">Argdown VSCode extension</a> installed) you can directly see the resulting argument maps in VSCode's Markdown preview window while writing.</p></li> <li><p><strong>HTML Export</strong>: If you want to export your Argdown-Markdown file to html, you can simply <a href="/guide/installing-the-commandline-tool.html">install the Argdown commandline tool</a> and use the <code>argdown markdown [input glob] [output folder]</code> command. For more advanced use cases we recommend to use Pandoc (see next point).</p></li> <li><p><strong>PDF Export:</strong> If you want to export your Argdown-Markdown file to pdf, you can install Pandoc and <a href="">use the Argdown Pandoc filter</a>.</p></li></ul> <p>In VSCode you can <a href="/guide/running-custom-processes.html#defining-an-argdown-task-in-vs-code">define an Argdown task</a> that runs these commands for you.</p> <p>Finally, using the <a href="/guide/integrating-argdown-markdown-into-applications.html">Argdown plugins for Markdown parsers</a> you can integrate Argdown support into many static site generators and other applications.</p> <h2 id="argdown-code-fences-in-markdown"><a href="#argdown-code-fences-in-markdown" class="header-anchor">#</a> Argdown code fences in Markdown</h2> <p>You can insert as many Argdown &quot;code snippets&quot; as you want into your Markdown document. To do so, use <a href="https://www.markdownguide.org/extended-syntax/#fenced-code-blocks" target="_blank" rel="noopener noreferrer">fenced code blocks<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a> and add the language identifier <code>argdown</code> or <code>argdown-map</code> behind the backticks at the beginning of your fenced code block:</p> <ul><li>If you preview/export <code>argdown</code> code blocks the source code will simply be highlighted</li> <li>If you preview/export <code>argdown-map</code> code blocks they will be transformed to images of your argument map</li></ul> <h2 id="example"><a href="#example" class="header-anchor">#</a> Example</h2> <p>Here is an example of a Markdown document containing Argdown code fences:</p> <div class="language-markdown extra-class"><pre class="language-markdown"><code><span class="token title important"><span class="token punctuation">###</span> Argdown-Markdown example content</span>
+
+Some Markdown text
+
+An image:
+
+<span class="token url"><span class="token operator">!</span>[<span class="token content">alt text</span>](<span class="token url">/argdown-arrow.png</span> <span class="token string">&quot;Argdown arrow&quot;</span>)</span>
+
+<span class="token code"><span class="token punctuation">```</span><span class="token code-language">argdown-map</span>
+<span class="token code-block language-argdown-map language-argdown-map">
+===
+title: my reconstruction
+webComponent:
+    figureCaption: This will be used as the figure caption instead of the title
+===
+
+[s]: a statement
+    &lt;- &lt;a&gt;: an argument
+
+&lt;a&gt;
+
+(1) first premise
+(2) second premise
+-----
+(3) conclusion</span>
+<span class="token punctuation">```</span></span>
+
+Here comes a Markdown table:
+
+<span class="token table"><span class="token table-header-row"><span class="token punctuation">|</span><span class="token table-header important"> cell-header 1 </span><span class="token punctuation">|</span><span class="token table-header important"> cell-header 2 </span><span class="token punctuation">|</span>
+</span><span class="token table-line"><span class="token punctuation">|</span> <span class="token punctuation">-------------</span> <span class="token punctuation">|</span> <span class="token punctuation">-------------</span> <span class="token punctuation">|</span>
+</span><span class="token table-data-rows"><span class="token punctuation">|</span><span class="token table-data"> cell1         </span><span class="token punctuation">|</span><span class="token table-data"> cell2         </span><span class="token punctuation">|</span>
+</span></span>
+And some inline html:
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token special-attr"><span class="token attr-name">onClick</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span><span class="token value javascript language-javascript"><span class="token function">alert</span><span class="token punctuation">(</span><span class="token string">'Yay!'</span><span class="token punctuation">)</span><span class="token punctuation">;</span></span><span class="token punctuation">&quot;</span></span></span><span class="token punctuation">&gt;</span></span>whatever<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">&gt;</span></span>
+
+Here is another Argdown code block, this time the &quot;source view&quot; of the web-component will be shown:
+
+<span class="token code"><span class="token punctuation">```</span><span class="token code-language">argdown</span>
+<span class="token code-block language-argdown language-argdown">
+[s]: a statement
+    &lt;- &lt;a&gt;: an argument
+
+&lt;a&gt;
+
+(1) first premise
+(2) second premise
+-----
+(3) conclusion</span>
+<span class="token punctuation">```</span></span>
+</code></pre></div><p>Let's see how this will look, if you export it to html using the web-component export. The following section is simply the example Markdown from above, exported to html:</p> <h3 id="argdown-markdown-example-content"><a href="#argdown-markdown-example-content" class="header-anchor">#</a> Argdown-Markdown example content</h3> <p>Some Markdown text</p> <p>An image:</p> <p><img src="/argdown-arrow.png" alt="Argdown arrow" title="Argdown arrow"></p> <figure role="group" class="argdown-figure"><argdown-map initial-view="map"><div slot="source"><pre class="language-argdown"><code class="language-argdown"><span class="hljs-meta">===
+title: my reconstruction
+webComponent:
+    figureCaption: This will be used as the figure caption instead of the title
+===</span>
+
+<span class="hljs-statement-title">[s]:</span> a statement
+<span class="hljs-attack">    &lt;-</span> <span class="hljs-argument-title">&lt;a&gt;:</span> an argument
+
+<span class="hljs-argument-title">&lt;a&gt;</span>
+
+<span class="hljs-argument-statement-nr">(1)</span> first premise
+<span class="hljs-argument-statement-nr">(2)</span> second premise
+<span class="hljs-inference">-----</span>
+<span class="hljs-argument-statement-nr">(3)</span> conclusion</code></pre></div><div slot="map"><svg width="204pt" height="124pt" viewBox="0.00 0.00 204.00 124.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="graph0" transform="scale(1 1) rotate(0) translate(4 120)" class="graph"><title>Argument Map</title> <g id="node1" class="node"><title>n0</title> <path fill="white" stroke="#1b9e77" stroke-width="2" d="M184,-116C184,-116 12,-116 12,-116 6,-116 0,-110 0,-104 0,-104 0,-88 0,-88 0,-82 6,-76 12,-76 12,-76 184,-76 184,-76 190,-76 196,-82 196,-88 196,-88 196,-104 196,-104 196,-110 190,-116 184,-116"></path> <text text-anchor="start" x="95.5" y="-102" font-family="arial" font-weight="bold" font-size="10.00" fill="#000000">s</text> <text text-anchor="start" x="71.88" y="-85" font-family="arial" font-size="10.00" fill="#000000">a statement</text></g> <g id="node2" class="node"><title>n1</title> <path fill="#1b9e77" stroke="black" d="M184,-40C184,-40 12,-40 12,-40 6,-40 0,-34 0,-28 0,-28 0,-12 0,-12 0,-6 6,0 12,0 12,0 184,0 184,0 190,0 196,-6 196,-12 196,-12 196,-28 196,-28 196,-34 190,-40 184,-40"></path> <text text-anchor="start" x="95.22" y="-26" font-family="arial" font-weight="bold" font-size="10.00" fill="#000000">a</text> <text text-anchor="start" x="69.94" y="-9" font-family="arial" font-size="10.00" fill="#000000">an argument</text></g> <g id="edge1" class="edge"><title>n1-&gt;n0</title> <path fill="none" stroke="#ff0000" d="M98,-40.06C98,-47.85 98,-57.05 98,-65.66"></path> <polygon fill="#ff0000" stroke="#ff0000" points="94.5,-65.75 98,-75.75 101.5,-65.75 94.5,-65.75"></polygon></g></g></svg></div></argdown-map><figcaption>This will be used as the figure caption instead of the title</figcaption></figure><p>Here comes a Markdown table:</p> <table><thead><tr><th>cell-header 1</th> <th>cell-header 2</th></tr></thead> <tbody><tr><td>cell1</td> <td>cell2</td></tr></tbody></table> <p>And some inline html:</p> <p><button onClick="alert('Yay!');">whatever</button></p> <p>Here is another Argdown code block, this time the &quot;source view&quot; of the web-component will be shown:</p> <figure role="group" class="argdown-figure"><argdown-map initial-view="source"><div slot="source"><pre class="language-argdown"><code class="language-argdown"><span class="hljs-statement-title">[s]:</span> a statement
+<span class="hljs-attack">    &lt;-</span> <span class="hljs-argument-title">&lt;a&gt;:</span> an argument
+
+<span class="hljs-argument-title">&lt;a&gt;</span>
+
+<span class="hljs-argument-statement-nr">(1)</span> first premise
+<span class="hljs-argument-statement-nr">(2)</span> second premise
+<span class="hljs-inference">-----</span>
+<span class="hljs-argument-statement-nr">(3)</span> conclusion</code></pre></div><div slot="map"><svg width="204pt" height="124pt" viewBox="0.00 0.00 204.00 124.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="graph0" transform="scale(1 1) rotate(0) translate(4 120)" class="graph"><title>Argument Map</title> <g id="node1" class="node"><title>n0</title> <path fill="white" stroke="#1b9e77" stroke-width="2" d="M184,-116C184,-116 12,-116 12,-116 6,-116 0,-110 0,-104 0,-104 0,-88 0,-88 0,-82 6,-76 12,-76 12,-76 184,-76 184,-76 190,-76 196,-82 196,-88 196,-88 196,-104 196,-104 196,-110 190,-116 184,-116"></path> <text text-anchor="start" x="95.5" y="-102" font-family="arial" font-weight="bold" font-size="10.00" fill="#000000">s</text> <text text-anchor="start" x="71.88" y="-85" font-family="arial" font-size="10.00" fill="#000000">a statement</text></g> <g id="node2" class="node"><title>n1</title> <path fill="#1b9e77" stroke="black" d="M184,-40C184,-40 12,-40 12,-40 6,-40 0,-34 0,-28 0,-28 0,-12 0,-12 0,-6 6,0 12,0 12,0 184,0 184,0 190,0 196,-6 196,-12 196,-12 196,-28 196,-28 196,-34 190,-40 184,-40"></path> <text text-anchor="start" x="95.22" y="-26" font-family="arial" font-weight="bold" font-size="10.00" fill="#000000">a</text> <text text-anchor="start" x="69.94" y="-9" font-family="arial" font-size="10.00" fill="#000000">an argument</text></g> <g id="edge1" class="edge"><title>n1-&gt;n0</title> <path fill="none" stroke="#ff0000" d="M98,-40.06C98,-47.85 98,-57.05 98,-65.66"></path> <polygon fill="#ff0000" stroke="#ff0000" points="94.5,-65.75 98,-75.75 101.5,-65.75 94.5,-65.75"></polygon></g></g></svg></div></argdown-map></figure></div> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/guide/embedding-your-maps-in-a-webpage.html" class="prev">
+        Embedding your Argdown maps in a Webpage
+      </a></span> <span class="next"><a href="/guide/publishing-argdown-markdown-with-pandoc.html">
+        Publishing Argdown-Markdown with Pandoc
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"><!----></div></div>
+    <script src="/assets/js/app.e91d5bc4.js" defer></script><script src="/assets/js/3.275776de.js" defer></script><script src="/assets/js/43.0def2f3c.js" defer></script><script src="/assets/js/5.6e73b733.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,581 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>ModelPlugin | @argdown/core</title>
+	<meta name="description" content="Documentation for @argdown/core">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">@argdown/core</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../index.html">@argdown/core</a>
+				</li>
+				<li>
+					<a href="../modules/plugins_ModelPlugin.html">plugins/ModelPlugin</a>
+				</li>
+				<li>
+					<a href="plugins_ModelPlugin.ModelPlugin.html">ModelPlugin</a>
+				</li>
+			</ul>
+			<h1>Class ModelPlugin</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>The ModelPlugin builds the basic data model from the abstract syntax tree (AST) in the <a href="../interfaces/index.IArgdownResponse.html#ast">IArgdownResponse.ast</a> response property that is provided by the <a href="plugins_ParserPlugin.ParserPlugin.html">ParserPlugin</a>.
+						This includes the following response object properties:</p>
+					</div>
+					<ul>
+						<li><a href="../interfaces/index.IArgdownResponse.html#statements">IArgdownResponse.statements</a></li>
+						<li><a href="../interfaces/index.IArgdownResponse.html#arguments">IArgdownResponse.arguments</a></li>
+						<li><a href="../interfaces/index.IArgdownResponse.html#relations">IArgdownResponse.relations</a></li>
+						<li><a href="../interfaces/index.IArgdownResponse.html#sections">IArgdownResponse.sections</a></li>
+					</ul>
+					<p>Most of the other plugins depend on the data produced by this plugin. Whenever possible plugins should use the
+					data processed by this plugin instead of working with the AST nodes directly.</p>
+					<p>depends on data from: <a href="plugins_ParserPlugin.ParserPlugin.html">ParserPlugin</a></p>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">ModelPlugin</span>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel">
+				<h3>Implements</h3>
+				<ul class="tsd-hierarchy">
+					<li><a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownPlugin</a></li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Constructors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="plugins_ModelPlugin.ModelPlugin.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="plugins_ModelPlugin.ModelPlugin.html#defaults" class="tsd-kind-icon">defaults</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="plugins_ModelPlugin.ModelPlugin.html#name" class="tsd-kind-icon">name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="plugins_ModelPlugin.ModelPlugin.html#prepare" class="tsd-kind-icon">prepare</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="plugins_ModelPlugin.ModelPlugin.html#ruleListeners" class="tsd-kind-icon">rule<wbr>Listeners</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="plugins_ModelPlugin.ModelPlugin.html#run" class="tsd-kind-icon">run</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="plugins_ModelPlugin.ModelPlugin.html#tokenListeners" class="tsd-kind-icon">token<wbr>Listeners</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="plugins_ModelPlugin.ModelPlugin.html#assignSectionOfFirstMemberIfWithoutSection" class="tsd-kind-icon">assign<wbr>Section<wbr>OfFirst<wbr>Member<wbr>IfWithout<wbr>Section</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="plugins_ModelPlugin.ModelPlugin.html#getSettings" class="tsd-kind-icon">get<wbr>Settings</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="plugins_ModelPlugin.ModelPlugin.html#removeRedundantEC2ARelations" class="tsd-kind-icon">remove<wbr>RedundantEC2ARelations</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="plugins_ModelPlugin.ModelPlugin.html#removeRelationFromSource" class="tsd-kind-icon">remove<wbr>Relation<wbr>From<wbr>Source</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="plugins_ModelPlugin.ModelPlugin.html#removeRelationFromTarget" class="tsd-kind-icon">remove<wbr>Relation<wbr>From<wbr>Target</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="plugins_ModelPlugin.ModelPlugin.html#transformArgumentRelations" class="tsd-kind-icon">transform<wbr>Argument<wbr>Relations</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="plugins_ModelPlugin.ModelPlugin.html#transformStatementRelations" class="tsd-kind-icon">transform<wbr>Statement<wbr>Relations</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Constructors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
+					<a name="constructor" class="tsd-anchor"></a>
+					<h3>constructor</h3>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Model<wbr>Plugin<span class="tsd-signature-symbol">(</span>config<span class="tsd-signature-symbol">?: </span><a href="../interfaces/plugins_ModelPlugin.IModelPluginSettings.html" class="tsd-signature-type" data-tsd-kind="Interface">IModelPluginSettings</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="plugins_ModelPlugin.ModelPlugin.html" class="tsd-signature-type" data-tsd-kind="Class">ModelPlugin</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/plugins/ModelPlugin.ts#L374">src/plugins/ModelPlugin.ts:374</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> config: <a href="../interfaces/plugins_ModelPlugin.IModelPluginSettings.html" class="tsd-signature-type" data-tsd-kind="Interface">IModelPluginSettings</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="plugins_ModelPlugin.ModelPlugin.html" class="tsd-signature-type" data-tsd-kind="Class">ModelPlugin</a></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="defaults" class="tsd-anchor"></a>
+					<h3>defaults</h3>
+					<div class="tsd-signature tsd-kind-icon">defaults<span class="tsd-signature-symbol">:</span> <a href="../interfaces/plugins_ModelPlugin.IModelPluginSettings.html" class="tsd-signature-type" data-tsd-kind="Interface">IModelPluginSettings</a><span class="tsd-signature-symbol"> = {}</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/plugins/ModelPlugin.ts#L133">src/plugins/ModelPlugin.ts:133</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="name" class="tsd-anchor"></a>
+					<h3>name</h3>
+					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;ModelPlugin&quot;</span></div>
+					<aside class="tsd-sources">
+						<p>Implementation of <a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html">IArgdownPlugin</a>.<a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html#name">name</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/plugins/ModelPlugin.ts#L132">src/plugins/ModelPlugin.ts:132</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The name of the plugin</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="prepare" class="tsd-anchor"></a>
+					<h3>prepare</h3>
+					<div class="tsd-signature tsd-kind-icon">prepare<span class="tsd-signature-symbol">:</span> <a href="../interfaces/IArgdownPlugin.IRequestHandler.html" class="tsd-signature-type" data-tsd-kind="Interface">IRequestHandler</a><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<p>Implementation of <a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html">IArgdownPlugin</a>.<a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html#prepare">prepare</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/plugins/ModelPlugin.ts#L142">src/plugins/ModelPlugin.ts:142</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Called each time the plugin&#39;s processor is run,
+								before any other method of this plugin is called.
+								Use this to add default settings to the request and to check that all required data is present in the response.
+							If not, throw an <a href="../modules/ArgdownPluginError.html">ArgdownPluginError</a> to cancel the the current processor&#39;s execution.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="ruleListeners" class="tsd-anchor"></a>
+					<h3>rule<wbr>Listeners</h3>
+					<div class="tsd-signature tsd-kind-icon">rule<wbr>Listeners<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{}</span></div>
+					<aside class="tsd-sources">
+						<p>Implementation of <a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html">IArgdownPlugin</a>.<a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html#ruleListeners">ruleListeners</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/plugins/ModelPlugin.ts#L134">src/plugins/ModelPlugin.ts:134</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>A map of <a href="../interfaces/model_model.IRuleNode-1.html">IRuleNode</a> event listeners to be added to <a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html#ruleListeners">IArgdownPlugin.ruleListeners</a>.
+							You can use ruleListeners to visit every rule node in the Argdown AST.</p>
+						</div>
+						<p>The listeners will be called by the ArgdownTreeWalker event emitter before the <a href="plugins_ModelPlugin.ModelPlugin.html#run">run</a> method and after the <a href="plugins_ModelPlugin.ModelPlugin.html#prepare">prepare</a> method.
+							The tree walker visits the nodes depth first and emits
+						<code>[RuleNames.RULE_NAME + &quot;Entry&quot;]</code> and <code>[RuleNames.RULE_NAME + &quot;Exit&quot;]</code> events for every <a href="../interfaces/model_model.IRuleNode-1.html">IRuleNode</a> encountered.</p>
+						<p>The eventId has to be a <a href="../modules/RuleNames.html">RuleNames</a> member plus either &quot;Entry&quot; or &quot;Exit&quot;.</p>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-index-signature">
+								<h5><span class="tsd-signature-symbol">[</span>eventId: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><a href="../interfaces/ArgdownTreeWalker.IRuleNodeHandler.html" class="tsd-signature-type" data-tsd-kind="Interface">IRuleNodeHandler</a></h5>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="run" class="tsd-anchor"></a>
+					<h3>run</h3>
+					<div class="tsd-signature tsd-kind-icon">run<span class="tsd-signature-symbol">:</span> <a href="../interfaces/IArgdownPlugin.IRequestHandler.html" class="tsd-signature-type" data-tsd-kind="Interface">IRequestHandler</a><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<p>Implementation of <a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html">IArgdownPlugin</a>.<a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html#run">run</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/plugins/ModelPlugin.ts#L348">src/plugins/ModelPlugin.ts:348</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Use this method to do the main work outside of the Argdown AST.
+							This is the last method to be called by the <a href="../modules/ArgdownApplication.html">ArgdownApplication</a>.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="tokenListeners" class="tsd-anchor"></a>
+					<h3>token<wbr>Listeners</h3>
+					<div class="tsd-signature tsd-kind-icon">token<wbr>Listeners<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{}</span></div>
+					<aside class="tsd-sources">
+						<p>Implementation of <a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html">IArgdownPlugin</a>.<a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html#tokenListeners">tokenListeners</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/plugins/ModelPlugin.ts#L135">src/plugins/ModelPlugin.ts:135</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>A map of <a href="../interfaces/model_model.ITokenNode.html">ITokenNode</a> event listeners.
+							You can use tokenListeners to visit every token node in the Argdown abstract syntax tree.</p>
+						</div>
+						<p>The listeners will be called by the ArgdownTreeWalker event emitter before the <a href="plugins_ModelPlugin.ModelPlugin.html#run">run</a> method and after the <a href="plugins_ModelPlugin.ModelPlugin.html#prepare">prepare</a> method.</p>
+						<p>The tree walker visits the nodes depth first and emits
+						<code>[TokenNames.TOKEN_NAME]</code> events for every <a href="../interfaces/model_model.ITokenNode.html">ITokenNode</a> encountered.</p>
+						<p>The eventId has to be a <a href="../modules/TokenNames.html">TokenNames</a> member.</p>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-index-signature">
+								<h5><span class="tsd-signature-symbol">[</span>eventId: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><a href="../interfaces/ArgdownTreeWalker.ITokenNodeHandler.html" class="tsd-signature-type" data-tsd-kind="Interface">ITokenNodeHandler</a></h5>
+							</li>
+						</ul>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="assignSectionOfFirstMemberIfWithoutSection" class="tsd-anchor"></a>
+					<h3>assign<wbr>Section<wbr>OfFirst<wbr>Member<wbr>IfWithout<wbr>Section</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">assign<wbr>Section<wbr>OfFirst<wbr>Member<wbr>IfWithout<wbr>Section<span class="tsd-signature-symbol">(</span>node<span class="tsd-signature-symbol">: </span><a href="../interfaces/model_model.IArgument-1.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgument</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/model_model.IEquivalenceClass-1.html" class="tsd-signature-type" data-tsd-kind="Interface">IEquivalenceClass</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/plugins/ModelPlugin.ts#L341">src/plugins/ModelPlugin.ts:341</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>node: <a href="../interfaces/model_model.IArgument-1.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgument</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/model_model.IEquivalenceClass-1.html" class="tsd-signature-type" data-tsd-kind="Interface">IEquivalenceClass</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getSettings" class="tsd-anchor"></a>
+					<h3>get<wbr>Settings</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Settings<span class="tsd-signature-symbol">(</span>request<span class="tsd-signature-symbol">: </span><a href="../interfaces/index.IArgdownRequest.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownRequest</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/plugins_ModelPlugin.IModelPluginSettings.html" class="tsd-signature-type" data-tsd-kind="Interface">IModelPluginSettings</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/plugins/ModelPlugin.ts#L136">src/plugins/ModelPlugin.ts:136</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>request: <a href="../interfaces/index.IArgdownRequest.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownRequest</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/plugins_ModelPlugin.IModelPluginSettings.html" class="tsd-signature-type" data-tsd-kind="Interface">IModelPluginSettings</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="removeRedundantEC2ARelations" class="tsd-anchor"></a>
+					<h3>remove<wbr>RedundantEC2ARelations</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">remove<wbr>RedundantEC2ARelations<span class="tsd-signature-symbol">(</span>response<span class="tsd-signature-symbol">: </span><a href="../interfaces/index.IArgdownResponse.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownResponse</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/plugins/ModelPlugin.ts#L298">src/plugins/ModelPlugin.ts:298</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Removes redundant ec2a attack relations that can be inferred from
+									existing ec2ec attack/contrary/contradiction relations</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>response: <a href="../interfaces/index.IArgdownResponse.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownResponse</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="removeRelationFromSource" class="tsd-anchor"></a>
+					<h3>remove<wbr>Relation<wbr>From<wbr>Source</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">remove<wbr>Relation<wbr>From<wbr>Source<span class="tsd-signature-symbol">(</span>relation<span class="tsd-signature-symbol">: </span><a href="../interfaces/model_model.IRelation-1.html" class="tsd-signature-type" data-tsd-kind="Interface">IRelation</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/plugins/ModelPlugin.ts#L285">src/plugins/ModelPlugin.ts:285</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>relation: <a href="../interfaces/model_model.IRelation-1.html" class="tsd-signature-type" data-tsd-kind="Interface">IRelation</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="removeRelationFromTarget" class="tsd-anchor"></a>
+					<h3>remove<wbr>Relation<wbr>From<wbr>Target</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">remove<wbr>Relation<wbr>From<wbr>Target<span class="tsd-signature-symbol">(</span>relation<span class="tsd-signature-symbol">: </span><a href="../interfaces/model_model.IRelation-1.html" class="tsd-signature-type" data-tsd-kind="Interface">IRelation</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/plugins/ModelPlugin.ts#L289">src/plugins/ModelPlugin.ts:289</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>relation: <a href="../interfaces/model_model.IRelation-1.html" class="tsd-signature-type" data-tsd-kind="Interface">IRelation</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="transformArgumentRelations" class="tsd-anchor"></a>
+					<h3>transform<wbr>Argument<wbr>Relations</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">transform<wbr>Argument<wbr>Relations<span class="tsd-signature-symbol">(</span>response<span class="tsd-signature-symbol">: </span><a href="../interfaces/index.IArgdownResponse.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownResponse</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/plugins/ModelPlugin.ts#L149">src/plugins/ModelPlugin.ts:149</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Transforms outgoing relations of arguments with an assigned pcs into outgoing relations of the pcs&#39;s main conclusion.
+									Transforms incoming undercut relations of arguments with an assigned pcs into undercut relations of the pcs&#39;s last inference.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>response: <a href="../interfaces/index.IArgdownResponse.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownResponse</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="transformStatementRelations" class="tsd-anchor"></a>
+					<h3>transform<wbr>Statement<wbr>Relations</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">transform<wbr>Statement<wbr>Relations<span class="tsd-signature-symbol">(</span>response<span class="tsd-signature-symbol">: </span><a href="../interfaces/index.IArgdownResponse.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownResponse</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/plugins/ModelPlugin.ts#L252">src/plugins/ModelPlugin.ts:252</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Change dialectical types of statement-to-statement relations to semantic types.
+										Support relations become entails relations.
+										Attack relations become contrary relations.
+									Equivalent contrary relations are merged (e.g. [A] - [B] and [B] - [A]).</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>response: <a href="../interfaces/index.IArgdownResponse.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownResponse</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="../index.html">Modules</a>
+					</li>
+					<li class="current tsd-kind-module">
+						<a href="../modules/plugins_ModelPlugin.html">plugins/<wbr>Model<wbr>Plugin</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-enum tsd-parent-kind-module">
+						<a href="../enums/plugins_ModelPlugin.InterpretationModes.html" class="tsd-kind-icon">Interpretation<wbr>Modes</a>
+					</li>
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class tsd-parent-kind-module">
+						<a href="plugins_ModelPlugin.ModelPlugin.html" class="tsd-kind-icon">Model<wbr>Plugin</a>
+						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class">
+								<a href="plugins_ModelPlugin.ModelPlugin.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="plugins_ModelPlugin.ModelPlugin.html#defaults" class="tsd-kind-icon">defaults</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="plugins_ModelPlugin.ModelPlugin.html#name" class="tsd-kind-icon">name</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="plugins_ModelPlugin.ModelPlugin.html#prepare" class="tsd-kind-icon">prepare</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="plugins_ModelPlugin.ModelPlugin.html#ruleListeners" class="tsd-kind-icon">rule<wbr>Listeners</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="plugins_ModelPlugin.ModelPlugin.html#run" class="tsd-kind-icon">run</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="plugins_ModelPlugin.ModelPlugin.html#tokenListeners" class="tsd-kind-icon">token<wbr>Listeners</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="plugins_ModelPlugin.ModelPlugin.html#assignSectionOfFirstMemberIfWithoutSection" class="tsd-kind-icon">assign<wbr>Section<wbr>OfFirst<wbr>Member<wbr>IfWithout<wbr>Section</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="plugins_ModelPlugin.ModelPlugin.html#getSettings" class="tsd-kind-icon">get<wbr>Settings</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="plugins_ModelPlugin.ModelPlugin.html#removeRedundantEC2ARelations" class="tsd-kind-icon">remove<wbr>RedundantEC2ARelations</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="plugins_ModelPlugin.ModelPlugin.html#removeRelationFromSource" class="tsd-kind-icon">remove<wbr>Relation<wbr>From<wbr>Source</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="plugins_ModelPlugin.ModelPlugin.html#removeRelationFromTarget" class="tsd-kind-icon">remove<wbr>Relation<wbr>From<wbr>Target</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="plugins_ModelPlugin.ModelPlugin.html#transformArgumentRelations" class="tsd-kind-icon">transform<wbr>Argument<wbr>Relations</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="plugins_ModelPlugin.ModelPlugin.html#transformStatementRelations" class="tsd-kind-icon">transform<wbr>Statement<wbr>Relations</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/plugins_ModelPlugin.IModelPluginSettings.html" class="tsd-kind-icon">IModel<wbr>Plugin<wbr>Settings</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/plugins_ModelPlugin.ITagData.html" class="tsd-kind-icon">ITag<wbr>Data</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

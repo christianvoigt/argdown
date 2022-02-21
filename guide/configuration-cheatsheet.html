@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Configuration cheat sheet | Argdown</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    <link rel="shortcut icon" type="image/x-icon" href="https://argdown.org/favicon.ico">
+    <link rel="icon" type="image/png" href="https://argdown.org/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="https://argdown.org/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="https://argdown.org/site.webmanifest">
+    <link rel="apple-touch-icon-precomposed" href="https://argdown.org/apple-touch-icon.png">
+    <script src="https://argdown.org/argdown-map.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://argdown.org/argdown-map.css">
+    <meta name="description" content="An overview over all current configuration options of the official Argdown tools.">
+    
+    <link rel="preload" href="/assets/css/0.styles.d44408e3.css" as="style"><link rel="preload" href="/assets/js/app.e91d5bc4.js" as="script"><link rel="preload" href="/assets/js/3.275776de.js" as="script"><link rel="preload" href="/assets/js/25.fd2bcd8f.js" as="script"><link rel="preload" href="/assets/js/5.6e73b733.js" as="script"><link rel="prefetch" href="/assets/js/10.bce1ef07.js"><link rel="prefetch" href="/assets/js/11.cf80334a.js"><link rel="prefetch" href="/assets/js/12.e422cfc7.js"><link rel="prefetch" href="/assets/js/13.839cb0f3.js"><link rel="prefetch" href="/assets/js/14.880b3b33.js"><link rel="prefetch" href="/assets/js/15.abbcfdfa.js"><link rel="prefetch" href="/assets/js/16.7fa548ca.js"><link rel="prefetch" href="/assets/js/17.9aa1c9f9.js"><link rel="prefetch" href="/assets/js/18.f829b0c0.js"><link rel="prefetch" href="/assets/js/19.6227120e.js"><link rel="prefetch" href="/assets/js/20.72f11159.js"><link rel="prefetch" href="/assets/js/21.6fee7a99.js"><link rel="prefetch" href="/assets/js/22.f250e760.js"><link rel="prefetch" href="/assets/js/23.613c08a0.js"><link rel="prefetch" href="/assets/js/24.7ebecc02.js"><link rel="prefetch" href="/assets/js/26.7577404e.js"><link rel="prefetch" href="/assets/js/27.f21ea530.js"><link rel="prefetch" href="/assets/js/28.819ba326.js"><link rel="prefetch" href="/assets/js/29.1d933e8d.js"><link rel="prefetch" href="/assets/js/30.9046c3b0.js"><link rel="prefetch" href="/assets/js/31.d3d3b041.js"><link rel="prefetch" href="/assets/js/32.5b832a1e.js"><link rel="prefetch" href="/assets/js/33.205b099a.js"><link rel="prefetch" href="/assets/js/34.a30bd6fb.js"><link rel="prefetch" href="/assets/js/35.4f2a042f.js"><link rel="prefetch" href="/assets/js/36.a154eafd.js"><link rel="prefetch" href="/assets/js/37.1d8a6ac5.js"><link rel="prefetch" href="/assets/js/38.dd96ebb1.js"><link rel="prefetch" href="/assets/js/39.b297e62b.js"><link rel="prefetch" href="/assets/js/4.661920fa.js"><link rel="prefetch" href="/assets/js/40.43f1a9c5.js"><link rel="prefetch" href="/assets/js/41.85dbeb82.js"><link rel="prefetch" href="/assets/js/42.a71c61be.js"><link rel="prefetch" href="/assets/js/43.0def2f3c.js"><link rel="prefetch" href="/assets/js/44.93eb6d80.js"><link rel="prefetch" href="/assets/js/45.663a3d08.js"><link rel="prefetch" href="/assets/js/46.d7f7b0d2.js"><link rel="prefetch" href="/assets/js/47.8df263fa.js"><link rel="prefetch" href="/assets/js/48.581f37b3.js"><link rel="prefetch" href="/assets/js/6.fc75f6f1.js"><link rel="prefetch" href="/assets/js/7.9a487c21.js"><link rel="prefetch" href="/assets/js/8.418c95c5.js"><link rel="prefetch" href="/assets/js/9.cc838dd5.js"><link rel="prefetch" href="/assets/js/vendors~docsearch.b03e88c6.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.d44408e3.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">Argdown</span></a> <div class="links"><form id="search-form" role="search" class="algolia-search-wrapper search-box"><input id="algolia-search-input" class="search-query"></form> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">
+  Home
+</a></div><div class="nav-item"><a href="/guide/" class="nav-link router-link-active">
+  Guide
+</a></div><div class="nav-item"><a href="/syntax/" class="nav-link">
+  Syntax
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="API" class="dropdown-title"><span class="title">API</span> <span class="arrow down"></span></button> <button type="button" aria-label="API" class="mobile-dropdown-title"><span class="title">API</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/api/" class="nav-link">
+  Overview
+</a></li><li class="dropdown-item"><!----> <a href="https://argdown.org/argdown-core/index.html" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  @argdown/core
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://argdown.org/argdown-node/index.html" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  @argdown/node
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div><div class="nav-item"><a href="/changes/" class="nav-link">
+  Changes
+</a></div><div class="nav-item"><a href="https://argdown.org/sandbox/" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Sandbox
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <a href="https://github.com/christianvoigt/argdown" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">
+  Home
+</a></div><div class="nav-item"><a href="/guide/" class="nav-link router-link-active">
+  Guide
+</a></div><div class="nav-item"><a href="/syntax/" class="nav-link">
+  Syntax
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="API" class="dropdown-title"><span class="title">API</span> <span class="arrow down"></span></button> <button type="button" aria-label="API" class="mobile-dropdown-title"><span class="title">API</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/api/" class="nav-link">
+  Overview
+</a></li><li class="dropdown-item"><!----> <a href="https://argdown.org/argdown-core/index.html" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  @argdown/core
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://argdown.org/argdown-node/index.html" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  @argdown/node
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div><div class="nav-item"><a href="/changes/" class="nav-link">
+  Changes
+</a></div><div class="nav-item"><a href="https://argdown.org/sandbox/" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Sandbox
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <a href="https://github.com/christianvoigt/argdown" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav>  <ul class="sidebar-links"><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Getting started</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Creating argument maps</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Publishing argument maps</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading open"><span>Configuration</span> <span class="arrow down"></span></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/guide/configuration.html" class="sidebar-link">Introduction</a></li><li><a href="/guide/configuration-with-config-files.html" class="sidebar-link">Configuration with config files</a></li><li><a href="/guide/configuration-in-the-frontmatter-section.html" class="sidebar-link">Configuration in the Frontmatter section</a></li><li><a href="/guide/running-custom-processes.html" class="sidebar-link">Running custom processes</a></li><li><a href="/guide/configuration-cheatsheet.html" aria-current="page" class="active sidebar-link">Configuration cheat sheet</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/guide/configuration-cheatsheet.html#about-the-syntax-of-the-cheat-sheet" class="sidebar-link">About the Syntax of the Cheat Sheet</a></li></ul></li></ul></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Extending Argdown</span> <span class="arrow right"></span></p> <!----></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="configuration-cheat-sheet"><a href="#configuration-cheat-sheet" class="header-anchor">#</a> Configuration Cheat Sheet</h1> <div class="custom-block tip"><p class="custom-block-title">TIP</p> <p>The VSCode extension will help you write <code>argdown.config.json</code> files with code completion, validation and hover context information. See the <a href="https://github.com/christianvoigt/argdown/tree/master/packages/argdown-vscode/README.md#configuration-files" target="_blank" rel="noopener noreferrer">extension's README for a small tutorial<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a> on how to use these features.</p> <p>If you are overwhelmed by this cheat sheet or the syntax of the configuration file, simply start playing around with code completion in VSCode to explore the config options step by step. The hover &quot;tooltips&quot; will often contain all the information you need.</p></div> <p>The following typescript file contains all currently supported settings together with extensive comments on their meaning. For further information on most of these configuration options, please read the guide on <a href="/creating-argument-maps">creating argument maps</a>.</p> <p>If you have questions about the syntax of the Cheat Sheet or how to use a configuration option in JSON, Yaml or Javascript syntax, please read the explanations <a href="#about-the-syntax-of-the-cheat-sheet">below the Cheat Sheet</a>.</p> <div class="language-typescript extra-class"><pre class="language-typescript"><code><span class="token keyword">interface</span> <span class="token class-name">IArgdownConfig</span> <span class="token punctuation">{</span>
+  <span class="token comment">/**
+   * Document title. Required if you want
+   * to create a HTML header
+   * This and the following meta data settings
+   * should be used directly in the frontmatter
+   * section, not in a config file.
+   *
+   * Example (json):
+   *
+   * {
+   * &quot;title&quot;: &quot;My first debate&quot;
+   * }
+   **/</span>
+  title<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+  <span class="token comment">/**
+   * subTitle, author, date and abstract are
+   * optional meta data used for the HTML header
+   **/</span>
+  subTitle<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+  <span class="token comment">/**
+   * if there are several authors,
+   * use an array.
+   *
+   * Example (json):
+   *
+   * {
+   * author: [&quot;author 1&quot;, &quot;author 2&quot;]
+   * }
+   **/</span>
+  author<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span> <span class="token operator">|</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+  date<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+  <span class="token keyword">abstract</span><span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+  <span class="token comment">/**
+   * The files that should be loaded
+   * You can use a file glob.
+   **/</span>
+  inputPath<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+  <span class="token comment">/**
+   * Use this if you want to directly set a folder
+   * and a file name for an exported file.
+   *
+   * Do not use this if you want the naming to be
+   * done dynamically.
+   **/</span>
+  outputPath<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+  <span class="token comment">/**
+   * Will be appended to the file name of any files
+   * exported.
+   **/</span>
+  outputSuffix<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+  <span class="token comment">// settings for the parser plugin (also containing the lexer)</span>
+  parser<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token comment">/**
+     * Should parser and lexer errors cause the plugin to throw an exception?
+     *
+     * If not, the plugin will simply add the errors
+     * to response.parserErrors and response.lexerErrors
+     *
+     * By default false.
+     *
+     * Note that there is also a global throwExceptions setting.
+     * If the global setting is false, the exceptions of the parser plugin will be caught
+     * and not rethrown by the Argdown application.
+     **/</span>
+    throwExceptions<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">// settings for the data plugin</span>
+  data<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token comment">/**
+     * - If set to &quot;ignore&quot;, any settings in the
+     *   frontmatter will be ignored.
+     * - If set to &quot;default&quot; or undefined the front
+     *   matter yaml data settings are merged as
+     *   default settings into the request object.
+     * - If set to &quot;priority&quot; the yaml data settings
+     *   overwrite any external settings.
+     *
+     * This makes it possible to configure plugins
+     * without using an external argdown.config.js
+     * file.
+     *
+     * Example (json):
+     *
+     * {
+     *    &quot;data&quot;: {
+     *      &quot;frontMatterSettingsMode&quot;: &quot;ignore&quot;
+     *      }
+     * }
+     */</span>
+    frontMatterSettingsMode<span class="token operator">?</span><span class="token operator">:</span> <span class="token string">&quot;default&quot;</span> <span class="token operator">|</span> <span class="token string">&quot;ignore&quot;</span> <span class="token operator">|</span> <span class="token string">&quot;priority&quot;</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * If false the YAML data of arguments,
+     * statements and headings is always parsed with
+     * the outer curly brackets.
+     * In this case the YAML data has to always be
+     * in inline format which looks similar to JSON
+     * data.
+     *
+     * If true the data is parsed without the outer
+     * curly brackets if the opening bracket is
+     * followed by a line break.
+     * This means that the YAML data has to be in
+     * block format instead of the JSON-like inline
+     * format.
+     */</span>
+    switchToBlockFormatIfMultiline<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token comment">// settings for the model plugin</span>
+  model<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token comment">/**
+     * if true, tags will be removed from statement
+     * and description text
+     **/</span>
+    removeTagsFromText<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span> <span class="token comment">// default: false</span>
+    <span class="token comment">/**
+     * Determines how statement-to-statement
+     * relations are to be interpreted:
+     *
+     * - In &quot;loose&quot; mode, - means attack and + means
+     *   support.
+     * - In &quot;strict&quot; mode, - means contrary and +
+     *   means entails.
+     *
+     * Example (json):
+     *
+     * {
+     *  &quot;model&quot;: { &quot;mode&quot;: &quot;strict&quot; }
+     * }
+     **/</span>
+    mode<span class="token operator">?</span><span class="token operator">:</span> <span class="token string">&quot;loose&quot;</span> <span class="token operator">|</span> <span class="token string">&quot;strict&quot;</span><span class="token punctuation">;</span> <span class="token comment">// loose is default mode</span>
+    <span class="token comment">/**
+     * If true, outgoing relations of reconstructed
+     * arguments are transformed into outgoing
+     * relations of the pcs's main conclusion.
+     *
+     * Incoming undercuts of reconstructed arguments
+     * are transformed into incoming undercuts of
+     * the pcs's last inference.
+     **/</span>
+    transformArgumentRelations<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span> <span class="token comment">// default is true</span>
+    <span class="token comment">/**
+     * A mapping between custom shortcodes and unicode characters.
+     * The model plugin will replace the shortcodes with these characters.
+     *
+     * Shortcodes can be either surrounded by colons or by dots.
+     *
+     * Example (json):
+     *
+     * {
+     * &quot;model&quot;: {
+     *    &quot;shortcodes&quot;: {
+     *      &quot;:zany:&quot;: {unicode: &quot;🤪&quot;},
+     *      &quot;.zany.&quot;: {unicode: &quot;🤪&quot;},
+     *      &quot;.~E.&quot;: {unicode: &quot;∄&quot;}
+     *    }
+     *  }
+     * }
+     *
+     **/</span>
+    shortcodes<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">[</span>key<span class="token operator">:</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token operator">:</span> <span class="token punctuation">{</span>unicode<span class="token operator">:</span><span class="token builtin">string</span><span class="token punctuation">}</span><span class="token punctuation">}</span>
+    <span class="token comment">/**
+     * If true, each inferential step of a premise-conclusion-structure
+     * is automatically put into its own argument
+     * (without touching your original source code).
+     *
+     * Use this to visualize the internal logical structure of your arguments.
+     *
+     * Example (json):
+     *
+     * {
+     *    &quot;model&quot;: {
+     *      &quot;explodeArguments&quot;: true
+     *    }
+     * }
+     **/</span>
+    explodeArguments<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token comment">// settings for the color plugin</span>
+  color<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token comment">/**
+     * A custom color scheme or the name of a
+     * built-in one
+     *
+     * colors have to be in #fffff hex format
+     *
+     * The color at index 0 will be used as default
+     * color.
+     *
+     * Example (json)
+     *
+     * {
+     * &quot;color&quot;: {
+     *  &quot;colorScheme&quot;: [&quot;#e6afd3&quot;, &quot;#9ed2a7&quot;, &quot;#aebaeb&quot;, &quot;#d2d39d&quot;, &quot;#71cdeb&quot;, &quot;#e6b197&quot;]
+     * }
+     * }
+     *
+     */</span>
+    colorScheme<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">|</span> <span class="token builtin">string</span><span class="token punctuation">;</span> <span class="token comment">// default is &quot;default&quot;</span>
+    <span class="token comment">/***
+     * A map that maps relation types to colors
+     * Will be used for the edges in the dot/graphml
+     * export and the vizjs/dagre maps
+     * Relation types are:
+     *
+     * - attack
+     * - support
+     * - undercut
+     * - contrary
+     * - contradictory
+     * - entails
+     *
+     * Example (json)
+     *
+     * {
+     * &quot;color&quot;: {
+     *  &quot;relationColors&quot;: {
+     *    &quot;attack&quot;: &quot;#9ed2a7&quot;
+     *  }
+     * }
+     * }
+     **/</span>
+    relationColors<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token punctuation">[</span>key<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">]</span><span class="token operator">:</span> <span class="token builtin">string</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * A custom color scheme for groups
+     **/</span>
+    groupColorScheme<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    colorByTags<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span> <span class="token comment">// default is true</span>
+    colorGroupsByTags<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span> <span class="token comment">// default is false</span>
+    <span class="token comment">/**
+     * Mapping of tags to colors.
+     *
+     * You can refer to a color scheme by index.
+     *
+     * You can give tags priorities to use them for
+     * coloring even if they are not the first tags
+     * applied.
+     *
+     * Example (json):
+     *
+     * {
+     * &quot;color&quot;: {
+     *  {
+     *    &quot;tag-1&quot;: 1,
+     *    &quot;tag-2&quot;: &quot;#CCCCCC&quot;,
+     *    &quot;tag-3&quot;: {color: 0, priority: 2}}
+     *  }
+     * }
+     */</span>
+    tagColors<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token punctuation">[</span>tagName<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">]</span><span class="token operator">:</span>
+        <span class="token operator">|</span> <span class="token builtin">string</span>
+        <span class="token operator">|</span> <span class="token builtin">number</span>
+        <span class="token operator">|</span> <span class="token punctuation">{</span> color<span class="token operator">:</span> <span class="token builtin">string</span> <span class="token operator">|</span> <span class="token builtin">number</span><span class="token punctuation">;</span> priority<span class="token operator">:</span> <span class="token builtin">number</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * Ignore color fields of data elements.
+     **/</span>
+    ignoreColorData<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span> <span class="token comment">// default is false</span>
+    <span class="token comment">/**
+     * A map from statement titles to colors
+     *
+     * Example:
+     *
+     * {&quot;color&quot;: {&quot;statementColors&quot;:{&quot;S1&quot;: 1, &quot;S2&quot;: &quot;#CCCCCC&quot;}}}
+     **/</span>
+    statementColors<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token punctuation">[</span>title<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">]</span><span class="token operator">:</span> <span class="token builtin">string</span> <span class="token operator">|</span> <span class="token builtin">number</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * A map from argument titles to colors
+     *
+     * Example:
+     *
+     * {&quot;color&quot;: {&quot;argumentColors&quot;:{&quot;A1&quot;: 1, &quot;A2&quot;: &quot;#CCCCCC&quot;}}}
+     **/</span>
+    argumentColors<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token punctuation">[</span>title<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">]</span><span class="token operator">:</span> <span class="token builtin">string</span> <span class="token operator">|</span> <span class="token builtin">number</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * A map from section titles to colors
+     *
+     * Example:
+     *
+     * {&quot;color&quot;: {&quot;groupColors&quot;: {&quot;Heading 1&quot;: 1, &quot;Heading 2&quot;: &quot;#CCCCCC&quot;}}}
+     **/</span>
+    groupColors<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token punctuation">[</span>title<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">]</span><span class="token operator">:</span> <span class="token builtin">string</span> <span class="token operator">|</span> <span class="token builtin">number</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token comment">// settings for node images</span>
+  images<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    useTags<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span> <span class="token comment">//assign images with tags (default: true)</span>
+    useData<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span> <span class="token comment">// assign images with metadata &quot;images&quot; list (default: true)</span>
+    <span class="token comment">// can be used to use &quot;inline&quot; images (better portability)</span>
+    convertToDataUrls<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">boolean</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+    * A dictionary of image files that can be assigned to argument or statement nodes
+    * using tags or metadata. Images can be svg, jpg, png files.
+    *
+    * Example (json):
+    *
+    * {
+    *   &quot;images&quot;: {
+    *       &quot;image-id&quot;: {path: &quot;images/my-image.jpg&quot;, width: 100, height: 100}
+    *   }
+    * }
+    */</span>
+    files<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token punctuation">[</span>key<span class="token operator">:</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token operator">:</span> <span class="token punctuation">{</span>path<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span> width<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span> height<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span><span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token comment">// settings for the selection plugins</span>
+  selection<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token comment">/**
+     * Can be used to only select arguments and statements with certain tags
+     *
+     *  {&quot;selection&quot;: {&quot;selectedTags&quot;: [&quot;tag1&quot;, &quot;tag2&quot;]}}
+     */</span>
+    selectedTags<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * Should arguments and statements without tags
+     * be excluded from the selection?
+     * This is only relevant, if [
+     * [ISelectionSettings.selectedTags]] is used.
+     */</span>
+    selectElementsWithoutTag<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+     *
+     * A list of headings that can be used to only
+     * selected arguments and statements from
+     * certain sections in the texts.
+     *
+     *  {&quot;selection&quot;: {&quot;selectedSections&quot;: [&quot;section1&quot;, &quot;section2&quot;]}}
+     */</span>
+    selectedSections<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * Should arguments and statements that are
+     * defined under no heading be excluded from the selection?
+     * This is only relevant if [
+     * [ISelectionSettings.selectedSections]] is
+     * used.
+     */</span>
+    selectElementsWithoutSection<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * Titles of statements that should be
+     * represented as nodes in the map.
+     *
+     * This does not automatically exclude all other
+     * statements from being put into the map as
+     * nodes.
+     *
+     * It works similarly to using the isInMap:true
+     * flag for the included statements.
+     *
+     * Which other statements are selected depends
+     * on the other selection methods used.
+     *
+     *  {&quot;selection&quot;: {&quot;includeStatements&quot;: [&quot;s1&quot;, &quot;s2&quot;]}}
+     */</span>
+    includeStatements<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * Titles of statements that should be excluded
+     * from the map.
+     *
+     * Example:
+     *
+     *  {&quot;selection&quot;: {&quot;excludeStatements&quot;: [&quot;s1&quot;, &quot;s2&quot;]}}
+     */</span>
+    excludeStatements<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * Titles of arguments that should not be in the
+     * map.
+     *
+     * Example:
+     *
+     *  {&quot;selection&quot;: {&quot;excludeArguments&quot;: [&quot;a1&quot;, &quot;a2&quot;]}}
+     */</span>
+    excludeArguments<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * If true, the isInMap data flag is ignored.
+     */</span>
+    ignoreIsInMap<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * Should disconnected nodes be excluded from
+     * the map?
+     **/</span>
+    excludeDisconnected<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span> <span class="token comment">// default is true</span>
+    <span class="token comment">/**
+     * The method by which preselected statements
+     * are selected
+     *
+     * Example:
+     *
+     * {&quot;selection&quot;: {&quot;statementSelectionMode&quot;: &quot;with-more-than-one-relation&quot;}}
+     *
+     **/</span>
+    statementSelectionMode<span class="token operator">?</span><span class="token operator">:</span>
+      <span class="token operator">|</span> <span class="token string">&quot;all&quot;</span>
+      <span class="token operator">|</span> <span class="token string">&quot;with-title&quot;</span>
+      <span class="token operator">|</span> <span class="token string">&quot;with-relations&quot;</span>
+      <span class="token operator">|</span> <span class="token string">&quot;with-more-than-one-relation&quot;</span>
+      <span class="token operator">|</span> <span class="token string">&quot;not-used-in-argument&quot;</span><span class="token punctuation">;</span> <span class="token comment">// default: &quot;with-title&quot;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token comment">// settings for the map plugin</span>
+  map<span class="token operator">:</span> <span class="token punctuation">{</span>
+    statementLabelMode<span class="token operator">?</span><span class="token operator">:</span> <span class="token string">&quot;hide-untitled&quot;</span> <span class="token operator">|</span> <span class="token string">&quot;title&quot;</span> <span class="token operator">|</span> <span class="token string">&quot;text&quot;</span> <span class="token operator">|</span> <span class="token string">&quot;none&quot;</span><span class="token punctuation">;</span> <span class="token comment">// default is &quot;hide-untitled&quot;</span>
+    argumentLabelMode<span class="token operator">?</span><span class="token operator">:</span> <span class="token string">&quot;hide-untitled&quot;</span> <span class="token operator">|</span> <span class="token string">&quot;title&quot;</span> <span class="token operator">|</span> <span class="token string">&quot;text&quot;</span> <span class="token operator">|</span> <span class="token string">&quot;none&quot;</span><span class="token punctuation">;</span> <span class="token comment">// default is &quot;hide-untitled&quot;</span>
+    addTags<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span> <span class="token comment">// should tags be added to the node labels?</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token comment">// settings for the group and regroup plugins</span>
+  group<span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token comment">/**
+     * How many levels of groups should there be
+     * derived from headings?
+     * Derivation starts at the headings with the
+     * highest section level and ends at
+     * minGroupLevel = maxLevel + 1 - groupDepth
+     * (section levels start at level 1)
+     **/</span>
+    groupDepth<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * Alternative to using data flags for heading
+     * elements in the Argdown document
+     * This way you can use argdown.config.js files
+     * with different section configurations
+     * to define different groups or close different
+     * sets of groups
+     *
+     * Example (YAML frontmatter section):
+     *
+     * ===
+     * group:
+     *  sections: {
+     *    &quot;Main arguments&quot;: {
+     *        isGroup: true,
+     *        isClosed: false
+     *      },
+     *    &quot;Some peripheral arguments&quot;: {
+     *        isGroup: true,
+     *        isClosed: true
+     *      },
+     *    &quot;Introduction&quot;: {
+     *        isGroup: false
+     *      }
+     *  }
+     * ===
+     **/</span>
+    sections<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">{</span><span class="token punctuation">[</span>key<span class="token operator">:</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token operator">:</span><span class="token punctuation">{</span>isClosed<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">boolean</span><span class="token punctuation">;</span> isGroup<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">boolean</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * Can be used to override heading-based
+     * grouping.
+     *
+     * Example (YAML frontmatter section):
+     *
+     * ===
+     * group:
+     *  regroup: [
+     *  {
+     *    title: &quot;Group A&quot;,
+     *    arguments: [&quot;A1&quot;, &quot;A2&quot;],
+     *    statements: [&quot;S1&quot;],
+     *    children: [{
+     *      title: &quot;Group B&quot;,
+     *      arguments: [&quot;A3&quot;, &quot;A4&quot;],
+     *      isClosed: true
+     *    }]
+     *  },
+     *  {
+     *    title: &quot;Group C&quot;,
+     *    arguments: [&quot;A5&quot;, &quot;A6&quot;]
+     *  }
+     * ]
+     * ===
+     **/</span>
+    regroup<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span>
+      title<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+      tags<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+      statements<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+      arguments<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+      isClosed<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+      children<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * Should isGroup data flags in the document be
+     * ignored
+     **/</span>
+    ignoreIsGroup<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">boolean</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * Should isClosed data flags in the document be
+     * ignored
+     **/</span>
+    ignoreIsClosed<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">boolean</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+  <span class="token comment">// settings for the html export plugin</span>
+  html<span class="token operator">:</span> <span class="token punctuation">{</span>
+    outputDir<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span> <span class="token comment">// default is &quot;./html&quot;</span>
+    <span class="token comment">/**
+     * Remove sourrounding html and body tags,
+     * remove head section of HTML.
+     *
+     * Instead a simple div containing the argdown
+     * HTML is returned.
+     */</span>
+    headless<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * If true, inserts a header with title
+     * (required), subTitle, author, date and
+     * abstract (if defined) from the frontMatter
+     * section.
+     **/</span>
+    createHeaderFromMetadata<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span> <span class="token comment">// default is true</span>
+    <span class="token comment">/**
+     * External CSS file to include in the HTML head
+     * section.
+     */</span>
+    cssFile<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+    <span class="token comment">/** Title of the HTML document. If not provided,
+     * the first top-level heading will be used. */</span>
+    title<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+    lang<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+    charset<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+    allowFileProtocol<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+    <span class="token comment">/** Optional setting to specify a custom head
+     * section.
+     **/</span>
+    head<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+    <span class="token comment">/** Function to test if a link is valid. */</span>
+    validateLink<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">(</span>url<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span> allowFile<span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+    <span class="token comment">/** Function to normalize links. */</span>
+    normalizeLink<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">(</span>url<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+    css<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token comment">// settings for the json export plugin</span>
+  json<span class="token operator">:</span> <span class="token punctuation">{</span>
+    outputDir<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span> <span class="token comment">// default is &quot;./json&quot;</span>
+    spaces<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * Should [[Argument.relations]], [
+     * [Statement.relations]] be removed from the
+     * JSON objects?
+     */</span>
+    removeEmbeddedRelations<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * Should the JSON data include the response.map
+     * property?
+     */</span>
+    exportMap<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * Should the JSON data include sections?
+     */</span>
+    exportSections<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * Should the JSON data include tag data?
+     */</span>
+    exportTags<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * Should the JSON data include metaData?
+     */</span>
+    exportData<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token comment">// settings for the dot export plugin (and thus the VizJs map and the svg export)</span>
+  dot<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    outputDir<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span> <span class="token comment">// default is &quot;./dot&quot;</span>
+    graphname<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+    <span class="token comment">/***
+     * Measure pixel width of each word and insert a
+     * line break before or when line width reaches
+     * lineWidth.
+     *
+     * Slower, but may be more exact.
+     *
+     * By default a line break is inserted before or
+     * when the number of
+     * characters reaches charactersInLine looking
+     * for the nearest empty space.
+     **/</span>
+    measureLineWidth<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">boolean</span><span class="token punctuation">;</span> <span class="token comment">// default is false</span>
+    <span class="token comment">/**
+     * Background color of the whole map
+     **/</span>
+    mapBgColor<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">string</span><span class="token punctuation">;</span> <span class="token comment">// default is &quot;transparent&quot;</span>
+    edge<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      penwidth<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span> <span class="token comment">// thickness of edges, default 1</span>
+      arrowsize<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span> <span class="token comment">// size of arrow, default 1</span>
+    <span class="token punctuation">}</span>
+    group<span class="token operator">?</span><span class="token operator">:</span><span class="token punctuation">{</span>
+      lineWidth<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span> <span class="token comment">// used if measureLineWidth is true</span>
+      charactersInLine<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span> <span class="token comment">// used if measureLineWidth is false</span>
+      <span class="token comment">/**
+       * You can use &quot;x,y&quot; format for horizontal and vertical margins
+       **/</span>
+      margin<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span> <span class="token comment">// default is &quot;8&quot;</span>
+      <span class="token comment">/**
+       * Font to use
+       *
+       * Only a limited number of fonts are
+       * supported,
+       * see VizJs and string-pixel-width
+       * documentation.
+       *
+       * VizJs: https://github.com/mdaines/viz.js/wiki/Caveats#Fonts
+       *
+       * string-pixel-width: https://github.com/adambisek/string-pixel-width
+       **/</span>
+      font<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">string</span><span class="token punctuation">;</span>
+      fontSize<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+      bold<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">boolean</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * Settings for closed group state
+     **/</span>
+    closedGroup<span class="token operator">?</span><span class="token operator">:</span><span class="token punctuation">{</span>
+      lineWidth<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span> <span class="token comment">// used if measureLineWidth is true</span>
+      charactersInLine<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span> <span class="token comment">// used if measureLineWidth is false</span>
+      <span class="token comment">/**
+       * You can use &quot;x,y&quot; format for horizontal and vertical margins
+       **/</span>
+      margin<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span> <span class="token comment">// default is &quot;8&quot;</span>
+      <span class="token comment">/**
+       * Font to use
+       *
+       * Only a limited number of fonts are
+       * supported,
+       * see VizJs and string-pixel-width
+       * documentation.
+       *
+       * VizJs: https://github.com/mdaines/viz.js/wiki/Caveats#Fonts
+       *
+       * string-pixel-width: https://github.com/adambisek/string-pixel-width
+       **/</span>
+      font<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">string</span><span class="token punctuation">;</span>
+      fontSize<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+      bold<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">boolean</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    argument<span class="token operator">?</span><span class="token operator">:</span><span class="token punctuation">{</span>
+      lineWidth<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+      <span class="token comment">/**
+       * The minimum node width
+       **/</span>
+      minWidth<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+      margin<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span> <span class="token comment">// default is &quot;0.11,0.055&quot;</span>
+      shape<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">string</span><span class="token punctuation">;</span> <span class="token comment">// any node shape supported by Graphviz</span>
+      style<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">string</span><span class="token punctuation">;</span> <span class="token comment">// any node style, supported by Graphviz</span>
+      title<span class="token operator">?</span><span class="token operator">:</span><span class="token punctuation">{</span>
+        font<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">string</span><span class="token punctuation">;</span>
+        fontSize<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+        bold<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">boolean</span><span class="token punctuation">;</span>
+        charactersInLine<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span><span class="token punctuation">;</span>
+      text<span class="token operator">?</span><span class="token operator">:</span><span class="token punctuation">{</span>
+        font<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">string</span><span class="token punctuation">;</span>
+        fontSize<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+        bold<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">boolean</span><span class="token punctuation">;</span>
+        charactersInLine<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span><span class="token punctuation">;</span>
+      images<span class="token operator">?</span><span class="token operator">:</span><span class="token punctuation">{</span>
+        position<span class="token operator">?</span><span class="token operator">:</span><span class="token string">&quot;top&quot;</span><span class="token operator">|</span><span class="token string">&quot;bottom&quot;</span><span class="token punctuation">;</span> <span class="token comment">// default is &quot;top&quot;</span>
+        padding<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    statement<span class="token operator">?</span><span class="token operator">:</span><span class="token punctuation">{</span>
+      lineWidth<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+      <span class="token comment">/**
+       * The minimum node width
+       **/</span>
+      minWidth<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+      margin<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span> <span class="token comment">// default is &quot;0.11,0.055&quot;</span>
+      shape<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">string</span><span class="token punctuation">;</span> <span class="token comment">// any node shape supported by Graphviz</span>
+      style<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">string</span><span class="token punctuation">;</span> <span class="token comment">// any node style, supported by Graphviz</span>
+      title<span class="token operator">?</span><span class="token operator">:</span><span class="token punctuation">{</span>
+        font<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">string</span><span class="token punctuation">;</span>
+        fontSize<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+        bold<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">boolean</span><span class="token punctuation">;</span>
+        charactersInLine<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span><span class="token punctuation">;</span>
+      text<span class="token operator">?</span><span class="token operator">:</span><span class="token punctuation">{</span>
+        font<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">string</span><span class="token punctuation">;</span>
+        fontSize<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+        bold<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">boolean</span><span class="token punctuation">;</span>
+        charactersInLine<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span><span class="token punctuation">;</span>
+      images<span class="token operator">?</span><span class="token operator">:</span><span class="token punctuation">{</span>
+        position<span class="token operator">?</span><span class="token operator">:</span><span class="token string">&quot;top&quot;</span><span class="token operator">|</span><span class="token string">&quot;bottom&quot;</span><span class="token punctuation">;</span> <span class="token comment">// default is &quot;top&quot;</span>
+        padding<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * Any settings strings that are allowed in a
+     * dot file.
+     * The settings will be inserted in the
+     * following form: 'key: &quot;value&quot;;'
+     *
+     * Example (json):
+     *
+     * {
+     *  &quot;dot&quot;: {
+     *    &quot;graphVizSettings&quot;: {
+     *        rankdir: &quot;BT&quot;,
+     *        newrank: true
+     *    }
+     *  }
+     * }
+     */</span>
+    graphVizSettings<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token punctuation">[</span>name<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">]</span><span class="token operator">:</span> <span class="token builtin">string</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token comment">// settings for the Dagre map (only relevant in the VSCode and sandbox previews)</span>
+  dagre<span class="token operator">?</span><span class="token operator">:</span><span class="token punctuation">{</span>
+    <span class="token comment">/**
+     * Rank direction
+     * BT, TB, LR, RL
+     **/</span>
+    rankDir<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span> <span class="token comment">// default is BT</span>
+    <span class="token comment">/**
+     * Rank separation
+     **/</span>
+    rankSep<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span> <span class="token comment">// default is 50</span>
+    <span class="token comment">/**
+     * Node separation
+     **/</span>
+    nodeSep<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span> <span class="token comment">// default is 70</span>
+    measureLineWidth<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">boolean</span><span class="token punctuation">;</span> <span class="token comment">// default is false</span>
+    group<span class="token operator">?</span><span class="token operator">:</span><span class="token punctuation">{</span>
+      lineWidth<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span> <span class="token comment">// used if measureLineWidth is true</span>
+      charactersInLine<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span> <span class="token comment">// used if measureLineWidth is false</span>
+      <span class="token comment">/**
+       * Font to use
+       *
+       * Only a limited number of fonts are
+       * supported,
+       * see string-pixel-width documentation.
+       *
+       * string-pixel-width: https://github.com/adambisek/string-pixel-width
+       **/</span>
+      font<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">string</span><span class="token punctuation">;</span>
+      fontSize<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+      bold<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">boolean</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    argument<span class="token operator">?</span><span class="token operator">:</span><span class="token punctuation">{</span>
+      lineWidth<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+      title<span class="token operator">?</span><span class="token operator">:</span><span class="token punctuation">{</span>
+        font<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">string</span><span class="token punctuation">;</span>
+        fontSize<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+        bold<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">boolean</span><span class="token punctuation">;</span>
+        charactersInLine<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span><span class="token punctuation">;</span>
+      text<span class="token operator">?</span><span class="token operator">:</span><span class="token punctuation">{</span>
+        font<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">string</span><span class="token punctuation">;</span>
+        fontSize<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+        bold<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">boolean</span><span class="token punctuation">;</span>
+        charactersInLine<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    statement<span class="token operator">?</span><span class="token operator">:</span><span class="token punctuation">{</span>
+      lineWidth<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+      title<span class="token operator">?</span><span class="token operator">:</span><span class="token punctuation">{</span>
+        font<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">string</span><span class="token punctuation">;</span>
+        fontSize<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+        bold<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">boolean</span><span class="token punctuation">;</span>
+        charactersInLine<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span><span class="token punctuation">;</span>
+      text<span class="token operator">?</span><span class="token operator">:</span><span class="token punctuation">{</span>
+        font<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">string</span><span class="token punctuation">;</span>
+        fontSize<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+        bold<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">boolean</span><span class="token punctuation">;</span>
+        charactersInLine<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token comment">// settings for the graphml export plugin</span>
+  graphml<span class="token operator">?</span><span class="token operator">:</span><span class="token punctuation">{</span>
+    group<span class="token operator">?</span><span class="token operator">:</span><span class="token punctuation">{</span>
+      horizontalPadding<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+      verticalPadding<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+      width<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span> <span class="token comment">// used if measureLineWidth is true</span>
+      <span class="token comment">/**
+       * Font to use
+       *
+       * Only a limited number of fonts are
+       * supported,
+       * see string-pixel-width documentation.
+       *
+       * For other fonts the width measurement will
+       * fail,
+       * so label text lines will not fit into nodes.
+       *
+       * string-pixel-width: https://github.com/adambisek/string-pixel-width
+       **/</span>
+      font<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">string</span><span class="token punctuation">;</span>
+      fontSize<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+      bold<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">boolean</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    argument<span class="token operator">?</span><span class="token operator">:</span><span class="token punctuation">{</span>
+      horizontalPadding<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+      verticalPadding<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+      width<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+      title<span class="token operator">?</span><span class="token operator">:</span><span class="token punctuation">{</span>
+        font<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">string</span><span class="token punctuation">;</span>
+        fontSize<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+        bold<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">boolean</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span><span class="token punctuation">;</span>
+      text<span class="token operator">?</span><span class="token operator">:</span><span class="token punctuation">{</span>
+        font<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">string</span><span class="token punctuation">;</span>
+        fontSize<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+        bold<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">boolean</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    statement<span class="token operator">?</span><span class="token operator">:</span><span class="token punctuation">{</span>
+      horizontalPadding<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+      verticalPadding<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+      width<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+      title<span class="token operator">?</span><span class="token operator">:</span><span class="token punctuation">{</span>
+        font<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">string</span><span class="token punctuation">;</span>
+        fontSize<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+        bold<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">boolean</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span><span class="token punctuation">;</span>
+      text<span class="token operator">?</span><span class="token operator">:</span><span class="token punctuation">{</span>
+        font<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">string</span><span class="token punctuation">;</span>
+        fontSize<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+        bold<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">boolean</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token comment">// settings for the svg file export</span>
+  svg<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    outputDir<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span> <span class="token comment">// default is &quot;./svg&quot;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token comment">// settings for the VizJs map (used in the svg export and the VSCode and sandbox previews)</span>
+  vizJs<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token comment">/**
+     * Removes svg prolog (useful if svg is used
+     * directly in html)
+     **/</span>
+    removeProlog<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * Graphviz layout engine.
+     * Available engines:
+     * circo, dot, fdp, neato, osage, twopi
+     **/</span>
+    engine<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">string</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * used for the neato engine
+     **/</span>
+    nop<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">number</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token comment">// outputDir for pdf file export</span>
+  pdf<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    outputDir<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span> <span class="token comment">// default is &quot;./pdf&quot;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token comment">// settings for inserting svg map into the pdf (SvgToPdfPlugin)</span>
+  svgToPdf<span class="token operator">?</span><span class="token operator">:</span><span class="token punctuation">{</span>
+    width<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span>
+    height<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span>
+    padding<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * Settings of pdfkit: http://pdfkit.org/
+     **/</span>
+    pdf<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">{</span> compress<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * Settings of svg to pdfkit: https://github.com/alafr/SVG-to-PDFKit
+     **/</span>
+    svg<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      useCSS<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+      assumePt<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+      preserveAspectRatio<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
+     * Custom fonts to register with PDFKit (to add Unicode support)
+     *
+     * Example (yaml):
+     *
+     * ===
+     * svgToPdf:
+     *  fonts:
+     *    - {name: &quot;arial&quot;, path: &quot;./DejaVuSans.ttf&quot;}
+     *    - {name: &quot;arial Bold&quot;, path: &quot;./DejaVuSans-Bold.ttf&quot;}
+     * ===
+     */</span>
+    fonts<span class="token operator">?</span><span class="token operator">:</span><span class="token punctuation">{</span>name<span class="token operator">:</span><span class="token builtin">string</span><span class="token punctuation">;</span> path<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span><span class="token punctuation">}</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">/**
+   * Settings for the WebComponentExportPlugin
+   */</span>
+  webComponent<span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token comment">// if figure is used: width &amp; height css properties of figure element</span>
+    <span class="token comment">// else if without figure: css width &amp; height of argdown-map element</span>
+    <span class="token comment">// for responsive settings, set min/max width/height of figures or argdown-map elements globally in your own css file.</span>
+    width<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+    height<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+    <span class="token comment">// hide webComponent header</span>
+    withoutHeader<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+    <span class="token comment">// only hide logo</span>
+    withoutLogo<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+    <span class="token comment">// only hide maximize button</span>
+    withoutMaximize<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+    <span class="token comment">// disable zoom</span>
+    withoutZoom<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+    <span class="token comment">// add web-component without surrounding figure element</span>
+    withoutFigure<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+    <span class="token comment">// initial view to show</span>
+    initialView<span class="token operator">?</span><span class="token operator">:</span> <span class="token string">&quot;map&quot;</span> <span class="token operator">|</span> <span class="token string">&quot;source&quot;</span><span class="token punctuation">;</span>
+    <span class="token comment">// views to add to the component</span>
+    views<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      map<span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+      source<span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment">// figure caption</span>
+    <span class="token comment">// if not set, the title, subtitle and abstract will be used</span>
+    figureCaption<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+    <span class="token comment">// add argdown-map.js, web component polyfill and argdown-map.json files to html</span>
+    addWebComponentScript<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+    addWebComponentPolyfill<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+    addGlobalStyles<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+    <span class="token comment">// urls to be used when adding these files</span>
+    webComponentUrl<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+    webComponentPolyfillUrl<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+    globalStylesUrl<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">string</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token comment">/**
+   * Settings for the HighlightSourcePlugin
+   */</span>
+  sourceHiglighter<span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token comment">// will remove the frontmatter from the highlighted source (e.g. in the web component's source view)</span>
+    <span class="token comment">// to reduce clutter</span>
+    removeFrontmatter<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token comment">/**
+   * Settings for the ImageExportPlugin (@argdown/image-export)
+   */</span>
+  image<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      quality<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span>
+      width<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">number</span>
+      height<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span>
+      background<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+      encoding<span class="token operator">?</span><span class="token operator">:</span> <span class="token string">&quot;base64&quot;</span><span class="token operator">|</span> <span class="token string">&quot;utf8&quot;</span><span class="token operator">|</span> <span class="token string">&quot;binary&quot;</span><span class="token operator">|</span> <span class="token string">&quot;hex&quot;</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  png<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    outputDir<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">string</span><span class="token punctuation">;</span> <span class="token comment">// default: ./images</span>
+  <span class="token punctuation">}</span>
+  jpg<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    outputDir<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">string</span><span class="token punctuation">;</span> <span class="token comment">// default: ./images</span>
+  <span class="token punctuation">}</span>
+  webp<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    outputDir<span class="token operator">?</span><span class="token operator">:</span><span class="token builtin">string</span><span class="token punctuation">;</span> <span class="token comment">// default: ./images</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">/**
+   * If an array is used: the processors that should
+   * be executed in order by the [[ArgdownApplication]]
+   * during the current run.
+   *
+   * If a string is used: the name of the process to
+   * be found in [[IArgdownRequest.processes]]
+   * or a built-in process.
+   */</span>
+  process<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">|</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+  <span class="token comment">/**
+   * A dictionary of processes that can be run.
+   *
+   * Keys are the process names, values are list of
+   * IArgdownConfig-like objects.
+   *
+   * There are only two differences to normal
+   * IArgdownConfig objects:
+   *
+   * - the objects can not itself contain a
+   *   processes field.
+   * - the process field of the object has to be a
+   *   name of a built-in-process or an array of
+   *   processors to be run.
+   */</span>
+  processes<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token punctuation">[</span>name<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">]</span><span class="token operator">:</span> IArgdownConfig <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token comment">/**
+   * Custom plugins that will be added before
+   * running the current process.
+   * They will be removed again afterwards.
+   **/</span>
+  plugins<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span> plugin<span class="token operator">:</span> IArgdownPlugin<span class="token punctuation">;</span> processor<span class="token operator">:</span> <span class="token builtin">string</span> <span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+  <span class="token comment">/**
+   * Log level for the Argdown logger
+   *
+   * Set to &quot;verbose&quot; to get lots of information
+   * about processors and plugins
+   **/</span>
+  logLevel<span class="token operator">?</span><span class="token operator">:</span> <span class="token string">&quot;none&quot;</span> <span class="token operator">|</span> <span class="token string">&quot;silent&quot;</span> <span class="token operator">|</span> <span class="token string">&quot;error&quot;</span> <span class="token operator">|</span> <span class="token string">&quot;warning&quot;</span> <span class="token operator">|</span> <span class="token string">&quot;verbose&quot;</span><span class="token punctuation">;</span> <span class="token comment">// default is &quot;error&quot;, &quot;none&quot; and &quot;silent&quot; are synonyms</span>
+  <span class="token comment">/**
+   * Should the application throw exceptions from
+   * plugins?
+   */</span>
+  throwExceptions<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span> <span class="token comment">// default is false</span>
+  <span class="token comment">/**
+   * Should exceptions thrown by plugins be logged?
+   */</span>
+  logExceptions<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span> <span class="token comment">// default is true</span>
+  <span class="token comment">/**
+   * You can add a custom logger here
+   **/</span>
+  logger<span class="token operator">?</span><span class="token operator">:</span> IArgdownLogger<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="about-the-syntax-of-the-cheat-sheet"><a href="#about-the-syntax-of-the-cheat-sheet" class="header-anchor">#</a> About the Syntax of the Cheat Sheet</h2> <p>In the Cheat Sheet Typescript is used to precisely define the types of the available configuration options.</p> <p>The actual configuration in JSON, YAML or Javascript will look different. In the typescript interface definition, properties are separated by semicolons. In JSON, Javascript or YAML the properties will be separated by comma or simple linebreaks.</p> <p>Typescript interface definition:</p> <div class="language-typescript extra-class"><pre class="language-typescript"><code><span class="token keyword">interface</span> <span class="token class-name">MyInterface</span> <span class="token punctuation">{</span>
+  property1<span class="token operator">?</span><span class="token operator">:</span> Type1<span class="token punctuation">;</span>
+  property2<span class="token operator">?</span><span class="token operator">:</span> Type2<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>Javascript implementation:</p> <div class="language-javascript extra-class"><pre class="language-javascript"><code><span class="token punctuation">{</span>
+  property1<span class="token operator">:</span> value1<span class="token punctuation">,</span>
+  property2<span class="token operator">:</span> <span class="token punctuation">[</span>value2<span class="token punctuation">,</span> value3<span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>JSON (and YAML inline format) implementation:</p> <div class="language-json extra-class"><pre class="language-json"><code><span class="token punctuation">{</span>
+  <span class="token property">&quot;property1&quot;</span><span class="token operator">:</span> value1<span class="token punctuation">,</span>
+  <span class="token property">&quot;property2&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span>value2<span class="token punctuation">,</span> value3<span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>YAML frontmatter implementation:</p> <div class="language-yaml extra-class"><pre class="language-yaml"><code>===
+<span class="token key atrule">property1</span><span class="token punctuation">:</span> value1
+<span class="token key atrule">property2</span><span class="token punctuation">:</span>
+  <span class="token punctuation">-</span> value2
+  <span class="token punctuation">-</span> value3
+===
+</code></pre></div><p>In Typescript a <code>?</code> means that a property is optional.</p> <p>In Typescript <code>option?: Type1 | Type2;</code> means that you can either use a value of <code>Type1</code> or of <code>Type2</code> for <code>option</code> or not use this setting at all.</p> <p>In Typescript <code>option: string[];</code> means that you have to use an array of strings (<code>[&quot;string1&quot;, &quot;string2&quot;]</code> in JSON).</p> <p>In Typescript <code>option: {[key:string]:string};</code> means that you have to use a map with string keys and string values. In JSON this looks like this:</p> <div class="language-json extra-class"><pre class="language-json"><code><span class="token punctuation">{</span>
+  <span class="token property">&quot;option&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token property">&quot;key1&quot;</span><span class="token operator">:</span> <span class="token string">&quot;value1&quot;</span><span class="token punctuation">,</span> <span class="token property">&quot;key2&quot;</span><span class="token operator">:</span> <span class="token string">&quot;value2&quot;</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div></div> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/guide/running-custom-processes.html" class="prev">
+        Running custom processes
+      </a></span> <span class="next"><a href="/guide/extending-argdown.html">
+        Introduction
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"><!----></div></div>
+    <script src="/assets/js/app.e91d5bc4.js" defer></script><script src="/assets/js/3.275776de.js" defer></script><script src="/assets/js/25.fd2bcd8f.js" defer></script><script src="/assets/js/5.6e73b733.js" defer></script>
+  </body>
+</html>

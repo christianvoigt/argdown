@@ -1,0 +1,636 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>ArgdownApplication | @argdown/core</title>
+	<meta name="description" content="Documentation for @argdown/core">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">@argdown/core</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../index.html">@argdown/core</a>
+				</li>
+				<li>
+					<a href="../modules/ArgdownApplication.html">ArgdownApplication</a>
+				</li>
+				<li>
+					<a href="ArgdownApplication.ArgdownApplication-1.html">ArgdownApplication</a>
+				</li>
+			</ul>
+			<h1>Class ArgdownApplication</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>An ArgdownApplication chains together a collection of plugins, passing a request and response object between them.
+							Each plugin uses configuration settings from the provided request object to produce or transform data saved in the provided response object.
+						Without any plugins the ArgdownApplication will do nothing. Even the parsing and lexing of Argdown input is accomplished by the <a href="plugins_ParserPlugin.ParserPlugin.html">ParserPlugin</a>.</p>
+					</div>
+					<p>Plugins are grouped into processors that will be executed after one another each time the <a href="ArgdownApplication.ArgdownApplication-1.html#run">run</a> method is called.
+					Which processors are executed in a run is determined by the request.process list.</p>
+					<p>For each processor ArgdownApplication will try to execute plugin methods in the following order:</p>
+					<ul>
+						<li>any <a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html#prepare">IArgdownPlugin.prepare</a> methods: these methods can be used to add plugin default settings to the request
+						and to check that all required data is present in the response object.</li>
+						<li>any event listeners defined in <a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html#tokenListeners">IArgdownPlugin.tokenListeners</a> and <a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html#ruleListeners">IArgdownPlugin.ruleListeners</a>. If any plugin in a processor
+						defines such listeners, an ArgdownTreeWalker will be added to this processor which will visit all nodes in the abstract syntax tree (response.ast).</li>
+						<li>any <a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html#run">IArgdownPlugin.run</a> methods: these methods should be used to transform response data not contained within response.ast.</li>
+					</ul>
+					<p>All plugin methods called by ArgdownApplication receive a request, response and logger object as parameters.
+					In each of the three rounds the plugins are called in the order they were added to the processor.</p>
+					<p>Most runs will first have to call the ParserPlugin, DataPlugin, ModelPlugin and TagPlugin to add
+					the basic Argdown data to the response object. This includes:</p>
+					<ul>
+						<li>the AST</li>
+						<li>metaData contained in the front matter</li>
+						<li>statements and arguments dictionaries</li>
+						<li>the relations list</li>
+						<li>tag list and tagDictionary</li>
+						<li>the sections tree</li>
+						<li>metaData of arguments, statements and headings</li>
+					</ul>
+					<p>Plugins are expected at the beginning of their prepare method to check for any missing required data in the response object.
+						If required properties are missing, the plugin should throw an <a href="../modules/ArgdownPluginError.html">ArgdownPluginError</a>.
+						Throwing an error in any of the plugin methods called by ArgdownApplication
+						will cancel the run of the current processor and skip to the next processor.
+					All errors  will be caught, collected and optionally logged by the ArgdownApplication.</p>
+					<p>Plugins should not keep any local mutable state. Instead they should use the request object for configuration
+						and the response object for returning produced or transformed data. The only obvious exceptions are I/O plugins,
+					for example export plugins that save the exported data as new files.</p>
+					<p>The <code>@argdown/node</code> package provides a subclass called <code>AsyncArgdownApplication</code> which adds a <code>AsyncArgdownApplication.runAsync</code> method to this class.
+						This can be used to support Promises and async/await in I/O operations.
+						The app.runAsync method works exactly like the app.run method
+					except that it tries to call <code>await plugin.runAsyc(...);</code> before calling any <code>plugin.run(...);</code> methods.</p>
+					<dl class="tsd-comment-tags">
+						<dt>example</dt>
+						<dd><pre><code class="language-typescript">
+<span style="color: #AF00DB">import</span><span style="color: #000000"> {</span>
+<span style="color: #001080">ArgdownApplication</span><span style="color: #000000">,</span>
+<span style="color: #001080">IArgdownRequest</span><span style="color: #000000">,</span>
+<span style="color: #001080">IHtmlResponse</span><span style="color: #000000">,</span>
+<span style="color: #001080">ParserPlugin</span><span style="color: #000000">,</span>
+<span style="color: #001080">ModelPlugin</span><span style="color: #000000">,</span>
+<span style="color: #001080">ColorPlugin</span><span style="color: #000000">,</span>
+<span style="color: #001080">HtmlExportPlugin</span>
+<span style="color: #000000">} </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;@argdown/core&quot;</span><span style="color: #000000">;</span>
+
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">app</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">ArgdownApplication</span><span style="color: #000000">();</span>
+
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">parserPlugin</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">ParserPlugin</span><span style="color: #000000">();</span>
+<span style="color: #001080">app</span><span style="color: #000000">.</span><span style="color: #795E26">addPlugin</span><span style="color: #000000">(</span><span style="color: #001080">parserPlugin</span><span style="color: #000000">, </span><span style="color: #A31515">&quot;parse-input&quot;</span><span style="color: #000000">);</span>
+
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">modelPlugin</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">ModelPlugin</span><span style="color: #000000">();</span>
+<span style="color: #001080">app</span><span style="color: #000000">.</span><span style="color: #795E26">addPlugin</span><span style="color: #000000">(</span><span style="color: #001080">modelPlugin</span><span style="color: #000000">, </span><span style="color: #A31515">&quot;build-model&quot;</span><span style="color: #000000">);</span>
+
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">colorPlugin</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">ColorPlugin</span><span style="color: #000000">();</span>
+<span style="color: #001080">app</span><span style="color: #000000">.</span><span style="color: #795E26">addPlugin</span><span style="color: #000000">(</span><span style="color: #001080">colorPlugin</span><span style="color: #000000">, </span><span style="color: #A31515">&quot;build-model&quot;</span><span style="color: #000000">);</span>
+
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">htmlExportPlugin</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">HtmlExportPlugin</span><span style="color: #000000">();</span>
+<span style="color: #001080">app</span><span style="color: #000000">.</span><span style="color: #795E26">addPlugin</span><span style="color: #000000">(</span><span style="color: #001080">htmlExportPlugin</span><span style="color: #000000">, </span><span style="color: #A31515">&quot;export-html&quot;</span><span style="color: #000000">);</span>
+
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">input</span><span style="color: #000000"> = </span><span style="color: #A31515">`</span>
+<span style="color: #A31515"># My first Argdown document</span>
+
+<span style="color: #A31515">[S1]: a statement</span>
+<span style="color: #A31515">   - [A1]: an argument</span>
+<span style="color: #A31515">`</span><span style="color: #000000">;</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">request</span><span style="color: #000000">:</span><span style="color: #267F99">IArgdownRequest</span><span style="color: #000000"> = {</span>
+<span style="color: #000000"> </span><span style="color: #001080">input</span><span style="color: #000000">,</span>
+<span style="color: #000000"> </span><span style="color: #001080">process:</span><span style="color: #000000"> [</span><span style="color: #A31515">&quot;parse-input&quot;</span><span style="color: #000000">, </span><span style="color: #A31515">&quot;build-model&quot;</span><span style="color: #000000">, </span><span style="color: #A31515">&quot;export-html&quot;</span><span style="color: #000000">],</span>
+<span style="color: #000000"> </span><span style="color: #001080">logLevel:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;verbose&quot;</span>
+<span style="color: #000000">}</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">response</span><span style="color: #000000">:</span><span style="color: #267F99">IHtmlResponse</span><span style="color: #000000"> = </span><span style="color: #001080">app</span><span style="color: #000000">.</span><span style="color: #795E26">run</span><span style="color: #000000">(</span><span style="color: #001080">request</span><span style="color: #000000">);</span>
+<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">response</span><span style="color: #000000">.</span><span style="color: #001080">html</span><span style="color: #000000">);</span>
+</code></pre>
+						</dd>
+					</dl>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">ArgdownApplication</span>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Constructors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="ArgdownApplication.ArgdownApplication-1.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="ArgdownApplication.ArgdownApplication-1.html#defaultLogger" class="tsd-kind-icon">default<wbr>Logger</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="ArgdownApplication.ArgdownApplication-1.html#defaultProcesses" class="tsd-kind-icon">default<wbr>Processes</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="ArgdownApplication.ArgdownApplication-1.html#logger" class="tsd-kind-icon">logger</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="ArgdownApplication.ArgdownApplication-1.html#processors" class="tsd-kind-icon">processors</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ArgdownApplication.ArgdownApplication-1.html#addPlugin" class="tsd-kind-icon">add<wbr>Plugin</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ArgdownApplication.ArgdownApplication-1.html#getPlugin" class="tsd-kind-icon">get<wbr>Plugin</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ArgdownApplication.ArgdownApplication-1.html#getPlugins" class="tsd-kind-icon">get<wbr>Plugins</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ArgdownApplication.ArgdownApplication-1.html#removePlugin" class="tsd-kind-icon">remove<wbr>Plugin</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ArgdownApplication.ArgdownApplication-1.html#removeProcessor" class="tsd-kind-icon">remove<wbr>Processor</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ArgdownApplication.ArgdownApplication-1.html#replacePlugin" class="tsd-kind-icon">replace<wbr>Plugin</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="ArgdownApplication.ArgdownApplication-1.html#run" class="tsd-kind-icon">run</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Constructors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
+					<a name="constructor" class="tsd-anchor"></a>
+					<h3>constructor</h3>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Argdown<wbr>Application<span class="tsd-signature-symbol">(</span>logger<span class="tsd-signature-symbol">?: </span><a href="../interfaces/IArgdownLogger.IArgdownLogger-1.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownLogger</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="ArgdownApplication.ArgdownApplication-1.html" class="tsd-signature-type" data-tsd-kind="Class">ArgdownApplication</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/ArgdownApplication.ts#L120">src/ArgdownApplication.ts:120</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> logger: <a href="../interfaces/IArgdownLogger.IArgdownLogger-1.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownLogger</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>optional parameter to provide a logger different from the default one</p>
+										</div>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="ArgdownApplication.ArgdownApplication-1.html" class="tsd-signature-type" data-tsd-kind="Class">ArgdownApplication</a></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="defaultLogger" class="tsd-anchor"></a>
+					<h3>default<wbr>Logger</h3>
+					<div class="tsd-signature tsd-kind-icon">default<wbr>Logger<span class="tsd-signature-symbol">:</span> <a href="../interfaces/IArgdownLogger.IArgdownLogger-1.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownLogger</a><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/ArgdownApplication.ts#L114">src/ArgdownApplication.ts:114</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="defaultProcesses" class="tsd-anchor"></a>
+					<h3>default<wbr>Processes</h3>
+					<div class="tsd-signature tsd-kind-icon">default<wbr>Processes<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{}</span><span class="tsd-signature-symbol"> = {}</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/ArgdownApplication.ts#L115">src/ArgdownApplication.ts:115</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-index-signature">
+								<h5><span class="tsd-signature-symbol">[</span>name: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="logger" class="tsd-anchor"></a>
+					<h3>logger</h3>
+					<div class="tsd-signature tsd-kind-icon">logger<span class="tsd-signature-symbol">:</span> <a href="../interfaces/IArgdownLogger.IArgdownLogger-1.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownLogger</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/ArgdownApplication.ts#L113">src/ArgdownApplication.ts:113</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="processors" class="tsd-anchor"></a>
+					<h3>processors</h3>
+					<div class="tsd-signature tsd-kind-icon">processors<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{}</span><span class="tsd-signature-symbol"> = {}</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/ArgdownApplication.ts#L112">src/ArgdownApplication.ts:112</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-index-signature">
+								<h5><span class="tsd-signature-symbol">[</span>name: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><a href="../interfaces/ArgdownApplication.IArgdownProcessor.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownProcessor</a></h5>
+							</li>
+						</ul>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="addPlugin" class="tsd-anchor"></a>
+					<h3>add<wbr>Plugin</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Plugin<span class="tsd-signature-symbol">(</span>plugin<span class="tsd-signature-symbol">: </span><a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownPlugin</a>, processorId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/ArgdownApplication.ts#L136">src/ArgdownApplication.ts:136</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Adds a plugin to the application.
+									Registers any tokenListeners or ruleListeners with the ArgdownTreeWalker event emitter.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>plugin: <a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownPlugin</a></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> processorId: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>if processorId is undefined, the plugin will be added to the &quot;default&quot; processor</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getPlugin" class="tsd-anchor"></a>
+					<h3>get<wbr>Plugin</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Plugin<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, processorId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownPlugin</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/ArgdownApplication.ts#L254">src/ArgdownApplication.ts:254</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get a plugin that is already part of a processor</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>name: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>processorId: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownPlugin</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getPlugins" class="tsd-anchor"></a>
+					<h3>get<wbr>Plugins</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Plugins<span class="tsd-signature-symbol">(</span>processorId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownPlugin</a><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/ArgdownApplication.ts#L239">src/ArgdownApplication.ts:239</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get the plugin list of a processor.
+									Careful, this is not a copy!</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>processorId: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownPlugin</a><span class="tsd-signature-symbol">[]</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="removePlugin" class="tsd-anchor"></a>
+					<h3>remove<wbr>Plugin</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">remove<wbr>Plugin<span class="tsd-signature-symbol">(</span>plugin<span class="tsd-signature-symbol">: </span><a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownPlugin</a>, processorId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/ArgdownApplication.ts#L170">src/ArgdownApplication.ts:170</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Removes a plugin from the application.
+									Removes all tokenListeners and ruleListeners from the ArgdownTreeWalker event emitter.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>plugin: <a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownPlugin</a></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> processorId: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="removeProcessor" class="tsd-anchor"></a>
+					<h3>remove<wbr>Processor</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">remove<wbr>Processor<span class="tsd-signature-symbol">(</span>processorId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/ArgdownApplication.ts#L269">src/ArgdownApplication.ts:269</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Remove a processor and all its plugins from an application.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>processorId: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="replacePlugin" class="tsd-anchor"></a>
+					<h3>replace<wbr>Plugin</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">replace<wbr>Plugin<span class="tsd-signature-symbol">(</span>oldPluginId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, newPlugin<span class="tsd-signature-symbol">: </span><a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownPlugin</a>, processorId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/ArgdownApplication.ts#L204">src/ArgdownApplication.ts:204</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Replaces a plugin within a processor, keeping the original plugin execution order within the processor</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>oldPluginId: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the id of the plugin that should be removed</p>
+									</div>
+								</li>
+								<li>
+									<h5>newPlugin: <a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownPlugin</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the new plugin that should be added</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> processorId: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the processor to which the plugin should be added (if undefined, the default processor is used)</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="run" class="tsd-anchor"></a>
+					<h3>run</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">run<span class="tsd-signature-symbol">(</span>request<span class="tsd-signature-symbol">: </span><a href="../interfaces/index.IArgdownRequest.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownRequest</a>, response<span class="tsd-signature-symbol">?: </span><a href="../interfaces/index.IArgdownResponse.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownResponse</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/index.IArgdownResponse.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownResponse</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/ArgdownApplication.ts#L286">src/ArgdownApplication.ts:286</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Execute a chain of processors</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>request: <a href="../interfaces/index.IArgdownRequest.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownRequest</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Use request.process to define the list of processors to run. Use request.input to add ArgdownSourceCode to be processed.</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> response: <a href="../interfaces/index.IArgdownResponse.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownResponse</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Can be optionally used to start with a response from a previous run.
+										Use this if you want to avoid to run processors again that have already done their work.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/index.IArgdownResponse.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownResponse</a></h4>
+							<p>the transformed response object after all plugins have added their data.</p>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="../index.html">Modules</a>
+					</li>
+					<li class="current tsd-kind-module">
+						<a href="../modules/ArgdownApplication.html">Argdown<wbr>Application</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class tsd-parent-kind-module">
+						<a href="ArgdownApplication.ArgdownApplication-1.html" class="tsd-kind-icon">Argdown<wbr>Application</a>
+						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class">
+								<a href="ArgdownApplication.ArgdownApplication-1.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="ArgdownApplication.ArgdownApplication-1.html#defaultLogger" class="tsd-kind-icon">default<wbr>Logger</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="ArgdownApplication.ArgdownApplication-1.html#defaultProcesses" class="tsd-kind-icon">default<wbr>Processes</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="ArgdownApplication.ArgdownApplication-1.html#logger" class="tsd-kind-icon">logger</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="ArgdownApplication.ArgdownApplication-1.html#processors" class="tsd-kind-icon">processors</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="ArgdownApplication.ArgdownApplication-1.html#addPlugin" class="tsd-kind-icon">add<wbr>Plugin</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="ArgdownApplication.ArgdownApplication-1.html#getPlugin" class="tsd-kind-icon">get<wbr>Plugin</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="ArgdownApplication.ArgdownApplication-1.html#getPlugins" class="tsd-kind-icon">get<wbr>Plugins</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="ArgdownApplication.ArgdownApplication-1.html#removePlugin" class="tsd-kind-icon">remove<wbr>Plugin</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="ArgdownApplication.ArgdownApplication-1.html#removeProcessor" class="tsd-kind-icon">remove<wbr>Processor</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="ArgdownApplication.ArgdownApplication-1.html#replacePlugin" class="tsd-kind-icon">replace<wbr>Plugin</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="ArgdownApplication.ArgdownApplication-1.html#run" class="tsd-kind-icon">run</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/ArgdownApplication.IArgdownProcessor.html" class="tsd-kind-icon">IArgdown<wbr>Processor</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

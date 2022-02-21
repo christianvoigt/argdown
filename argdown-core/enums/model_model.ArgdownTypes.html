@@ -1,0 +1,369 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>ArgdownTypes | @argdown/core</title>
+	<meta name="description" content="Documentation for @argdown/core">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">@argdown/core</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../index.html">@argdown/core</a>
+				</li>
+				<li>
+					<a href="../modules/model_model.html">model/model</a>
+				</li>
+				<li>
+					<a href="model_model.ArgdownTypes.html">ArgdownTypes</a>
+				</li>
+			</ul>
+			<h1>Enumeration ArgdownTypes</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>All data objects stored in the <a href="../interfaces/index.IArgdownResponse.html">IArgdownResponse</a> are simple object literals implementing an interface.
+						You can simply instantiate an argument, statement or relation by creating an object literal and adding properties to it.</p>
+					</div>
+					<p>To support runtime type checking, each of these objects has a required <code>obj.type</code> property with its own ArgdownTypes member as type.
+					Typescript will automatically narrow the type if you check if some object&#39;s type property is equal to a specific ArgdownTypes member.</p>
+					<dl class="tsd-comment-tags">
+						<dt>example</dt>
+						<dd><pre><code class="language-javascript"><span style="color: #008000">// Instantiate a new statement by using an object literal:</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">obj</span><span style="color: #000000"> = {</span>
+<span style="color: #000000"> </span><span style="color: #001080">type:</span><span style="color: #000000"> </span><span style="color: #001080">ArgdownTypes</span><span style="color: #000000">.</span><span style="color: #0070C1">STATEMENT</span><span style="color: #000000">,</span>
+<span style="color: #000000"> </span><span style="color: #001080">title:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Some title&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000"> </span><span style="color: #001080">text:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Some text&quot;</span>
+<span style="color: #000000">}</span>
+
+<span style="color: #AF00DB">if</span><span style="color: #000000">(</span><span style="color: #001080">obj</span><span style="color: #000000">.</span><span style="color: #001080">type</span><span style="color: #000000"> === </span><span style="color: #001080">ArgdownTypes</span><span style="color: #000000">.</span><span style="color: #0070C1">STATEMENT</span><span style="color: #000000">){</span>
+<span style="color: #000000"> </span><span style="color: #008000">// Because IStatement is the only type with ArgdownTypes.STATEMENT as type of its `type`property</span>
+<span style="color: #000000"> </span><span style="color: #008000">// Typescript will now know that obj is of type IStatement, you don&#039;t have to cast it explicitely.</span>
+<span style="color: #000000"> </span><span style="color: #001080">obj</span><span style="color: #000000">.</span><span style="color: #001080">tags</span><span style="color: #000000"> = [</span><span style="color: #A31515">&quot;some tag&quot;</span><span style="color: #000000">];</span>
+<span style="color: #000000"> </span><span style="color: #001080">obj</span><span style="color: #000000">.</span><span style="color: #001080">role</span><span style="color: #000000"> = </span><span style="color: #001080">StatementRole</span><span style="color: #000000">.</span><span style="color: #0070C1">PREMISE</span><span style="color: #000000">;</span>
+<span style="color: #000000">}</span>
+</code></pre>
+						</dd>
+					</dl>
+				</div>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Enumeration members</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="model_model.ArgdownTypes.html#ARGUMENT" class="tsd-kind-icon">ARGUMENT</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="model_model.ArgdownTypes.html#ARGUMENT_MAP_NODE" class="tsd-kind-icon">ARGUMENT_<wbr>MAP_<wbr>NODE</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="model_model.ArgdownTypes.html#EQUIVALENCE_CLASS" class="tsd-kind-icon">EQUIVALENCE_<wbr>CLASS</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="model_model.ArgdownTypes.html#GROUP_MAP_NODE" class="tsd-kind-icon">GROUP_<wbr>MAP_<wbr>NODE</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="model_model.ArgdownTypes.html#INFERENCE" class="tsd-kind-icon">INFERENCE</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="model_model.ArgdownTypes.html#MAP_EDGE" class="tsd-kind-icon">MAP_<wbr>EDGE</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="model_model.ArgdownTypes.html#RELATION" class="tsd-kind-icon">RELATION</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="model_model.ArgdownTypes.html#RULE_NODE" class="tsd-kind-icon">RULE_<wbr>NODE</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="model_model.ArgdownTypes.html#SECTION" class="tsd-kind-icon">SECTION</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="model_model.ArgdownTypes.html#STATEMENT" class="tsd-kind-icon">STATEMENT</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="model_model.ArgdownTypes.html#STATEMENT_MAP_NODE" class="tsd-kind-icon">STATEMENT_<wbr>MAP_<wbr>NODE</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="model_model.ArgdownTypes.html#STATEMENT_REFERENCE" class="tsd-kind-icon">STATEMENT_<wbr>REFERENCE</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="model_model.ArgdownTypes.html#TOKEN_NODE" class="tsd-kind-icon">TOKEN_<wbr>NODE</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Enumeration members</h2>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="ARGUMENT" class="tsd-anchor"></a>
+					<h3>ARGUMENT</h3>
+					<div class="tsd-signature tsd-kind-icon">ARGUMENT<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;argument&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/model/model.ts#L32">src/model/model.ts:32</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="ARGUMENT_MAP_NODE" class="tsd-anchor"></a>
+					<h3>ARGUMENT_<wbr>MAP_<wbr>NODE</h3>
+					<div class="tsd-signature tsd-kind-icon">ARGUMENT_<wbr>MAP_<wbr>NODE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;argument-map-node&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/model/model.ts#L36">src/model/model.ts:36</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="EQUIVALENCE_CLASS" class="tsd-anchor"></a>
+					<h3>EQUIVALENCE_<wbr>CLASS</h3>
+					<div class="tsd-signature tsd-kind-icon">EQUIVALENCE_<wbr>CLASS<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;equivalence-class&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/model/model.ts#L29">src/model/model.ts:29</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="GROUP_MAP_NODE" class="tsd-anchor"></a>
+					<h3>GROUP_<wbr>MAP_<wbr>NODE</h3>
+					<div class="tsd-signature tsd-kind-icon">GROUP_<wbr>MAP_<wbr>NODE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;group-map-node&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/model/model.ts#L37">src/model/model.ts:37</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="INFERENCE" class="tsd-anchor"></a>
+					<h3>INFERENCE</h3>
+					<div class="tsd-signature tsd-kind-icon">INFERENCE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;inference&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/model/model.ts#L34">src/model/model.ts:34</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="MAP_EDGE" class="tsd-anchor"></a>
+					<h3>MAP_<wbr>EDGE</h3>
+					<div class="tsd-signature tsd-kind-icon">MAP_<wbr>EDGE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;map-edge&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/model/model.ts#L38">src/model/model.ts:38</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="RELATION" class="tsd-anchor"></a>
+					<h3>RELATION</h3>
+					<div class="tsd-signature tsd-kind-icon">RELATION<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;relation&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/model/model.ts#L33">src/model/model.ts:33</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="RULE_NODE" class="tsd-anchor"></a>
+					<h3>RULE_<wbr>NODE</h3>
+					<div class="tsd-signature tsd-kind-icon">RULE_<wbr>NODE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;rule-node&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/model/model.ts#L40">src/model/model.ts:40</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="SECTION" class="tsd-anchor"></a>
+					<h3>SECTION</h3>
+					<div class="tsd-signature tsd-kind-icon">SECTION<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;section&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/model/model.ts#L39">src/model/model.ts:39</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="STATEMENT" class="tsd-anchor"></a>
+					<h3>STATEMENT</h3>
+					<div class="tsd-signature tsd-kind-icon">STATEMENT<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;statement&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/model/model.ts#L30">src/model/model.ts:30</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="STATEMENT_MAP_NODE" class="tsd-anchor"></a>
+					<h3>STATEMENT_<wbr>MAP_<wbr>NODE</h3>
+					<div class="tsd-signature tsd-kind-icon">STATEMENT_<wbr>MAP_<wbr>NODE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;statement-map-node&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/model/model.ts#L35">src/model/model.ts:35</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="STATEMENT_REFERENCE" class="tsd-anchor"></a>
+					<h3>STATEMENT_<wbr>REFERENCE</h3>
+					<div class="tsd-signature tsd-kind-icon">STATEMENT_<wbr>REFERENCE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;statement-reference&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/model/model.ts#L31">src/model/model.ts:31</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="TOKEN_NODE" class="tsd-anchor"></a>
+					<h3>TOKEN_<wbr>NODE</h3>
+					<div class="tsd-signature tsd-kind-icon">TOKEN_<wbr>NODE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;token-node&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/model/model.ts#L41">src/model/model.ts:41</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="../index.html">Modules</a>
+					</li>
+					<li class="current tsd-kind-module">
+						<a href="../modules/model_model.html">model/model</a>
+						<ul>
+							<li class=" tsd-kind-namespace tsd-parent-kind-module">
+								<a href="../modules/model_model.IArgument.html">IArgument</a>
+							</li>
+							<li class=" tsd-kind-namespace tsd-parent-kind-module">
+								<a href="../modules/model_model.IEquivalenceClass.html">IEquivalence<wbr>Class</a>
+							</li>
+							<li class=" tsd-kind-namespace tsd-parent-kind-module">
+								<a href="../modules/model_model.IMapEdge.html">IMap<wbr>Edge</a>
+							</li>
+							<li class=" tsd-kind-namespace tsd-parent-kind-module">
+								<a href="../modules/model_model.IRelation.html">IRelation</a>
+							</li>
+							<li class=" tsd-kind-namespace tsd-parent-kind-module">
+								<a href="../modules/model_model.IRuleNode.html">IRule<wbr>Node</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-enum tsd-parent-kind-module">
+						<a href="model_model.ArgdownTypes.html" class="tsd-kind-icon">Argdown<wbr>Types</a>
+						<ul>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="model_model.ArgdownTypes.html#ARGUMENT" class="tsd-kind-icon">ARGUMENT</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="model_model.ArgdownTypes.html#ARGUMENT_MAP_NODE" class="tsd-kind-icon">ARGUMENT_<wbr>MAP_<wbr>NODE</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="model_model.ArgdownTypes.html#EQUIVALENCE_CLASS" class="tsd-kind-icon">EQUIVALENCE_<wbr>CLASS</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="model_model.ArgdownTypes.html#GROUP_MAP_NODE" class="tsd-kind-icon">GROUP_<wbr>MAP_<wbr>NODE</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="model_model.ArgdownTypes.html#INFERENCE" class="tsd-kind-icon">INFERENCE</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="model_model.ArgdownTypes.html#MAP_EDGE" class="tsd-kind-icon">MAP_<wbr>EDGE</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="model_model.ArgdownTypes.html#RELATION" class="tsd-kind-icon">RELATION</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="model_model.ArgdownTypes.html#RULE_NODE" class="tsd-kind-icon">RULE_<wbr>NODE</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="model_model.ArgdownTypes.html#SECTION" class="tsd-kind-icon">SECTION</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="model_model.ArgdownTypes.html#STATEMENT" class="tsd-kind-icon">STATEMENT</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="model_model.ArgdownTypes.html#STATEMENT_MAP_NODE" class="tsd-kind-icon">STATEMENT_<wbr>MAP_<wbr>NODE</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="model_model.ArgdownTypes.html#STATEMENT_REFERENCE" class="tsd-kind-icon">STATEMENT_<wbr>REFERENCE</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="model_model.ArgdownTypes.html#TOKEN_NODE" class="tsd-kind-icon">TOKEN_<wbr>NODE</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

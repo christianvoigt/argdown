@@ -1,0 +1,384 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>MapNodeImagesPlugin | @argdown/core</title>
+	<meta name="description" content="Documentation for @argdown/core">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">@argdown/core</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../index.html">@argdown/core</a>
+				</li>
+				<li>
+					<a href="../modules/plugins_MapNodeImagesPlugin.html">plugins/MapNodeImagesPlugin</a>
+				</li>
+				<li>
+					<a href="plugins_MapNodeImagesPlugin.MapNodeImagesPlugin.html">MapNodeImagesPlugin</a>
+				</li>
+			</ul>
+			<h1>Class MapNodeImagesPlugin</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>The MapNodeImagesPlugin adds image ids or urls to map nodes. This image data can come from</p>
+					</div>
+					<p>   a) &quot;images&quot; lists in argument or statement metadata
+					b) tag configuration data</p>
+					<p>If there is no entry in &quot;images/files&quot; for the used string,
+					this plugin creates one and assumes that the string is the image file&#39;s url.</p>
+					<p>This allows the user to either create a central list of image files with short ids
+					or simply directly write the image url into the items metadata.</p>
+					<p>This plugin depends on the results from the <a href="plugins_MapPlugin.MapPlugin.html">MapPlugin</a>.</p>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">MapNodeImagesPlugin</span>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel">
+				<h3>Implements</h3>
+				<ul class="tsd-hierarchy">
+					<li><a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownPlugin</a></li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Constructors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="plugins_MapNodeImagesPlugin.MapNodeImagesPlugin.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="plugins_MapNodeImagesPlugin.MapNodeImagesPlugin.html#defaults" class="tsd-kind-icon">defaults</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="plugins_MapNodeImagesPlugin.MapNodeImagesPlugin.html#name" class="tsd-kind-icon">name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="plugins_MapNodeImagesPlugin.MapNodeImagesPlugin.html#prepare" class="tsd-kind-icon">prepare</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="plugins_MapNodeImagesPlugin.MapNodeImagesPlugin.html#run" class="tsd-kind-icon">run</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="plugins_MapNodeImagesPlugin.MapNodeImagesPlugin.html#getImagesFromData" class="tsd-kind-icon">get<wbr>Images<wbr>From<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="plugins_MapNodeImagesPlugin.MapNodeImagesPlugin.html#getImagesFromTags" class="tsd-kind-icon">get<wbr>Images<wbr>From<wbr>Tags</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="plugins_MapNodeImagesPlugin.MapNodeImagesPlugin.html#getSettings" class="tsd-kind-icon">get<wbr>Settings</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Constructors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
+					<a name="constructor" class="tsd-anchor"></a>
+					<h3>constructor</h3>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Map<wbr>Node<wbr>Images<wbr>Plugin<span class="tsd-signature-symbol">(</span>config<span class="tsd-signature-symbol">?: </span><a href="../interfaces/plugins_MapNodeImagesPlugin.IImagesSettings.html" class="tsd-signature-type" data-tsd-kind="Interface">IImagesSettings</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="plugins_MapNodeImagesPlugin.MapNodeImagesPlugin.html" class="tsd-signature-type" data-tsd-kind="Class">MapNodeImagesPlugin</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/plugins/MapNodeImagesPlugin.ts#L56">src/plugins/MapNodeImagesPlugin.ts:56</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> config: <a href="../interfaces/plugins_MapNodeImagesPlugin.IImagesSettings.html" class="tsd-signature-type" data-tsd-kind="Interface">IImagesSettings</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="plugins_MapNodeImagesPlugin.MapNodeImagesPlugin.html" class="tsd-signature-type" data-tsd-kind="Class">MapNodeImagesPlugin</a></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="defaults" class="tsd-anchor"></a>
+					<h3>defaults</h3>
+					<div class="tsd-signature tsd-kind-icon">defaults<span class="tsd-signature-symbol">:</span> <a href="../interfaces/plugins_MapNodeImagesPlugin.IImagesSettings.html" class="tsd-signature-type" data-tsd-kind="Interface">IImagesSettings</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/plugins/MapNodeImagesPlugin.ts#L55">src/plugins/MapNodeImagesPlugin.ts:55</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="name" class="tsd-anchor"></a>
+					<h3>name</h3>
+					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;MapNodeImagesPlugin&quot;</span></div>
+					<aside class="tsd-sources">
+						<p>Implementation of <a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html">IArgdownPlugin</a>.<a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html#name">name</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/plugins/MapNodeImagesPlugin.ts#L54">src/plugins/MapNodeImagesPlugin.ts:54</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The name of the plugin</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="prepare" class="tsd-anchor"></a>
+					<h3>prepare</h3>
+					<div class="tsd-signature tsd-kind-icon">prepare<span class="tsd-signature-symbol">:</span> <a href="../interfaces/IArgdownPlugin.IRequestHandler.html" class="tsd-signature-type" data-tsd-kind="Interface">IRequestHandler</a><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<p>Implementation of <a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html">IArgdownPlugin</a>.<a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html#prepare">prepare</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/plugins/MapNodeImagesPlugin.ts#L65">src/plugins/MapNodeImagesPlugin.ts:65</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Called each time the plugin&#39;s processor is run,
+								before any other method of this plugin is called.
+								Use this to add default settings to the request and to check that all required data is present in the response.
+							If not, throw an <a href="../modules/ArgdownPluginError.html">ArgdownPluginError</a> to cancel the the current processor&#39;s execution.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="run" class="tsd-anchor"></a>
+					<h3>run</h3>
+					<div class="tsd-signature tsd-kind-icon">run<span class="tsd-signature-symbol">:</span> <a href="../interfaces/IArgdownPlugin.IRequestHandler.html" class="tsd-signature-type" data-tsd-kind="Interface">IRequestHandler</a><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<p>Implementation of <a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html">IArgdownPlugin</a>.<a href="../interfaces/IArgdownPlugin.IArgdownPlugin-1.html#run">run</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/plugins/MapNodeImagesPlugin.ts#L68">src/plugins/MapNodeImagesPlugin.ts:68</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Use this method to do the main work outside of the Argdown AST.
+							This is the last method to be called by the <a href="../modules/ArgdownApplication.html">ArgdownApplication</a>.</p>
+						</div>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getImagesFromData" class="tsd-anchor"></a>
+					<h3>get<wbr>Images<wbr>From<wbr>Data</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Images<wbr>From<wbr>Data<span class="tsd-signature-symbol">(</span>response<span class="tsd-signature-symbol">: </span><a href="../interfaces/index.IArgdownResponse.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownResponse</a>, node<span class="tsd-signature-symbol">: </span><a href="../interfaces/model_model.IMapNode.html" class="tsd-signature-type" data-tsd-kind="Interface">IMapNode</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/plugins/MapNodeImagesPlugin.ts#L100">src/plugins/MapNodeImagesPlugin.ts:100</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>response: <a href="../interfaces/index.IArgdownResponse.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownResponse</a></h5>
+								</li>
+								<li>
+									<h5>node: <a href="../interfaces/model_model.IMapNode.html" class="tsd-signature-type" data-tsd-kind="Interface">IMapNode</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getImagesFromTags" class="tsd-anchor"></a>
+					<h3>get<wbr>Images<wbr>From<wbr>Tags</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Images<wbr>From<wbr>Tags<span class="tsd-signature-symbol">(</span>settings<span class="tsd-signature-symbol">: </span><a href="../interfaces/plugins_MapNodeImagesPlugin.IImagesSettings.html" class="tsd-signature-type" data-tsd-kind="Interface">IImagesSettings</a>, node<span class="tsd-signature-symbol">: </span><a href="../interfaces/model_model.IMapNode.html" class="tsd-signature-type" data-tsd-kind="Interface">IMapNode</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/plugins/MapNodeImagesPlugin.ts#L117">src/plugins/MapNodeImagesPlugin.ts:117</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>settings: <a href="../interfaces/plugins_MapNodeImagesPlugin.IImagesSettings.html" class="tsd-signature-type" data-tsd-kind="Interface">IImagesSettings</a></h5>
+								</li>
+								<li>
+									<h5>node: <a href="../interfaces/model_model.IMapNode.html" class="tsd-signature-type" data-tsd-kind="Interface">IMapNode</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getSettings" class="tsd-anchor"></a>
+					<h3>get<wbr>Settings</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Settings<span class="tsd-signature-symbol">(</span>request<span class="tsd-signature-symbol">: </span><a href="../interfaces/index.IArgdownRequest.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownRequest</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/plugins_MapNodeImagesPlugin.IImagesSettings.html" class="tsd-signature-type" data-tsd-kind="Interface">IImagesSettings</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/plugins/MapNodeImagesPlugin.ts#L59">src/plugins/MapNodeImagesPlugin.ts:59</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>request: <a href="../interfaces/index.IArgdownRequest.html" class="tsd-signature-type" data-tsd-kind="Interface">IArgdownRequest</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/plugins_MapNodeImagesPlugin.IImagesSettings.html" class="tsd-signature-type" data-tsd-kind="Interface">IImagesSettings</a></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="../index.html">Modules</a>
+					</li>
+					<li class="current tsd-kind-module">
+						<a href="../modules/plugins_MapNodeImagesPlugin.html">plugins/<wbr>Map<wbr>Node<wbr>Images<wbr>Plugin</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class tsd-parent-kind-module">
+						<a href="plugins_MapNodeImagesPlugin.MapNodeImagesPlugin.html" class="tsd-kind-icon">Map<wbr>Node<wbr>Images<wbr>Plugin</a>
+						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class">
+								<a href="plugins_MapNodeImagesPlugin.MapNodeImagesPlugin.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="plugins_MapNodeImagesPlugin.MapNodeImagesPlugin.html#defaults" class="tsd-kind-icon">defaults</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="plugins_MapNodeImagesPlugin.MapNodeImagesPlugin.html#name" class="tsd-kind-icon">name</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="plugins_MapNodeImagesPlugin.MapNodeImagesPlugin.html#prepare" class="tsd-kind-icon">prepare</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="plugins_MapNodeImagesPlugin.MapNodeImagesPlugin.html#run" class="tsd-kind-icon">run</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="plugins_MapNodeImagesPlugin.MapNodeImagesPlugin.html#getImagesFromData" class="tsd-kind-icon">get<wbr>Images<wbr>From<wbr>Data</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="plugins_MapNodeImagesPlugin.MapNodeImagesPlugin.html#getImagesFromTags" class="tsd-kind-icon">get<wbr>Images<wbr>From<wbr>Tags</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="plugins_MapNodeImagesPlugin.MapNodeImagesPlugin.html#getSettings" class="tsd-kind-icon">get<wbr>Settings</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/plugins_MapNodeImagesPlugin.IImagesSettings.html" class="tsd-kind-icon">IImages<wbr>Settings</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

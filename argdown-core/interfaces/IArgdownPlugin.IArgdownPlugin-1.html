@@ -1,0 +1,379 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>IArgdownPlugin | @argdown/core</title>
+	<meta name="description" content="Documentation for @argdown/core">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">@argdown/core</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../index.html">@argdown/core</a>
+				</li>
+				<li>
+					<a href="../modules/IArgdownPlugin.html">IArgdownPlugin</a>
+				</li>
+				<li>
+					<a href="IArgdownPlugin.IArgdownPlugin-1.html">IArgdownPlugin</a>
+				</li>
+			</ul>
+			<h1>Interface IArgdownPlugin</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>A plugin that can be added to an <a href="../modules/ArgdownApplication.html">ArgdownApplication</a> with <code>app.AddPlugin(plugin, processorId)</code>.</p>
+					</div>
+					<p>Can walk the Argdown AST by using <code>tokenListeners</code> and <code>ruleListeners</code>. Should use the <code>run</code> method for everything else.</p>
+					<p>Plugins should avoid keeping any local mutable state. Instead they should use
+						the provided request object for configuration and the provided response object for returning any produced or transformed data.
+					The only exceptions are I/O operations (e.g. loading or saving files).</p>
+					<p>See the <a href="https://argdown.org/guide/writing-custom-plugins.html">guide on writing custom plugins</a> for more information.</p>
+					<dl class="tsd-comment-tags">
+						<dt>example</dt>
+						<dd><pre><code class="language-typescript">
+<span style="color: #AF00DB">import</span><span style="color: #000000"> {</span><span style="color: #001080">IArgdownRequest</span><span style="color: #000000">, </span><span style="color: #001080">IArgdownResponse</span><span style="color: #000000">, </span><span style="color: #001080">IArgdownPlugin</span><span style="color: #000000">, </span><span style="color: #001080">IRequestHandler</span><span style="color: #000000">, </span><span style="color: #001080">IRuleTokenHandler</span><span style="color: #000000">, </span><span style="color: #001080">ArgdownPluginError</span><span style="color: #000000">, </span><span style="color: #001080">RuleNames</span><span style="color: #000000">} </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;@argdown/core&quot;</span><span style="color: #000000">;</span>
+
+<span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #0000FF">interface</span><span style="color: #000000"> </span><span style="color: #267F99">IGreetingSettings</span><span style="color: #000000">{</span>
+<span style="color: #000000"> </span><span style="color: #001080">addHello</span><span style="color: #000000">?:</span><span style="color: #267F99">boolean</span><span style="color: #000000">;</span>
+<span style="color: #000000">}</span>
+<span style="color: #008000">// We augment the request and response types from @argdown/core</span>
+<span style="color: #008000">// to add our plugin settings and data:</span>
+<span style="color: #0000FF">declare</span><span style="color: #000000"> </span><span style="color: #0000FF">module</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;@argdown/core&quot;</span><span style="color: #000000">{</span>
+<span style="color: #000000"> </span><span style="color: #0000FF">interface</span><span style="color: #000000"> </span><span style="color: #267F99">IArgdownRequest</span><span style="color: #000000">{</span>
+<span style="color: #000000">   </span><span style="color: #001080">greeting</span><span style="color: #000000">?:</span><span style="color: #267F99">IGreetingSettings</span><span style="color: #000000">;</span>
+<span style="color: #000000"> }</span>
+<span style="color: #000000"> </span><span style="color: #0000FF">interface</span><span style="color: #000000"> </span><span style="color: #267F99">IArgdownResponse</span><span style="color: #000000">{</span>
+<span style="color: #000000">   </span><span style="color: #001080">greeting</span><span style="color: #000000">:</span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
+<span style="color: #000000"> }</span>
+<span style="color: #000000">}</span>
+
+<span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">GreetingPlugin</span><span style="color: #000000"> </span><span style="color: #0000FF">implements</span><span style="color: #000000"> </span><span style="color: #267F99">IArgdownPlugin</span><span style="color: #000000">{</span>
+<span style="color: #000000"> </span><span style="color: #001080">name</span><span style="color: #000000"> = </span><span style="color: #A31515">&quot;GreetingPlugin&quot;</span><span style="color: #000000">;</span>
+<span style="color: #000000"> </span><span style="color: #795E26">prepare</span><span style="color: #000000">:</span><span style="color: #267F99">IRequestHandler</span><span style="color: #000000"> = (</span><span style="color: #001080">request</span><span style="color: #000000">, </span><span style="color: #001080">response</span><span style="color: #000000">)</span><span style="color: #0000FF">=&gt;</span><span style="color: #000000">{</span>
+<span style="color: #000000">   </span><span style="color: #008000">// check if requirements are met</span>
+<span style="color: #000000">   </span><span style="color: #AF00DB">if</span><span style="color: #000000">(!</span><span style="color: #001080">response</span><span style="color: #000000">.</span><span style="color: #001080">ast</span><span style="color: #000000">){</span>
+<span style="color: #000000">     </span><span style="color: #AF00DB">throw</span><span style="color: #000000"> </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">ArgdownPluginError</span><span style="color: #000000">(</span><span style="color: #0000FF">this</span><span style="color: #000000">.</span><span style="color: #001080">name</span><span style="color: #000000">, </span><span style="color: #A31515">&quot;No ast found in response.&quot;</span><span style="color: #000000">);</span>
+<span style="color: #000000">   }</span>
+<span style="color: #000000">   </span><span style="color: #008000">// create default settings</span>
+<span style="color: #000000">   </span><span style="color: #AF00DB">if</span><span style="color: #000000">(!</span><span style="color: #001080">request</span><span style="color: #000000">.</span><span style="color: #001080">greeting</span><span style="color: #000000">){</span>
+<span style="color: #000000">     </span><span style="color: #001080">request</span><span style="color: #000000">.</span><span style="color: #001080">greeting</span><span style="color: #000000"> = {};</span>
+<span style="color: #000000">   }</span>
+<span style="color: #000000">   </span><span style="color: #AF00DB">if</span><span style="color: #000000">(</span><span style="color: #001080">request</span><span style="color: #000000">.</span><span style="color: #001080">greeting</span><span style="color: #000000">.</span><span style="color: #001080">sayHello</span><span style="color: #000000"> === </span><span style="color: #0000FF">undefined</span><span style="color: #000000">){</span>
+<span style="color: #000000">     </span><span style="color: #001080">request</span><span style="color: #000000">.</span><span style="color: #001080">greeting</span><span style="color: #000000">.</span><span style="color: #001080">sayHello</span><span style="color: #000000"> = </span><span style="color: #0000FF">true</span><span style="color: #000000">;</span>
+<span style="color: #000000">   }</span>
+<span style="color: #000000"> };</span>
+<span style="color: #000000"> </span><span style="color: #795E26">run</span><span style="color: #000000">:</span><span style="color: #267F99">IRequestHandler</span><span style="color: #000000"> = (</span><span style="color: #001080">request</span><span style="color: #000000">, </span><span style="color: #001080">response</span><span style="color: #000000">)</span><span style="color: #0000FF">=&gt;</span><span style="color: #000000">{</span>
+<span style="color: #000000">   </span><span style="color: #AF00DB">if</span><span style="color: #000000">(</span><span style="color: #001080">request</span><span style="color: #000000">.</span><span style="color: #001080">greeting</span><span style="color: #000000"> &amp;&amp; </span><span style="color: #001080">request</span><span style="color: #000000">.</span><span style="color: #001080">greeting</span><span style="color: #000000">.</span><span style="color: #001080">addHello</span><span style="color: #000000">){</span>
+<span style="color: #000000">     </span><span style="color: #008000">// adding data to response object</span>
+<span style="color: #000000">     </span><span style="color: #001080">response</span><span style="color: #000000">.</span><span style="color: #001080">greeting</span><span style="color: #000000"> = </span><span style="color: #A31515">&quot;Hallo World!&quot;</span><span style="color: #000000">;</span>
+<span style="color: #000000">   }</span>
+<span style="color: #000000"> };</span>
+<span style="color: #000000"> </span><span style="color: #001080">ruleListeners</span><span style="color: #000000"> = {</span>
+<span style="color: #000000">   </span><span style="color: #001080">[RuleNames.</span><span style="color: #0070C1">STATEMENT</span><span style="color: #001080"> </span><span style="color: #000000">+</span><span style="color: #001080"> </span><span style="color: #A31515">&quot;Entry&quot;</span><span style="color: #001080">]:</span><span style="color: #000000"> (</span><span style="color: #001080">request</span><span style="color: #000000">, </span><span style="color: #001080">response</span><span style="color: #000000">, </span><span style="color: #001080">node</span><span style="color: #000000">, </span><span style="color: #001080">parentNode</span><span style="color: #000000">, </span><span style="color: #001080">childIndex</span><span style="color: #000000">, </span><span style="color: #001080">logger</span><span style="color: #000000">)</span><span style="color: #0000FF">=&gt;</span><span style="color: #000000">{</span>
+<span style="color: #000000">     </span><span style="color: #008000">// use the logger parameter instead of console.log</span>
+<span style="color: #000000">     </span><span style="color: #001080">logger</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;verbose&quot;</span><span style="color: #000000">, </span><span style="color: #A31515">`Statement: </span><span style="color: #0000FF">${</span><span style="color: #001080">node</span><span style="color: #000000FF">.</span><span style="color: #001080">statement</span><span style="color: #000000FF">.</span><span style="color: #001080">text</span><span style="color: #0000FF">}</span><span style="color: #A31515">`</span><span style="color: #000000">);</span>
+<span style="color: #000000">   }</span>
+<span style="color: #000000"> }</span>
+<span style="color: #000000">}</span>
+</code></pre>
+						</dd>
+					</dl>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">IArgdownPlugin</span>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel">
+				<h3>Implemented by</h3>
+				<ul class="tsd-hierarchy">
+					<li><a href="../classes/plugins_ArgumentSelectionPlugin.ArgumentSelectionPlugin.html" class="tsd-signature-type" data-tsd-kind="Class">ArgumentSelectionPlugin</a></li>
+					<li><a href="../classes/plugins_ClosedGroupPlugin.ClosedGroupPlugin.html" class="tsd-signature-type" data-tsd-kind="Class">ClosedGroupPlugin</a></li>
+					<li><a href="../classes/plugins_ColorPlugin.ColorPlugin.html" class="tsd-signature-type" data-tsd-kind="Class">ColorPlugin</a></li>
+					<li><a href="../classes/plugins_DataPlugin.DataPlugin.html" class="tsd-signature-type" data-tsd-kind="Class">DataPlugin</a></li>
+					<li><a href="../classes/plugins_DotExportPlugin.DotExportPlugin.html" class="tsd-signature-type" data-tsd-kind="Class">DotExportPlugin</a></li>
+					<li><a href="../classes/plugins_ExplodeArgumentsPlugin.ExplodeArgumentsPlugin.html" class="tsd-signature-type" data-tsd-kind="Class">ExplodeArgumentsPlugin</a></li>
+					<li><a href="../classes/plugins_GraphMLExportPlugin.GraphMLExportPlugin.html" class="tsd-signature-type" data-tsd-kind="Class">GraphMLExportPlugin</a></li>
+					<li><a href="../classes/plugins_GroupPlugin.GroupPlugin.html" class="tsd-signature-type" data-tsd-kind="Class">GroupPlugin</a></li>
+					<li><a href="../classes/plugins_HighlightSourcePlugin.HighlightSourcePlugin.html" class="tsd-signature-type" data-tsd-kind="Class">HighlightSourcePlugin</a></li>
+					<li><a href="../classes/plugins_HtmlExportPlugin.HtmlExportPlugin.html" class="tsd-signature-type" data-tsd-kind="Class">HtmlExportPlugin</a></li>
+					<li><a href="../classes/plugins_JSONExportPlugin.JSONExportPlugin.html" class="tsd-signature-type" data-tsd-kind="Class">JSONExportPlugin</a></li>
+					<li><a href="../classes/plugins_MapNodeImagesPlugin.MapNodeImagesPlugin.html" class="tsd-signature-type" data-tsd-kind="Class">MapNodeImagesPlugin</a></li>
+					<li><a href="../classes/plugins_MapPlugin.MapPlugin.html" class="tsd-signature-type" data-tsd-kind="Class">MapPlugin</a></li>
+					<li><a href="../classes/plugins_ModelPlugin.ModelPlugin.html" class="tsd-signature-type" data-tsd-kind="Class">ModelPlugin</a></li>
+					<li><a href="../classes/plugins_ParserPlugin.ParserPlugin.html" class="tsd-signature-type" data-tsd-kind="Class">ParserPlugin</a></li>
+					<li><a href="../classes/plugins_PreselectionPlugin.PreselectionPlugin.html" class="tsd-signature-type" data-tsd-kind="Class">PreselectionPlugin</a></li>
+					<li><a href="../classes/plugins_RegroupPlugin.RegroupPlugin.html" class="tsd-signature-type" data-tsd-kind="Class">RegroupPlugin</a></li>
+					<li><a href="../classes/plugins_SaysWhoPlugin.SaysWhoPlugin.html" class="tsd-signature-type" data-tsd-kind="Class">SaysWhoPlugin</a></li>
+					<li><a href="../classes/plugins_StatementSelectionPlugin.StatementSelectionPlugin.html" class="tsd-signature-type" data-tsd-kind="Class">StatementSelectionPlugin</a></li>
+					<li><a href="../classes/plugins_SyncDotToSvgExportPlugin.SyncDotToSvgExportPlugin.html" class="tsd-signature-type" data-tsd-kind="Class">SyncDotToSvgExportPlugin</a></li>
+					<li><a href="../classes/plugins_WebComponentExportPlugin.WebComponentExportPlugin.html" class="tsd-signature-type" data-tsd-kind="Class">WebComponentExportPlugin</a></li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IArgdownPlugin.IArgdownPlugin-1.html#name" class="tsd-kind-icon">name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IArgdownPlugin.IArgdownPlugin-1.html#prepare" class="tsd-kind-icon">prepare</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IArgdownPlugin.IArgdownPlugin-1.html#ruleListeners" class="tsd-kind-icon">rule<wbr>Listeners</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IArgdownPlugin.IArgdownPlugin-1.html#run" class="tsd-kind-icon">run</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="IArgdownPlugin.IArgdownPlugin-1.html#tokenListeners" class="tsd-kind-icon">token<wbr>Listeners</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="name" class="tsd-anchor"></a>
+					<h3>name</h3>
+					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/IArgdownPlugin.ts#L78">src/IArgdownPlugin.ts:78</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The name of the plugin</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="prepare" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> prepare</h3>
+					<div class="tsd-signature tsd-kind-icon">prepare<span class="tsd-signature-symbol">:</span> <a href="IArgdownPlugin.IRequestHandler.html" class="tsd-signature-type" data-tsd-kind="Interface">IRequestHandler</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/IArgdownPlugin.ts#L85">src/IArgdownPlugin.ts:85</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Called each time the plugin&#39;s processor is run,
+								before any other method of this plugin is called.
+								Use this to add default settings to the request and to check that all required data is present in the response.
+							If not, throw an <a href="../modules/ArgdownPluginError.html">ArgdownPluginError</a> to cancel the the current processor&#39;s execution.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="ruleListeners" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> rule<wbr>Listeners</h3>
+					<div class="tsd-signature tsd-kind-icon">rule<wbr>Listeners<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{}</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/IArgdownPlugin.ts#L105">src/IArgdownPlugin.ts:105</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>A map of <a href="model_model.IRuleNode-1.html">IRuleNode</a> event listeners to be added to <a href="IArgdownPlugin.IArgdownPlugin-1.html#ruleListeners">IArgdownPlugin.ruleListeners</a>.
+							You can use ruleListeners to visit every rule node in the Argdown AST.</p>
+						</div>
+						<p>The listeners will be called by the ArgdownTreeWalker event emitter before the <a href="IArgdownPlugin.IArgdownPlugin-1.html#run">run</a> method and after the <a href="IArgdownPlugin.IArgdownPlugin-1.html#prepare">prepare</a> method.
+							The tree walker visits the nodes depth first and emits
+						<code>[RuleNames.RULE_NAME + &quot;Entry&quot;]</code> and <code>[RuleNames.RULE_NAME + &quot;Exit&quot;]</code> events for every <a href="model_model.IRuleNode-1.html">IRuleNode</a> encountered.</p>
+						<p>The eventId has to be a <a href="../modules/RuleNames.html">RuleNames</a> member plus either &quot;Entry&quot; or &quot;Exit&quot;.</p>
+						<dl class="tsd-comment-tags">
+							<dt>example</dt>
+							<dd><pre><code class="language-javascript"><span style="color: #000000">[</span><span style="color: #001080">RuleNames</span><span style="color: #000000">.</span><span style="color: #0070C1">RELATIONS</span><span style="color: #000000"> + </span><span style="color: #A31515">&quot;Exit&quot;</span><span style="color: #000000">]: ()</span><span style="color: #0000FF">=&gt;</span><span style="color: #000000">...</span>
+</code></pre>
+							</dd>
+						</dl>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-index-signature">
+								<h5><span class="tsd-signature-symbol">[</span>eventId: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><a href="ArgdownTreeWalker.IRuleNodeHandler.html" class="tsd-signature-type" data-tsd-kind="Interface">IRuleNodeHandler</a></h5>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="run" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> run</h3>
+					<div class="tsd-signature tsd-kind-icon">run<span class="tsd-signature-symbol">:</span> <a href="IArgdownPlugin.IRequestHandler.html" class="tsd-signature-type" data-tsd-kind="Interface">IRequestHandler</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/IArgdownPlugin.ts#L90">src/IArgdownPlugin.ts:90</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Use this method to do the main work outside of the Argdown AST.
+							This is the last method to be called by the <a href="../modules/ArgdownApplication.html">ArgdownApplication</a>.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="tokenListeners" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> token<wbr>Listeners</h3>
+					<div class="tsd-signature tsd-kind-icon">token<wbr>Listeners<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{}</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/christianvoigt/argdown/blob/79818c3/packages/argdown-core/src/IArgdownPlugin.ts#L123">src/IArgdownPlugin.ts:123</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>A map of <a href="model_model.ITokenNode.html">ITokenNode</a> event listeners.
+							You can use tokenListeners to visit every token node in the Argdown abstract syntax tree.</p>
+						</div>
+						<p>The listeners will be called by the ArgdownTreeWalker event emitter before the <a href="IArgdownPlugin.IArgdownPlugin-1.html#run">run</a> method and after the <a href="IArgdownPlugin.IArgdownPlugin-1.html#prepare">prepare</a> method.</p>
+						<p>The tree walker visits the nodes depth first and emits
+						<code>[TokenNames.TOKEN_NAME]</code> events for every <a href="model_model.ITokenNode.html">ITokenNode</a> encountered.</p>
+						<p>The eventId has to be a <a href="../modules/TokenNames.html">TokenNames</a> member.</p>
+						<dl class="tsd-comment-tags">
+							<dt>example</dt>
+							<dd><pre><code class="language-javascript"><span style="color: #000000">[</span><span style="color: #001080">TokenNames</span><span style="color: #000000">.</span><span style="color: #0070C1">STATEMENT_DEFINITION</span><span style="color: #000000">]: ()</span><span style="color: #0000FF">=&gt;</span><span style="color: #000000">...</span>
+</code></pre>
+							</dd>
+						</dl>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-index-signature">
+								<h5><span class="tsd-signature-symbol">[</span>eventId: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><a href="ArgdownTreeWalker.ITokenNodeHandler.html" class="tsd-signature-type" data-tsd-kind="Interface">ITokenNodeHandler</a></h5>
+							</li>
+						</ul>
+					</div>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="../index.html">Modules</a>
+					</li>
+					<li class="current tsd-kind-module">
+						<a href="../modules/IArgdownPlugin.html">IArgdown<wbr>Plugin</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface tsd-parent-kind-module">
+						<a href="IArgdownPlugin.IArgdownPlugin-1.html" class="tsd-kind-icon">IArgdown<wbr>Plugin</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="IArgdownPlugin.IArgdownPlugin-1.html#name" class="tsd-kind-icon">name</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="IArgdownPlugin.IArgdownPlugin-1.html#prepare" class="tsd-kind-icon">prepare</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="IArgdownPlugin.IArgdownPlugin-1.html#ruleListeners" class="tsd-kind-icon">rule<wbr>Listeners</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="IArgdownPlugin.IArgdownPlugin-1.html#run" class="tsd-kind-icon">run</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="IArgdownPlugin.IArgdownPlugin-1.html#tokenListeners" class="tsd-kind-icon">token<wbr>Listeners</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="IArgdownPlugin.IRequestHandler.html" class="tsd-kind-icon">IRequest<wbr>Handler</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

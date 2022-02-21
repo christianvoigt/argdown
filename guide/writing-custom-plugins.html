@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Writing custom plugins | Argdown</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    <link rel="shortcut icon" type="image/x-icon" href="https://argdown.org/favicon.ico">
+    <link rel="icon" type="image/png" href="https://argdown.org/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="https://argdown.org/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="https://argdown.org/site.webmanifest">
+    <link rel="apple-touch-icon-precomposed" href="https://argdown.org/apple-touch-icon.png">
+    <script src="https://argdown.org/argdown-map.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://argdown.org/argdown-map.css">
+    <meta name="description" content="A short tutorial of how to create custom Argdown plugins.">
+    
+    <link rel="preload" href="/assets/css/0.styles.d44408e3.css" as="style"><link rel="preload" href="/assets/js/app.e91d5bc4.js" as="script"><link rel="preload" href="/assets/js/3.275776de.js" as="script"><link rel="preload" href="/assets/js/46.d7f7b0d2.js" as="script"><link rel="preload" href="/assets/js/5.6e73b733.js" as="script"><link rel="prefetch" href="/assets/js/10.bce1ef07.js"><link rel="prefetch" href="/assets/js/11.cf80334a.js"><link rel="prefetch" href="/assets/js/12.e422cfc7.js"><link rel="prefetch" href="/assets/js/13.839cb0f3.js"><link rel="prefetch" href="/assets/js/14.880b3b33.js"><link rel="prefetch" href="/assets/js/15.abbcfdfa.js"><link rel="prefetch" href="/assets/js/16.7fa548ca.js"><link rel="prefetch" href="/assets/js/17.9aa1c9f9.js"><link rel="prefetch" href="/assets/js/18.f829b0c0.js"><link rel="prefetch" href="/assets/js/19.6227120e.js"><link rel="prefetch" href="/assets/js/20.72f11159.js"><link rel="prefetch" href="/assets/js/21.6fee7a99.js"><link rel="prefetch" href="/assets/js/22.f250e760.js"><link rel="prefetch" href="/assets/js/23.613c08a0.js"><link rel="prefetch" href="/assets/js/24.7ebecc02.js"><link rel="prefetch" href="/assets/js/25.fd2bcd8f.js"><link rel="prefetch" href="/assets/js/26.7577404e.js"><link rel="prefetch" href="/assets/js/27.f21ea530.js"><link rel="prefetch" href="/assets/js/28.819ba326.js"><link rel="prefetch" href="/assets/js/29.1d933e8d.js"><link rel="prefetch" href="/assets/js/30.9046c3b0.js"><link rel="prefetch" href="/assets/js/31.d3d3b041.js"><link rel="prefetch" href="/assets/js/32.5b832a1e.js"><link rel="prefetch" href="/assets/js/33.205b099a.js"><link rel="prefetch" href="/assets/js/34.a30bd6fb.js"><link rel="prefetch" href="/assets/js/35.4f2a042f.js"><link rel="prefetch" href="/assets/js/36.a154eafd.js"><link rel="prefetch" href="/assets/js/37.1d8a6ac5.js"><link rel="prefetch" href="/assets/js/38.dd96ebb1.js"><link rel="prefetch" href="/assets/js/39.b297e62b.js"><link rel="prefetch" href="/assets/js/4.661920fa.js"><link rel="prefetch" href="/assets/js/40.43f1a9c5.js"><link rel="prefetch" href="/assets/js/41.85dbeb82.js"><link rel="prefetch" href="/assets/js/42.a71c61be.js"><link rel="prefetch" href="/assets/js/43.0def2f3c.js"><link rel="prefetch" href="/assets/js/44.93eb6d80.js"><link rel="prefetch" href="/assets/js/45.663a3d08.js"><link rel="prefetch" href="/assets/js/47.8df263fa.js"><link rel="prefetch" href="/assets/js/48.581f37b3.js"><link rel="prefetch" href="/assets/js/6.fc75f6f1.js"><link rel="prefetch" href="/assets/js/7.9a487c21.js"><link rel="prefetch" href="/assets/js/8.418c95c5.js"><link rel="prefetch" href="/assets/js/9.cc838dd5.js"><link rel="prefetch" href="/assets/js/vendors~docsearch.b03e88c6.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.d44408e3.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">Argdown</span></a> <div class="links"><form id="search-form" role="search" class="algolia-search-wrapper search-box"><input id="algolia-search-input" class="search-query"></form> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">
+  Home
+</a></div><div class="nav-item"><a href="/guide/" class="nav-link router-link-active">
+  Guide
+</a></div><div class="nav-item"><a href="/syntax/" class="nav-link">
+  Syntax
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="API" class="dropdown-title"><span class="title">API</span> <span class="arrow down"></span></button> <button type="button" aria-label="API" class="mobile-dropdown-title"><span class="title">API</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/api/" class="nav-link">
+  Overview
+</a></li><li class="dropdown-item"><!----> <a href="https://argdown.org/argdown-core/index.html" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  @argdown/core
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://argdown.org/argdown-node/index.html" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  @argdown/node
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div><div class="nav-item"><a href="/changes/" class="nav-link">
+  Changes
+</a></div><div class="nav-item"><a href="https://argdown.org/sandbox/" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Sandbox
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <a href="https://github.com/christianvoigt/argdown" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">
+  Home
+</a></div><div class="nav-item"><a href="/guide/" class="nav-link router-link-active">
+  Guide
+</a></div><div class="nav-item"><a href="/syntax/" class="nav-link">
+  Syntax
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="API" class="dropdown-title"><span class="title">API</span> <span class="arrow down"></span></button> <button type="button" aria-label="API" class="mobile-dropdown-title"><span class="title">API</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/api/" class="nav-link">
+  Overview
+</a></li><li class="dropdown-item"><!----> <a href="https://argdown.org/argdown-core/index.html" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  @argdown/core
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://argdown.org/argdown-node/index.html" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  @argdown/node
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div><div class="nav-item"><a href="/changes/" class="nav-link">
+  Changes
+</a></div><div class="nav-item"><a href="https://argdown.org/sandbox/" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Sandbox
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <a href="https://github.com/christianvoigt/argdown" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav>  <ul class="sidebar-links"><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Getting started</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Creating argument maps</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Publishing argument maps</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Configuration</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading open"><span>Extending Argdown</span> <span class="arrow down"></span></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/guide/extending-argdown.html" class="sidebar-link">Introduction</a></li><li><a href="/guide/writing-custom-plugins.html" aria-current="page" class="active sidebar-link">Writing custom plugins</a></li><li><a href="/guide/loading-custom-plugins-in-a-config-file.html" class="sidebar-link">Loading custom plugins</a></li><li><a href="/guide/using-argdown-in-your-application.html" class="sidebar-link">Using Argdown in your application</a></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="writing-custom-plugins"><a href="#writing-custom-plugins" class="header-anchor">#</a> Writing custom plugins</h1> <p>In this example, we will write a custom plugin that adds proponent names to argument node labels. The proponent names have to be defined in data elements of the arguments.</p> <p>This is our plugin (written in Typescript):</p> <div class="language-typescript extra-class"><pre class="language-typescript"><code><span class="token keyword">import</span> <span class="token punctuation">{</span>
+  ArgdownPluginError<span class="token punctuation">,</span>
+  IArgdownPlugin<span class="token punctuation">,</span>
+  IRequestHandler<span class="token punctuation">,</span>
+  IArgdownResponse<span class="token punctuation">,</span>
+  ArgdownTypes<span class="token punctuation">,</span>
+  IMapNode<span class="token punctuation">,</span>
+  isGroupMapNode
+<span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">&quot;@argdown-core&quot;</span><span class="token punctuation">;</span>
+
+<span class="token comment">/**
+ * Prepends argument node label text with the argument's proponent name.
+ **/</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">SaysWhoPlugin</span> <span class="token keyword">implements</span> <span class="token class-name">IArgdownPlugin</span> <span class="token punctuation">{</span>
+  name<span class="token operator">:</span> <span class="token builtin">string</span> <span class="token operator">=</span> <span class="token string">&quot;SaysWhoPlugin&quot;</span><span class="token punctuation">;</span> <span class="token comment">// obligatory plugin name</span>
+  <span class="token comment">// Will be called by the application:</span>
+  run<span class="token operator">:</span> <span class="token function-variable function">IRequestHandler</span> <span class="token operator">=</span> <span class="token punctuation">(</span>_request<span class="token punctuation">,</span> response<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    <span class="token comment">// let's first check that the required data is present in the response:</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>response<span class="token punctuation">.</span>arguments<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">ArgdownPluginError</span><span class="token punctuation">(</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>name<span class="token punctuation">,</span>
+        <span class="token string">&quot;missing-arguments-field&quot;</span><span class="token punctuation">,</span>
+        <span class="token string">&quot;Missing arguments field in response.&quot;</span>
+      <span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>response<span class="token punctuation">.</span>map<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">ArgdownPluginError</span><span class="token punctuation">(</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>name<span class="token punctuation">,</span>
+        <span class="token string">&quot;missing-arguments-field&quot;</span><span class="token punctuation">,</span>
+        <span class="token string">&quot;Missing map field in response.&quot;</span>
+      <span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment">// now let's search for all argument nodes and change their label</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> node <span class="token keyword">of</span> response<span class="token punctuation">.</span>map<span class="token punctuation">.</span>nodes<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">processNodesRecursively</span><span class="token punctuation">(</span>node<span class="token punctuation">,</span> response<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token comment">/**
+ * We have to use a recursive method as response.map.nodes may contain groups that can have
+ * other groups as children.
+ **/</span>
+<span class="token keyword">const</span> processNodesRecursively <span class="token operator">=</span> <span class="token punctuation">(</span>
+  node<span class="token operator">:</span> IMapNode<span class="token punctuation">,</span>
+  response<span class="token operator">:</span> IArgdownResponse
+<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token keyword">void</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>node<span class="token punctuation">.</span>type <span class="token operator">===</span> ArgdownTypes<span class="token punctuation">.</span><span class="token constant">ARGUMENT_MAP_NODE</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> argument <span class="token operator">=</span> response<span class="token punctuation">.</span>arguments<span class="token operator">!</span><span class="token punctuation">[</span>node<span class="token punctuation">.</span>title<span class="token operator">!</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token comment">// look for the proponent data and change the label</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>argument <span class="token operator">&amp;&amp;</span> argument<span class="token punctuation">.</span>data <span class="token operator">&amp;&amp;</span> argument<span class="token punctuation">.</span>data<span class="token punctuation">.</span>proponent<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">const</span> proponent <span class="token operator">=</span> argument<span class="token punctuation">.</span>data<span class="token punctuation">.</span>proponent<span class="token punctuation">;</span>
+      node<span class="token punctuation">.</span>labelText <span class="token operator">=</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>proponent<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">: </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>node<span class="token punctuation">.</span>labelText<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isGroupMapNode</span><span class="token punctuation">(</span>node<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> child <span class="token keyword">of</span> node<span class="token punctuation">.</span>children<span class="token operator">!</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">processNodesRecursively</span><span class="token punctuation">(</span>child<span class="token punctuation">,</span> response<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre></div><p>The SaysWhoPlugin can actually be found in the @argdown/core package, although it is just added for demonstration purposes.</p> <p>In the <a href="/guide/loading-custom-plugins-in-a-config-file.html">next section</a>, we will continue by loading the plugin in a config file and then running it with the commandline tool.</p></div> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/guide/extending-argdown.html" class="prev">
+        Introduction
+      </a></span> <span class="next"><a href="/guide/loading-custom-plugins-in-a-config-file.html">
+        Loading custom plugins
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"><!----></div></div>
+    <script src="/assets/js/app.e91d5bc4.js" defer></script><script src="/assets/js/3.275776de.js" defer></script><script src="/assets/js/46.d7f7b0d2.js" defer></script><script src="/assets/js/5.6e73b733.js" defer></script>
+  </body>
+</html>
