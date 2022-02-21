@@ -21,9 +21,9 @@ import {
   ExtensionContentSecurityPolicyArbiter,
   PreviewSecuritySelector
 } from "./preview/security";
-import { ArgdownExtensionContributions } from "./preview/ArgdownExtensionContributions";
 import createArgdownMarkdownItPlugin from "@argdown/markdown-it-plugin";
 import { nodeConfigLoader } from "./nodeConfigLoader";
+import { getArgdownExtensionContributions } from "./preview/ArgdownExtensions";
 // import { ForkOptions } from "vscode-languageclient/lib/client";
 
 let client: LanguageClient;
@@ -36,7 +36,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.globalState,
     context.workspaceState
   );
-  const contributions = new ArgdownExtensionContributions();
+  const contributions = getArgdownExtensionContributions(context);
   const contentProvider = new ArgdownContentProvider(
     argdownEngine,
     context,

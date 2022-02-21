@@ -1,7 +1,8 @@
 import { IDagreSettings, IVizJsSettings } from "@argdown/map-views";
 import { IMap } from "@argdown/core";
+import { Uri } from "vscode";
 export interface IArgdownPreviewState {
-  resource?: string;
+  resource?: Uri;
   currentView?: string | null;
   locked?: boolean;
   selectedNode?: string | null;

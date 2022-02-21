@@ -9,7 +9,6 @@ import {
   ArgdownPreviewConfigurationManager,
   ArgdownPreviewConfiguration
 } from "./ArgdownPreviewConfiguration";
-import { ArgdownExtensionContributions } from "./ArgdownExtensionContributions";
 import { PreviewViews } from "./ArgdownPreview";
 import { IDictionary } from "./util/IDictionary";
 import { IArgdownPreviewState } from "./IArgdownPreviewState";
@@ -18,7 +17,9 @@ import { vizjsViewProvider } from "./vizjsViewProvider";
 import { dagreViewProvider } from "./dagreViewProvider";
 import { htmlViewProvider } from "./htmlViewProvider";
 import { IViewProvider } from "./IViewProvider";
-import { Utils } from "vscode-uri";
+import { WebviewResourceProvider } from "./util/resources";
+import { basename, dirname, isAbsolute, join } from "./util/path";
+import { ArgdownContributionProvider } from "./ArgdownExtensions";
 /**
  * Strings used inside the argdown preview.
  *
@@ -33,14 +34,16 @@ const previewStrings = {
 
   cspAlertMessageLabel: "Content Disabled Security Warning"
 };
-
+function escapeAttribute(value: string | vscode.Uri): string {
+  return value.toString().replace(/"/g, "&quot;");
+}
 export class ArgdownContentProvider {
   private viewProviders: IDictionary<IViewProvider> = {};
   constructor(
     private readonly engine: ArgdownEngine,
     private readonly context: vscode.ExtensionContext,
     private readonly cspArbiter: ContentSecurityPolicyArbiter,
-    private readonly contributions: ArgdownExtensionContributions
+    private readonly contributionProvider: ArgdownContributionProvider
   ) {
     this.viewProviders[PreviewViews.HTML] = htmlViewProvider;
     this.viewProviders[PreviewViews.DAGRE] = dagreViewProvider;
@@ -74,9 +77,9 @@ export class ArgdownContentProvider {
   }
   public async provideHtmlContent(
     argdownDocument: vscode.TextDocument,
+    resourceProvider: WebviewResourceProvider,
     previewConfigurations: ArgdownPreviewConfigurationManager,
-    initialState: IArgdownPreviewState,
-    webview: vscode.Webview
+    initialState: IArgdownPreviewState
   ): Promise<string> {
     const sourceUri = argdownDocument.uri;
     const config = previewConfigurations.getConfiguration(sourceUri);
@@ -90,12 +93,14 @@ export class ArgdownContentProvider {
       syncPreviewSelectionWithEditor: config.syncPreviewSelectionWithEditor,
       doubleClickToSwitchToEditor: config.doubleClickToSwitchToEditor,
       disableSecurityWarnings: this.cspArbiter.shouldDisableSecurityWarnings(),
-      cspSource: webview.cspSource
+      webviewResourceRoot: resourceProvider
+        .asWebviewUri(argdownDocument.uri)
+        .toString()
     };
 
     // Content Security Policy
-    const nonce = new Date().getTime() + "" + new Date().getMilliseconds();
-    const csp = this.getCspForResource(sourceUri, nonce, webview.cspSource);
+    const nonce = getNonce();
+    const csp = this.getCsp(resourceProvider, sourceUri, nonce);
     let viewHtml = "";
     viewHtml = await viewProvider.generateView(
       this.engine,
@@ -116,25 +121,23 @@ export class ArgdownContentProvider {
       config
     );
     return `<!DOCTYPE html>
-			<html>
+			<html style="${escapeAttribute(this.getSettingsOverrideStyles(config))}">
 			<head>
 				<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
 				${csp}
-				<meta id="vscode-argdown-preview-data" data-settings="${JSON.stringify(
-          settings
-        ).replace(/"/g, "&quot;")}" data-strings="${JSON.stringify(
-      previewStrings
-    ).replace(/"/g, "&quot;")}">
+				<meta id="vscode-argdown-preview-data" data-settings="${escapeAttribute(
+          JSON.stringify(settings)
+        )}" data-strings="${escapeAttribute(JSON.stringify(previewStrings))}">
 				<script src="${this.extensionResourcePath(
-          "pre.js",
-          webview
-        )}" nonce="${nonce}"></script>
+          resourceProvider,
+          "pre.js"
+        ).toString()}" nonce="${nonce}"></script>
 				<script nonce="${nonce}">window.initialState = ${JSON.stringify(
       initialState,
       jsonReplacer
     )};</script>
-				${this.getStyles(sourceUri, nonce, config, webview)}
-				<base href="${webview.asWebviewUri(argdownDocument.uri).toString()}">
+				${this.getStyles(resourceProvider, sourceUri, config)}
+				<base href="${resourceProvider.asWebviewUri(argdownDocument.uri)}">
 			</head>
 			<body class="vscode-body argdown ${view}-active ${
       menuLocked ? "locked" : "unlocked"
@@ -142,8 +145,8 @@ export class ArgdownContentProvider {
       config.wordWrap ? "wordWrap" : ""
     } ${config.markEditorSelection ? "showEditorSelection" : ""}">
 				${body}
-				${this.getScriptsForView(viewProvider.scripts, nonce, webview)}
-				${this.getScripts(nonce)}
+				${this.getScriptsForView(resourceProvider, viewProvider.scripts, nonce)}
+				${this.getScripts(resourceProvider, nonce)}
 			</body>
 			</html>`;
   }
@@ -171,126 +174,147 @@ export class ArgdownContentProvider {
 	<a title="Unlock preview menu (only shows the menu if mouse moves to the top of the preview)" class="unlock-menu icon-button" data-message="didChangeLockMenu" data-lockmenu="false" href="#"><span>unlock</span></a>
 	</nav></div>`;
   }
-
+  public provideFileNotFoundContent(resource: vscode.Uri): string {
+    const resourcePath = basename(resource.fsPath);
+    const body = `${resourcePath} cannot be found`;
+    return `<!DOCTYPE html>
+			<html>
+			<body class="vscode-body">
+				${body}
+			</body>
+			</html>`;
+  }
   private extensionResourcePath(
-    mediaFile: string,
-    webview: vscode.Webview
+    resourceProvider: WebviewResourceProvider,
+    mediaFile: string
   ): vscode.Uri {
-    return webview.asWebviewUri(
+    return resourceProvider.asWebviewUri(
       vscode.Uri.joinPath(this.context.extensionUri, "media", mediaFile)
     );
   }
-
   private fixHref(
+    resourceProvider: WebviewResourceProvider,
     resource: vscode.Uri,
-    href: string,
-    _webview: vscode.Webview
+    href: string
   ): string {
     if (!href) {
       return href;
     }
+    if (
+      href.startsWith("http:") ||
+      href.startsWith("https:") ||
+      href.startsWith("file:")
+    ) {
+      return href;
+    }
 
-    // Use href if it is already an URL
-    const hrefUri = vscode.Uri.parse(href);
-    if (["http", "https"].indexOf(hrefUri.scheme) >= 0) {
-      return hrefUri.toString();
+    // Assume it must be a local file
+    if (isAbsolute(href)) {
+      return resourceProvider.asWebviewUri(vscode.Uri.file(href)).toString();
     }
 
     // Use a workspace relative path if there is a workspace
-    let root = vscode.workspace.getWorkspaceFolder(resource);
+    const root = vscode.workspace.getWorkspaceFolder(resource);
     if (root) {
-      return vscode.Uri.joinPath(root.uri, href)
-        .with({ scheme: "vscode-resource" })
+      return resourceProvider
+        .asWebviewUri(vscode.Uri.joinPath(root.uri, href))
         .toString();
     }
 
-    // Otherwise look relative to the argdown file
-    return vscode.Uri.joinPath(Utils.dirname(resource), href)
-      .with({ scheme: "vscode-resource" })
+    // Otherwise look relative to the Argdown file
+    return resourceProvider
+      .asWebviewUri(vscode.Uri.file(join(dirname(resource.fsPath), href)))
       .toString();
   }
 
   private computeCustomStyleSheetIncludes(
+    resourceProvider: WebviewResourceProvider,
     resource: vscode.Uri,
-    config: ArgdownPreviewConfiguration,
-    webview: vscode.Webview
+    config: ArgdownPreviewConfiguration
   ): string {
-    if (Array.isArray(config.styles)) {
-      return config.styles
-        .map(style => {
-          return `<link rel="stylesheet" class="code-user-style" data-source="${style.replace(
-            /"/g,
-            "&quot;"
-          )}" href="${this.fixHref(
-            resource,
-            style,
-            webview
-          )}" type="text/css" media="screen">`;
-        })
-        .join("\n");
+    if (!Array.isArray(config.styles)) {
+      return "";
     }
-    return "";
+    const out: string[] = [];
+    for (const style of config.styles) {
+      out.push(
+        `<link rel="stylesheet" class="code-user-style" data-source="${escapeAttribute(
+          style
+        )}" href="${escapeAttribute(
+          this.fixHref(resourceProvider, resource, style)
+        )}" type="text/css" media="screen">`
+      );
+    }
+    return out.join("\n");
   }
 
   private getSettingsOverrideStyles(
-    nonce: string,
     config: ArgdownPreviewConfiguration
   ): string {
-    return `<style nonce="${nonce}">
-			body {
-				${config.fontFamily ? `font-family: ${config.fontFamily};` : ""}
-				${isNaN(config.fontSize) ? "" : `font-size: ${config.fontSize}px;`}
-				${isNaN(config.lineHeight) ? "" : `line-height: ${config.lineHeight};`}
-			}
-		</style>`;
+    return [
+      config.fontFamily ? `--argdown-font-family: ${config.fontFamily};` : "",
+      isNaN(config.fontSize)
+        ? ""
+        : `--argdown-font-size: ${config.fontSize}px;`,
+      isNaN(config.lineHeight)
+        ? ""
+        : `--argdown-line-height: ${config.lineHeight};`
+    ].join(" ");
   }
-
   private getStyles(
+    resourceProvider: WebviewResourceProvider,
     resource: vscode.Uri,
-    nonce: string,
-    config: ArgdownPreviewConfiguration,
-    webview: vscode.Webview
+    config: ArgdownPreviewConfiguration
   ): string {
-    const baseStyles = this.contributions.previewStyles
-      .map(
-        resource =>
-          `<link rel="stylesheet" type="text/css" href="${resource.toString()}">`
-      )
-      .join("\n");
-
-    return `${baseStyles}
-			${this.getSettingsOverrideStyles(nonce, config)}
-			${this.computeCustomStyleSheetIncludes(resource, config, webview)}`;
+    const baseStyles: string[] = [];
+    for (const resource of this.contributionProvider.contributions
+      .previewStyles) {
+      baseStyles.push(
+        `<link rel="stylesheet" type="text/css" href="${escapeAttribute(
+          resourceProvider.asWebviewUri(resource)
+        )}">`
+      );
+    }
+    return `${baseStyles.join("\n")}
+			${this.computeCustomStyleSheetIncludes(resourceProvider, resource, config)}`;
   }
   private getScriptsForView(
+    resourceProvider: WebviewResourceProvider,
     scripts: string[],
-    nonce: string,
-    webview: vscode.Webview
+    nonce: string
   ): string {
     return scripts
       .map(
         script =>
-          `<script src="${this.extensionResourcePath(
-            script,
-            webview
+          `<script src="${escapeAttribute(
+            resourceProvider.asWebviewUri(
+              this.extensionResourcePath(resourceProvider, script)
+            )
           )}" nonce="${nonce}" charset="UTF-8"></script>`
       )
       .join("\n");
   }
-  private getScripts(nonce: string): string {
-    return this.contributions.previewScripts
-      .map(
-        resource =>
-          `<script async src="${resource.toString()}" nonce="${nonce}" charset="UTF-8"></script>`
-      )
-      .join("\n");
+  private getScripts(
+    resourceProvider: WebviewResourceProvider,
+    nonce: string
+  ): string {
+    const out: string[] = [];
+    for (const resource of this.contributionProvider.contributions
+      .previewScripts) {
+      out.push(`<script async
+				src="${escapeAttribute(resourceProvider.asWebviewUri(resource))}"
+				nonce="${nonce}"
+				charset="UTF-8"></script>`);
+    }
+    return out.join("\n");
   }
 
-  private getCspForResource(
+  private getCsp(
+    provider: WebviewResourceProvider,
     resource: vscode.Uri,
-    nonce: string,
-    rule: string
+    nonce: string
   ): string {
+    const rule = provider.cspSource;
     const securityLevel = this.cspArbiter.getSecurityLevelForResource(resource);
     switch (securityLevel) {
       case ArgdownPreviewSecurityLevel.AllowInsecureContent:
@@ -306,4 +330,13 @@ export class ArgdownContentProvider {
         return `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' ${rule} https: data:; media-src 'self' ${rule} https: data:; script-src 'nonce-${nonce}'; style-src 'self' ${rule} 'unsafe-inline' https: data:; font-src 'self' ${rule} https: data:;">`;
     }
   }
+}
+function getNonce() {
+  let text = "";
+  const possible =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  for (let i = 0; i < 64; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
 }

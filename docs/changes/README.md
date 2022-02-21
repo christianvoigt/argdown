@@ -7,3 +7,10 @@ This release adds [web extension support](https://code.visualstudio.com/blogs/20
 ### v1.8.1
 
 - fixes paths for webview resources
+
+### v1.8.2
+
+only affects argdown-vscode:
+
+- fixes paths again for electron
+- updates complete codebase of Argdown preview to reflect changes in original VSCode Markdown preview

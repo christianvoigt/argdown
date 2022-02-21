@@ -5,7 +5,7 @@
   "icon": "media/argdown-mark-blue-256x256.png",
   "author": "Christian Voigt",
   "license": "MIT",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "publisher": "christianvoigt",
   "homepage": "https://argdown.org",
   "repository": {
@@ -559,7 +559,7 @@
     "@types/node": "^17.0.0",
     "@types/vscode": "^1.63.1",
     "@vscode/test-electron": "^2.0.3",
-    "@vscode/test-web": "^0.0.15",
+    "@vscode/test-web": "^0.0.22",
     "babel-loader": "8.2.3",
     "brfs": "^2.0.2",
     "crypto-browserify": "^3.12.0",

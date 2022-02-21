@@ -11,11 +11,11 @@ import {
   ExtensionContentSecurityPolicyArbiter,
   PreviewSecuritySelector
 } from "./preview/security";
-import { ArgdownExtensionContributions } from "./preview/ArgdownExtensionContributions";
 import { ArgdownContentProvider } from "./preview/ArgdownContentProvider";
 import { ArgdownPreviewManager } from "./preview/ArgdownPreviewManager";
 import { CommandManager } from "./commands/CommandManager";
 import * as commands from "./commands/index";
+import { getArgdownExtensionContributions } from "./preview/ArgdownExtensions";
 
 let client: LanguageClient;
 
@@ -28,7 +28,7 @@ export function activate(context: ExtensionContext) {
     context.globalState,
     context.workspaceState
   );
-  const contributions = new ArgdownExtensionContributions();
+  const contributions = getArgdownExtensionContributions(context);
   const contentProvider = new ArgdownContentProvider(
     argdownEngine,
     context,
