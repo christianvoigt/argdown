@@ -4,7 +4,7 @@
 
 This package is part of the [Argdown project](https://argdown.org) and adds Argdown support to Gatsby.
 
-For a more detailed documentation, read the guide on [how to use Argdown in Markdown](https://argdown.org/guide/use-argdown-in-markdown.html).
+For a more detailed documentation, read the guide on [how to use Argdown in Markdown](https://argdown.org/guide/using-argdown-in-markdown.html).
 
 ## Installation
 
