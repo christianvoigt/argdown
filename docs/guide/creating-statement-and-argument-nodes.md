@@ -11,7 +11,7 @@ This section describes how the Argdown parser decides which statements and argum
 
 In general, all arguments with at least one relation are added as nodes to the argument map. But you can also be more selective. For example, you might want to create a map with arguments from a certain [section](#selecting-nodes-by-section) or with a certain [tag](#selecting-nodes-by-tag).
 
-The default rules that decide which _statements_ will get their own node [are more complicated](#choosing-a-statementselectionmode). The Argdown parser tries to keep the number of statement nodes as low as possible to support visualizing complex debates with many arguments in comparartively compact maps. For example, this allows you to "hide" unimportant premises in your arguments and only introduce the premises you really care about as nodes in your map.
+The default rules that decide which _statements_ will get their own node [are more complicated](#choosing-a-statementselectionmode). The Argdown parser tries to keep the number of statement nodes as low as possible to support visualizing complex debates with many arguments in comparatively compact maps. For example, this allows you to "hide" unimportant premises in your arguments and only introduce the premises you really care about as nodes in your map.
 
 :::tip Choose your own style
 
