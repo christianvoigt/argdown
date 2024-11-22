@@ -39,7 +39,7 @@ There are three kinds of nodes in Argdown argument maps:
 | **Argument node**         |  Visualized as round box with a colored background.                       |
 | **Group node (cluster)**  | Visualized as grey box containing other nodes.                            |
 
-To learn more about the difference between statements and arguments, read the syntax sections about [arguments in Argdown](/syntax/arguments).
+To learn more about the difference between statements and arguments, read the syntax sections about [arguments in Argdown](/syntax/#arguments).
 
 There are three edge colors in Argdown argument maps, representing the six different [relations of Argdown](/syntax/#relations):
 
