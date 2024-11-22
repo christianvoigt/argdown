@@ -4,15 +4,15 @@
 
 **v1.8.2 released! Check out [the new features](https://argdown.org/changes/)**
 
-[Argdown](https://christianvoigt.github.io/argdown) is a simple syntax for analyzing complex argumentation.
+[Argdown](https://argdown.org) is a simple syntax for analyzing complex argumentation.
 
 - Listing pros & cons in Argdown is as simple as writing a twitter message. You don't have to learn anything new, except a few simple rules that will feel very natural.
 - With these simple rules you will be able to define more complex relations between arguments or dive into the details of their logical premise-conclusion structures.
 - Argdown can even be used within Markdown! Your code is transformed into an <a href="https://en.wikipedia.org/wiki/Argument_map">argument map</a> while you are typing. When your are ready, you can publish your analysis as pdf, embed it as a web-component in a webpage or simply export your map as an image.
 
-Start with [the docs](https://christianvoigt.github.io/argdown) or try it out in the [Browser Sandbox](http://christianvoigt.github.io/argdown).
+Start with [the docs](https://argdown.org) or try it out in the [Browser Sandbox](https://argdown.org/sandbox).
 
-If you want to start working right away, you should install the [Argdown VS Code extension](https://christianvoigt.github.io/argdown/guide/installing-the-vscode-extension).
+If you want to start working right away, you should install the [Argdown VS Code extension](https://argdown.org/guide/installing-the-vscode-extension).
 
 <img src="./screenshots/argdown-vscode-greenspan-1.png?raw=true" width="30%"></img> <img src="./screenshots/argdown-vscode-greenspan-2.png?raw=true" width="30%"></img> <img src="./screenshots/argdown-vscode-semmelweis-1.png?raw=true" width="30%"></img> <img src="./screenshots/argdown-sandbox-soft-drugs-1.png?raw=true" width="30%"></img> <img src="./screenshots/argdown-sandbox-greenspan-1.png?raw=true" width="30%"></img> <img src="./screenshots/argdown-sandbox-censorship-1.png?raw=true" width="30%"></img>
 
