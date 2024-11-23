@@ -32,7 +32,7 @@ To install this Monorepo
 
 - fork/pull or download this repository
 - run `npm install` in the main folder.
-- run `npm run bootstrap` to install the dependencies of all packages. This will call `lerna bootstrap`.
+- run `npm run lerna:bootstrap` to install the dependencies of all packages. This will call `lerna bootstrap`.
 - run `npm run docs:dev` if you want to work on the documentation. Run `npm run` to see the other scripts available.
 
 ### Installing npm packages
