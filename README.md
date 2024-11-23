@@ -1,8 +1,12 @@
+<div align="center">
+
 # Argdown
 
 ![Argdown logo](./argdown-arrow.png?raw=true "Argdown logo")
 
-**v1.8.2 released! Check out [the new features](https://argdown.org/changes/)**
+[📑 Documentation](https://argdown.org) | [🕹️ Playground](https://argdown.org/sandbox) | [💬 Discord Server](https://discord.gg/7WHc4FSt)
+
+</div>
 
 [Argdown](https://argdown.org) is a simple syntax for analyzing complex argumentation.
 
