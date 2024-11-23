@@ -483,7 +483,7 @@ Note how in this case attacks against the intermediary conclusion can be visuali
 
 In complex arguments an inferential step sometimes does use statements for its inference that were already listed as premise in another inferential step. In other cases a conclusion of another inferential step is used that is not the directly preceding step.
 
-In both of these cases you have to tell Argdown explicitely _which_ statements were used in the inferential step. You can do so by adding a metadata list to the conclusion or the inference:
+In both of these cases you have to tell Argdown explicitly _which_ statements were used in the inferential step. You can do so by adding a metadata list to the conclusion or the inference:
 
 ```argdown
 ===
