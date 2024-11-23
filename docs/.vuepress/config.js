@@ -1,5 +1,6 @@
 var extendMarkdown = require("./extendMarkdown");
 var domain = "https://argdown.org";
+var discord = "https://discord.gg/7WHc4FSt";
 // domain = "http://localhost:8080";
 
 module.exports = {
@@ -160,8 +161,9 @@ module.exports = {
           { text: "@argdown/node", link: domain + "/argdown-node/index.html" }
         ]
       },
-      { text: "Changes", link: "/changes/" },
-      { text: "Sandbox", link: domain + "/sandbox/" }
+      // { text: "Changes", link: "/changes/" },
+      { text: "Sandbox", link: domain + "/sandbox/" },
+      { text: "Discord", link: discord }
     ]
   }
 };
