@@ -53,7 +53,7 @@ To activate ArgVu and its ligatures for Argdown documents in VS Code do the foll
 ```json
     "[argdown]": {
         "editor.fontLigatures": "'dlig'",
-        "editor.fontFamily": "ArgVu Sans Mono Regular"
+        "editor.fontFamily": "ArgVu Sans Mono"
     },
 ```
 
